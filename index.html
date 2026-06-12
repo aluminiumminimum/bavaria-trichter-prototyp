@@ -449,6 +449,29 @@
   .intro-head .s{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#8d8273;margin-top:5px}
   .intro-body{padding:22px 34px 28px}
   .intro-body li{margin:7px 0}
+  /* ===== Mobiler Kopf & Navigation (nur ≤900px sichtbar) ===== */
+  .mhead-mobile,.mnav{display:none}
+  @media(max-width:900px){
+    .mhead-mobile{display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:calc(12px + env(safe-area-inset-top)) 18px 8px}
+    .mb-brand{font-family:"Cormorant Garamond",Georgia,serif;font-size:19px;font-weight:700;color:var(--ink);letter-spacing:.04em}
+    .mb-brand b{color:var(--gold-deep)}
+    .mb-brand span{display:block;font-family:"Inter",-apple-system,sans-serif;font-size:10.5px;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--muted2);font-weight:700;margin-top:2px}
+    .mb-chip{flex-shrink:0;background:var(--gold-soft);border:1px solid var(--gold-line);color:var(--gold-deep);
+      border-radius:6px;padding:3px 9px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+    .mnav{position:sticky;top:0;z-index:50;display:flex;flex-direction:row;gap:7px;overflow-x:auto;
+      padding:9px 18px calc(9px + 1px);background:rgba(251,250,247,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .mnav::-webkit-scrollbar{display:none}
+    .mnav button{display:flex;align-items:center;gap:7px;flex-shrink:0;width:auto;min-height:44px;padding:9px 15px;
+      border-radius:999px;border:1px solid var(--line);background:#fff;color:#5d564c;font-size:14px;font-weight:600;
+      touch-action:manipulation}
+    .mnav button.active{background:var(--slate);border-color:var(--slate);color:#fff;font-weight:600;box-shadow:none}
+    .mnav button.active::before{display:none}
+    .mnav button.active svg{color:var(--gold)}
+    .mnav button svg{width:16px;height:16px}
+  }
   @media(max-width:1180px){
     .critical-grid{grid-template-columns:1fr}
     .cockpit-head,.idea-head,.bestand-hero{grid-template-columns:1fr;gap:12px}.cockpit-sub,.idea-head p{text-align:left}
@@ -499,6 +522,21 @@
 </aside>
 
 <div class="main">
+  <div class="mhead-mobile">
+    <div class="mb-brand">KLINIK <b>BAVARIA</b> <span>Privatpatienten-Maschine</span></div>
+    <span class="mb-chip">Demo</span>
+  </div>
+  <nav class="mnav" aria-label="Bereiche">
+    <button data-tab="cockpit" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Überblick</button>
+    <button data-tab="idee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h5l3-7 3 14 3-7h2"/><circle cx="12" cy="12" r="9"/></svg>Die Idee</button>
+    <button data-tab="intelligenz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M5 8h14"/><path d="M7 16h10"/><circle cx="12" cy="8" r="3"/><circle cx="12" cy="16" r="3"/></svg>Auswertung</button>
+    <button data-tab="eingang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6l2-8z"/></svg>Anfragen</button>
+    <button data-tab="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="5" height="7" rx="1.5"/></svg>Fälle</button>
+    <button data-tab="neu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Neue Anfrage</button>
+    <button data-tab="zuweiser"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="6" r="3"/><circle cx="5" cy="18" r="3"/><circle cx="19" cy="18" r="3"/><path d="M12 9v3m0 0-5 3.5M12 12l5 3.5"/></svg>Zuweiser</button>
+    <button data-tab="bestand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>Altpatienten</button>
+    <button data-tab="kommunikation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>SOPs</button>
+  </nav>
   <div class="topbar">
     <div><h1 id="pageTitle">Überblick</h1><div class="date" id="pageDate"></div></div>
     <div class="top-actions">
@@ -1532,6 +1570,8 @@ function switchTab(t){
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===t));
   document.querySelectorAll(".content section").forEach(s=>s.classList.toggle("active",s.id==="tab-"+t));
   document.getElementById("pageTitle").textContent=TITEL[t];
+  const mb=document.querySelector(".mnav button.active");
+  if(mb&&mb.scrollIntoView)mb.scrollIntoView({block:"nearest",inline:"center",behavior:"smooth"});
   if(location.hash!=="#"+t)history.replaceState(null,"","#"+t);
 }
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
