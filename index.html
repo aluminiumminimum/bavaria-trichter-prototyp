@@ -146,6 +146,10 @@
   .strom .fn-link{stroke:#d3bd97;stroke-width:1.35;fill:none;opacity:.9;stroke-linecap:round}
   .strom .fn-dot{fill:#a8854f;opacity:.5}
   .strom .fn-stockt{fill:#a8543f;font-size:10.5px;font-weight:800;letter-spacing:.03em}
+  .strom .fn-box{fill:#fbf7ee;stroke:#e7ddc8;stroke-width:1;transition:fill .18s}
+  .strom .fn-click:hover .fn-box{fill:#f3ebda}
+  .strom .fn-box-lab{fill:#7c715f;font-size:10.5px;font-weight:600;letter-spacing:.01em}
+  .strom .fn-box-sub{fill:#857a69;font-size:9.5px}
   .strom .fn-click{cursor:pointer;touch-action:manipulation}
   .strom .fn-click rect.pill{transition:fill .18s}
   .strom .fn-click:hover rect.pill{fill:rgba(168,133,79,.07)}
@@ -509,42 +513,6 @@
       <p class="g-line" id="greetLine"></p>
     </header>
 
-    <div class="card ns-card">
-      <div class="kicker">Nordstern · Privatauslastung</div>
-      <svg class="gauge" viewBox="0 0 200 152" role="img" aria-label="Privatauslastung 78 Prozent, Ziel 90 Prozent">
-        <path class="track" d="M34.2,134 A76,76 0 1 1 165.8,134"/>
-        <path class="val" d="M34.2,134 A76,76 0 1 1 165.8,134" stroke-dasharray="248.3 318.3"/>
-        <line class="tick" x1="167.6" y1="103.1" x2="183.5" y2="104.8"/>
-        <text class="gziel" x="186" y="96" text-anchor="middle">90</text>
-        <text class="gnum num" x="92" y="116" text-anchor="middle">78</text>
-        <text class="gpct" x="126" y="114">%</text>
-      </svg>
-      <div class="ns-betten">31 von 40 Privatbetten belegt · Ziel 90&nbsp;%+</div>
-      <div class="ns-row">
-        <div class="ns-m">
-          <span class="ns-l">Vorlauf</span>
-          <span class="ns-v num"><b id="nsVorlauf">9</b> <span>Tage</span></span>
-          <span class="ns-t">Ziel 21 Tage</span>
-          <span id="plusTagH"></span>
-        </div>
-        <div class="ns-m">
-          <span class="ns-l">Ø Erstreaktion</span>
-          <span class="ns-v num" id="nsRz"></span>
-          <span class="ns-t">Ziel unter 24 Std.</span>
-        </div>
-        <div class="ns-m">
-          <span class="ns-l">Conversion</span>
-          <span class="ns-v num" id="nsConv"></span>
-          <span class="ns-t" id="nsConvSub"></span>
-        </div>
-      </div>
-    </div>
-
-    <div class="chap">
-      <div class="kicker">Heute wichtig</div>
-      <div class="card list-card" id="wichtigList"></div>
-    </div>
-
     <div class="chap">
       <div class="kicker">Der eine Trichter</div>
       <p class="chap-intro dcap">Alle Quellen laufen in einen gemeinsamen Trichter — von der ersten Anfrage bis zur planbaren Aufnahme.</p>
@@ -664,120 +632,138 @@
         </svg>
       </div>
       <div class="card strom strom-m">
-        <svg viewBox="0 0 390 710" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der eine Trichter, Ergebnis">
+        <svg viewBox="0 0 390 548" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der eine Trichter, Ergebnis">
           <defs>
             <linearGradient id="funnelWashM" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0" stop-color="#a8854f" stop-opacity=".07"/>
               <stop offset="1" stop-color="#a8854f" stop-opacity=".23"/>
             </linearGradient>
           </defs>
-          <text class="fn-cap" x="195" y="22" text-anchor="middle">QUELLEN</text>
+          <text class="fn-cap" x="195" y="20" text-anchor="middle">QUELLEN</text>
           <g class="fn-click" onclick="switchTab('zuweiser')">
-            <rect class="pill" x="20" y="36" width="350" height="36" rx="9" fill="transparent"/>
-            <text class="fn-lab" x="28" y="60">Krankenhäuser</text>
-            <text class="fn-num" x="340" y="62" text-anchor="end" font-size="24" data-sync="q1"></text>
-            <line class="fn-hair" x1="28" y1="70" x2="358" y2="70"/>
-            <text class="fn-chev" x="350" y="62">›</text>
+            <rect class="fn-box" x="20" y="34" width="104" height="54" rx="12"/>
+            <text class="fn-box-lab" x="72" y="55" text-anchor="middle">Krankenhäuser</text>
+            <text class="fn-num" x="72" y="80" text-anchor="middle" font-size="22" data-sync="q1"></text>
           </g>
           <g class="fn-click" onclick="switchTab('zuweiser')">
-            <rect class="pill" x="20" y="76" width="350" height="36" rx="9" fill="transparent"/>
-            <text class="fn-lab" x="28" y="100">Privatpraxen</text>
-            <text class="fn-num" x="340" y="102" text-anchor="end" font-size="24" data-sync="q2"></text>
-            <line class="fn-hair" x1="28" y1="110" x2="358" y2="110"/>
-            <text class="fn-chev" x="350" y="102">›</text>
+            <rect class="fn-box" x="143" y="34" width="104" height="54" rx="12"/>
+            <text class="fn-box-lab" x="195" y="55" text-anchor="middle">Privatpraxen</text>
+            <text class="fn-num" x="195" y="80" text-anchor="middle" font-size="22" data-sync="q2"></text>
           </g>
           <g class="fn-click" onclick="switchTab('zuweiser')">
-            <rect class="pill" x="20" y="116" width="350" height="36" rx="9" fill="transparent"/>
-            <text class="fn-lab" x="28" y="140">Hausärzte</text>
-            <text class="fn-num" x="340" y="142" text-anchor="end" font-size="24" data-sync="q3"></text>
-            <line class="fn-hair" x1="28" y1="150" x2="358" y2="150"/>
-            <text class="fn-chev" x="350" y="142">›</text>
+            <rect class="fn-box" x="266" y="34" width="104" height="54" rx="12"/>
+            <text class="fn-box-lab" x="318" y="55" text-anchor="middle">Hausärzte</text>
+            <text class="fn-num" x="318" y="80" text-anchor="middle" font-size="22" data-sync="q3"></text>
           </g>
           <g class="fn-click" onclick="switchTab('bestand')">
-            <rect class="pill" x="20" y="156" width="350" height="36" rx="9" fill="transparent"/>
-            <text class="fn-lab" x="28" y="180">Altpatienten</text>
-            <text class="fn-num" x="340" y="182" text-anchor="end" font-size="24" data-sync="q4"></text>
-            <line class="fn-hair" x1="28" y1="190" x2="358" y2="190"/>
-            <text class="fn-chev" x="350" y="182">›</text>
+            <rect class="fn-box" x="67" y="96" width="120" height="54" rx="12"/>
+            <text class="fn-box-lab" x="127" y="117" text-anchor="middle">Altpatienten</text>
+            <text class="fn-num" x="127" y="142" text-anchor="middle" font-size="22" data-sync="q4"></text>
           </g>
           <g class="fn-click" onclick="switchTab('zuweiser')">
-            <rect class="pill" x="20" y="196" width="350" height="36" rx="9" fill="transparent"/>
-            <text class="fn-lab" x="28" y="220">Premium-Netzwerke</text>
-            <text class="fn-num" x="340" y="222" text-anchor="end" font-size="24" data-sync="q5"></text>
-            <line class="fn-hair" x1="28" y1="230" x2="358" y2="230"/>
-            <text class="fn-chev" x="350" y="222">›</text>
+            <rect class="fn-box" x="203" y="96" width="120" height="54" rx="12"/>
+            <text class="fn-box-lab" x="263" y="117" text-anchor="middle">Premium-Netzwerke</text>
+            <text class="fn-num" x="263" y="142" text-anchor="middle" font-size="22" data-sync="q5"></text>
           </g>
 
-          <path class="fn-link" d="M28,70 C12,76 6,90 6,110 L6,230 C6,262 40,284 88,292"/>
-          <path class="fn-link" d="M28,110 C14,116 10,128 10,146 L10,232 C10,260 64,282 126,292"/>
-          <path class="fn-link" d="M28,150 C18,156 14,166 14,182 L14,234 C14,258 92,280 166,292"/>
-          <path class="fn-link" d="M28,190 C22,196 18,204 18,214 L18,236 C18,256 130,278 206,292"/>
-          <path class="fn-link" d="M28,230 C24,236 22,242 22,248 C22,262 180,276 246,292"/>
+          <path class="fn-link" d="M72,90 C40,100 14,120 14,150 C14,185 50,205 95,214"/>
+          <path class="fn-link" d="M195,90 C195,130 195,180 195,214"/>
+          <path class="fn-link" d="M318,90 C350,100 374,120 374,150 C374,185 330,205 285,214"/>
+          <path class="fn-link" d="M127,152 C127,175 136,200 148,214"/>
+          <path class="fn-link" d="M263,152 C263,175 252,200 242,214"/>
 
-          <text class="fn-cap" x="195" y="282" text-anchor="middle" opacity="0">.</text>
-          <path d="M65,296 L325,296 L255,470 L135,470 Z" fill="url(#funnelWashM)" stroke="#dcc9a3" stroke-width="1.2"/>
-          <line x1="88" y1="354" x2="302" y2="354" stroke="#cdb88e" stroke-width="1" opacity=".45"/>
-          <line x1="112" y1="412" x2="278" y2="412" stroke="#cdb88e" stroke-width="1" opacity=".45"/>
+          <path d="M65,216 L325,216 L255,390 L135,390 Z" fill="url(#funnelWashM)" stroke="#dcc9a3" stroke-width="1.2"/>
+          <line x1="88" y1="274" x2="302" y2="274" stroke="#cdb88e" stroke-width="1" opacity=".45"/>
+          <line x1="112" y1="332" x2="278" y2="332" stroke="#cdb88e" stroke-width="1" opacity=".45"/>
 
-          <text class="fn-num" x="185" y="338" text-anchor="end" font-size="34" data-sync="zc0"></text>
-          <text class="fn-stage" x="200" y="334">neu &amp; kontaktiert <tspan fill="#a8854f">›</tspan></text>
-          <text class="fn-stockt" x="195" y="350" text-anchor="middle" data-sync="stock0"></text>
-          <text class="fn-num" x="185" y="396" text-anchor="end" font-size="34" data-sync="zc1"></text>
-          <text class="fn-stage" x="200" y="392">in Klärung <tspan fill="#a8854f">›</tspan></text>
-          <text class="fn-stockt" x="195" y="408" text-anchor="middle" data-sync="stock1"></text>
-          <text class="fn-num" x="185" y="452" text-anchor="end" font-size="34" data-sync="zc2"></text>
-          <text class="fn-stage" x="200" y="448">Aufnahme geplant <tspan fill="#a8854f">›</tspan></text>
-          <text class="fn-stockt" x="195" y="464" text-anchor="middle" data-sync="stock2"></text>
+          <text class="fn-num" x="185" y="254" text-anchor="end" font-size="34" data-sync="zc0"></text>
+          <text class="fn-stage" x="200" y="250">neu &amp; kontaktiert <tspan fill="#a8854f">›</tspan></text>
+          <text class="fn-stockt" x="195" y="270" text-anchor="middle" data-sync="stock0"></text>
+          <text class="fn-num" x="185" y="312" text-anchor="end" font-size="34" data-sync="zc1"></text>
+          <text class="fn-stage" x="200" y="308">in Klärung <tspan fill="#a8854f">›</tspan></text>
+          <text class="fn-stockt" x="195" y="328" text-anchor="middle" data-sync="stock1"></text>
+          <text class="fn-num" x="185" y="370" text-anchor="end" font-size="34" data-sync="zc2"></text>
+          <text class="fn-stage" x="200" y="366">Aufnahme geplant <tspan fill="#a8854f">›</tspan></text>
+          <text class="fn-stockt" x="195" y="386" text-anchor="middle" data-sync="stock2"></text>
 
           <g class="fn-click stage-hit" onclick="openStage(0)">
-            <rect class="pulse0" x="80" y="298" width="230" height="54" rx="8"/>
+            <rect class="pulse0" x="82" y="218" width="226" height="54" rx="8"/>
             <title>Fälle: neu und kontaktiert anzeigen</title>
           </g>
           <g class="fn-click stage-hit" onclick="openStage(1)">
-            <rect class="pulse1" x="100" y="356" width="190" height="54" rx="8"/>
+            <rect class="pulse1" x="104" y="276" width="182" height="54" rx="8"/>
             <title>Fälle in Klärung anzeigen</title>
           </g>
           <g class="fn-click stage-hit" onclick="openStage(2)">
-            <rect class="pulse2" x="120" y="414" width="150" height="54" rx="8"/>
+            <rect class="pulse2" x="126" y="334" width="138" height="54" rx="8"/>
             <title>Geplante Aufnahmen anzeigen</title>
           </g>
 
-          <path class="fn-link" d="M195,472 C160,500 80,522 42,554"/>
-          <path class="fn-link" d="M195,472 C172,532 92,566 42,598"/>
-          <path class="fn-link" d="M195,472 C182,560 102,614 42,642"/>
+          <path class="fn-link" d="M195,392 C190,410 110,422 74,442"/>
+          <path class="fn-link" d="M195,392 L195,442"/>
+          <path class="fn-link" d="M195,392 C200,410 280,422 316,442"/>
 
-          <text class="fn-cap" x="195" y="512" text-anchor="middle">ERGEBNIS</text>
           <g class="fn-click" onclick="go('system','auswertung')">
-            <rect class="pill" x="20" y="524" width="350" height="36" rx="9" fill="transparent"/>
-            <text class="fn-lab" x="40" y="548">Aufnahmen</text>
-            <text class="fn-num" x="340" y="550" text-anchor="end" font-size="26" data-sync="r1"></text>
-            <line class="fn-hair" x1="40" y1="558" x2="358" y2="558"/>
-            <text class="fn-chev" x="350" y="550">›</text>
+            <rect class="fn-box" x="20" y="446" width="104" height="58" rx="12"/>
+            <text class="fn-num" x="72" y="474" text-anchor="middle" font-size="24" data-sync="r1"></text>
+            <text class="fn-box-sub" x="72" y="493" text-anchor="middle">Aufnahmen</text>
           </g>
           <g class="fn-click" onclick="go('system','auswertung')">
-            <rect class="pill" x="20" y="568" width="350" height="36" rx="9" fill="transparent"/>
-            <text class="fn-lab" x="40" y="592">Privatauslastung</text>
-            <text class="fn-num" x="340" y="594" text-anchor="end" font-size="26">78 %</text>
-            <line class="fn-hair" x1="40" y1="602" x2="358" y2="602"/>
-            <text class="fn-chev" x="350" y="594">›</text>
+            <rect class="fn-box" x="143" y="446" width="104" height="58" rx="12"/>
+            <text class="fn-num" x="195" y="474" text-anchor="middle" font-size="24">78 %</text>
+            <text class="fn-box-sub" x="195" y="493" text-anchor="middle">Privatauslastung</text>
           </g>
           <g class="fn-click" onclick="go('system','auswertung')">
-            <rect class="pill" x="20" y="612" width="350" height="36" rx="9" fill="transparent"/>
-            <text class="fn-lab" x="40" y="636">Verloren · gelernt</text>
-            <text class="fn-num" x="340" y="638" text-anchor="end" font-size="26" data-sync="r3"></text>
-            <line class="fn-hair" x1="40" y1="646" x2="358" y2="646"/>
-            <text class="fn-chev" x="350" y="638">›</text>
+            <rect class="fn-box" x="266" y="446" width="104" height="58" rx="12"/>
+            <text class="fn-num" x="318" y="474" text-anchor="middle" font-size="24" data-sync="r3"></text>
+            <text class="fn-box-sub" x="318" y="493" text-anchor="middle">Verloren · gelernt</text>
           </g>
 
-          <path d="M352,640 C388,520 388,200 354,76" fill="none" stroke="#a8854f" stroke-width="1.1" stroke-dasharray="2 6" opacity=".4"/>
-          <path d="M348,87 L354,74 L361,86" fill="none" stroke="#bfa379" stroke-width="1.3" stroke-linecap="round"/>
-          <text class="fn-note" x="195" y="694" text-anchor="middle">Verlustgründe und Rückmeldungen fließen zurück in die Quellen.</text>
+          <path d="M338,506 C386,440 384,170 354,80" fill="none" stroke="#a8854f" stroke-width="1.1" stroke-dasharray="2 6" opacity=".4"/>
+          <path d="M348,91 L354,78 L361,90" fill="none" stroke="#bfa379" stroke-width="1.3" stroke-linecap="round"/>
+          <text class="fn-note" x="195" y="534" text-anchor="middle">Verlustgründe und Rückmeldungen fließen zurück in die Quellen.</text>
 
-          <circle cx="28" cy="70" r="3.5" class="fn-dot"><animateMotion dur="7s" repeatCount="indefinite" path="M0,0 C-16,6 -22,20 -22,40 L-22,160 C-22,192 12,214 60,222"/></circle>
-          <circle cx="28" cy="190" r="3.5" class="fn-dot" opacity=".4"><animateMotion dur="8.5s" begin="2.5s" repeatCount="indefinite" path="M0,0 C-6,6 -10,14 -10,24 L-10,46 C-10,66 102,88 178,102"/></circle>
-          <circle cx="195" cy="472" r="3.5" class="fn-dot" opacity=".45"><animateMotion dur="7s" begin="1s" repeatCount="indefinite" path="M0,0 C-23,60 -103,94 -153,126"/></circle>
+          <circle cx="72" cy="90" r="3.5" class="fn-dot"><animateMotion dur="7s" repeatCount="indefinite" path="M0,0 C-32,10 -58,30 -58,60 C-58,95 -22,115 23,124"/></circle>
+          <circle cx="263" cy="152" r="3.5" class="fn-dot" opacity=".4"><animateMotion dur="8.5s" begin="2.5s" repeatCount="indefinite" path="M0,0 C0,23 -11,48 -21,62"/></circle>
+          <circle cx="195" cy="392" r="3.5" class="fn-dot" opacity=".45"><animateMotion dur="7s" begin="1s" repeatCount="indefinite" path="M0,0 C-5,18 -85,30 -121,50"/></circle>
         </svg>
       </div>
+    </div>
+
+    <div class="card ns-card">
+      <div class="kicker">Nordstern · Privatauslastung</div>
+      <svg class="gauge" viewBox="0 0 200 152" role="img" aria-label="Privatauslastung 78 Prozent, Ziel 90 Prozent">
+        <path class="track" d="M34.2,134 A76,76 0 1 1 165.8,134"/>
+        <path class="val" d="M34.2,134 A76,76 0 1 1 165.8,134" stroke-dasharray="248.3 318.3"/>
+        <line class="tick" x1="167.6" y1="103.1" x2="183.5" y2="104.8"/>
+        <text class="gziel" x="186" y="96" text-anchor="middle">90</text>
+        <text class="gnum num" x="92" y="116" text-anchor="middle">78</text>
+        <text class="gpct" x="126" y="114">%</text>
+      </svg>
+      <div class="ns-betten">31 von 40 Privatbetten belegt · Ziel 90&nbsp;%+</div>
+      <div class="ns-row">
+        <div class="ns-m">
+          <span class="ns-l">Vorlauf</span>
+          <span class="ns-v num"><b id="nsVorlauf">9</b> <span>Tage</span></span>
+          <span class="ns-t">Ziel 21 Tage</span>
+          <span id="plusTagH"></span>
+        </div>
+        <div class="ns-m">
+          <span class="ns-l">Ø Erstreaktion</span>
+          <span class="ns-v num" id="nsRz"></span>
+          <span class="ns-t">Ziel unter 24 Std.</span>
+        </div>
+        <div class="ns-m">
+          <span class="ns-l">Conversion</span>
+          <span class="ns-v num" id="nsConv"></span>
+          <span class="ns-t" id="nsConvSub"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chap">
+      <div class="kicker">Heute wichtig</div>
+      <div class="card list-card" id="wichtigList"></div>
     </div>
 
     <div class="chap">
