@@ -371,6 +371,7 @@
   /* ===== System: Idee ===== */
   .idea-h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:30px;font-weight:700;line-height:1.08;margin:0 0 10px}
   .hub-stack{display:flex;flex-direction:column;align-items:center;gap:2px;margin:18px 0 6px}
+  .hub-stack.hub-top{margin:2px 0 20px}
   .hub-box{width:100%;background:var(--paper);border:1px solid var(--hair);border-radius:15px;padding:15px 16px;text-align:center;box-shadow:var(--shadow-soft)}
   .hub-box.hub{background:linear-gradient(135deg,#fdf7ea,#ecd9b6);border-color:#c0ae9b}
   .hub-box .kicker{margin-bottom:3px;font-size:11px}
@@ -540,6 +541,13 @@
       <div class="kicker">Die Logik der Software</div>
       <h2 class="chap-h2">Eine Drehscheibe für Privatpatienten.</h2>
       <p class="chap-intro">Die Software verbindet Markt, Klinikalltag und Belegung. Sie macht sichtbar, wo Patienten entstehen, wer sie führt und was aus jedem Fall gelernt wird.</p>
+      <div class="hub-stack hub-top" aria-label="Systemlogik">
+        <div class="hub-box"><div class="kicker">Aussen</div><b>Quellen aktivieren</b><span>Zuweiser-Netzwerk · Altpatienten-Bestand · Premium-Kanäle</span></div>
+        <div class="hub-arrow" aria-hidden="true">↓</div>
+        <div class="hub-box hub"><div class="kicker">Die Software</div><b>Der eine Trichter</b><span>erfassen · führen · lernen</span><small>Aus jedem Signal wird Steuerung.</small></div>
+        <div class="hub-arrow" aria-hidden="true">↓</div>
+        <div class="hub-box"><div class="kicker">Innen</div><b>Klinik steuerbar machen</b><span>Prozesse · Belegung · SalutoCare-Routing</span></div>
+      </div>
       <div class="card strom strom-d">
         <svg id="strom" viewBox="0 0 1180 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der eine Trichter, Ergebnis">
           <defs>
@@ -751,13 +759,6 @@
           <circle cx="263" cy="152" r="3.5" class="fn-dot" opacity=".4"><animateMotion dur="8.5s" begin="2.5s" repeatCount="indefinite" path="M0,0 C0,23 -11,48 -21,62"/></circle>
           <circle cx="195" cy="392" r="3.5" class="fn-dot" opacity=".45"><animateMotion dur="7s" begin="1s" repeatCount="indefinite" path="M0,0 C-5,18 -85,30 -121,50"/></circle>
         </svg>
-      </div>
-      <div class="hub-stack" aria-label="Systemlogik">
-        <div class="hub-box"><div class="kicker">Aussen</div><b>Quellen aktivieren</b><span>Zuweiser-Netzwerk · Altpatienten-Bestand · Premium-Kanäle</span></div>
-        <div class="hub-arrow" aria-hidden="true">↓</div>
-        <div class="hub-box hub"><div class="kicker">Die Software</div><b>Der eine Trichter</b><span>erfassen · führen · lernen</span><small>Aus jedem Signal wird Steuerung.</small></div>
-        <div class="hub-arrow" aria-hidden="true">↓</div>
-        <div class="hub-box"><div class="kicker">Innen</div><b>Klinik steuerbar machen</b><span>Prozesse · Belegung · SalutoCare-Routing</span></div>
       </div>
     </div>
 
