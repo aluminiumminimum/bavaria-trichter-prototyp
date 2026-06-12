@@ -48,6 +48,7 @@
 
   .kicker{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#8f7448;font-weight:700;margin:0 0 10px}
   .chap{margin-top:34px}
+  .chap-h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:26px;font-weight:700;line-height:1.15;margin:0 0 8px;color:var(--ink)}
   .chap-intro{font-size:14.5px;color:var(--ink-soft);margin:0 0 16px;max-width:46ch}
   .dcap::first-letter{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;float:left;
     font-size:46px;line-height:.82;padding:4px 8px 0 0;color:var(--brass-deep)}
@@ -94,8 +95,8 @@
 
   /* ===== Heute: Nordstern-Bogen ===== */
   .idea-mini{padding:18px 20px 8px}
-  .im-claim{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:19.5px;line-height:1.3;color:var(--ink);margin:0 0 12px}
   .im-row{display:flex;gap:15px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--hair2)}
+  .im-row:first-child{border-top:0;padding-top:4px}
   .im-row b{font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;font-weight:700;color:#a5854e;line-height:1.05;min-width:36px}
   .im-row span{display:block;font-weight:700;font-size:15.5px;color:var(--ink)}
   .im-row small{display:block;font-size:14px;color:var(--muted);line-height:1.45;margin-top:2px}
@@ -536,8 +537,9 @@
     </header>
 
     <div class="chap">
-      <div class="kicker">Der eine Trichter</div>
-      <p class="chap-intro dcap">Alle Quellen laufen in einen gemeinsamen Trichter — von der ersten Anfrage bis zur planbaren Aufnahme.</p>
+      <div class="kicker">Die Logik der Software</div>
+      <h2 class="chap-h2">Eine Drehscheibe für Privatpatienten.</h2>
+      <p class="chap-intro">Die Software verbindet Markt, Klinikalltag und Belegung. Sie macht sichtbar, wo Patienten entstehen, wer sie führt und was aus jedem Fall gelernt wird.</p>
       <div class="card strom strom-d">
         <svg id="strom" viewBox="0 0 1180 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der eine Trichter, Ergebnis">
           <defs>
@@ -750,12 +752,18 @@
           <circle cx="195" cy="392" r="3.5" class="fn-dot" opacity=".45"><animateMotion dur="7s" begin="1s" repeatCount="indefinite" path="M0,0 C-5,18 -85,30 -121,50"/></circle>
         </svg>
       </div>
+      <div class="hub-stack" aria-label="Systemlogik">
+        <div class="hub-box"><div class="kicker">Aussen</div><b>Quellen aktivieren</b><span>Zuweiser-Netzwerk · Altpatienten-Bestand · Premium-Kanäle</span></div>
+        <div class="hub-arrow" aria-hidden="true">↓</div>
+        <div class="hub-box hub"><div class="kicker">Die Software</div><b>Der eine Trichter</b><span>erfassen · führen · lernen</span><small>Aus jedem Signal wird Steuerung.</small></div>
+        <div class="hub-arrow" aria-hidden="true">↓</div>
+        <div class="hub-box"><div class="kicker">Innen</div><b>Klinik steuerbar machen</b><span>Prozesse · Belegung · SalutoCare-Routing</span></div>
+      </div>
     </div>
 
     <div class="chap">
       <div class="kicker">Die Idee</div>
       <div class="card idea-mini">
-        <p class="im-claim">Eine Drehscheibe für Privatpatienten — aus jedem Signal wird Steuerung.</p>
         <div class="im-row"><b>01</b><div><span>Mehr Fälle</span><small>Alle Quellen laufen in einen gemeinsamen Eingang.</small></div></div>
         <div class="im-row"><b>02</b><div><span>Verlässlichkeit</span><small>Jeder Fall hat Verantwortliche, nächsten Schritt und Frist.</small></div></div>
         <div class="im-row"><b>03</b><div><span>Planbarkeit</span><small>Der Belegungsvorlauf wird sichtbar — und steigt.</small></div></div>
