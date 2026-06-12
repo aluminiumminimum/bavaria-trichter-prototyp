@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e9e8e3">
+<title>Variante 1 · Goldfaden — Klinik Bavaria</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:#e9e8e3; --paper:#fbfaf8; --ink:#1f1c1c; --ink-soft:#3c3737;
+    --taupe:#9b8573; --gold:#bca37d; --gold-deep:#8f7448; --terra:#a8543f;
+    --hair:#ddd8cf; --hair-gold:#d9cbb6;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;overflow-x:hidden}
+  body{background:var(--ground);color:var(--ink);min-height:100dvh;
+    font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  /* Papierkorn */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55;
+    background-image:
+      repeating-linear-gradient(0deg,rgba(31,28,28,.013) 0 1px,transparent 1px 3px),
+      repeating-linear-gradient(90deg,rgba(31,28,28,.010) 0 1px,transparent 1px 4px)}
+  .col{position:relative;z-index:1;max-width:420px;margin:0 auto;
+    padding:calc(20px + env(safe-area-inset-top)) 12px calc(34px + env(safe-area-inset-bottom))}
+
+  /* ===== Slim header ===== */
+  .vhead{display:flex;align-items:baseline;justify-content:center;gap:10px;margin:2px 2px 14px}
+  .vhead .ov{font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-deep)}
+  .vhead .dot{color:var(--taupe);font-size:13px}
+  .vhead .nm{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:600;
+    font-size:23px;line-height:1;color:var(--ink)}
+  .vrule{height:1px;margin:0 22px 16px;border:0;
+    background:linear-gradient(90deg,transparent,var(--hair-gold) 25%,var(--hair-gold) 75%,transparent)}
+
+  /* ===== Card ===== */
+  .card{background:var(--paper);border:1px solid var(--hair);border-radius:20px;
+    box-shadow:0 1px 2px rgba(40,35,30,.04),0 8px 24px rgba(40,35,30,.06);
+    padding:14px 8px 10px;position:relative;
+    animation:cardIn .55s ease both}
+  .card::before{content:"";position:absolute;top:0;left:24px;right:24px;height:2px;border-radius:0 0 3px 3px;
+    background:linear-gradient(90deg,transparent,#cdb083 30%,#cdb083 70%,transparent);opacity:.5;pointer-events:none}
+  @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .card svg{display:block;width:100%;height:auto}
+
+  /* ===== SVG typography ===== */
+  svg text{font-family:"Inter",-apple-system,sans-serif}
+  .sn{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;fill:var(--ink);
+    font-feature-settings:"lnum" 1,"tnum" 1}
+  .halo{paint-order:stroke;stroke:#fbfaf8;stroke-width:3.4px;stroke-linejoin:round}
+  .cap{font-size:13px;font-weight:700;letter-spacing:.3em;fill:var(--gold-deep)}
+  .flo{stroke:var(--hair-gold);stroke-width:.8}
+  .slab{font-size:13.5px;font-weight:600;letter-spacing:.14em;fill:var(--ink-soft)}
+  .leader{stroke:#c9bda9;stroke-width:1.1;stroke-linecap:round;stroke-dasharray:.1 6;opacity:.55}
+  .uline{stroke:var(--hair-gold);stroke-width:.7;opacity:.6}
+  .stlab{font-size:13px;font-weight:600;letter-spacing:.1em;fill:var(--ink-soft)}
+  .badge{font-size:13px;font-weight:600;fill:var(--terra)}
+  .chev{font-size:17px;font-weight:600;fill:var(--gold-deep);opacity:.75}
+  .rlab{font-size:13px;font-weight:600;letter-spacing:.1em;fill:#766f64}
+  .note{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:15px;fill:#847c71}
+
+  /* ===== Goldfaden ===== */
+  .thread-base{fill:none;stroke:var(--gold);stroke-width:1;stroke-linecap:round;opacity:.42}
+  .thread-glint{fill:none;stroke:#caa96f;stroke-width:1.5;stroke-linecap:round;opacity:.9;
+    stroke-dasharray:120 880;
+    animation:threadFlow 15s linear infinite}
+  @keyframes threadFlow{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
+
+  /* ===== Funnel & Siegel ===== */
+  .contour{fill:none;stroke:var(--gold-deep);stroke-width:1.1}
+  .contour-in{fill:none;stroke:var(--gold);stroke-width:.55;opacity:.85}
+  .sep{stroke:var(--gold);stroke-width:.6;opacity:.7}
+  .seal-rope{fill:none;stroke:var(--gold);stroke-width:1.5;stroke-dasharray:1 3.6;stroke-linecap:round;
+    transform-box:fill-box;transform-origin:center;animation:sealSpin 80s linear infinite}
+  @keyframes sealSpin{to{transform:rotate(360deg)}}
+  .loop{fill:none;stroke:var(--taupe);stroke-width:1.2;stroke-linecap:round;stroke-dasharray:.1 6.5;opacity:.6}
+
+  /* ===== Tappable stages ===== */
+  .stage-hit{cursor:pointer;touch-action:manipulation}
+  .stage-hit rect{fill:transparent;stroke:transparent;stroke-width:1;transition:fill .2s,stroke .2s}
+  .stage-hit:hover rect,.stage-hit:active rect{fill:rgba(188,163,125,.08);stroke:rgba(188,163,125,.3)}
+
+  @media (prefers-reduced-motion: reduce){
+    .card{animation:none}
+    .thread-glint{animation:none;display:none}
+    .thread-base{opacity:.6}
+    .seal-rope{animation:none}
+    .droplet{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="col">
+  <header class="vhead">
+    <span class="ov">Variante 1</span><span class="dot">·</span><span class="nm">Goldfaden</span>
+  </header>
+  <hr class="vrule">
+
+  <div class="card">
+    <svg viewBox="0 0 390 712" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img"
+         aria-label="Goldfaden-Trichter: fünf Quellen, drei Stufen, drei Ergebnisse, Rückkopplung in die Quellen">
+      <defs>
+        <pattern id="engrave" width="6" height="5" patternUnits="userSpaceOnUse">
+          <path d="M0,2.5 H6" stroke="#bca37d" stroke-width=".5" opacity=".28"/>
+        </pattern>
+        <filter id="dropGlow" x="-250%" y="-250%" width="600%" height="600%">
+          <feGaussianBlur stdDeviation="2.4" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- ===== Trichter: gravierte Kontur + Schraffur ===== -->
+      <path d="M48,216 L342,216 L252,444 L138,444 Z" fill="url(#engrave)"/>
+      <path class="contour" d="M48,216 L342,216 L252,444 L138,444 Z"/>
+      <path class="contour-in" d="M53,220 L337,220 L250,440.5 L140,440.5 Z"/>
+      <line class="sep" x1="86" y1="291" x2="304" y2="291"/>
+      <line class="sep" x1="86" y1="293.6" x2="304" y2="293.6"/>
+      <line class="sep" x1="116" y1="367" x2="274" y2="367"/>
+      <line class="sep" x1="116" y1="369.6" x2="274" y2="369.6"/>
+      <g fill="#bca37d" opacity=".9">
+        <circle cx="48" cy="216" r="1.6"/><circle cx="342" cy="216" r="1.6"/>
+        <circle cx="252" cy="444" r="1.6"/><circle cx="138" cy="444" r="1.6"/>
+      </g>
+
+      <!-- ===== Der Goldfaden ===== -->
+      <path id="goldThread" class="thread-base" pathLength="1000" d="M22,62
+        C20,50 30,44 48,44 C120,44 220,38 300,48 C322,51 336,58 338,72
+        C341,88 326,100 330,116 C334,132 346,140 342,156 C338,172 326,180 330,194
+        C333,205 320,212 304,218 C262,234 150,236 116,266 C90,290 160,302 230,312
+        C268,318 290,322 276,342 C262,362 180,366 152,394 C130,416 160,440 193,452
+        C226,464 150,470 108,496 C78,514 56,538 52,562 C49,586 58,602 80,608
+        C116,618 156,614 195,613 C238,612 284,602 314,576 C332,560 346,548 343,537
+        C340,528 330,530 331,538 C332,545 341,545 343,538"/>
+      <path class="thread-glint" pathLength="1000" d="M22,62
+        C20,50 30,44 48,44 C120,44 220,38 300,48 C322,51 336,58 338,72
+        C341,88 326,100 330,116 C334,132 346,140 342,156 C338,172 326,180 330,194
+        C333,205 320,212 304,218 C262,234 150,236 116,266 C90,290 160,302 230,312
+        C268,318 290,322 276,342 C262,362 180,366 152,394 C130,416 160,440 193,452
+        C226,464 150,470 108,496 C78,514 56,538 52,562 C49,586 58,602 80,608
+        C116,618 156,614 195,613 C238,612 284,602 314,576 C332,560 346,548 343,537
+        C340,528 330,530 331,538 C332,545 341,545 343,538"/>
+
+      <!-- ===== Quellen: graviertes Verzeichnis ===== -->
+      <line class="flo" x1="36" y1="26" x2="140" y2="26"/>
+      <line class="flo" x1="250" y1="26" x2="354" y2="26"/>
+      <circle cx="140" cy="26" r="1.4" fill="#bca37d"/>
+      <circle cx="250" cy="26" r="1.4" fill="#bca37d"/>
+      <text class="cap" x="195" y="30" text-anchor="middle">QUELLEN</text>
+
+      <text class="slab" x="40" y="64">KRANKENHÄUSER</text>
+      <line class="leader" x1="199" y1="60" x2="320" y2="60"/>
+      <text class="sn halo" x="350" y="64" text-anchor="end" font-size="24">6</text>
+      <line class="uline" x1="40" y1="73" x2="350" y2="73"/>
+
+      <text class="slab" x="40" y="92">PRIVATPRAXEN</text>
+      <line class="leader" x1="188" y1="88" x2="320" y2="88"/>
+      <text class="sn halo" x="350" y="92" text-anchor="end" font-size="24">2</text>
+      <line class="uline" x1="40" y1="101" x2="350" y2="101"/>
+
+      <text class="slab" x="40" y="120">HAUSÄRZTE</text>
+      <line class="leader" x1="154" y1="116" x2="320" y2="116"/>
+      <text class="sn halo" x="350" y="120" text-anchor="end" font-size="24">1</text>
+      <line class="uline" x1="40" y1="129" x2="350" y2="129"/>
+
+      <text class="slab" x="40" y="148">ALTPATIENTEN</text>
+      <line class="leader" x1="188" y1="144" x2="320" y2="144"/>
+      <text class="sn halo" x="350" y="148" text-anchor="end" font-size="24">4</text>
+      <line class="uline" x1="40" y1="157" x2="350" y2="157"/>
+
+      <text class="slab" x="40" y="176">PREMIUM-NETZWERKE</text>
+      <line class="leader" x1="244" y1="172" x2="320" y2="172"/>
+      <text class="sn halo" x="350" y="176" text-anchor="end" font-size="24">1</text>
+      <line class="uline" x1="40" y1="185" x2="350" y2="185"/>
+
+      <!-- ===== Stufen ===== -->
+      <text class="sn halo" x="195" y="254" text-anchor="middle" font-size="42">4</text>
+      <text class="stlab halo" x="195" y="273" text-anchor="middle">NEU &amp; KONTAKTIERT</text>
+      <circle cx="166" cy="283.3" r="2.4" fill="#a8543f"/>
+      <text class="badge halo" x="175" y="287.5">1 stockt</text>
+      <text class="chev" x="334" y="259">›</text>
+
+      <text class="sn halo" x="195" y="330" text-anchor="middle" font-size="42">1</text>
+      <text class="stlab halo" x="195" y="350" text-anchor="middle">AUFNAHME GEPLANT</text>
+      <text class="chev" x="304" y="335">›</text>
+
+      <text class="sn halo" x="195" y="404" text-anchor="middle" font-size="42">4</text>
+      <text class="stlab halo" x="195" y="424" text-anchor="middle">IN KLÄRUNG</text>
+      <circle cx="166" cy="435" r="2.4" fill="#a8543f"/>
+      <text class="badge halo" x="175" y="439">1 stockt</text>
+      <text class="chev" x="274" y="411">›</text>
+
+      <!-- ===== Ergebnis ===== -->
+      <line class="flo" x1="36" y1="482" x2="134" y2="482"/>
+      <line class="flo" x1="256" y1="482" x2="354" y2="482"/>
+      <circle cx="134" cy="482" r="1.4" fill="#bca37d"/>
+      <circle cx="256" cy="482" r="1.4" fill="#bca37d"/>
+      <text class="cap" x="195" y="486" text-anchor="middle">ERGEBNIS</text>
+
+      <text class="sn halo" x="72" y="566" text-anchor="middle" font-size="30">2</text>
+      <line class="uline" x1="36" y1="574" x2="108" y2="574"/>
+      <text class="rlab halo" x="72" y="592" text-anchor="middle">AUFNAHMEN</text>
+
+      <circle class="seal-rope" cx="195" cy="562" r="45"/>
+      <circle cx="195" cy="562" r="41" fill="none" stroke="#8f7448" stroke-width=".9"/>
+      <circle cx="195" cy="562" r="37" fill="none" stroke="#bca37d" stroke-width=".5" opacity=".85"/>
+      <path d="M195,531.5 l3.2,3.5 -3.2,3.5 -3.2,-3.5 Z" fill="#bca37d" opacity=".9"/>
+      <circle cx="195" cy="589" r="1.5" fill="#bca37d" opacity=".9"/>
+      <text class="sn" x="195" y="576" text-anchor="middle" font-size="42">78<tspan font-size="22"> %</tspan></text>
+      <text class="rlab" x="195" y="632" text-anchor="middle">PRIVATAUSLASTUNG</text>
+
+      <text class="sn halo" x="318" y="566" text-anchor="middle" font-size="30">1</text>
+      <line class="uline" x1="282" y1="574" x2="354" y2="574"/>
+      <text class="rlab halo" x="318" y="592" text-anchor="middle">VERLOREN ·</text>
+      <text class="rlab halo" x="318" y="607" text-anchor="middle">GELERNT</text>
+
+      <!-- ===== Rückkopplung ===== -->
+      <path class="loop" d="M330,614 C376,586 386,270 358,178"/>
+      <path d="M351.5,188 L358,176.5 L365.5,187" fill="none" stroke="#a8998a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text class="note" x="195" y="668" text-anchor="middle">Verlustgründe und Rückmeldungen</text>
+      <text class="note" x="195" y="686" text-anchor="middle">fließen zurück in die Quellen.</text>
+
+      <!-- ===== Lichttropfen auf dem Faden ===== -->
+      <circle class="droplet" r="2.4" fill="#d8bd8c" filter="url(#dropGlow)">
+        <animateMotion dur="16s" begin="-1s" repeatCount="indefinite"><mpath href="#goldThread" xlink:href="#goldThread"/></animateMotion>
+      </circle>
+      <circle class="droplet" r="2" fill="#cdb083" opacity=".8" filter="url(#dropGlow)">
+        <animateMotion dur="16s" begin="-6.4s" repeatCount="indefinite"><mpath href="#goldThread" xlink:href="#goldThread"/></animateMotion>
+      </circle>
+      <circle class="droplet" r="2.3" fill="#d8bd8c" opacity=".85" filter="url(#dropGlow)">
+        <animateMotion dur="16s" begin="-11.7s" repeatCount="indefinite"><mpath href="#goldThread" xlink:href="#goldThread"/></animateMotion>
+      </circle>
+
+      <!-- ===== Tippflächen der Stufen ===== -->
+      <g class="stage-hit"><rect x="70" y="218" width="272" height="72" rx="9"/>
+        <title>Fälle: neu und kontaktiert anzeigen</title></g>
+      <g class="stage-hit"><rect x="100" y="294" width="212" height="72" rx="9"/>
+        <title>Geplante Aufnahmen anzeigen</title></g>
+      <g class="stage-hit"><rect x="124" y="370" width="158" height="72" rx="9"/>
+        <title>Fälle in Klärung anzeigen</title></g>
+    </svg>
+  </div>
+</div>
+</body>
+</html>
