@@ -462,21 +462,36 @@
     .mf-cap:first-child{margin-top:0}
     .mfunnel button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation;color:inherit;padding:0}
     .mf-sources{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-    .mf-src{display:flex;align-items:center;gap:8px;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface2)}
+    .mfunnel .mf-src{display:flex;align-items:center;gap:8px;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface2)}
     .mf-src span{font-size:13.5px;color:var(--muted)}
     .mf-src b{font-family:"Cormorant Garamond",Georgia,serif;font-size:20px;font-weight:700;color:var(--ink);font-variant-numeric:lining-nums tabular-nums}
     .mf-stages{display:flex;flex-direction:column;align-items:center;gap:7px}
-    .mf-stage{width:var(--w);min-height:64px;display:flex;align-items:center;justify-content:center;gap:12px;
+    .mfunnel .mf-stage{width:var(--w);min-height:64px;display:flex;align-items:center;justify-content:center;gap:12px;
       background:linear-gradient(135deg,rgba(176,141,87,.10),rgba(176,141,87,.22));border:1px solid #d9c6a4;border-radius:14px;padding:10px 16px}
     .mf-stage b{font-family:"Cormorant Garamond",Georgia,serif;font-size:36px;font-weight:700;color:var(--ink);line-height:1;font-variant-numeric:lining-nums tabular-nums}
     .mf-stage span{font-size:13.5px;font-weight:700;color:#5f574d}
     .mf-stage::after{content:"›";color:var(--gold-deep);font-size:20px;margin-left:2px}
     .mf-results{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-    .mf-res{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:64px;
+    .mfunnel .mf-res{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:64px;
       border:1px solid var(--line2);border-radius:12px;background:var(--surface2);padding:10px 6px;text-align:center}
     .mf-res b{font-family:"Cormorant Garamond",Georgia,serif;font-size:26px;font-weight:700;color:var(--ink);line-height:1;font-variant-numeric:lining-nums tabular-nums}
     .mf-res span{font-size:10.5px;letter-spacing:.04em;color:var(--muted);line-height:1.2}
     .mf-note{font-size:12.5px;color:#a89b85;text-align:center;margin:14px 4px 2px;line-height:1.4}
+  }
+
+  /* ===== Mobile Idee-Drehscheibe (nur ≤900px) ===== */
+  .midea{display:none}
+  @media(max-width:900px){
+    .idea-map{display:none}
+    .midea{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:14px}
+    .mi-box{width:100%;background:#fffdf9;border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-align:center}
+    .mi-box.hub{background:linear-gradient(135deg,#fffaf0,#ead6b5);border-color:#c9b48b}
+    .mi-cap{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#7d6138;font-weight:800;margin-bottom:4px}
+    .mi-box b{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-size:21px;font-weight:700;color:var(--ink);line-height:1.15}
+    .mi-box span{display:block;font-size:13px;color:var(--muted);margin-top:5px;line-height:1.4}
+    .mi-box small{display:block;font-size:12px;color:#7d6138;font-weight:600;margin-top:7px}
+    .mi-arrow{color:var(--gold-deep);font-size:18px;line-height:1.3}
+    .mi-loop{font-size:12.5px;color:#a89b85;margin:10px 0 0;text-align:center}
   }
 
   /* ===== Mobiler Kopf & Navigation (nur ≤900px sichtbar) ===== */
@@ -490,7 +505,8 @@
       text-transform:uppercase;color:var(--muted2);font-weight:700;margin-top:2px}
     .mb-chip{flex-shrink:0;background:var(--gold-soft);border:1px solid var(--gold-line);color:var(--gold-deep);
       border-radius:6px;padding:3px 9px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
-    .mnav{position:sticky;top:0;z-index:50;display:flex;flex-direction:row;gap:7px;overflow-x:auto;
+    .mhead-mobile{flex-shrink:0}
+    .mnav{position:sticky;top:0;z-index:50;display:flex;flex-direction:row;flex-shrink:0;gap:7px;overflow-x:auto;
       padding:9px 18px calc(9px + 1px);background:rgba(251,250,247,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
       border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch;scrollbar-width:none}
     .mnav::-webkit-scrollbar{display:none}
@@ -525,6 +541,9 @@
     input,select,textarea,.search input{font-size:16px}
     .cockpit-more{text-align:left}
     .cockpit-title{font-size:31px}
+    .ns-head{flex-direction:column;gap:2px;align-items:flex-start}
+    .ns-head span:last-child{font-size:12px}
+    .ns-band{padding:16px 20px 12px}
     .overlay{padding:14px 10px calc(14px + env(safe-area-inset-bottom))}
     .modal{border-radius:14px}
     .mfoot{flex-wrap:wrap}
@@ -832,6 +851,14 @@
           <text class="imap-line" x="998" y="225" text-anchor="middle">Belegung</text>
           <text class="imap-line" x="998" y="255" text-anchor="middle">SalutoCare-Routing</text>
         </svg>
+        <div class="midea">
+          <div class="mi-box"><div class="mi-cap">Aussen</div><b>Quellen aktivieren</b><span>Zuweiser-Netzwerk · Altpatienten-Bestand · Premium-Kanäle</span></div>
+          <div class="mi-arrow">↓</div>
+          <div class="mi-box hub"><div class="mi-cap">Die Software</div><b>Der eine Trichter</b><span>erfassen · führen · lernen</span><small>Aus jedem Signal wird Steuerung.</small></div>
+          <div class="mi-arrow">↓</div>
+          <div class="mi-box"><div class="mi-cap">Innen</div><b>Klinik steuerbar machen</b><span>Prozesse · Belegung · SalutoCare-Routing</span></div>
+          <p class="mi-loop">↺ Gelerntes fließt zurück in die Quellen.</p>
+        </div>
       </div>
       <div class="idea-grid">
         <div class="idea-block">
