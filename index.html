@@ -121,7 +121,7 @@
   .stock-badge text{fill:#b45309;font-size:13.5px;font-weight:700}
   .flow-link{stroke:#d3bd97;stroke-width:1.35;fill:none;opacity:.9;stroke-linecap:round}
   .flow-dot{fill:#b08d57;opacity:.48}
-  .ns-band{margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 30px 12px;box-shadow:var(--shadow)}
+  .ns-band{margin:0 0 14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 30px 12px;box-shadow:var(--shadow)}
   .ns-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:10px}
   .ns-head span:last-child{font-size:13.5px;color:var(--muted2)}
   .ns-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:0;border-top:1px solid var(--line2)}
@@ -556,6 +556,32 @@
         </div>
         <p class="cockpit-sub">Der Überblick zeigt die aktive Maschine. Die Idee dahinter erklärt der nächste Bereich.</p>
       </div>
+      <div class="ns-band">
+        <div class="ns-head"><span class="kicker">NORDSTERN · PLANBARE PRIVATAUSLASTUNG</span><span>Demo-Daten · Stand heute</span></div>
+        <div class="ns-grid">
+          <div class="ns-metric feature">
+            <div class="ns-label">Privatauslastung</div>
+            <div class="ns-primary"><b>78</b><span>%</span></div>
+            <div class="ns-sub">31 von 40 Privatbetten belegt · Ziel 90%+</div>
+            <div class="ns-meter"><span></span></div>
+          </div>
+          <div class="ns-metric">
+            <div class="ns-label">Belegungsvorlauf</div>
+            <div class="ns-primary"><b id="nsVorlauf">9</b><span>Tage</span><span id="plusTagH"></span></div>
+            <div class="ns-sub">Ziel: 21 Tage im Voraus</div>
+          </div>
+          <div class="ns-metric">
+            <div class="ns-label">Ø Erstreaktion</div>
+            <div class="ns-primary" id="nsRz"></div>
+            <div class="ns-sub">Ziel: unter 24 Stunden</div>
+          </div>
+          <div class="ns-metric">
+            <div class="ns-label">Conversion Rate</div>
+            <div class="ns-primary" id="nsConv"></div>
+            <div class="ns-sub" id="nsConvSub"></div>
+          </div>
+        </div>
+      </div>
       <div class="funnel-stage">
         <svg id="strom" viewBox="0 0 1180 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der eine Trichter, Ergebnis">
           <defs>
@@ -670,32 +696,6 @@
           <circle cx="260" cy="314" r="3.5" class="fn-dot" opacity=".45"><animateMotion dur="9s" begin="5s" repeatCount="indefinite" path="M0,0 C76,0 130,-40 208,-26"/></circle>
           <circle cx="812" cy="200" r="3.5" fill="#9a7745" opacity=".5"><animateMotion dur="6s" begin="1s" repeatCount="indefinite" path="M0,0 C48,0 72,0 124,0"/></circle>
         </svg>
-      </div>
-      <div class="ns-band">
-        <div class="ns-head"><span class="kicker">NORDSTERN · PLANBARE PRIVATAUSLASTUNG</span><span>Demo-Daten · Stand heute</span></div>
-        <div class="ns-grid">
-          <div class="ns-metric feature">
-            <div class="ns-label">Privatbetten belegt</div>
-            <div class="ns-primary"><b>31 / 40</b><span>Betten</span></div>
-            <div class="ns-sub">78% Privatauslastung · Ziel 90%+</div>
-            <div class="ns-meter"><span></span></div>
-          </div>
-          <div class="ns-metric">
-            <div class="ns-label">Belegungsvorlauf</div>
-            <div class="ns-primary"><b id="nsVorlauf">9</b><span>Tage</span><span id="plusTagH"></span></div>
-            <div class="ns-sub">Ziel: 21 Tage im Voraus</div>
-          </div>
-          <div class="ns-metric">
-            <div class="ns-label">Ø Erstreaktion</div>
-            <div class="ns-primary" id="nsRz"></div>
-            <div class="ns-sub">Ziel: unter 24 Stunden</div>
-          </div>
-          <div class="ns-metric">
-            <div class="ns-label">Anfrage &rarr; Aufnahme</div>
-            <div class="ns-primary" id="nsConv"></div>
-            <div class="ns-sub" id="nsConvSub"></div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -1320,7 +1320,7 @@ function renderCockpit(){
   set("autoConsent",kontaktf);
   html("nsRz","<b>"+rzAvg+"</b><span>Std.</span>");
   html("nsConv","<b>"+conv+"</b><span>%</span>");
-  set("nsConvSub",auf+" aufgenommen · "+verl+" verloren");
+  set("nsConvSub","Anfrage → Aufnahme · "+auf+" aufgenommen · "+verl+" verloren");
   const hospitalRx=/(Klinik|Klinikum|Krankenhaus|Campus|Leopoldina|RHÖN|RHÖN|UKW|Fulda|Thoraxzentrum|Recare)/i;
   set("q1",faelle.filter(x=>hospitalRx.test(x.quelle)||x.kanal==="Recare").length);
   const praxisPotenzial=zuweiser.filter(z=>/Privatpraxis|Fachpraxis|Praxis/i.test(z.typ)).length;
