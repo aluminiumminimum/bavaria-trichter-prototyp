@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e9e8e3">
+<title>Variante 3 · Architektur</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+  :root{
+    --ground:#e9e8e3; --paper:#fbfaf8; --ink:#1f1c1c; --ink-soft:#3c3737;
+    --muted:#766f64; --faint:#948c80; --taupe:#9b8573;
+    --gold:#bca37d; --gold-deep:#8f7448; --terra:#a8543f;
+    --hair:#ddd8cf;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  html{overflow-x:hidden}
+  body{
+    background:var(--ground); color:var(--ink); min-height:100dvh; overflow-x:hidden;
+    font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif; font-size:15px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* Papierkorn — bewusst kaum sichtbar */
+  body::before{content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+    background-image:
+      repeating-linear-gradient(0deg,rgba(31,28,28,.013) 0 1px,transparent 1px 3px),
+      repeating-linear-gradient(90deg,rgba(31,28,28,.010) 0 1px,transparent 1px 4px)}
+  button{font:inherit; color:inherit; background:none; border:0; padding:0; cursor:pointer; touch-action:manipulation}
+  .num{font-family:"Cormorant Garamond",Georgia,serif; font-variant-numeric:lining-nums tabular-nums;
+    font-feature-settings:"lnum" 1,"tnum" 1}
+
+  .wrap{position:relative; z-index:1; max-width:420px; margin:0 auto;
+    padding:calc(22px + env(safe-area-inset-top)) 18px calc(34px + env(safe-area-inset-bottom))}
+
+  /* ── Slim header ─────────────────────────────────────── */
+  header{display:flex; align-items:center; gap:14px; margin:2px 2px 34px}
+  header .rule{flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--hair));}
+  header .rule:last-child{background:linear-gradient(90deg,var(--hair),transparent)}
+  header h1{margin:0; font-size:11px; font-weight:700; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--gold-deep); white-space:nowrap}
+
+  /* ── Scene ───────────────────────────────────────────── */
+  .scene{position:relative}
+  #links,#overlay{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible}
+  #links{z-index:0}
+  #overlay{z-index:6} /* particle drifts over the monument */
+
+  .cap{font-size:11px; font-weight:700; letter-spacing:.27em; text-transform:uppercase;
+    color:var(--gold-deep); text-align:center; margin:0 0 14px}
+
+  /* Entrance choreography */
+  @keyframes rise{from{opacity:0; transform:translateY(var(--ty,14px))} to{opacity:1; transform:none}}
+  .js .anim-in{opacity:0}
+  .js .play .anim-in{animation:rise .42s cubic-bezier(.22,.7,.3,1) both; animation-delay:var(--d,0s)}
+
+  /* ── Source pills ────────────────────────────────────── */
+  .src-row1{position:relative; z-index:2; display:grid; grid-template-columns:repeat(3,1fr); gap:9px}
+  .src-row2{position:relative; z-index:2; display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:9px 7% 0}
+  .pill{--ty:8px; display:flex; align-items:center; justify-content:space-between; gap:7px;
+    min-height:42px; padding:8px 14px 9px; border-radius:999px;
+    background:var(--paper); border:1px solid var(--hair);
+    box-shadow:0 1px 2px rgba(43,36,28,.06), 0 7px 18px rgba(43,36,28,.06)}
+  .pill .lab{font-size:11px; font-weight:600; letter-spacing:.01em; color:var(--muted); line-height:1.15}
+  .pill .num{font-size:19px; font-weight:700; color:var(--ink); line-height:1}
+
+  /* ── Monument slabs ──────────────────────────────────── */
+  .slabs{position:relative; z-index:2; margin-top:54px}
+  .slab-wrap{position:relative; margin-inline:auto}
+  .slab-wrap.s1{width:100%; z-index:5}
+  .slab-wrap.s2{width:88%; z-index:4; margin-top:-9px}
+  .slab-wrap.s3{width:76%; z-index:3; margin-top:-9px}
+
+  .slab{position:relative; display:flex; align-items:center; justify-content:space-between;
+    width:100%; text-align:left; -webkit-tap-highlight-color:transparent}
+  .s1 .slab{height:78px; padding:2px 10% 8px}
+  .s2 .slab{height:74px; padding:6px 11% 6px}
+  .s3 .slab{height:70px; padding:7px 12% 5px}
+
+  .slab-bg{position:absolute; inset:0; z-index:-1;
+    background:
+      linear-gradient(115deg, rgba(255,255,255,.4), rgba(255,255,255,0) 45%),
+      linear-gradient(180deg,#f4ecdc 0%, #f9f6f0 62%, #fbfaf8 100%);
+    filter:drop-shadow(0 1px 1.5px rgba(43,36,28,.13)) drop-shadow(0 13px 22px rgba(43,36,28,.10));
+    transition:transform .22s ease}
+  .s1 .slab-bg{clip-path:polygon(0 0,100% 0,93% 100%,7% 100%)}
+  .s2 .slab-bg{clip-path:polygon(0 0,100% 0,92.6% 100%,7.4% 100%)}
+  .s3 .slab-bg{clip-path:polygon(0 0,100% 0,92.5% 100%,7.5% 100%)}
+  /* crisp gold edge catching light */
+  .slab-bg::before{content:""; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg,rgba(188,163,125,0),#d3bd92 16%,#ecdcb6 50%,#d3bd92 84%,rgba(188,163,125,0))}
+  .slab-bg::after{content:""; position:absolute; top:1px; left:4%; right:4%; height:11px;
+    background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0))}
+
+  .slab:hover .slab-bg, .slab:focus-visible .slab-bg{transform:translateY(-1.5px)}
+  .slab:active .slab-bg{transform:translateY(0)}
+  .slab:focus-visible{outline:none}
+  .slab:focus-visible .slab-bg{filter:drop-shadow(0 0 1.5px rgba(143,116,72,.9)) drop-shadow(0 0 3px rgba(143,116,72,.5)) drop-shadow(0 13px 22px rgba(43,36,28,.10))}
+
+  .slab .big{font-size:42px; font-weight:600; line-height:.9; color:var(--ink)}
+  .s3 .slab .big{font-size:40px}
+  .slab .side{display:flex; align-items:center; gap:9px}
+  .slab .lab{font-size:13px; font-weight:600; color:var(--ink-soft); letter-spacing:.01em; text-align:right}
+  .slab .chev{font-size:19px; line-height:1; color:#a5854e; opacity:.75; transform:translateY(-1px);
+    transition:opacity .18s}
+  .slab:hover .chev{opacity:1}
+
+  .badge{position:absolute; z-index:7; bottom:-10px;
+    display:inline-flex; align-items:center; padding:4px 10px 4px 9px; border-radius:999px;
+    background:#f8efdd; border:1px solid #e6d2a8;
+    box-shadow:0 1px 2px rgba(43,36,28,.08), 0 4px 10px rgba(43,36,28,.09);
+    font-size:11px; font-weight:700; letter-spacing:.02em; color:var(--terra); line-height:1; white-space:nowrap}
+  .badge .dot{font-size:11px; margin-right:5px; transform:translateY(-.5px)}
+  .s1 .badge{right:9%}
+  .s3 .badge{right:1%}
+
+  /* ── Result tiles ────────────────────────────────────── */
+  .tiles{position:relative; z-index:2; display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-top:58px}
+  .tile{--ty:10px; position:relative; text-align:center; padding:13px 6px 12px; border-radius:14px;
+    background:linear-gradient(180deg,#f6f0e4, #fbfaf8 58%); border:1px solid #e2dccf;
+    box-shadow:0 1px 2px rgba(43,36,28,.06), 0 9px 20px rgba(43,36,28,.07)}
+  .tile::before{content:""; position:absolute; top:-1px; left:13px; right:13px; height:1px;
+    background:linear-gradient(90deg,rgba(188,163,125,0),#e6d4ab 30%,#efe0bd 50%,#e6d4ab 70%,rgba(188,163,125,0))}
+  .tile .num{display:block; font-size:25px; font-weight:700; color:var(--ink); line-height:1.05}
+  .tile .sub{display:block; margin-top:4px; font-size:11px; font-weight:500; color:var(--faint); letter-spacing:.01em}
+
+  .footnote{--ty:6px; margin:22px auto 0; max-width:30ch; text-align:center;
+    font-size:12px; line-height:1.55; color:#8b8378}
+
+  /* ── SVG strokes ─────────────────────────────────────── */
+  .link{fill:none; stroke:var(--taupe); stroke-width:1.2; stroke-linecap:round; opacity:.55;
+    stroke-dasharray:1; stroke-dashoffset:1;
+    transition:stroke-dashoffset .8s cubic-bezier(.3,.55,.3,1)}
+  .play .link{stroke-dashoffset:0}
+  .fb{fill:none; stroke:var(--taupe); stroke-width:1.1; stroke-dasharray:2 6; stroke-linecap:round;
+    opacity:0; transition:opacity .9s ease 1.55s}
+  .fb-arrow{fill:none; stroke:#a8998a; stroke-width:1.3; stroke-linecap:round; stroke-linejoin:round;
+    opacity:0; transition:opacity .9s ease 1.75s}
+  .play .fb{opacity:.45}
+  .play .fb-arrow{opacity:.6}
+
+  .particle{opacity:0}
+  .particle .core{fill:var(--gold)}
+  .particle .halo{fill:var(--gold); opacity:.16}
+  @keyframes driftFade{0%{opacity:0} 7%{opacity:.8} 86%{opacity:.8} 96%{opacity:0} 100%{opacity:0}}
+  .play .particle.go{animation:driftFade 18s linear infinite}
+
+  /* ── Reduced motion: everything visible, nothing moves ─ */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important; transition:none !important}
+    .js .anim-in{opacity:1}
+    .link{stroke-dasharray:none; stroke-dashoffset:0}
+    .fb{opacity:.45}
+    .fb-arrow{opacity:.6}
+    .particle{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="rule"></span>
+    <h1>Variante 3 · Architektur</h1>
+    <span class="rule"></span>
+  </header>
+
+  <div class="scene" id="scene">
+    <svg id="links" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+    <svg id="overlay" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+
+    <p class="cap anim-in" style="--d:.02s; --ty:6px">Quellen</p>
+
+    <div class="src-row1">
+      <div class="pill anim-in" style="--d:.06s"><span class="lab">Kranken&shy;häuser</span><span class="num" data-count="6">6</span></div>
+      <div class="pill anim-in" style="--d:.11s"><span class="lab">Privat&shy;praxen</span><span class="num" data-count="2">2</span></div>
+      <div class="pill anim-in" style="--d:.16s"><span class="lab">Haus&shy;ärzte</span><span class="num" data-count="1">1</span></div>
+    </div>
+    <div class="src-row2">
+      <div class="pill anim-in" style="--d:.21s"><span class="lab">Altpatienten</span><span class="num" data-count="4">4</span></div>
+      <div class="pill anim-in" style="--d:.26s"><span class="lab">Premium-Netzwerke</span><span class="num" data-count="1">1</span></div>
+    </div>
+
+    <div class="slabs">
+      <div class="slab-wrap s1 anim-in" style="--d:.38s">
+        <button class="slab" type="button" aria-label="Stufe: neu und kontaktiert, 4 Fälle, davon 1 stockt — Details öffnen">
+          <span class="slab-bg" aria-hidden="true"></span>
+          <span class="num big" data-count="4">4</span>
+          <span class="side"><span class="lab">neu &amp; kontaktiert</span><span class="chev" aria-hidden="true">›</span></span>
+          <span class="badge"><span class="dot" aria-hidden="true">●</span>1 stockt</span>
+        </button>
+      </div>
+      <div class="slab-wrap s2 anim-in" style="--d:.50s">
+        <button class="slab" type="button" aria-label="Stufe: Aufnahme geplant, 1 Fall — Details öffnen">
+          <span class="slab-bg" aria-hidden="true"></span>
+          <span class="num big" data-count="1">1</span>
+          <span class="side"><span class="lab">Aufnahme geplant</span><span class="chev" aria-hidden="true">›</span></span>
+        </button>
+      </div>
+      <div class="slab-wrap s3 anim-in" style="--d:.62s">
+        <button class="slab" type="button" aria-label="Stufe: in Klärung, 4 Fälle, davon 1 stockt — Details öffnen">
+          <span class="slab-bg" aria-hidden="true"></span>
+          <span class="num big" data-count="4">4</span>
+          <span class="side"><span class="lab">in Klärung</span><span class="chev" aria-hidden="true">›</span></span>
+          <span class="badge"><span class="dot" aria-hidden="true">●</span>1 stockt</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="tiles">
+      <div class="tile anim-in" style="--d:1.12s"><span class="num" data-count="2">2</span><span class="sub">Aufnahmen</span></div>
+      <div class="tile anim-in" style="--d:1.21s"><span class="num"><span data-count="78">78</span>&thinsp;%</span><span class="sub">Privatauslastung</span></div>
+      <div class="tile anim-in" style="--d:1.30s"><span class="num" data-count="1">1</span><span class="sub">Verloren · gelernt</span></div>
+    </div>
+
+    <p class="footnote anim-in" style="--d:1.5s">Verlustgründe und Rückmeldungen fließen zurück in die Quellen.</p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var scene = document.getElementById('scene');
+  var svg = document.getElementById('links');
+  var overlay = document.getElementById('overlay');
+  var played = false;
+
+  function r(el){
+    var b = el.getBoundingClientRect(), s = scene.getBoundingClientRect();
+    return { left:b.left-s.left, top:b.top-s.top, right:b.right-s.left, bottom:b.bottom-s.top,
+             w:b.width, h:b.height, cx:b.left-s.left+b.width/2, cy:b.top-s.top+b.height/2 };
+  }
+  function mk(tag, attrs){
+    var el = document.createElementNS(NS, tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function vlink(sx, sy, tx, ty){ // vertical-leaning cubic
+    var dy = ty - sy;
+    return 'M' + sx + ',' + sy +
+           ' C' + sx + ',' + (sy + dy * .55) + ' ' + tx + ',' + (ty - dy * .45) +
+           ' ' + tx + ',' + ty;
+  }
+  function f1(n){ return Math.round(n * 10) / 10; }
+
+  function build(instant){
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    while (overlay.firstChild) overlay.removeChild(overlay.firstChild);
+    var sw = scene.offsetWidth, sh = scene.offsetHeight;
+    svg.setAttribute('viewBox', '0 0 ' + sw + ' ' + sh);
+    overlay.setAttribute('viewBox', '0 0 ' + sw + ' ' + sh);
+
+    var pills = [].slice.call(scene.querySelectorAll('.pill'));
+    var s1 = r(scene.querySelector('.s1 .slab'));
+    var s3 = r(scene.querySelector('.s3 .slab'));
+    var tiles = [].slice.call(scene.querySelectorAll('.tile')).map(r);
+
+    function addLink(d, delay){
+      var p = mk('path', { d:d, 'class':'link', pathLength:'1' });
+      if (instant || reduce){ p.style.transition = 'none'; p.style.strokeDashoffset = '0'; }
+      else { p.style.transitionDelay = delay + 'ms'; }
+      svg.appendChild(p);
+    }
+
+    /* sources → slab 1 (entry fraction along slab top, per pill order K P H A PN).
+       Outer pills of row 1 bow outward through the side corridors,
+       so no curve crosses the second pill row. */
+    var entry = [.13, .50, .87, .32, .68];
+    pills.forEach(function(pill, i){
+      var pr = r(pill);
+      var sx = f1(pr.cx), sy = f1(pr.bottom);
+      var tx = f1(s1.left + entry[i] * s1.w), ty = f1(s1.top + 1);
+      var d;
+      if (i === 0){       /* Krankenhäuser: bow left */
+        d = 'M' + sx + ',' + sy + ' C' + f1(sx - 46) + ',' + f1(sy + 22) + ' ' +
+            f1(tx - 30) + ',' + f1(ty - 40) + ' ' + tx + ',' + ty;
+      } else if (i === 2){ /* Hausärzte: bow right */
+        d = 'M' + sx + ',' + sy + ' C' + f1(sx + 46) + ',' + f1(sy + 22) + ' ' +
+            f1(tx + 30) + ',' + f1(ty - 40) + ' ' + tx + ',' + ty;
+      } else {
+        d = vlink(sx, sy, tx, ty);
+      }
+      addLink(d, 260 + i * 90);
+    });
+
+    /* slab 3 → result tiles */
+    var exit = [.30, .50, .70];
+    tiles.forEach(function(t, i){
+      var sx = f1(s3.left + exit[i] * s3.w), sy = f1(s3.bottom - 1);
+      addLink(vlink(sx, sy, f1(t.cx), f1(t.top + 1)), 950 + i * 90);
+    });
+
+    /* feedback: dotted arc up the right edge, results → sources, arrow at top right */
+    var t3 = tiles[2], pH = r(pills[2]);
+    var fsx = f1(t3.cx + t3.w * .26), fsy = f1(t3.top - 5);
+    var fex = f1(sw - 14), fey = f1(pH.top - 22);
+    var bx = sw - 3, c2y = f1(fey + 80);
+    var fb = mk('path', { d:'M' + fsx + ',' + fsy +
+      ' C' + bx + ',' + f1(fsy - 30) + ' ' + bx + ',' + c2y + ' ' + fex + ',' + fey,
+      'class':'fb' });
+    var ang = Math.atan2(fey - c2y, fex - bx);
+    function arm(da){
+      return f1(fex - 7.5 * Math.cos(ang + da)) + ',' + f1(fey - 7.5 * Math.sin(ang + da));
+    }
+    var arrow = mk('path', { d:'M' + arm(.5) + ' L' + fex + ',' + fey + ' L' + arm(-.5), 'class':'fb-arrow' });
+    if (instant){ fb.style.transition = 'none'; arrow.style.transition = 'none'; }
+    svg.appendChild(fb); svg.appendChild(arrow);
+
+    /* one slow ambient gold particle drifting down the central spine, 18 s */
+    if (!reduce){
+      var p2 = r(pills[1]);
+      var cx = f1(s1.left + s1.w / 2);
+      var t2 = tiles[1];
+      var pd = vlink(f1(p2.cx), f1(p2.bottom), cx, f1(s1.top + 1)) +
+        ' L' + cx + ',' + f1(s3.bottom - 1) +
+        ' C' + cx + ',' + f1(s3.bottom + (t2.top - s3.bottom) * .55) + ' ' +
+        f1(t2.cx) + ',' + f1(t2.top - (t2.top - s3.bottom) * .45) + ' ' +
+        f1(t2.cx) + ',' + f1(t2.top + 14);
+      var g = mk('g', { 'class':'particle' });
+      g.appendChild(mk('circle', { r:'6', 'class':'halo', cx:'0', cy:'0' }));
+      g.appendChild(mk('circle', { r:'2.6', 'class':'core', cx:'0', cy:'0' }));
+      var am = mk('animateMotion', { dur:'18s', repeatCount:'indefinite', begin:'indefinite', path:pd });
+      g.appendChild(am);
+      overlay.appendChild(g);
+      if (played) startParticle(g, am, 0);
+    }
+  }
+
+  function startParticle(g, am, delay){
+    setTimeout(function(){
+      try { am.beginElement(); } catch(e){}
+      g.classList.add('go');
+    }, delay);
+  }
+
+  function countUp(el, target, dur){
+    if (reduce){ el.textContent = target; return; }
+    var t0 = null;
+    function step(ts){
+      if (!t0) t0 = ts;
+      var t = Math.min((ts - t0) / dur, 1);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function play(){
+    played = true;
+    scene.classList.add('play');
+    var counters = [].slice.call(scene.querySelectorAll('[data-count]'));
+    if (reduce){
+      counters.forEach(function(el){ el.textContent = el.getAttribute('data-count'); });
+      return;
+    }
+    counters.forEach(function(el){
+      el.textContent = '0'; /* elements are still faded out at this point */
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      var delay = 200;
+      var slab = el.closest('.slab-wrap');
+      if (slab) delay = 520 + (slab.classList.contains('s2') ? 120 : slab.classList.contains('s3') ? 240 : 0);
+      else if (el.closest('.tile')) delay = 1250;
+      setTimeout(function(){ countUp(el, target, 700); }, delay);
+    });
+    var g = overlay.querySelector('.particle');
+    var am = overlay.querySelector('animateMotion');
+    if (g && am) startParticle(g, am, 2000);
+  }
+
+  function init(){
+    try { build(false); } catch(e){ /* never leave content hidden */ }
+    requestAnimationFrame(function(){ requestAnimationFrame(play); });
+  }
+
+  var resizeT;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeT);
+    resizeT = setTimeout(function(){ build(true); }, 150);
+  });
+
+  var started = false;
+  function start(){ if (!started){ started = true; init(); } }
+  if (document.fonts && document.fonts.ready){
+    document.fonts.ready.then(start);
+    setTimeout(start, 1200); /* safety if fonts hang */
+  } else {
+    window.addEventListener('load', start);
+    setTimeout(start, 1200);
+  }
+})();
+</script>
+</body>
+</html>
