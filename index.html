@@ -1,0 +1,1549 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Klinik Bavaria · Privatpatienten-Maschine</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f5f0; --surface:#ffffff; --surface2:#faf8f4;
+    --ink:#171512; --muted:#6f6860; --muted2:#aaa197; --line:#e9e2d7; --line2:#f0ebe3;
+    --gold:#b08d57; --gold-deep:#8f7041; --gold-soft:#f5ead8; --gold-line:#dfc9a6;
+    --champagne:#f8f1e6; --slate:#26231f; --blue:#4d6f91; --blue-soft:#eef4f7; --green:#6f9468; --green-soft:#eef5ec;
+    --red:#b5473d; --red-soft:#fbebe9; --amber:#c07a2b; --amber-soft:#fff3df;
+    --ortho:#b67829; --neuro:#326fd1; --geri:#508b5c; --innere:#278277; --saluto:#b08d57; --unklar:#8b929d;
+    --ok:#1f8a63; --warn:#c07a2b; --bad:#b5473d;
+    --shadow:0 1px 2px rgba(16,24,40,.05),0 8px 24px rgba(16,24,40,.06);
+    --shadow-hov:0 2px 6px rgba(16,24,40,.08),0 16px 34px rgba(16,24,40,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:linear-gradient(135deg,#fbfaf7 0%,#f5f1e9 100%);color:var(--ink);
+    font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5;display:flex;min-height:100vh}
+  .serif{font-family:"Cormorant Garamond",Georgia,serif}
+
+  /* ===== Sidebar ===== */
+  aside{width:264px;flex-shrink:0;background:linear-gradient(180deg,#fcfbf8,#f7f4ee);color:var(--muted);
+    display:flex;flex-direction:column;position:sticky;top:0;height:100vh;border-right:1px solid var(--line)}
+  .brand{padding:28px 26px 18px}
+  .brand .k{font-family:"Cormorant Garamond",Georgia,serif;font-size:23px;font-weight:700;color:var(--ink);letter-spacing:.05em}
+  .brand .k b{color:var(--gold-deep);font-weight:700}
+  .brand .s{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted2);margin-top:6px}
+  .brand .product{margin-top:18px}
+  .brand .product::before{content:"";display:block;width:26px;height:2px;background:var(--gold);border-radius:2px;margin-bottom:12px}
+  .brand .product b{display:block;font-size:13.5px;line-height:1.25;color:var(--ink);letter-spacing:.01em}
+  .brand .product span{display:block;font-size:12px;color:var(--muted2);margin-top:3px}
+  nav{padding:6px 16px;display:flex;flex-direction:column;gap:2px}
+  .navlbl{font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:#b9af9f;padding:13px 14px 5px;font-weight:800}
+  nav button{position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;
+    color:#5d564c;font:inherit;font-size:14.5px;font-weight:600;padding:8.5px 14px;border-radius:10px;cursor:pointer;
+    border:1px solid transparent;transition:all .15s}
+  nav button:hover{background:rgba(176,141,87,.07);color:var(--ink)}
+  nav button.active{background:#fff;border-color:var(--line2);color:var(--ink);font-weight:700;box-shadow:0 10px 24px rgba(23,21,18,.05)}
+  nav button.active::before{content:"";position:absolute;left:0;top:24%;bottom:24%;width:3px;border-radius:3px;
+    background:linear-gradient(180deg,#c9a36b,#9a7745)}
+  nav button.active svg{color:var(--gold-deep)}
+  nav button svg{width:17px;height:17px;flex-shrink:0;opacity:.9;stroke-width:1.7}
+  nav button .pill{margin-left:auto;background:transparent;border:1px solid var(--line);border-radius:999px;font-size:10.5px;
+    padding:2px 8px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+  nav button .pill.hot{background:var(--gold);border-color:var(--gold);color:#fff}
+  .side-foot{margin-top:auto;padding:12px 22px 14px;border-top:1px solid var(--line2);font-size:11.5px;color:var(--muted2);line-height:1.45}
+  .demo-chip{display:inline-block;background:var(--gold-soft);border:1px solid var(--gold-line);color:var(--gold-deep);
+    border-radius:6px;padding:3px 9px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:7px}
+
+  /* ===== Main ===== */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;gap:18px;padding:14px 44px 6px;flex-wrap:wrap}
+  .topbar h1{font-family:"Cormorant Garamond",Georgia,serif;font-size:31px;font-weight:700;margin:0;letter-spacing:.01em}
+  .topbar .date{color:var(--muted2);font-size:13px;margin-top:2px}
+  .top-actions{margin-left:auto;display:flex;gap:10px;align-items:center}
+  .search{position:relative}
+  .search input{width:240px;border:1px solid var(--line);background:rgba(255,255,255,.75);border-radius:999px;
+    padding:10px 16px 10px 38px;font:inherit;font-size:14px;color:var(--ink)}
+  .search input:focus{outline:none;border-color:var(--gold-line);background:#fff}
+  .search svg{position:absolute;left:14px;top:11px;width:16px;height:16px;color:var(--muted2)}
+  .cta{background:var(--slate);color:#fff;border:none;border-radius:999px;padding:11px 21px;font:inherit;font-size:14px;
+    font-weight:600;cursor:pointer;box-shadow:var(--shadow);transition:all .15s}
+  .cta:hover{background:#3a352e;box-shadow:var(--shadow-hov)}
+  .cta.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+  .cta.sm{padding:7px 14px;font-size:12.5px}
+  .cta:disabled{background:#d8d2c6;cursor:not-allowed;box-shadow:none}
+  .content{padding:4px 44px 24px}
+  section{display:none}section.active{display:block}
+  .lbl{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-deep);font-weight:900;margin:28px 0 12px}
+
+  /* ===== Überblick: V4-Trichter + Premium-Nordstern ===== */
+  .kicker{font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:#7d6138;font-weight:800}
+  .board-focus{margin:0 0 14px}
+  .bf-card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:16px 22px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+  .bf-info{min-width:240px}
+  .bf-title{display:flex;align-items:baseline;gap:12px;margin-top:3px}
+  .bf-title h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:27px;font-weight:700;margin:0;line-height:1.1}
+  .bf-count{font-size:14.5px;color:var(--gold-deep);font-weight:700;font-variant-numeric:lining-nums tabular-nums}
+  .bf-note{font-size:14px;color:var(--muted);margin-top:3px}
+  .bf-chips{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .bf-chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:9px 15px;
+    font:inherit;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+  .bf-chip:hover{color:var(--ink);border-color:var(--gold-line)}
+  .bf-chip.active{background:var(--slate);border-color:var(--slate);color:#fff}
+  @media(max-width:900px){.bf-chips{margin-left:0;width:100%}}
+  .cockpit-head{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:42px;align-items:end;margin:0 0 12px}
+  .cockpit-title{font-family:"Cormorant Garamond",Georgia,serif;font-size:44px;font-weight:700;line-height:.98;margin:5px 0 0;letter-spacing:0;color:var(--ink)}
+  .cockpit-sub{font-size:16px;line-height:1.45;color:var(--muted);margin:0;text-align:right}
+  .src-num,.rb-v,.fc-mid .zc,.ns-val,.ns-primary,.ns-primary b{font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+  .funnel-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+    display:grid;grid-template-columns:292px minmax(0,1fr) 268px;gap:9px;padding:16px 30px 14px;align-items:start}
+  .fc-mid{align-self:center;margin:0}
+  .fc-col .col-cap{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#7d6138;font-weight:800;margin-bottom:10px}
+  .src-row{display:flex;align-items:center;gap:13px;min-height:52px;padding:10px 0;border-bottom:1px solid var(--line2);cursor:pointer}
+  .src-row:first-of-type{border-top:1px solid var(--line2)}
+  .src-row:hover .src-name{color:var(--ink)}
+  .src-row svg{width:24px;height:24px;flex-shrink:0;stroke:#9a7745;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .src-name{font-size:16px;color:var(--muted);line-height:1.25}
+  .src-num{margin-left:auto;font-family:"Cormorant Garamond",Georgia,serif;font-size:22px;font-weight:600;color:var(--ink)}
+  .res-block{min-height:86px;padding:12px 0;border-bottom:1px solid var(--line2);cursor:pointer}
+  .res-block:first-of-type{border-top:1px solid var(--line2)}
+  .res-block .rb-l{font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .res-block .rb-v{font-family:"Cormorant Garamond",Georgia,serif;font-size:40px;font-weight:700;color:var(--ink);line-height:1.15}
+  .res-block .rb-s{font-size:14px;color:var(--muted);line-height:1.35}
+  .res-block .meter{height:5px;background:#ece5d8;border-radius:99px;overflow:hidden;margin:8px 0 5px;max-width:200px}
+  .res-block .meter span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#e0c18e)}
+  .fc-mid svg{width:100%;height:auto;display:block}
+  .fc-mid text{font-family:"Inter",-apple-system,sans-serif}
+  .fc-mid .zc{font-family:"Cormorant Garamond",Georgia,serif;font-size:43px;font-weight:700;fill:#171512}
+  .fc-mid .zl{fill:#5f574d;font-size:16px}
+  .stock-badge{cursor:pointer}
+  .stock-badge circle{fill:#b45309}
+  .stock-badge text{fill:#b45309;font-size:13.5px;font-weight:700}
+  .flow-link{stroke:#d3bd97;stroke-width:1.35;fill:none;opacity:.9;stroke-linecap:round}
+  .flow-dot{fill:#b08d57;opacity:.48}
+  .ns-band{margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 30px 12px;box-shadow:var(--shadow)}
+  .ns-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:10px}
+  .ns-head span:last-child{font-size:13.5px;color:var(--muted2)}
+  .ns-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:0;border-top:1px solid var(--line2)}
+  .ns-metric{background:transparent;border:0;border-left:1px solid var(--line2);border-radius:0;padding:12px 24px 2px;box-shadow:none;min-height:92px}
+  .ns-metric:first-child{border-left:0;padding-left:0}
+  .ns-metric.feature{background:transparent}
+  .ns-label{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:#8e8578;font-weight:600;line-height:1.2}
+  .ns-primary{display:flex;align-items:baseline;gap:9px;margin-top:8px;min-height:40px}
+  .ns-primary b{font-family:"Cormorant Garamond",Georgia,serif;font-size:46px;font-weight:700;line-height:.95;color:var(--ink);letter-spacing:0}
+  .ns-primary span{font-family:"Cormorant Garamond",Georgia,serif;font-size:21px;font-weight:500;color:var(--muted)}
+  .ns-sub{font-size:14.5px;color:var(--muted);line-height:1.3;margin-top:4px}
+  .ns-meter{position:relative;height:5px;background:#ece5d8;border-radius:99px;margin-top:9px;max-width:240px}
+  .ns-meter::after{content:"";position:absolute;left:90%;top:-2px;bottom:-2px;width:1.5px;background:#8e8578;opacity:.6}
+  .ns-meter span{display:block;height:100%;width:78%;border-radius:99px;background:linear-gradient(90deg,#c9a36b,#9a7745)}
+  #flyDot{position:fixed;width:16px;height:16px;border-radius:50%;background:#b08d57;box-shadow:0 2px 10px rgba(154,119,69,.5);pointer-events:none;z-index:99}
+  #plusTagH{font-size:15px;color:var(--gold-deep);font-weight:800;opacity:0;transition:opacity .5s;white-space:nowrap}
+  .funnel-stage{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:10px 22px 8px}
+  .funnel-stage svg{width:100%;height:auto;display:block}
+  .funnel-stage text{font-family:"Inter",-apple-system,sans-serif}
+  .funnel-stage .fn-click{cursor:pointer}
+  .funnel-stage .fn-click rect.pill{transition:fill .18s}
+  .funnel-stage .fn-click:hover rect.pill{fill:rgba(176,141,87,.07)}
+  .funnel-stage .fn-click:hover .fn-chev{opacity:1}
+  .funnel-stage .fn-cap{fill:#8e8578;font-size:13px;letter-spacing:.22em;font-weight:800}
+  .funnel-stage .fn-lab{fill:#5f574d;font-size:15px}
+  .funnel-stage .fn-stage{fill:#5f574d;font-size:13px;font-weight:700;letter-spacing:.01em}
+  .funnel-stage .fn-stage-sub{fill:#7d6138;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+  .funnel-stage .fn-note{fill:#a89b85;font-size:13px;font-weight:400}
+  .funnel-stage .fn-num{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;fill:#171512;font-variant-numeric:lining-nums tabular-nums}
+  .funnel-stage .fn-tiny{fill:#6f6860;font-size:13px}
+  .funnel-stage .fn-chev{fill:#b08d57;font-size:20px;opacity:.8;transition:opacity .18s}
+  @keyframes stagePulse{0%,100%{fill:transparent}50%{fill:rgba(176,141,87,.16)}}
+  .stage-hit rect.pulse0{animation:stagePulse 1s ease-in-out .4s 1}
+  .stage-hit rect.pulse1{animation:stagePulse 1s ease-in-out 1.3s 1}
+  .stage-hit rect.pulse2{animation:stagePulse 1s ease-in-out 2.2s 1}
+  .funnel-stage .fn-hair{stroke:#e9e2d7}
+  .funnel-stage .fn-link{stroke:#d3bd97;stroke-width:1.35;fill:none;opacity:.9;stroke-linecap:round}
+  .funnel-stage .fn-dot{fill:#b08d57;opacity:.52}
+  .stage-hit rect{fill:transparent;stroke:transparent;stroke-width:1.2;rx:8}
+  .stage-hit:hover rect{fill:rgba(176,141,87,.08);stroke:rgba(176,141,87,.22)}
+
+  /* ===== Trichter-Detail ===== */
+  .detail-hero{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px 24px;margin-bottom:14px}
+  .detail-hero h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:39px;line-height:1;margin:6px 0 0}
+  .detail-hero p{font-size:16px;color:var(--muted);margin:10px 0 0;max-width:760px}
+  .stage-summaries{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-top:17px}
+  .stage-summary{border:1px solid var(--line2);border-radius:12px;background:var(--surface2);padding:13px 15px}
+  .stage-summary .sl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);font-weight:900}
+  .stage-summary .sv{font-family:"Cormorant Garamond",Georgia,serif;font-size:31px;font-weight:700;line-height:1.05;margin-top:3px}
+  .stage-summary .sn{font-size:13px;color:var(--muted);line-height:1.3}
+  .case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:13px}
+  .case-card{background:#fff;border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);padding:16px;cursor:pointer;transition:all .15s}
+  .case-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hov);border-color:var(--gold-line)}
+  .case-card .case-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+  .case-card h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:23px;line-height:1.05;margin:0}
+  .case-card .case-meta{font-size:14px;color:var(--muted);line-height:1.45}
+  .case-card .case-action{margin-top:12px;border-top:1px solid var(--line2);padding-top:10px;font-size:14px;color:var(--ink);font-weight:650}
+
+  /* ===== Idee ===== */
+  .idea-stage{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 28px 22px}
+  .idea-head{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:34px;align-items:end;margin-bottom:14px}
+  .idea-title{font-family:"Cormorant Garamond",Georgia,serif;font-size:38px;line-height:1;margin:5px 0 0}
+  .idea-head p{font-size:16px;line-height:1.45;color:var(--muted);margin:0;text-align:right}
+  .idea-map{width:100%;height:auto;display:block}
+  .idea-map text{font-family:"Inter",-apple-system,sans-serif}
+  .idea-map .imap-cap{font-size:15px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;fill:#7d6138}
+  .idea-map .imap-main{font-size:21px;font-weight:800;fill:#171512}
+  .idea-map .imap-line{font-size:15px;fill:#5f574d}
+  .idea-map .imap-soft{font-size:15px;fill:#7d6138;font-weight:700}
+  .idea-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+  .idea-block{background:#fff;border:1px solid var(--line2);border-radius:10px;padding:18px;box-shadow:var(--shadow)}
+  .idea-block h3{font-size:18px;margin:0 0 8px;font-weight:800}
+  .idea-block p{font-size:15px;color:var(--muted);margin:0;line-height:1.5}
+  .idea-gate{margin-top:14px;max-width:none;font-size:15px}
+
+  .critical-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}
+  .focus-panel,.insight-panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;box-shadow:var(--shadow)}
+  .focus-panel h3,.insight-panel h3,.module-card h3{font-size:18px;margin:0 0 14px;font-weight:800;letter-spacing:-.02em}
+  .focus-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .focus-item{border:1px solid var(--line2);background:var(--surface2);border-radius:8px;padding:13px}
+  .focus-item .top{display:flex;justify-content:space-between;gap:12px;align-items:center}
+  .focus-item .count{font-size:36px;font-weight:800;line-height:1;color:var(--ink);letter-spacing:-.04em}
+  .focus-item .tag{font-size:11.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-deep)}
+  .focus-item p{font-size:14px;color:var(--muted);margin:9px 0 0}
+  .module-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+  .module-card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;box-shadow:var(--shadow);min-height:174px}
+  .module-card[onclick],.os-metric[onclick]{cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
+  .module-card[onclick]:hover,.os-metric[onclick]:hover{transform:translateY(-2px);box-shadow:var(--shadow-hov);border-color:var(--gold-line)}
+  .module-card p{color:var(--muted);font-size:15px;margin:0 0 16px}
+  .module-card .module-stat{font-size:34px;font-weight:800;margin-top:auto;letter-spacing:-.04em}
+  .module-card .module-note{font-size:13.5px;color:var(--muted);margin-top:3px}
+  .module-card.accent{border-color:var(--gold-line);background:linear-gradient(180deg,#fff,var(--gold-soft))}
+  .pill-row{display:flex;gap:6px;flex-wrap:wrap}
+  .soft-pill{font-size:11px;color:#344054;background:#eef2f6;border:1px solid #e5e9ef;border-radius:99px;padding:4px 8px}
+  .soft-pill.ok{background:var(--green-soft);border-color:#ccebd8;color:var(--green)}
+  .soft-pill.warn{background:var(--amber-soft);border-color:#f1d7a5;color:#96611c}
+  .soft-pill.gold{background:var(--gold-soft);border-color:var(--gold-line);color:var(--gold-deep)}
+
+  .route-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+  .route-card{background:var(--surface);border:1px solid var(--line2);border-radius:8px;padding:13px 14px;box-shadow:var(--shadow)}
+  .route-card .rlabel{font-size:11.5px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+  .route-card .rvalue{font-size:24px;font-weight:800;margin-top:4px;letter-spacing:-.035em}
+  .route-card .rnote{font-size:14px;color:var(--muted);margin-top:4px}
+
+  /* ===== Tiles & Charts ===== */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:13px}
+  .tile{background:var(--surface);border:1px solid var(--line2);border-radius:8px;padding:18px 18px;box-shadow:var(--shadow)}
+  .tile .v{font-size:36px;font-weight:800;line-height:1.05;letter-spacing:-.04em}
+  .tile .v small{font-size:17px}
+  .tile .l{font-size:14px;color:var(--muted);margin-top:5px}
+  .tile .sub{font-size:12.5px;color:var(--gold-deep);margin-top:4px;font-weight:700}
+  .prog{height:6px;background:#ece5d8;border-radius:4px;margin-top:9px;overflow:hidden}
+  .prog span{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#c9a36b,var(--gold-deep))}
+  .charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+  .charts.analysis-charts{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media(max-width:1250px){.charts.analysis-charts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:1100px){.charts,.charts.analysis-charts{grid-template-columns:1fr}}
+  .chart{background:var(--surface);border:1px solid var(--line2);border-radius:8px;padding:18px 20px;box-shadow:var(--shadow)}
+  .chart h3{margin:0 0 16px;font-size:18px;font-weight:800;letter-spacing:-.02em}
+  .analysis-charts .chart{padding:16px 18px}
+  .analysis-charts .chart h3{margin-bottom:12px}
+  .analysis-charts .bar{margin:6px 0;font-size:14px}
+  .analysis-charts .bar .track{height:17px}
+  .analysis-charts .bar .blbl{width:166px}
+  .analysis-charts .donut-wrap{gap:16px}
+  .analysis-charts .donut-leg{line-height:1.9}
+  .bar{display:flex;align-items:center;gap:11px;margin:9px 0;font-size:15px}
+  .bar .blbl{width:176px;color:var(--muted);text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar .track{flex:1;display:block;background:#ece5d8;border-radius:7px;height:20px;overflow:hidden}
+  .bar .fill{display:block;height:100%;border-radius:6px;min-width:4px;background:linear-gradient(90deg,#c9a36b,var(--gold-deep))}
+  .bar.warm .fill{background:linear-gradient(90deg,#c97f5e,var(--bad))}
+  .bar .bnum{width:34px;font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;font-size:17px;font-variant-numeric:lining-nums tabular-nums;color:var(--ink)}
+  .donut-wrap{display:flex;align-items:center;gap:20px}
+  .donut-leg{font-size:14px;color:var(--muted);line-height:2.15}
+  .donut-leg b{color:var(--ink)}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+
+  /* ===== Eingang ===== */
+  .inbox{display:flex;flex-direction:column;gap:9px;max-width:880px}
+  .mail{background:var(--surface);border:1px solid var(--line2);border-radius:13px;padding:16px 18px;display:flex;gap:15px;
+    align-items:center;box-shadow:var(--shadow);transition:all .15s}
+  .mail:hover{box-shadow:var(--shadow-hov)}
+  .mail.done{opacity:.5}
+  .chico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    background:var(--gold-soft);color:var(--gold-deep)}
+  .chico svg{width:18px;height:18px}
+  .mail .mtit{font-weight:700;font-size:16px;line-height:1.35}
+  .mail .mtxt{font-size:14px;color:var(--muted);margin-top:3px}
+  .mail .mtime{font-size:13px;color:var(--muted);white-space:nowrap}
+  .mail .right{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .chtag{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-deep);
+    background:var(--gold-soft);border-radius:6px;padding:2px 8px}
+  .ok-chip{color:var(--ok);font-weight:600;font-size:12px}
+
+  /* ===== Board ===== */
+  .board{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 16px}
+  .col{background:#ece6da;border-radius:14px;min-width:224px;width:224px;flex-shrink:0;padding:10px}
+  .col h3{font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin:4px 6px 9px;display:flex;align-items:center;gap:7px;color:#6e655a;font-weight:700}
+  .col h3 .cdot{width:8px;height:8px;border-radius:50%}
+  .col h3 .cnt{margin-left:auto;background:var(--surface);border-radius:9px;padding:0 8px;font-size:10.5px;color:var(--muted);font-weight:600}
+  .karte{background:var(--surface);border:1px solid var(--line2);border-radius:12px;padding:11px 13px;margin-bottom:9px;
+    cursor:pointer;box-shadow:var(--shadow);transition:all .15s}
+  .karte:hover{transform:translateY(-2px);box-shadow:var(--shadow-hov);border-color:var(--gold-line)}
+  .karte.saluto{border-left:3px solid var(--gold)}
+  .krow{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .ava{width:30px;height:30px;border-radius:50%;background:var(--gold-soft);color:var(--gold-deep);display:flex;align-items:center;
+    justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+  .karte .name{font-weight:600;font-size:13px;line-height:1.25}
+  .karte .alter{color:var(--muted);font-weight:400}
+  .pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+  .pill-a{font-size:10px;font-weight:700;color:#fff;border-radius:6px;padding:2px 7px}
+  .pill-kt{font-size:10px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1.5px 7px}
+  .kmeta{font-size:11px;color:var(--muted);line-height:1.55}
+  .stagebar{height:5px;background:#eef2f6;border-radius:99px;overflow:hidden;margin:8px 0 6px}
+  .stagebar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--gold))}
+  .due{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;border-radius:6px;padding:2px 7px;margin-top:6px}
+  .due.ok{background:#edf2ea;color:var(--ok)} .due.warn{background:#f7eedd;color:#96702f} .due.bad{background:#f6e4df;color:var(--bad)}
+  .star{color:var(--gold);font-size:11px;font-weight:700;margin-top:5px;display:inline-block}
+
+  /* ===== Bestand ===== */
+  .legal{background:#f7efe0;border:1px solid #e9dcc2;border-radius:11px;padding:10px 15px;font-size:12.5px;color:#6e5a33;max-width:880px;margin-bottom:13px}
+  .legal.idea-gate{font-size:15px;line-height:1.5;max-width:none;margin:14px 0 0}
+  .btable{max-width:920px;display:flex;flex-direction:column;gap:8px}
+  .brow{background:var(--surface);border:1px solid var(--line2);border-radius:12px;padding:11px 15px;display:flex;gap:13px;align-items:center;box-shadow:var(--shadow)}
+  .brow .binfo{min-width:0}
+  .brow .bname{font-weight:600;font-size:13.5px}
+  .brow .bmeta{font-size:11.5px;color:var(--muted)}
+  .cons{font-size:10.5px;font-weight:700;border-radius:6px;padding:2.5px 9px;white-space:nowrap}
+  .cons.ja{background:#e9f0e5;color:var(--ok)}
+  .cons.nein{background:#efece6;color:#8a8076}
+  .cons.widerruf{background:#f6e4df;color:var(--bad)}
+  .brow .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .wv{color:var(--gold-deep);font-weight:600;font-size:12px}
+  .bestand-hero{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px 24px;display:grid;grid-template-columns:minmax(0,1fr) 520px;gap:24px;align-items:end}
+  .bestand-hero h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:38px;line-height:1;margin:6px 0 0}
+  .bestand-hero p{color:var(--muted);font-size:16px;max-width:760px;margin:10px 0 0}
+  .bestand-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .bestand-stat{border:1px solid var(--line2);background:var(--surface2);border-radius:12px;padding:12px 14px}
+  .bestand-stat .sl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);font-weight:900}
+  .bestand-stat .sv{font-family:"Cormorant Garamond",Georgia,serif;font-size:32px;font-weight:700;line-height:1.05;margin-top:3px}
+  .bestand-stat .sn{font-size:12.5px;color:var(--muted)}
+  .bestand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:13px;margin-top:14px}
+  .patient-card{background:#fff;border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);padding:17px;min-height:232px;display:flex;flex-direction:column}
+  .patient-card.hot{border-color:var(--gold-line);background:linear-gradient(180deg,#fff,#fffaf2)}
+  .patient-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+  .patient-card h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;line-height:1.05;margin:0}
+  .patient-meta{font-size:14px;color:var(--muted);line-height:1.45}
+  .patient-reason{font-size:15px;color:var(--ink);line-height:1.4;margin:13px 0}
+  .patient-actions{margin-top:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .patient-actions .cta{box-shadow:none}
+  .status-pill{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:5px 9px;white-space:nowrap}
+  .status-pill.ok{background:var(--green-soft);color:var(--ok)}
+  .status-pill.lock{background:#efece6;color:#8a8076}
+  .status-pill.bad{background:var(--red-soft);color:var(--bad)}
+
+  /* ===== Zuweiser ===== */
+  .zcat-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:12px}
+  .zcat{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:14px 15px;box-shadow:var(--shadow);cursor:pointer;transition:all .15s;text-align:left;font:inherit;color:var(--ink)}
+  .zcat:hover,.zcat.active{border-color:var(--gold-line);box-shadow:var(--shadow-hov);transform:translateY(-1px)}
+  .zcat.active{background:linear-gradient(180deg,#fff,var(--gold-soft))}
+  .zcat .zl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:900;color:var(--gold-deep)}
+  .zcat .zv{font-family:"Cormorant Garamond",Georgia,serif;font-size:34px;font-weight:700;line-height:1.05;margin-top:4px}
+  .zcat .zn{font-size:13px;color:var(--muted);line-height:1.28;margin-top:4px}
+  .zmap{display:grid;grid-template-columns:1.05fr .95fr;gap:13px;margin:0 0 13px}
+  .map-panel,.zsummary{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+  .map-panel svg{width:100%;height:auto;display:block}
+  .map-title{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);font-weight:900;margin-bottom:8px}
+  .map-legend{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+  .map-legend span{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+  .map-legend i{display:inline-block;width:9px;height:9px;border-radius:50%}
+  .map-index{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line2)}
+  .map-index span{display:flex;align-items:center;gap:7px;min-width:0;font-size:11.5px;color:var(--muted);line-height:1.25}
+  .map-index b{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:var(--gold-soft);color:var(--gold-deep);font-size:10px;font-weight:900}
+  .map-index em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .zsummary h3{margin:0 0 8px;font-size:18px}
+  .zsummary p{margin:0;color:var(--muted);font-size:15px}
+  .zsummary .route-strip{margin-top:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .zgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:13px}
+  .zcard{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);transition:all .15s}
+  .zcard:hover{box-shadow:var(--shadow-hov);transform:translateY(-2px)}
+  .zcard.ziel{border-style:dashed;background:var(--surface2)}
+  .zstat{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:7px}
+  .zstat.aktiv{background:#e9f0e5;color:var(--ok)}
+  .zstat.aufbau{background:var(--gold-soft);color:var(--gold-deep)}
+  .zstat.ziel{background:#efece6;color:#8a8076}
+  .zcard .zname{font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;font-weight:700;line-height:1.2}
+  .zcard .ztyp{font-size:10.5px;color:var(--gold-deep);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin:3px 0 9px}
+  .zrow{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:4px 0;border-top:1px solid var(--line2);gap:10px}
+  .zrow b{color:var(--ink);font-weight:600;text-align:right}
+  .zdraht{color:var(--gold);letter-spacing:3px;font-size:13px}
+  .zcontact{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}
+  .zcontact a,.zcontact span{border:1px solid var(--line2);border-radius:9px;background:var(--surface2);padding:7px 9px;font-size:12px;color:var(--ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .zcontact small{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);font-weight:900;margin-bottom:1px}
+  .znext{margin-top:9px;background:var(--surface2);border:1px dashed var(--line);border-radius:9px;padding:7px 11px;font-size:11.5px;color:#6e5a33}
+  .znext b{color:var(--gold-deep)}
+
+  /* ===== Prozesse ===== */
+  .process-flow{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .process-card{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+  .process-card h3{margin:0 0 10px;font-size:19px;font-weight:800}
+  .process-steps{display:grid;gap:8px;margin-top:12px}
+  .pstep{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;background:var(--surface2);border:1px solid var(--line2);border-radius:10px;padding:10px}
+  .pstep b{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gold-soft);color:var(--gold-deep);font-family:"Cormorant Garamond",Georgia,serif;font-size:20px}
+  .pstep span{font-size:15px;color:var(--ink);font-weight:650}
+  .pstep small{display:block;color:var(--muted);font-size:13px;margin-top:2px;line-height:1.35}
+  .help-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:13px}
+  .flow-card,.faq-card,.help-contact,.template-card{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+  .flow-card h3,.faq-card h3,.help-contact h3,.template-card h3{font-size:18px;margin:0 0 10px;font-weight:800}
+  .flow-rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:stretch;margin-top:12px}
+  .flow-node{position:relative;background:var(--surface2);border:1px solid var(--line2);border-radius:12px;padding:12px;min-height:106px}
+  .flow-node:not(:last-child)::after{content:"";position:absolute;right:-9px;top:48%;width:10px;height:1px;background:var(--gold-line)}
+  .flow-node b{font-family:"Cormorant Garamond",Georgia,serif;font-size:26px;line-height:1;color:var(--gold-deep)}
+  .flow-node span{display:block;font-size:14px;font-weight:800;margin-top:6px}
+  .flow-node small{display:block;color:var(--muted);font-size:12.5px;line-height:1.3;margin-top:4px}
+  .faq-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .faq-card p{font-size:14px;color:var(--muted);margin:0;line-height:1.45}
+  .help-contact-grid,.template-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+  .help-contact .role,.template-card .role{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);font-weight:900}
+  .help-contact .phone{font-family:"Cormorant Garamond",Georgia,serif;font-size:28px;font-weight:700;line-height:1;margin:7px 0}
+  .help-contact p,.template-card p{font-size:14px;color:var(--muted);margin:0;line-height:1.45}
+  .template-card .pill-row{margin-top:12px}
+
+  /* ===== Form ===== */
+  .formcard{background:var(--surface);border:1px solid var(--line2);border-radius:16px;padding:24px 28px;max-width:720px;box-shadow:var(--shadow)}
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .fgrid .full{grid-column:1/-1}
+  label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;font-weight:600}
+  input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;font-size:13.5px;
+    background:#fff;color:var(--ink);transition:border .15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
+  textarea{resize:vertical;min-height:62px}
+  .fsub{margin-top:18px;display:flex;align-items:center;gap:14px}
+  .fnote{font-size:12px;color:var(--muted)}
+
+  /* ===== Modal ===== */
+  .overlay{position:fixed;inset:0;background:rgba(33,28,24,.5);display:none;align-items:flex-start;justify-content:center;
+    padding:34px 18px;z-index:60;overflow:auto;backdrop-filter:blur(2px)}
+  .overlay.open{display:flex}
+  .modal{background:var(--surface);border-radius:18px;max-width:780px;width:100%;box-shadow:0 18px 60px rgba(20,16,12,.3);overflow:hidden}
+  .mhead{background:linear-gradient(135deg,#352e27,#1f1b17);color:#f3ecdf;padding:19px 26px;display:flex;gap:14px;align-items:center}
+  .mhead .ava{width:44px;height:44px;font-size:15px;background:rgba(176,141,87,.25);color:#e6cfa6}
+  .mhead h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:23px;font-weight:700;margin:0}
+  .mhead .msub2{font-size:12px;color:#b5aa99;margin-top:2px}
+  .mbody{padding:20px 26px}
+  .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .mgrid .full{grid-column:1/-1}
+  .docs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface2);border:1px solid var(--line2);border-radius:10px;padding:11px 14px}
+  .docs label{font-weight:500;font-size:13px;color:var(--ink);display:flex;gap:8px;align-items:center;margin:0;text-transform:none;letter-spacing:0}
+  .docs input{width:auto;accent-color:var(--gold)}
+  .timeline{border-left:2px solid var(--gold-line);margin-left:6px;padding-left:16px;max-height:140px;overflow:auto;font-size:12.5px}
+  .timeline div{position:relative;margin:7px 0;color:#5c544a}
+  .timeline div::before{content:"";position:absolute;left:-21px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+  .timeline b{color:var(--muted);font-weight:600;font-size:11px}
+  .mfoot{display:flex;justify-content:space-between;gap:10px;padding:14px 26px 20px}
+  .verlustrow{display:none}.verlustrow.show{display:block}
+  .saluto-toggle{display:flex;align-items:center;gap:9px;background:var(--gold-soft);border:1px solid var(--gold-line);
+    border-radius:10px;padding:10px 14px;font-size:13px;font-weight:500}
+  .saluto-toggle input{width:auto;accent-color:var(--gold)}
+
+  /* ===== Intro ===== */
+  .intro-box{background:var(--surface);border-radius:18px;max-width:660px;overflow:hidden;box-shadow:0 18px 60px rgba(20,16,12,.35)}
+  .intro-head{background:linear-gradient(135deg,#352e27,#1f1b17);padding:26px 34px}
+  .intro-head .k{font-family:"Cormorant Garamond",Georgia,serif;font-size:26px;font-weight:600;color:#f3ecdf}
+  .intro-head .k b{color:var(--gold)}
+  .intro-head .s{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#8d8273;margin-top:5px}
+  .intro-body{padding:22px 34px 28px}
+  .intro-body li{margin:7px 0}
+  @media(max-width:1180px){
+    .critical-grid{grid-template-columns:1fr}
+    .cockpit-head,.idea-head,.bestand-hero{grid-template-columns:1fr;gap:12px}.cockpit-sub,.idea-head p{text-align:left}
+    .funnel-card{grid-template-columns:1fr;gap:14px}.fc-mid{order:-1}
+    .ns-grid{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:14px}
+    .ns-metric:nth-child(odd){border-left:0;padding-left:0}
+    .module-grid,.process-flow,.zmap,.help-grid,.faq-grid,.help-contact-grid,.template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .zcat-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .route-strip{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  }
+  @media(max-width:900px){aside{display:none}.fgrid,.mgrid{grid-template-columns:1fr}
+    .cockpit-title{font-size:36px}.cockpit-head{margin-top:4px}
+    .focus-list,.module-grid,.route-strip,.ns-grid,.idea-grid,.process-flow,.zmap,.zcat-grid,.stage-summaries,.help-grid,.faq-grid,.help-contact-grid,.template-grid,.flow-rail,.map-index{grid-template-columns:1fr!important}
+    .flow-node:not(:last-child)::after{display:none}
+    .ns-metric{border-left:0;border-top:1px solid var(--line2);padding:12px 0 0}.ns-metric:first-child{border-top:0;padding-top:0}
+    .idea-stage{padding:18px}.idea-title{font-size:31px}
+    .mail{align-items:flex-start}.mail .right{width:100%;margin-left:57px;flex-wrap:wrap;justify-content:flex-start}.mail{flex-wrap:wrap}
+    .top-actions{width:100%;margin-left:0}.search input{width:100%}.search{flex:1}.content{padding:4px 18px 60px}.topbar{padding:20px 18px 12px}
+  }
+</style>
+</head>
+<body>
+
+<aside>
+  <div class="brand">
+    <div class="k">KLINIK <b>BAVARIA</b></div>
+    <div class="s">SALUTO CARE · Bad Kissingen</div>
+    <div class="product"><b>Privatpatienten-Maschine</b><span>Von der Anfrage zur planbaren Aufnahme.</span></div>
+  </div>
+  <nav>
+    <div class="navlbl">Die Maschine</div>
+    <button data-tab="cockpit" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Überblick</button>
+    <button data-tab="idee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h5l3-7 3 14 3-7h2"/><circle cx="12" cy="12" r="9"/></svg>Die Idee</button>
+    <button data-tab="intelligenz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M5 8h14"/><path d="M7 16h10"/><circle cx="12" cy="8" r="3"/><circle cx="12" cy="16" r="3"/></svg>Auswertung</button>
+    <div class="navlbl">Tagesgeschäft</div>
+    <button data-tab="eingang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6l2-8z"/></svg>Anfragen<span class="pill hot" id="badgeEingang"></span></button>
+    <button data-tab="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="5" height="7" rx="1.5"/></svg>Fälle<span class="pill" id="badgeFaelle"></span></button>
+    <button data-tab="neu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Neue Anfrage</button>
+    <div class="navlbl">Netzwerk &amp; Bestand</div>
+    <button data-tab="zuweiser"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="6" r="3"/><circle cx="5" cy="18" r="3"/><circle cx="19" cy="18" r="3"/><path d="M12 9v3m0 0-5 3.5M12 12l5 3.5"/></svg>Zuweiser<span class="pill" id="badgeZuw"></span></button>
+    <button data-tab="bestand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>Altpatienten<span class="pill" id="badgeBestand"></span></button>
+    <button data-tab="kommunikation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>Prozesse / SOPs</button>
+  </nav>
+  <div class="side-foot">
+    <span class="demo-chip">Demo · synthetische Daten</span><br>
+    Interner Prototyp. Alle Daten sind erfunden.
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div><h1 id="pageTitle">Überblick</h1><div class="date" id="pageDate"></div></div>
+    <div class="top-actions">
+      <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="suche" placeholder="Suchen"></div>
+      <button class="cta" onclick="switchTab('neu')">Anfrage anlegen</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ============ COCKPIT: V4-TRICHTER-BÜHNE + PREMIUM-METRIK ============ -->
+    <section id="tab-cockpit" class="active">
+      <div class="cockpit-head">
+        <div>
+          <div class="kicker">PATIENTENAKQUISE-MASCHINE</div>
+          <h2 class="cockpit-title">Aus Quellen wird planbare Belegung.</h2>
+        </div>
+        <p class="cockpit-sub">Der Überblick zeigt die aktive Maschine. Die Idee dahinter erklärt der nächste Bereich.</p>
+      </div>
+      <div class="funnel-stage">
+        <svg id="strom" viewBox="0 0 1180 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der eine Trichter, Ergebnis">
+          <defs>
+            <linearGradient id="funnelWash" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#b08d57" stop-opacity=".07"/>
+              <stop offset="1" stop-color="#b08d57" stop-opacity=".23"/>
+            </linearGradient>
+            <linearGradient id="ggold" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#c9a36b"/><stop offset="1" stop-color="#9a7745"/>
+            </linearGradient>
+            <clipPath id="trichterClip"><path d="M470,84 C600,92 720,132 812,156 L812,244 C720,268 600,308 470,316 Z"/></clipPath>
+          </defs>
+
+          <text class="fn-cap" x="128" y="24" text-anchor="middle">QUELLEN</text>
+          <text class="fn-cap" x="640" y="24" text-anchor="middle">DER EINE TRICHTER</text>
+          <text class="fn-cap" x="1052" y="24" text-anchor="middle">ERGEBNIS</text>
+
+          <g class="fn-click" onclick="switchTab('zuweiser')">
+            <rect class="pill" x="16" y="42" width="238" height="42" rx="10" fill="transparent"/>
+            <text class="fn-lab" x="24" y="70">Krankenhäuser</text>
+            <text class="fn-num" x="232" y="72" text-anchor="end" font-size="25" id="q1"></text>
+            <line class="fn-hair" x1="24" y1="82" x2="246" y2="82"/>
+            <text class="fn-chev" x="240" y="72">›</text>
+          </g>
+          <g class="fn-click" onclick="switchTab('zuweiser')">
+            <rect class="pill" x="16" y="104" width="238" height="42" rx="10" fill="transparent"/>
+            <text class="fn-lab" x="24" y="132">Privatpraxen</text>
+            <text class="fn-num" x="232" y="134" text-anchor="end" font-size="25" id="q2"></text>
+            <line class="fn-hair" x1="24" y1="144" x2="246" y2="144"/>
+            <text class="fn-chev" x="240" y="134">›</text>
+          </g>
+          <g class="fn-click" onclick="switchTab('zuweiser')">
+            <rect class="pill" x="16" y="166" width="238" height="42" rx="10" fill="transparent"/>
+            <text class="fn-lab" x="24" y="194">Hausärzte</text>
+            <text class="fn-num" x="232" y="196" text-anchor="end" font-size="25" id="q3"></text>
+            <line class="fn-hair" x1="24" y1="206" x2="246" y2="206"/>
+            <text class="fn-chev" x="240" y="196">›</text>
+          </g>
+          <g class="fn-click" onclick="switchTab('bestand')">
+            <rect class="pill" x="16" y="228" width="238" height="42" rx="10" fill="transparent"/>
+            <text class="fn-lab" x="24" y="256">Altpatienten</text>
+            <text class="fn-num" x="232" y="258" text-anchor="end" font-size="25" id="q4"></text>
+            <line class="fn-hair" x1="24" y1="268" x2="246" y2="268"/>
+            <text class="fn-chev" x="240" y="258">›</text>
+          </g>
+          <g class="fn-click" onclick="switchTab('zuweiser')">
+            <rect class="pill" x="16" y="290" width="238" height="42" rx="10" fill="transparent"/>
+            <text class="fn-lab" x="24" y="318">Premium-Netzwerke</text>
+            <text class="fn-num" x="232" y="320" text-anchor="end" font-size="25" id="q5"></text>
+            <line class="fn-hair" x1="24" y1="330" x2="246" y2="330"/>
+            <text class="fn-chev" x="240" y="320">›</text>
+          </g>
+
+          <path class="fn-link" d="M260,66 C326,66 382,106 468,112"/>
+          <path class="fn-link" d="M260,128 C326,128 382,148 468,156"/>
+          <path class="fn-link" d="M260,190 C326,190 382,190 468,200"/>
+          <path class="fn-link" d="M260,252 C326,252 382,232 468,244"/>
+          <path class="fn-link" d="M260,314 C326,314 382,274 468,288"/>
+
+          <path d="M470,84 C600,92 720,132 812,156 L812,244 C720,268 600,308 470,316 Z"
+                fill="url(#funnelWash)" stroke="#d9c6a4" stroke-width="1.2"/>
+          <path d="M584,100 L584,300" stroke="#c9b48b" stroke-width="1" opacity=".45"/>
+          <path d="M698,126 L698,274" stroke="#c9b48b" stroke-width="1" opacity=".45"/>
+          <text class="fn-num" x="527" y="178" text-anchor="middle" font-size="42" id="zc0"></text>
+          <text class="fn-stage" x="527" y="206" text-anchor="middle"><tspan x="527" dy="0">neu &amp;</tspan><tspan x="527" dy="17">kontaktiert <tspan fill="#b08d57">›</tspan></tspan></text>
+          <text class="fn-num" x="641" y="178" text-anchor="middle" font-size="42" id="zc1"></text>
+          <text class="fn-stage" x="641" y="223" text-anchor="middle">in Klärung <tspan fill="#b08d57">›</tspan></text>
+          <text class="fn-num" x="755" y="178" text-anchor="middle" font-size="42" id="zc2"></text>
+          <text class="fn-stage" x="755" y="206" text-anchor="middle"><tspan x="755" dy="0">Aufnahme</tspan><tspan x="755" dy="17">geplant <tspan fill="#b08d57">›</tspan></tspan></text>
+          <g class="fn-click stage-hit" clip-path="url(#trichterClip)" onclick="openStage(0)">
+            <rect class="pulse0" x="470" y="88" width="114" height="222"/>
+            <title>Fälle: neu und kontaktiert anzeigen</title>
+          </g>
+          <g class="fn-click stage-hit" clip-path="url(#trichterClip)" onclick="openStage(1)">
+            <rect class="pulse1" x="584" y="106" width="114" height="188"/>
+            <title>Fälle in Klärung anzeigen</title>
+          </g>
+          <g class="fn-click stage-hit" clip-path="url(#trichterClip)" onclick="openStage(2)">
+            <rect class="pulse2" x="698" y="132" width="114" height="136"/>
+            <title>Geplante Aufnahmen anzeigen</title>
+          </g>
+          <g id="stockBadge" class="stock-badge" onclick="switchTab('faelle')" transform="translate(641 252)" style="display:none">
+            <title id="stockTitle"></title><circle cx="-36" cy="-4" r="4"/><text id="stockText" x="-26" y="0"></text>
+          </g>
+
+          <path class="fn-link" d="M812,176 C868,166 884,112 936,106"/>
+          <path class="fn-link" d="M812,200 C860,200 884,200 936,200"/>
+          <path class="fn-link" d="M812,224 C868,234 884,288 936,294"/>
+
+          <g class="fn-click" onclick="switchTab('intelligenz')">
+            <rect class="pill" x="940" y="74" width="236" height="250" rx="12" fill="transparent"/>
+            <text class="fn-lab" x="948" y="100">Aufnahmen</text>
+            <text class="fn-num" x="1156" y="104" text-anchor="end" font-size="27" id="r1"></text>
+            <line class="fn-hair" x1="948" y1="118" x2="1156" y2="118"/>
+            <text class="fn-lab" x="948" y="194">Privatauslastung</text>
+            <text class="fn-num" x="1156" y="200" text-anchor="end" font-size="27">78 %</text>
+            <line class="fn-hair" x1="948" y1="214" x2="1156" y2="214"/>
+            <text class="fn-lab" x="948" y="286">Verloren · gelernt</text>
+            <text class="fn-num" x="1156" y="292" text-anchor="end" font-size="27" id="r3"></text>
+            <line class="fn-hair" x1="948" y1="306" x2="1156" y2="306"/>
+            <text class="fn-chev" x="1164" y="104">›</text>
+            <text class="fn-chev" x="1164" y="200">›</text>
+            <text class="fn-chev" x="1164" y="292">›</text>
+          </g>
+
+          <path d="M1052,326 C920,376 400,382 258,334" fill="none" stroke="#b08d57" stroke-width="1.1" stroke-dasharray="2 6" opacity=".45"/>
+          <path d="M269,328 L257,334 L268,341" fill="none" stroke="#c9b695" stroke-width="1.3" stroke-linecap="round"/>
+          <text class="fn-note" x="640" y="374" text-anchor="middle">Verlustgründe und Rückmeldungen fließen zurück in Quellen, Team und Prozesse.</text>
+
+          <circle cx="260" cy="66" r="3.5" class="fn-dot"><animateMotion dur="7.5s" repeatCount="indefinite" path="M0,0 C76,0 130,40 208,46"/></circle>
+          <circle cx="260" cy="190" r="3.5" class="fn-dot" opacity=".45"><animateMotion dur="10s" begin="2.5s" repeatCount="indefinite" path="M0,0 C76,0 130,0 208,10"/></circle>
+          <circle cx="260" cy="314" r="3.5" class="fn-dot" opacity=".45"><animateMotion dur="9s" begin="5s" repeatCount="indefinite" path="M0,0 C76,0 130,-40 208,-26"/></circle>
+          <circle cx="812" cy="200" r="3.5" fill="#9a7745" opacity=".5"><animateMotion dur="6s" begin="1s" repeatCount="indefinite" path="M0,0 C48,0 72,0 124,0"/></circle>
+        </svg>
+      </div>
+      <div class="ns-band">
+        <div class="ns-head"><span class="kicker">NORDSTERN · PLANBARE PRIVATAUSLASTUNG</span><span>Demo-Daten · Stand heute</span></div>
+        <div class="ns-grid">
+          <div class="ns-metric feature">
+            <div class="ns-label">Privatbetten belegt</div>
+            <div class="ns-primary"><b>31 / 40</b><span>Betten</span></div>
+            <div class="ns-sub">78% Privatauslastung · Ziel 90%+</div>
+            <div class="ns-meter"><span></span></div>
+          </div>
+          <div class="ns-metric">
+            <div class="ns-label">Belegungsvorlauf</div>
+            <div class="ns-primary"><b id="nsVorlauf">9</b><span>Tage</span><span id="plusTagH"></span></div>
+            <div class="ns-sub">Ziel: 21 Tage im Voraus</div>
+          </div>
+          <div class="ns-metric">
+            <div class="ns-label">Ø Erstreaktion</div>
+            <div class="ns-primary" id="nsRz"></div>
+            <div class="ns-sub">Ziel: unter 24 Stunden</div>
+          </div>
+          <div class="ns-metric">
+            <div class="ns-label">Anfrage &rarr; Aufnahme</div>
+            <div class="ns-primary" id="nsConv"></div>
+            <div class="ns-sub" id="nsConvSub"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TRICHTER DETAIL ============ -->
+    <section id="tab-trichter">
+      <div class="detail-hero">
+        <div class="kicker" id="stageKicker">TRICHTER-STUFE</div>
+        <h2 id="stageTitle">Fälle im Trichter</h2>
+        <p id="stageText"></p>
+        <div class="stage-summaries" id="stageSummaries"></div>
+      </div>
+      <div class="lbl" id="stageListLabel">Fälle</div>
+      <div class="case-grid" id="stageCases"></div>
+    </section>
+
+    <!-- ============ DIE IDEE ============ -->
+    <section id="tab-idee">
+      <div class="idea-stage">
+        <div class="idea-head">
+          <div>
+            <div class="kicker">DIE LOGIK DER SOFTWARE</div>
+            <h2 class="idea-title">Eine Drehscheibe für Privatpatienten.</h2>
+          </div>
+          <p>Die Software verbindet Markt, Klinikalltag und Belegung. Sie macht sichtbar, wo Patienten entstehen, wer sie führt und was aus jedem Fall gelernt wird.</p>
+        </div>
+        <svg class="idea-map" viewBox="0 0 1180 410" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Drehscheibe zwischen Quellen, Software und Klinikprozessen">
+          <defs>
+            <linearGradient id="ideaHub" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fffaf0"/>
+              <stop offset="1" stop-color="#ead6b5"/>
+            </linearGradient>
+            <marker id="ideaArrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#b08d57"/>
+            </marker>
+          </defs>
+          <rect x="40" y="78" width="285" height="232" rx="18" fill="#fffdf9" stroke="#e9e2d7"/>
+          <rect x="430" y="48" width="320" height="292" rx="24" fill="url(#ideaHub)" stroke="#c9b48b"/>
+          <rect x="855" y="78" width="285" height="232" rx="18" fill="#fffdf9" stroke="#e9e2d7"/>
+
+          <path d="M325,165 C370,148 394,134 430,132" fill="none" stroke="#b08d57" stroke-width="2" marker-end="url(#ideaArrow)"/>
+          <path d="M430,258 C382,280 360,292 325,292" fill="none" stroke="#d9c6a4" stroke-width="2" marker-end="url(#ideaArrow)"/>
+          <path d="M750,132 C792,134 815,148 855,165" fill="none" stroke="#b08d57" stroke-width="2" marker-end="url(#ideaArrow)"/>
+          <path d="M855,292 C812,292 790,278 750,258" fill="none" stroke="#d9c6a4" stroke-width="2" marker-end="url(#ideaArrow)"/>
+          <path d="M830,332 C690,392 488,384 340,330" fill="none" stroke="#b08d57" stroke-opacity=".45" stroke-width="1.5" stroke-dasharray="3 7" marker-end="url(#ideaArrow)"/>
+
+          <text class="imap-cap" x="182" y="120" text-anchor="middle">AUSSEN</text>
+          <text class="imap-main" x="182" y="155" text-anchor="middle">Quellen aktivieren</text>
+          <text class="imap-line" x="182" y="195" text-anchor="middle">Zuweiser-Netzwerk</text>
+          <text class="imap-line" x="182" y="225" text-anchor="middle">Altpatienten-Bestand</text>
+          <text class="imap-line" x="182" y="255" text-anchor="middle">Premium-Kanäle</text>
+
+          <text class="imap-cap" x="590" y="102" text-anchor="middle">DIE SOFTWARE</text>
+          <text class="imap-main" x="590" y="142" text-anchor="middle">Der eine Trichter</text>
+          <text class="imap-line" x="590" y="185" text-anchor="middle">erfassen</text>
+          <text class="imap-line" x="590" y="215" text-anchor="middle">führen</text>
+          <text class="imap-line" x="590" y="245" text-anchor="middle">lernen</text>
+          <text class="imap-soft" x="590" y="295" text-anchor="middle">Aus jedem Signal wird Steuerung.</text>
+
+          <text class="imap-cap" x="998" y="120" text-anchor="middle">INNEN</text>
+          <text class="imap-main" x="998" y="155" text-anchor="middle">Klinik steuerbar machen</text>
+          <text class="imap-line" x="998" y="195" text-anchor="middle">Prozesse</text>
+          <text class="imap-line" x="998" y="225" text-anchor="middle">Belegung</text>
+          <text class="imap-line" x="998" y="255" text-anchor="middle">SalutoCare-Routing</text>
+        </svg>
+      </div>
+      <div class="idea-grid">
+        <div class="idea-block">
+          <h3>Mehr Fälle</h3>
+          <p>Alle Quellen laufen in einen Eingang. Zuweiser, Direktanfragen, Altpatienten und Premium-Kanäle werden nicht getrennt gedacht.</p>
+        </div>
+        <div class="idea-block">
+          <h3>Verlässlichkeit</h3>
+          <p>Jeder Fall hat eine zuständige Person, einen nächsten Schritt und eine Frist. Verlustgründe sind Pflicht, damit nichts still verschwindet.</p>
+        </div>
+        <div class="idea-block">
+          <h3>Planbarkeit</h3>
+          <p>Der Belegungsvorlauf wird sichtbar und steigt mit jeder geplanten Aufnahme. Rückmeldungen fließen in Quellen und Prozesse zurück.</p>
+        </div>
+      </div>
+      <div class="legal idea-gate"><b>Kontaktfreigabe &amp; Datenschutz:</b> Aktive Ansprache, Newsletter und automatisierte E-Mails sind erst nach dokumentierter Freigabe vorgesehen. Der Prototyp nutzt ausschließlich synthetische Demo-Daten und zeigt die Systemlogik.</div>
+    </section>
+
+    <!-- ============ EINGANG ============ -->
+    <section id="tab-eingang">
+      <div class="lbl">Ein Eingang für alle Kanäle · Telefon, E-Mail, Website, Zuweiser, Recare, Premium</div>
+      <div class="inbox" id="inbox"></div>
+    </section>
+
+    <!-- ============ FÄLLE ============ -->
+    <section id="tab-faelle">
+      <div class="lbl">Fall-Board · Karte anklicken zum Öffnen</div>
+      <div class="board-focus" id="boardFocus"></div>
+      <div class="board" id="board"></div>
+    </section>
+
+    <!-- ============ NEU ============ -->
+    <section id="tab-neu">
+      <div class="lbl">Anfrage manuell erfassen (z. B. Telefonnotiz)</div>
+      <div class="formcard">
+        <form id="formNeu">
+          <div class="fgrid">
+            <div><label>Name (Patient)</label><input id="fName" placeholder="z. B. Anna Muster" required></div>
+            <div><label>Alter</label><input id="fAlter" type="number" min="18" max="105" placeholder="z. B. 67"></div>
+            <div><label>Wer meldet sich?</label><select id="fRolle"><option>Patient selbst</option><option>Angehörige</option><option>Zuweiser</option></select></div>
+            <div><label>Eingangskanal</label><select id="fKanal"><option>Telefon</option><option>E-Mail</option><option>Website-Formular</option><option>Zuweiser direkt</option><option>Recare</option><option>PRIMO MEDICO</option><option>Empfehlung</option></select></div>
+            <div class="full"><label>Quelle konkret (wer / woher)</label><input id="fQuelle" placeholder="z. B. Leopoldina Schweinfurt, Sozialdienst"></div>
+            <div><label>Achse</label><select id="fAchse"><option>Unklar</option><option>Orthopädie</option><option>Neurologie</option><option>Geriatrie</option><option>Innere</option><option>SalutoCare</option></select></div>
+            <div><label>Kostenträger</label><select id="fKT"><option>Unklar</option><option>PKV</option><option>Beihilfe</option><option>Selbstzahler</option><option>GKV + Komfort</option></select></div>
+            <div><label>Verantwortlich</label><select id="fOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
+            <div><label>Frist Erstreaktion</label><input id="fFrist" type="date"></div>
+            <div class="full"><label>Anliegen / Notiz</label><textarea id="fNotiz" placeholder="Kurz: worum geht es?"></textarea></div>
+            <div class="full"><label>Einwilligung Kontaktaufnahme</label><select id="fConsent"><option>mündlich erteilt</option><option>schriftlich liegt vor</option><option>offen</option></select></div>
+          </div>
+          <div class="fsub">
+            <button class="cta" type="submit">Als Fall anlegen</button>
+            <span class="fnote">Landet sofort als "Neu" im Fall-Board.</span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ BESTAND ============ -->
+    <section id="tab-bestand">
+      <div class="bestand-hero">
+        <div>
+          <div class="kicker">ALTPATIENTEN · BEZIEHUNGSGEDÄCHTNIS</div>
+          <h2>Aus Entlassungen werden warme Beziehungen.</h2>
+          <p>Altpatienten sind kein Archiv, sondern ein steuerbarer Bestand: Wer darf kontaktiert werden, wer braucht Wiedervorlage, wo entsteht SalutoCare-Potenzial?</p>
+        </div>
+        <div class="bestand-stats" id="bestandStats"></div>
+      </div>
+      <div class="lbl">Kontaktfähige Beziehungen · Wiedervorlagen · gesperrte Kontakte</div>
+      <div class="legal"><b>Kontaktfreigabe &amp; Datenschutz:</b> Aktive Ansprache erst nach dokumentierter Freigabe (Einwilligungen, Datenschutz; prüfpflichtig). Der Prototyp zeigt die Logik: Wer eine Einwilligung hat, bekommt Nachsorge-Angebote und Wiedervorlagen. Wer keine hat, bleibt gesperrt.</div>
+      <div class="bestand-grid" id="btable"></div>
+    </section>
+
+    <!-- ============ ZUWEISER ============ -->
+    <section id="tab-zuweiser">
+      <div class="lbl">Zuweiser-Netzwerk · zuerst Kategorien, dann Kontakte und nächste Aktion</div>
+      <div class="zcat-grid" id="zcatgrid"></div>
+      <div class="zmap" id="zmap"></div>
+      <div class="zgrid" id="zgrid"></div>
+    </section>
+
+    <!-- ============ PROZESSE / SOPS ============ -->
+    <section id="tab-kommunikation">
+      <div class="lbl">Prozesse / SOPs · interner Hilfe- und Nachschlagebereich</div>
+      <div class="legal"><b>Demo-Logik:</b> Dieser Bereich zeigt Prozesswissen, Ansprechpartner und Vorlagen. Er ist als interne Hilfe gedacht, nicht als echte Versandsoftware. Jede aktive Kommunikation bleibt an Kontaktfreigabe und Zweckbindung gebunden.</div>
+      <div class="process-flow">
+        <div class="process-card">
+          <h3>Aufnahmeprozess</h3>
+          <p>Vom ersten Signal bis zur sauberen Fallübergabe: eine einfache Kette, die Verantwortung, Unterlagen und Fristen sichtbar hält.</p>
+          <div class="process-steps">
+            <div class="pstep"><b>1</b><div><span>Anfrage aufnehmen</span><small>Kanal, Quelle, Patient, Kostenträger und Kontaktstatus erfassen.</small></div></div>
+            <div class="pstep"><b>2</b><div><span>Fall führen</span><small>Verantwortliche Person, nächste Aufgabe und Frist sind immer sichtbar.</small></div></div>
+            <div class="pstep"><b>3</b><div><span>Aufnahme planen</span><small>Kosten, Unterlagen, Bett und Fachbereich werden in einem Status verdichtet.</small></div></div>
+          </div>
+        </div>
+        <div class="process-card">
+          <h3>Beziehungs-SOP</h3>
+          <p>Zuweiser und Altpatienten werden nicht nebenbei gepflegt, sondern als strategische Aufgaben mit sauberer Freigabe geführt.</p>
+          <div class="process-steps">
+            <div class="pstep"><b>1</b><div><span>Kontakt bewerten</span><small>Partnergruppe, Relevanz, letzter Kontakt und nächster Schritt.</small></div></div>
+            <div class="pstep"><b>2</b><div><span>Kontaktfreigabe prüfen</span><small>Aktive Ansprache nur bei dokumentierter Erlaubnis und Zweckbindung.</small></div></div>
+            <div class="pstep"><b>3</b><div><span>Lernen zurückspielen</span><small>Verlustgründe, Engpässe und gute Quellen fließen ins Management zurück.</small></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="lbl">Ablaufdiagramme · was passiert in welcher Reihenfolge?</div>
+      <div class="help-grid">
+        <div class="flow-card">
+          <h3>Pfad: Anfrage bis Aufnahme</h3>
+          <div class="flow-rail">
+            <div class="flow-node"><b>1</b><span>Signal</span><small>Telefon, Website, Zuweiser, Altpatient.</small></div>
+            <div class="flow-node"><b>2</b><span>Klärung</span><small>Unterlagen, Eignung, Kosten, Kontaktfreigabe.</small></div>
+            <div class="flow-node"><b>3</b><span>Planung</span><small>Bett, Fachbereich, Transport, Angehörige.</small></div>
+            <div class="flow-node"><b>4</b><span>Lernen</span><small>Quelle, Verlustgrund oder Erfolg zurückspielen.</small></div>
+          </div>
+        </div>
+        <div class="flow-card">
+          <h3>Pfad: Problem lösen</h3>
+          <div class="flow-rail">
+            <div class="flow-node"><b>A</b><span>Blocker</span><small>Was fehlt gerade?</small></div>
+            <div class="flow-node"><b>B</b><span>Owner</span><small>Wer kann es entscheiden?</small></div>
+            <div class="flow-node"><b>C</b><span>Vorlage</span><small>Welche Nachricht passt?</small></div>
+            <div class="flow-node"><b>D</b><span>Notiz</span><small>Fallverlauf dokumentieren.</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="lbl">Schnellzugriff · interne SOP-Bibliothek</div>
+      <div class="module-grid">
+        <div class="module-card accent">
+          <h3>Erstreaktion</h3>
+          <p>Rückruf, Unterlagenanforderung und erste Einordnung ohne Medienbruch.</p>
+          <div class="pill-row"><span class="soft-pill ok">Frist</span><span class="soft-pill">Verantwortung</span></div>
+          <div class="module-stat">24h</div><div class="module-note">Ziel für Erstkontakt</div>
+        </div>
+        <div class="module-card">
+          <h3>Unterlagen</h3>
+          <p>Entlassbrief, Befunde, Versicherungsdaten und Kostenzusage als klare Checkliste.</p>
+          <div class="pill-row"><span class="soft-pill warn">Blocker</span><span class="soft-pill">Checkliste</span></div>
+          <div class="module-stat">4</div><div class="module-note">Pflichtpunkte im Fall</div>
+        </div>
+        <div class="module-card">
+          <h3>Kontaktfreigabe</h3>
+          <p>Einwilligung, Zweckbindung und Sperrstatus werden als sichtbarer Systemstatus geführt.</p>
+          <div class="pill-row"><span class="soft-pill ok">freigegeben</span><span class="soft-pill warn">prüfen</span></div>
+          <div class="module-stat" id="commConsent"></div><div class="module-note">kontaktfähige Demo-Kontakte</div>
+        </div>
+        <div class="module-card">
+          <h3>Zuweiser-Service</h3>
+          <p>Rückmeldung, Dank, Ansprechpartner und klare Erwartungen je Partnergruppe.</p>
+          <div class="pill-row"><span class="soft-pill">Krankenhaus</span><span class="soft-pill">Praxis</span></div>
+          <div class="module-stat">5</div><div class="module-note">Partnergruppen</div>
+        </div>
+      </div>
+      <div class="lbl">FAQ · häufige Fragen im Alltag</div>
+      <div class="faq-grid">
+        <div class="faq-card"><h3>Was tun, wenn Unterlagen fehlen?</h3><p>Im Fall als Blocker markieren, passende Unterlagen-Vorlage nutzen und Frist setzen. Der Fall bleibt sichtbar, bis die Checkliste vollständig ist.</p></div>
+        <div class="faq-card"><h3>Wann darf aktiv kontaktiert werden?</h3><p>Nur wenn Einwilligung und Zweck dokumentiert sind. Ohne Kontaktfreigabe bleibt der Kontakt gesperrt und es wird keine Ansprache ausgelöst.</p></div>
+        <div class="faq-card"><h3>Wer entscheidet bei Kostenfragen?</h3><p>Abrechnung übernimmt PKV, Beihilfe und Selbstzahler-Klärung. Der Fall bleibt in Klärung, bis Kostenstatus eindeutig ist.</p></div>
+        <div class="faq-card"><h3>Wie wird aus einem Verlust gelernt?</h3><p>Verlustgrund verpflichtend dokumentieren. Die Auswertung zeigt später, ob Wartezeit, Kapazität, Kosten oder Unterlagen wiederholt bremsen.</p></div>
+      </div>
+      <div class="lbl">Interne Ansprechpartner · wenn es stockt</div>
+      <div class="help-contact-grid">
+        <div class="help-contact"><div class="role">Patientenkoordination</div><h3>S. Koordination</h3><div class="phone">100</div><p>Erstreaktion, Angehörige, Unterlagenanforderung, Fristen.</p></div>
+        <div class="help-contact"><div class="role">Belegung</div><h3>M. Belegung</h3><div class="phone">120</div><p>Bett, Fachbereich, Aufnahmedatum, Transportabstimmung.</p></div>
+        <div class="help-contact"><div class="role">Technik-Hotline</div><h3>Patienten-OS Support</h3><div class="phone">199</div><p>Login, Bedienung, Datenfehler, technische Rückfragen.</p></div>
+      </div>
+      <div class="lbl">Vorlagen · Kommunikation vorbereiten</div>
+      <div class="template-grid">
+        <div class="template-card"><div class="role">Patient / Angehörige</div><h3>Unterlagen anfordern</h3><p>Freundliche Checkliste: Entlassbrief, Befunde, Versicherungsdaten, Kostenzusage.</p><div class="pill-row"><span class="soft-pill">E-Mail</span><span class="soft-pill ok">freigabepflichtig</span></div></div>
+        <div class="template-card"><div class="role">Zuweiser</div><h3>Status-Rückmeldung</h3><p>Kurze Rückmeldung zu Übernahmefähigkeit, nächstem Schritt und fester Ansprechperson.</p><div class="pill-row"><span class="soft-pill">Partnerpflege</span><span class="soft-pill gold">Premium</span></div></div>
+        <div class="template-card"><div class="role">Altpatient</div><h3>Nachsorge vormerken</h3><p>Nur bei Kontaktfreigabe: freiwillige Wiedervorlage, Jahres-Check oder SalutoCare-Nachsorge.</p><div class="pill-row"><span class="soft-pill ok">Kontaktfreigabe</span><span class="soft-pill">Wiedervorlage</span></div></div>
+      </div>
+    </section>
+
+    <!-- ============ AUSWERTUNG ============ -->
+    <section id="tab-intelligenz">
+      <div class="lbl">Auswertung · Quellen, Engpässe, Team und Fachbereiche</div>
+      <div class="charts analysis-charts">
+        <div class="chart"><h3>Von Anfrage zu Aufnahme</h3><div class="donut-wrap"><svg id="donut" width="116" height="116" viewBox="0 0 120 120"></svg><div class="donut-leg" id="donutLeg"></div></div></div>
+        <div class="chart"><h3>Woher kommen Patienten?</h3><div id="chartQuelle"></div></div>
+        <div class="chart"><h3>Warum gehen Fälle verloren?</h3><div id="chartVerlust"></div></div>
+        <div class="chart"><h3>Wer führt wie viele Fälle?</h3><div id="chartTeam"></div></div>
+        <div class="chart"><h3>Wo stockt es?</h3><div id="chartEngpass"></div></div>
+        <div class="chart"><h3>Welche Fachbereiche?</h3><div id="chartAchse"></div></div>
+      </div>
+      <div class="lbl">Was die Maschine daraus macht</div>
+      <div class="module-grid">
+        <div class="module-card accent">
+          <h3>Nichts geht unter</h3>
+          <p>Neue Anfragen, offene Fristen und blockierte Fälle werden sichtbar, bevor sie im Alltag untergehen.</p>
+          <div class="pill-row"><span class="soft-pill ok">Frist</span><span class="soft-pill">Verantwortung</span><span class="soft-pill">Blocker</span></div>
+          <div class="module-stat" id="autoSignals"></div><div class="module-note">aktive Signale</div>
+        </div>
+        <div class="module-card">
+          <h3>Team steuern</h3>
+          <p>Die Leitung sieht, wo Arbeit liegt: Koordination, Belegung, Abrechnung oder Recovery Manager.</p>
+          <div class="pill-row"><span class="soft-pill gold">Premium</span><span class="soft-pill ok">Zuweiser</span></div>
+          <div class="module-stat" id="autoPremium"></div><div class="module-note">Premium-Signale</div>
+        </div>
+        <div class="module-card">
+          <h3>Aus Verlusten lernen</h3>
+          <p>Verlustgründe und Blocker werden zur Management-Information: Wartezeit, Kosten, Unterlagen, Rückmeldung, Kapazität.</p>
+          <div class="pill-row"><span class="soft-pill warn">Kosten</span><span class="soft-pill">Unterlagen</span><span class="soft-pill">Kapazität</span></div>
+          <div class="module-stat" id="autoLoss"></div><div class="module-note">verlorene Demo-Fälle</div>
+        </div>
+        <div class="module-card">
+          <h3>Kontaktfreigabe</h3>
+          <p>Einwilligungen, Angehörigenkontakt und aktive Ansprache werden nicht versteckt, sondern als Systemstatus geführt.</p>
+          <div class="pill-row"><span class="soft-pill ok">freigegeben</span><span class="soft-pill warn">prüfen</span><span class="soft-pill">gesperrt</span></div>
+          <div class="module-stat" id="autoConsent"></div><div class="module-note">freigegebene Demo-Kontakte</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- Fall-Detail -->
+<div class="overlay" id="ovDetail">
+  <div class="modal">
+    <div class="mhead">
+      <div class="ava" id="dAva"></div>
+      <div><h2 id="dName"></h2><div class="msub2" id="dSub"></div></div>
+    </div>
+    <div class="mbody">
+      <div class="mgrid">
+        <div><label>Status</label><select id="dStatus"></select></div>
+        <div><label>Verantwortlich</label><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
+        <div><label>Nächste Aufgabe</label><input id="dAufgabe"></div>
+        <div><label>Frist</label><input id="dFrist" type="date"></div>
+        <div><label>Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option></select></div>
+        <div><label>Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
+        <div class="full"><label>Unterlagen <span id="docCnt" style="color:var(--gold-deep)"></span></label>
+          <div class="docs">
+            <label><input type="checkbox" id="u1"> Entlassbrief</label>
+            <label><input type="checkbox" id="u2"> Befunde</label>
+            <label><input type="checkbox" id="u3"> Versicherungsdaten</label>
+            <label><input type="checkbox" id="u4"> Kostenzusage</label>
+          </div>
+        </div>
+        <div class="full"><div class="saluto-toggle"><input type="checkbox" id="dSaluto"><span>★ Für <b>SalutoCare</b> geeignet · Premium-Option aktiv anbieten</span></div></div>
+        <div class="full verlustrow" id="rowVerlust"><label>Verlustgrund (Pflicht bei "Verloren")</label>
+          <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
+        </div>
+        <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
+        <div class="full"><label>Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="cta ghost" id="dAbbruch">Schließen</button>
+      <button class="cta" id="dSpeichern">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- Intro -->
+<div class="overlay open" id="ovIntro">
+  <div class="intro-box">
+    <div class="intro-head">
+      <div class="k">KLINIK <b>BAVARIA</b> · Privatpatienten-Maschine</div>
+      <div class="s">Klick-Prototyp · Produktvision</div>
+    </div>
+    <div class="intro-body">
+      <p>Dieser Prototyp zeigt die Privatpatienten- und Selbstzahler-Maschine als hochwertiges Software-Zielbild:</p>
+      <ul>
+        <li><b>Quellen bündeln:</b> Zuweiser, Direktanfragen, Altpatienten, Angehörige, Empfehlungen und SalutoCare laufen in einen gemeinsamen Trichter.</li>
+        <li><b>Maschine sichtbar machen:</b> Der Überblick zeigt auf einen Blick, wie aus Quellen Fälle und aus Fällen planbare Auslastung wird.</li>
+        <li><b>Beziehungen speichern:</b> Zuweiser und Altpatienten werden als strategisches Gedächtnis geführt, nicht als lose Listen.</li>
+        <li><b>Prozesse mit Kontaktfreigabe:</b> Nachsorge, Rückmeldungen und aktive Ansprache sind nur mit dokumentierter Freigabe vorgesehen.</li>
+        <li><b>Steuerung:</b> Auslastung, Anfrage-zu-Aufnahme, Verlustgründe und SalutoCare-Potenzial werden managementfähig.</li>
+      </ul>
+      <p style="color:var(--muted);font-size:13px"><b>Alle Daten sind frei erfunden.</b> Änderungen leben nur in diesem Browserfenster.</p>
+      <button class="cta" onclick="document.getElementById('ovIntro').classList.remove('open')">Prototyp öffnen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STATUS=["Neu","Kontaktiert","Qualifizierung","Unterlagen","Aufnahme geplant","Aufgenommen","Verloren"];
+const STATUS_COL={"Neu":"#b08d57","Kontaktiert":"#5b7a99","Qualifizierung":"#c08a3e","Unterlagen":"#9a8d77","Aufnahme geplant":"#7a9471","Aufgenommen":"#6f9468","Verloren":"#b3543f"};
+const ACHSE_COL={"Orthopädie":"var(--ortho)","Neurologie":"var(--neuro)","Geriatrie":"var(--geri)","Innere":"var(--innere)","SalutoCare":"var(--saluto)","Unklar":"var(--unklar)"};
+const heute=new Date();
+function dstr(o){const d=new Date(heute);d.setDate(d.getDate()+o);return d.toISOString().slice(0,10);}
+function initialen(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();}
+
+/* ---------- Daten (synthetisch) ---------- */
+let faelle=[
+ {id:1,name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]]},
+ {id:2,name:"Karl Beispiel",alter:74,rolle:"Zuweiser",kanal:"Telefon",quelle:"Leopoldina Schweinfurt, Privatstation",achse:"Orthopädie",kt:"PKV",status:"Neu",owner:"M. Belegung",aufgabe:"Eignungs-Kurzcheck",frist:dstr(1),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,log:[[dstr(0),"Anruf Privatstation: Hüft-TEP, Entlassung in 5 Tagen"]]},
+ {id:3,name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"]]},
+ {id:4,name:"Werner Adler",alter:81,rolle:"Angehörige",kanal:"Empfehlung",quelle:"Empfehlung ehemaliger Patient",achse:"Geriatrie",kt:"Beihilfe",status:"Kontaktiert",owner:"T. Abrechnung",aufgabe:"Beihilfe-Unterlagen erklären",frist:dstr(-1),saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:5,log:[[dstr(-3),"Tochter ruft an, Vater nach Sturz"],[dstr(-2),"Beratungsgespräch geführt"]]},
+ {id:5,name:"Sofia Lehmann",alter:52,rolle:"Zuweiser",kanal:"PRIMO MEDICO",quelle:"PRIMO MEDICO Anfrage",achse:"SalutoCare",kt:"Selbstzahler",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Ärztliches Vorgespräch terminieren",frist:dstr(1),saluto:true,docs:[true,true,false,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-4),"Premium-Anfrage international"],[dstr(-3),"Recovery Manager übernimmt, Erstgespräch geführt"]]},
+ {id:6,name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(0),saluto:true,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss"],[dstr(-4),"Med. Rückfrage an Oberarzt"]]},
+ {id:7,name:"Gisela Brandt",alter:71,rolle:"Patient selbst",kanal:"E-Mail",quelle:"Hausarzt Dr. Sommer, Bad Kissingen",achse:"Innere",kt:"PKV",status:"Unterlagen",owner:"T. Abrechnung",aufgabe:"Kostenzusage PKV nachfassen",frist:dstr(3),saluto:false,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-7),"Mail-Anfrage"],[dstr(-5),"Unterlagen angefordert"],[dstr(-2),"Befunde eingegangen"]]},
+ {id:8,name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage"],[dstr(-4),"Entlassbrief liegt vor"]]},
+ {id:9,name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]]},
+ {id:10,name:"Dieter Franke",alter:66,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Privatstation",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-15),"Anfrage Knie-TEP AHB"],[dstr(-9),"Aufnahme erfolgt"]]},
+ {id:11,name:"Elke Sauer",alter:59,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"SalutoCare",kt:"Selbstzahler",status:"Aufgenommen",owner:"Recovery Manager",aufgabe:"",frist:"",saluto:true,docs:[true,true,true,true],kosten:"Selbstzahler bestätigt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-20),"Premium-Anfrage über Website"],[dstr(-12),"Aufnahme SalutoCare Suite"]]},
+ {id:12,name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage"],[dstr(-11),"Rückruf erst nach 26 Std."],[dstr(-8),"Familie hat anderes Haus gewählt"]]}
+];
+
+let eingang=[
+ {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Nummer notiert, möchte Rückruf heute. Vermutlich PKV.",zeit:"vor 25 Min.",achse:"Innere",done:false},
+ {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Patient (68), PKV, Entlassung in 4 Tagen. Unterlagen anbei.",zeit:"vor 1 Std.",achse:"Neurologie",done:false},
+ {id:103,kanal:"Website",tit:"Website-Formular: Selbstzahlerin (55) fragt nach Premium-Reha",txt:"Interessiert an Suite, fragt nach Preisen und freien Terminen.",zeit:"vor 2 Std.",achse:"SalutoCare",done:false},
+ {id:104,kanal:"E-Mail",tit:"E-Mail: Hausarzt Dr. Sommer empfiehlt Patientin (79)",txt:"Geriatrische Reha angefragt, Beihilfe, Tochter koordiniert.",zeit:"gestern",achse:"Geriatrie",done:true},
+ {id:105,kanal:"Recare",tit:"Recare: Klinikum Fulda sucht Neuro-Reha-Platz",txt:"GKV + Komfort-Wunsch, Übernahme in 6 Tagen möglich.",zeit:"gestern",achse:"Neurologie",done:true},
+ {id:106,kanal:"PRIMO MEDICO",tit:"PRIMO MEDICO: internationale Premium-Anfrage",txt:"Familie fragt für Vater (64) nach Intensiv-Reha mit Beatmung.",zeit:"vor 2 Tagen",achse:"SalutoCare",done:true}
+];
+
+let bestand=[
+ {name:"Margarete Wirth",alter:73,achse:"Orthopädie",entl:"vor 11 Monaten",consent:"ja",anlass:"Jahres-Check nach Knie-TEP steht an",wv:true},
+ {name:"Otto Brenner",alter:68,achse:"Neurologie",entl:"vor 14 Monaten",consent:"ja",anlass:"Nachsorge-Angebot Schlaganfall-Prävention",wv:false},
+ {name:"Use Hartmann",alter:61,achse:"Innere",entl:"vor 8 Monaten",consent:"ja",anlass:"Einladung Gesundheitswoche möglich",wv:false},
+ {name:"Friedrich Lang",alter:77,achse:"Geriatrie",entl:"vor 6 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false},
+ {name:"Hannelore Beck",alter:70,achse:"Orthopädie",entl:"vor 19 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false},
+ {name:"Georg Steiner",alter:65,achse:"Neurologie",entl:"vor 9 Monaten",consent:"widerruf",anlass:"Widerruf am 03.05. dokumentiert",wv:false},
+ {name:"Christa Mohr",alter:58,achse:"SalutoCare",entl:"vor 5 Monaten",consent:"ja",anlass:"Premium-Nachsorge, Recovery Manager kennt Fall",wv:true},
+ {name:"Walter Simon",alter:80,achse:"Innere",entl:"vor 23 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false}
+];
+
+let zuweiser=[
+ {name:"Leopoldina-Krankenhaus",typ:"Akutklinik mit Privatstation",ort:"Schweinfurt (~25 km)",rel:"Ortho (EPZ), Neuro",ap:"Hr. Brenner (Privatstation)",tel:"0971 0000-231",mail:"brenner@demo-klinik.local",faelle:6,letzter:dstr(-1),draht:"●●●",status:"aktiv",next:"Quartalsgespräch vereinbaren"},
+ {name:"RHÖN-KLINIKUM Campus",typ:"Akutklinik · Maximalversorger",ort:"Bad Neustadt (~20 km)",rel:"Neuro, Ortho, SalutoCare",ap:"Fr. Albrecht (Sozialdienst)",tel:"0971 0000-242",mail:"albrecht@demo-klinik.local",faelle:4,letzter:dstr(-3),draht:"●●○",status:"aktiv",next:"Feedback zu letzter Übernahme geben"},
+ {name:"Dr. Sommer",typ:"Hausarzt-Privatpraxis",ort:"Bad Kissingen",rel:"Innere, Geriatrie",ap:"Dr. Sommer",tel:"0971 0000-301",mail:"praxis-sommer@demo.local",faelle:3,letzter:dstr(-2),draht:"●●●",status:"aktiv",next:"Dankesnotiz + Infomaterial"},
+ {name:"Thoraxzentrum Münnerstadt",typ:"Weaning-Zentrum (WeanNet)",ort:"Münnerstadt (~10 km)",rel:"SalutoCare (Beatmung)",ap:"Dr. Castelli (Oberarzt)",tel:"0971 0000-271",mail:"castelli@demo-thorax.local",faelle:2,letzter:dstr(-4),draht:"●●○",status:"aufbau",next:"Besuch mit Recovery Manager planen"},
+ {name:"PRIMO MEDICO",typ:"Premium-Netzwerk",ort:"überregional",rel:"SalutoCare",ap:"Portal-Anfragen",tel:"Portal",mail:"kontakt@demo-primo.local",faelle:2,letzter:dstr(-4),draht:"●●○",status:"aktiv",next:"Profil um neue Suiten ergänzen"},
+ {name:"Uniklinikum Würzburg",typ:"Universitätsklinikum",ort:"Würzburg (~60 km)",rel:"Neuro (Privatstation 2 Nord)",ap:"Fr. Dietrich (Case Mgmt)",tel:"0971 0000-284",mail:"dietrich@demo-ukw.local",faelle:3,letzter:dstr(-9),draht:"●○○",status:"aufbau",next:"Feste Ansprechperson etablieren"},
+ {name:"Klinikum Fulda",typ:"Akutklinik · Maximalversorger",ort:"Fulda (~45 km)",rel:"Neuro, Ortho, Kardio",ap:"über Recare",tel:"Recare",mail:"entlassmanagement@demo-fulda.local",faelle:2,letzter:dstr(-6),draht:"●○○",status:"aufbau",next:"Persönlichen Kontakt zum Sozialdienst aufbauen"},
+ {name:"König-Ludwig-Haus",typ:"Ortho-Fachklinik (EPZmax)",ort:"Würzburg (~60 km)",rel:"Ortho-AHB",ap:"Sekretariat Prof. Ernst",tel:"0971 0000-291",mail:"sekretariat@demo-klh.local",faelle:1,letzter:dstr(-20),draht:"●○○",status:"ziel",next:"Erstkontakt: AHB-Fast-Lane vorstellen"},
+ {name:"Helios Klinikum",typ:"Akutklinik · Stroke Unit",ort:"Meiningen (~50 km)",rel:"Neurologie",ap:"noch offen",tel:"zu recherchieren",mail:"sozialdienst@demo-helios.local",faelle:0,letzter:"",draht:"○○○",status:"ziel",next:"Aus Landkarte: Sozialdienst identifizieren"},
+ {name:"Privatpraxis Dr. Neumann",typ:"Privatpraxis Orthopädie",ort:"Bad Kissingen",rel:"Orthopädie, Selbstzahler",ap:"Dr. Neumann",tel:"0971 0000-317",mail:"neumann@demo-praxis.local",faelle:1,letzter:dstr(-12),draht:"●○○",status:"aufbau",next:"Sprechstunden-Service und Fast-Lane vorstellen"},
+ {name:"Reha-Technik Müller",typ:"Sanitätshaus · Hilfsmittel",ort:"Bad Kissingen",rel:"Hilfsmittel, Angehörigenkontakt",ap:"noch offen",tel:"0971 0000-410",mail:"service@demo-rehatechnik.local",faelle:0,letzter:"",draht:"○○○",status:"ziel",next:"Kooperationspotenzial und Angehörigenpfad prüfen"}
+];
+
+let aktuellerFall=null;let filter="";let zFilter="krankenhaus";let activeStage=0;let boardStageFilter=null;
+
+/* ---------- Helpers ---------- */
+function fristKlasse(f){if(!f)return"";const d=(new Date(f)-heute)/86400000;return d<0?"bad":d<1.5?"warn":"ok";}
+function fristText(f){if(!f)return"";const d=Math.round((new Date(f)-heute)/86400000);return d<0?"überfällig ("+Math.abs(d)+" T)":d===0?"heute fällig":"in "+d+" T";}
+function statusFortschritt(s){return Math.max(12,((STATUS.indexOf(s)+1)/STATUS.length*100));}
+function zaehle(arr,key){const m={};arr.forEach(x=>{const k=key(x);if(!k)return;m[k]=(m[k]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
+function bar(el,daten,warm){const max=Math.max(1,...daten.map(d=>d[1]));
+  el.innerHTML=daten.map(d=>"<div class='bar"+(warm?" warm":"")+"'><span class='blbl'>"+d[0]+"</span><span class='track'><span class='fill' style='width:"+(d[1]/max*100)+"%'></span></span><span class='bnum'>"+d[1]+"</span></div>").join("")||"<p style='color:var(--muted);font-size:15px'>noch keine Daten</p>";}
+
+function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));}
+
+const Z_CATS=[
+  {id:"krankenhaus",label:"Krankenhäuser",note:"Akutkliniken, Sozialdienste, Privatstationen"},
+  {id:"privatpraxis",label:"Privatpraxen",note:"Fachpraxen und direkte ärztliche Empfehlungen"},
+  {id:"hausaerzte",label:"Hausärzte",note:"regionale Lotsen für Innere und Geriatrie"},
+  {id:"sanitaet",label:"Sanitätshäuser",note:"Zielkategorie im Aufbau"},
+  {id:"premium",label:"Premium",note:"SalutoCare, Netzwerke, besondere Kanäle"}
+];
+function zKategorie(z){
+  const s=(z.name+" "+z.typ+" "+z.rel+" "+z.ap).toLowerCase();
+  if(/primo|premium|salutocare|weaning|weannet/.test(s))return"premium";
+  if(/hausarzt/.test(s))return"hausaerzte";
+  if(/privatpraxis|fachpraxis|praxis/.test(s))return"privatpraxis";
+  if(/sanit[aä]t|orthop[aä]die-technik|hilfsmittel/.test(s))return"sanitaet";
+  return"krankenhaus";
+}
+function setZFilter(id){zFilter=id;renderZuweiser();}
+
+const CHAN_ICON={
+ "Telefon":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2'/></svg>",
+ "E-Mail":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>",
+ "Website":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><circle cx='12' cy='12' r='9'/><path d='M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18'/></svg>",
+ "Zuweiser-Fax":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M4 21V5a2 2 0 0 1 2-2h8l6 6v12'/><path d='M14 3v6h6'/></svg>",
+ "Recare":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M3 12h4l3-8 4 16 3-8h4'/></svg>",
+ "PRIMO MEDICO":"<svg viewBox='0 0 24 24' fill='currentColor'><path d='m12 3 2.7 5.8 6.3.8-4.6 4.3 1.2 6.1L12 17l-5.6 3 1.2-6.1L3 9.6l6.3-.8L12 3z'/></svg>"
+};
+
+/* ---------- Render: Eingang ---------- */
+function renderEingang(){
+  document.getElementById("inbox").innerHTML=eingang.map(m=>
+   "<div class='mail"+(m.done?" done":"")+"'>"
+   +"<span class='chico'>"+(CHAN_ICON[m.kanal]||CHAN_ICON["E-Mail"])+"</span>"
+   +"<div><div class='mtit'>"+m.tit+"</div><div class='mtxt'>"+m.txt+"</div></div>"
+   +"<div class='right'><span class='chtag'>"+m.kanal+"</span><span class='mtime'>"+m.zeit+"</span>"
+   +(m.done?"<span class='ok-chip'>✓ als Fall übernommen</span>":"<button class='cta sm' onclick='uebernehmen("+m.id+")'>Als Fall übernehmen</button>")
+   +"</div></div>").join("");
+}
+function uebernehmen(id){
+  const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
+  m.done=true;
+  const fid=Math.max(...faelle.map(x=>x.id))+1;
+  faelle.push({id:fid,name:"Neuer Fall (aus Eingang)",alter:null,rolle:"offen",kanal:m.kanal,quelle:m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.kanal,
+    achse:m.achse,kt:"Unklar",status:"Neu",owner:"S. Koordination",aufgabe:"Erstreaktion + Daten vervollständigen",frist:dstr(0),
+    saluto:m.achse==="SalutoCare",docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
+    log:[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit]]});
+  renderAll();switchTab("faelle");
+}
+
+/* ---------- Render: Board ---------- */
+function renderBoard(){
+  const b=document.getElementById("board");b.innerHTML="";
+  const q=filter.toLowerCase();
+  const sichtbar=boardStageFilter===null?STATUS:stageMeta(boardStageFilter).statuses;
+  renderBoardFocus();
+  sichtbar.forEach(st=>{
+    const f=faelle.filter(x=>x.status===st&&(!q||x.name.toLowerCase().includes(q)||x.quelle.toLowerCase().includes(q)));
+    const col=document.createElement("div");col.className="col";
+    col.innerHTML="<h3><span class='cdot' style='background:"+STATUS_COL[st]+"'></span>"+st+"<span class='cnt'>"+f.length+"</span></h3>";
+    f.forEach(x=>{
+      const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"");
+      const fk=fristKlasse(x.frist);
+      k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+x.name+" <span class='alter'>"+(x.alter?"("+x.alter+")":"")+"</span></span></div>"
+        +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+x.achse+"</span><span class='pill-kt'>"+x.kt+"</span></div>"
+        +"<div class='kmeta'>"+x.quelle+"<br>"+x.owner+(x.aufgabe?" · "+x.aufgabe:"")+"</div>"
+        +"<div class='stagebar' title='Statusfortschritt'><span style='width:"+statusFortschritt(x.status)+"%'></span></div>"
+        +(x.frist?"<span class='due "+fk+"'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(x.frist)+"</span>":"")
+        +(x.saluto?"<br><span class='star'>★ SalutoCare</span>":"");
+      k.onclick=()=>openDetail(x.id);
+      col.appendChild(k);
+    });
+    b.appendChild(col);
+  });
+}
+
+/* ---------- Render: Bestand ---------- */
+function renderBestand(){
+  const kontakt=bestand.filter(p=>p.consent==="ja").length;
+  const wv=bestand.filter(p=>p.wv).length;
+  const gesperrt=bestand.filter(p=>p.consent!=="ja").length;
+  const saluto=bestand.filter(p=>p.achse==="SalutoCare").length;
+  const stats=document.getElementById("bestandStats");
+  if(stats)stats.innerHTML=[
+    ["Kontaktfähig",kontakt+" / 412","mit dokumentierter Freigabe"],
+    ["Wiedervorlage",wv,"konkret vorgemerkt"],
+    ["Gesperrt",gesperrt,"keine aktive Ansprache"],
+    ["SalutoCare",saluto,"Premium-Nachsorge"]
+  ].map(x=>"<div class='bestand-stat'><div class='sl'>"+x[0]+"</div><div class='sv'>"+x[1]+"</div><div class='sn'>"+x[2]+"</div></div>").join("");
+  document.getElementById("btable").innerHTML=bestand.map((p,i)=>{
+    const c=p.consent==="ja"?"<span class='status-pill ok'>freigegeben</span>":p.consent==="widerruf"?"<span class='status-pill bad'>Widerruf</span>":"<span class='status-pill lock'>gesperrt</span>";
+    const action=p.consent==="ja"
+      ?(p.wv?"<span class='wv'>Wiedervorlage gesetzt</span>":"<button class='cta sm ghost' onclick='wiedervorlage("+i+")'>Nachsorge vormerken</button>")
+      :"<button class='cta sm' disabled>Kontaktfreigabe fehlt</button>";
+    return "<div class='patient-card"+(p.achse==="SalutoCare"||p.wv?" hot":"")+"'>"
+      +"<div class='patient-top'><span class='ava'>"+initialen(p.name)+"</span>"+c+"</div>"
+      +"<h3>"+escapeHtml(p.name)+" <span class='alter'>("+p.alter+")</span></h3>"
+      +"<div class='patient-meta'>"+escapeHtml(p.achse)+" · entlassen "+escapeHtml(p.entl)+"</div>"
+      +"<div class='patient-reason'>"+escapeHtml(p.anlass)+"</div>"
+      +"<div class='pill-row'><span class='soft-pill "+(p.achse==="SalutoCare"?"gold":"")+"'>"+escapeHtml(p.achse)+"</span><span class='soft-pill "+(p.wv?"ok":"")+"'>"+(p.wv?"Wiedervorlage":"kein Termin")+"</span></div>"
+      +"<div class='patient-actions'>"+action+"</div></div>";
+  }).join("");
+}
+function wiedervorlage(i){bestand[i].wv=true;renderBestand();renderCockpit();}
+
+/* ---------- Render: Zuweiser ---------- */
+function renderZuweiser(){
+  const lbl={aktiv:"Aktiver Partner",aufbau:"Im Aufbau",ziel:"Ziel-Partner (Landkarte)"};
+  const catCounts=Object.fromEntries(Z_CATS.map(c=>[c.id,zuweiser.filter(z=>zKategorie(z)===c.id).length]));
+  const cat=Z_CATS.find(c=>c.id===zFilter)||Z_CATS[0];
+  const catEl=document.getElementById("zcatgrid");
+  if(catEl)catEl.innerHTML=Z_CATS.map(c=>
+    "<button type='button' class='zcat"+(c.id===zFilter?" active":"")+"' onclick='setZFilter(\""+c.id+"\")'>"
+   +"<div class='zl'>"+escapeHtml(c.label)+"</div><div class='zv'>"+(catCounts[c.id]||0)+"</div><div class='zn'>"+escapeHtml(c.note)+"</div></button>"
+  ).join("");
+  const filtered=zuweiser.filter(z=>zKategorie(z)===cat.id);
+  const aktiv=filtered.filter(z=>z.status==="aktiv").length;
+  const aufbau=filtered.filter(z=>z.status==="aufbau").length;
+  const ziel=filtered.filter(z=>z.status==="ziel").length;
+  const map=document.getElementById("zmap");
+  if(map)map.innerHTML=
+    "<div class='map-panel'>"
+   +"<div class='map-title'>Netzwerk-Landkarte · "+escapeHtml(cat.label)+"</div>"
+   +"<svg viewBox='0 0 560 246' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Netzwerk-Landkarte der Zuweiserkontakte'>"
+   +"<rect x='1' y='1' width='558' height='228' rx='18' fill='#fbfaf7' stroke='#eee7dc'/>"
+   +"<path d='M78,154 C126,74 205,54 286,84 C348,107 386,62 458,95 C514,121 501,179 433,191 C351,206 315,154 240,178 C167,202 114,204 78,154Z' fill='#f2ede4' stroke='#ddcfb8'/>"
+   +"<path d='M132,142 C214,120 297,120 421,112' fill='none' stroke='#d8c49e' stroke-width='1.2' stroke-dasharray='4 6' opacity='.75'/>"
+   +(filtered.length?filtered.map(networkDot).join(""):"<text x='280' y='126' text-anchor='middle' font-family='Inter' font-size='14' fill='#6f6860'>Noch keine Kontakte in dieser Kategorie</text>")
+   +"</svg><div class='map-legend'><span><i style='background:#1f8a63'></i>aktiv</span><span><i style='background:#b08d57'></i>im Aufbau</span><span><i style='background:#8b929d'></i>Zielkontakt</span><span>Punktgröße = Fälle</span></div>"
+   +(filtered.length?"<div class='map-index'>"+filtered.map((z,i)=>"<span><b>"+(i+1)+"</b><em>"+escapeHtml(z.name)+" · "+escapeHtml(mapOrt(z.ort))+"</em></span>").join("")+"</div>":"")
+   +"</div>"
+   +"<div class='zsummary'><h3>"+escapeHtml(cat.label)+"</h3><p>"+escapeHtml(cat.note)+". Die Karte zeigt, welche Beziehungen bereits tragen, welche aufgebaut werden und wo der nächste Kontakt entstehen soll.</p>"
+   +"<div class='route-strip'><div class='route-card'><div class='rlabel'>Kontakte</div><div class='rvalue'>"+filtered.length+"</div><div class='rnote'>in dieser Kategorie</div></div>"
+   +"<div class='route-card'><div class='rlabel'>Aktiv</div><div class='rvalue'>"+aktiv+"</div><div class='rnote'>warme Beziehungen</div></div>"
+   +"<div class='route-card'><div class='rlabel'>Aufbau / Ziel</div><div class='rvalue'>"+(aufbau+ziel)+"</div><div class='rnote'>nächste Schritte</div></div></div></div>";
+  const sorted=[...filtered].sort((a,b)=>({aktiv:0,aufbau:1,ziel:2}[a.status]-{aktiv:0,aufbau:1,ziel:2}[b.status]));
+  document.getElementById("zgrid").innerHTML=sorted.length?sorted.map(z=>
+    "<div class='zcard"+(z.status==="ziel"?" ziel":"")+"'>"
+   +"<span class='zstat "+z.status+"'>"+lbl[z.status]+"</span>"
+   +"<div class='zname'>"+escapeHtml(z.name)+"</div><div class='ztyp'>"+escapeHtml(z.typ)+"</div>"
+   +"<div class='zcontact'><span><small>Telefon</small>"+escapeHtml(z.tel||"offen")+"</span><a href='mailto:"+escapeHtml(z.mail||"")+"'><small>E-Mail</small>"+escapeHtml(z.mail||"offen")+"</a></div>"
+   +"<div class='zrow'><span>Ort</span><b>"+escapeHtml(z.ort)+"</b></div>"
+   +"<div class='zrow'><span>Relevanz</span><b>"+escapeHtml(z.rel)+"</b></div>"
+   +"<div class='zrow'><span>Ansprechpartner</span><b>"+escapeHtml(z.ap)+"</b></div>"
+   +"<div class='zrow'><span>Fälle über diesen Weg</span><b style='font-family:Cormorant Garamond,Georgia,serif;font-size:19px;color:var(--gold-deep)'>"+z.faelle+"</b></div>"
+   +"<div class='zrow'><span>Letzter Kontakt</span><b>"+escapeHtml(z.letzter||"noch keiner")+"</b></div>"
+   +"<div class='zrow'><span>Draht</span><span class='zdraht'>"+z.draht+"</span></div>"
+   +"<div class='znext'><b>Nächste Aktion:</b> "+escapeHtml(z.next)+"</div>"
+   +"</div>").join(""):"<div class='zcard ziel'><span class='zstat ziel'>Zielkategorie</span><div class='zname'>Noch keine Kontakte hinterlegt</div><div class='ztyp'>"+escapeHtml(cat.label)+"</div><div class='znext'><b>Nächste Aktion:</b> Zielpartner recherchieren, Kontaktquelle erfassen und ersten SOP-Schritt anlegen.</div></div>";
+}
+function mapDot(x,y,label,boost){
+  const r=boost?8+boost*3:5;
+  const o=boost?1:.38;
+  return "<g><circle cx='"+x+"' cy='"+y+"' r='"+(r+8)+"' fill='#b08d57' opacity='.08'/><circle cx='"+x+"' cy='"+y+"' r='"+r+"' fill='#b08d57' opacity='"+o+"'/><text x='"+(x+12)+"' y='"+(y+4)+"' font-family='Inter' font-size='12' fill='#6f6860'>"+label+"</text></g>";
+}
+function networkDot(z,i){
+  const pos=[[136,154],[282,111],[382,148],[474,100],[472,182],[220,185],[204,118],[330,188],[104,116],[250,158],[430,140]][i%11];
+  const color=z.status==="aktiv"?"#1f8a63":z.status==="aufbau"?"#b08d57":"#8b929d";
+  const r=8+Math.min(5,z.faelle)*2;
+  return "<g><circle cx='"+pos[0]+"' cy='"+pos[1]+"' r='"+(r+9)+"' fill='"+color+"' opacity='.09'/>"
+    +"<circle cx='"+pos[0]+"' cy='"+pos[1]+"' r='"+r+"' fill='"+color+"' opacity='.9'/>"
+    +"<text x='"+pos[0]+"' y='"+(pos[1]+4)+"' text-anchor='middle' font-family='Inter' font-size='11' font-weight='900' fill='#fff'>"+(i+1)+"</text>"
+    +"<text x='"+pos[0]+"' y='"+(pos[1]+r+18)+"' text-anchor='middle' font-family='Inter' font-size='11' font-weight='650' fill='#5c554c'>"+escapeHtml(mapOrt(z.ort))+"</text></g>";
+}
+function mapOrt(o){return String(o||"").replace(/\s*\(.*/,"").replace("überregional","überreg.");}
+
+/* ---------- Render: Cockpit ---------- */
+function renderCockpit(){
+  const offen=faelle.filter(x=>!["Aufgenommen","Verloren"].includes(x.status));
+  const auf=faelle.filter(x=>x.status==="Aufgenommen").length;
+  const verl=faelle.filter(x=>x.status==="Verloren").length;
+  const conv=auf+verl?Math.round(auf/(auf+verl)*100):0;
+  const rz=faelle.filter(x=>x.reaktion!=null);
+  const rzAvg=rz.length?Math.round(rz.reduce((s,x)=>s+x.reaktion,0)/rz.length):0;
+  const ueberf=offen.filter(x=>x.frist&&new Date(x.frist)<heute).length;
+  const neu=eingang.filter(m=>!m.done).length;
+  const kontaktf=bestand.filter(p=>p.consent==="ja").length;
+  const blockers=offen.filter(x=>x.docs.some(d=>!d)||x.kosten==="offen"||x.consent==="offen").length;
+  const consentOk=faelle.filter(x=>x.consent!=="offen").length;
+  const direct=faelle.filter(x=>["Telefon","E-Mail","Website-Formular","Empfehlung"].includes(x.kanal)).length;
+  const ownerRate=offen.length?Math.round(offen.filter(x=>x.owner).length/offen.length*100):100;
+  const zuwActions=zuweiser.filter(z=>z.next).length;
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+  const html=(id,val)=>{const el=document.getElementById(id);if(el)el.innerHTML=val;};
+  set("mZuwAktiv",zuweiser.filter(z=>z.status==="aktiv").length);
+  set("mZuwZiel",zuweiser.filter(z=>z.status!=="aktiv").length);
+  set("mBestand",kontaktf+" / 412");
+  set("mNeu",neu);
+  set("mOffen",offen.length);
+  set("mSaluto",faelle.filter(x=>x.saluto&&!["Aufgenommen","Verloren"].includes(x.status)).length);
+  set("mAuf",auf);
+  set("mRz",rzAvg+" Std.");
+  html("tRz",rzAvg+" <small>Std.</small>");
+  html("tConv",conv+"<small>%</small>");
+  set("tUeb",ueberf);
+  set("mDirect",direct);
+  set("mOwnerRate",ownerRate+"%");
+  set("mCaseCount",faelle.length);
+  set("badgeZuwMirror",zuweiser.length);
+  set("mConsentOk",consentOk);
+  set("mConvSmall",conv+"%");
+  set("mBlocker",blockers);
+  set("mLossCount",verl);
+  set("cNew",neu);
+  set("cBlocked",blockers);
+  set("cZuwAction",zuwActions);
+  set("cPremium",faelle.filter(x=>x.saluto&&!["Aufgenommen","Verloren"].includes(x.status)).length);
+  set("modCases",offen.length);
+  set("modZuw",zuweiser.length);
+  set("modBestand",kontaktf);
+  set("commConsent",kontaktf);
+  set("autoSignals",neu+ueberf+blockers);
+  set("autoPremium",faelle.filter(x=>x.saluto).length);
+  set("autoLoss",verl);
+  set("autoConsent",kontaktf);
+  html("nsRz","<b>"+rzAvg+"</b><span>Std.</span>");
+  html("nsConv","<b>"+conv+"</b><span>%</span>");
+  set("nsConvSub",auf+" aufgenommen · "+verl+" verloren");
+  const hospitalRx=/(Klinik|Klinikum|Krankenhaus|Campus|Leopoldina|RHÖN|RHÖN|UKW|Fulda|Thoraxzentrum|Recare)/i;
+  set("q1",faelle.filter(x=>hospitalRx.test(x.quelle)||x.kanal==="Recare").length);
+  const praxisPotenzial=zuweiser.filter(z=>/Privatpraxis|Fachpraxis|Praxis/i.test(z.typ)).length;
+  set("q2",Math.max(2,praxisPotenzial));
+  set("q3",zuweiser.filter(z=>/Hausarzt/i.test(z.typ)||/Hausarzt|Dr\\. Sommer/i.test(z.name+" "+z.rel+" "+z.ap)).length);
+  set("q4",kontaktf);
+  set("q5",faelle.filter(x=>x.kanal==="PRIMO MEDICO").length);
+  set("r1",auf);
+  set("r3",verl);
+  renderStrom();
+  const R=46,U=2*Math.PI*R,off=U*(1-conv/100);
+  html("donut",
+    "<circle cx='60' cy='60' r='"+R+"' fill='none' stroke='#efe9de' stroke-width='10'/>"
+   +"<circle cx='60' cy='60' r='"+R+"' fill='none' stroke='url(#gg)' stroke-width='10' stroke-linecap='round' stroke-dasharray='"+U+"' stroke-dashoffset='"+off+"' transform='rotate(-90 60 60)'/>"
+   +"<defs><linearGradient id='gg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#c9a36b'/><stop offset='1' stop-color='#9a7745'/></linearGradient></defs>"
+   +"<text x='60' y='68' text-anchor='middle' font-family='Cormorant Garamond,Georgia,serif' font-size='30' font-weight='700' font-variant-numeric='lining-nums tabular-nums' fill='#2b2723'>"+conv+"%</text>");
+  html("donutLeg",
+    "<div><span class='dot' style='background:var(--ok)'></span><b>"+auf+"</b> aufgenommen</div>"
+   +"<div><span class='dot' style='background:var(--bad)'></span><b>"+verl+"</b> verloren</div>"
+   +"<div><span class='dot' style='background:var(--gold)'></span><b>"+offen.length+"</b> in Arbeit</div>");
+  const lossReasons=[
+    ["Fehlende Dokumente",offen.filter(x=>x.docs.some(d=>!d)).length],
+    ["Kostenklärung offen",offen.filter(x=>x.kosten==="offen").length],
+    ["Keine Rückmeldung",faelle.filter(x=>x.verlust==="Keine Rückmeldung mehr").length+1],
+    ["Zu lange Wartezeit",faelle.filter(x=>x.verlust==="Zu lange Wartezeit").length],
+    ["Kapazität fehlte",faelle.filter(x=>x.verlust==="Kapazität fehlte").length+1]
+  ].filter(x=>x[1]>0);
+  const engpass=[
+    ["Unterlagen",offen.filter(x=>x.docs.some(d=>!d)).length],
+    ["Kostenklärung",offen.filter(x=>x.kosten==="offen").length],
+    ["Frist überfällig",ueberf],
+    ["Kontaktfreigabe",offen.filter(x=>x.consent==="offen").length],
+    ["Aufnahmeplanung",offen.filter(x=>x.status==="Aufnahme geplant").length]
+  ].filter(x=>x[1]>0);
+  if(document.getElementById("chartQuelle"))bar(document.getElementById("chartQuelle"),zaehle(faelle,x=>x.kanal));
+  if(document.getElementById("chartVerlust"))bar(document.getElementById("chartVerlust"),lossReasons,true);
+  if(document.getElementById("chartTeam"))bar(document.getElementById("chartTeam"),zaehle(offen,x=>x.owner));
+  if(document.getElementById("chartEngpass"))bar(document.getElementById("chartEngpass"),engpass,true);
+  if(document.getElementById("chartAchse"))bar(document.getElementById("chartAchse"),zaehle(faelle,x=>x.achse));
+  // Badges
+  document.getElementById("badgeEingang").textContent=neu;
+  document.getElementById("badgeEingang").style.display=neu?"":"none";
+  document.getElementById("badgeFaelle").textContent=offen.length;
+  document.getElementById("badgeZuw").textContent=zuweiser.length;
+  document.getElementById("badgeBestand").textContent=kontaktf;
+}
+
+/* ---------- Trichter-Maschine ---------- */
+let horizont=9;
+function zoneOf(s){if(s==="Neu"||s==="Kontaktiert")return 0;if(s==="Qualifizierung"||s==="Unterlagen")return 1;if(s==="Aufnahme geplant")return 2;return -1;}
+function stockt(f){
+  const fr=f.frist&&new Date(f.frist)<new Date(dstr(0));
+  const blk=["Unterlagen","Aufnahme geplant"].includes(f.status)&&f.kosten==="offen";
+  return fr||blk;
+}
+function renderStrom(){
+  const gD=document.getElementById("gDots");
+  if(gD)gD.innerHTML="";
+  const offen=faelle.filter(x=>!["Aufgenommen","Verloren"].includes(x.status));
+  const zonen=[[],[],[]];
+  offen.forEach(f=>{const z=zoneOf(f.status);if(z>=0)zonen[z].push(f);});
+  for(let i=0;i<3;i++){
+    const e=document.getElementById("zc"+i);
+    if(e)e.textContent=zonen[i].length;
+  }
+  const stock=offen.filter(f=>zoneOf(f.status)>=0&&stockt(f));
+  const badge=document.getElementById("stockBadge");
+  const txt=document.getElementById("stockText");
+  const title=document.getElementById("stockTitle");
+  if(badge){
+    badge.style.display=stock.length?"":"none";
+    if(txt)txt.textContent=stock.length?(stock.length===1?"1 stockt":stock.length+" stocken"):"";
+    if(title)title.textContent=stock.length?stock.map(f=>f.name+" · "+(f.aufgabe||f.status)).join(", "):"";
+  }
+  const ns=document.getElementById("nsVorlauf");
+  if(ns)ns.textContent=horizont;
+}
+function flyToFuture(f){
+  switchTab("cockpit");
+  const svg=document.getElementById("strom"),target=document.getElementById("nsVorlauf");
+  if(!svg||!target){horizont++;renderStrom();return;}
+  const sb=svg.getBoundingClientRect();
+  const sx=sb.left+sb.width*(812/1180),sy=sb.top+sb.height*(200/390);
+  const hb=target.getBoundingClientRect(),tx=hb.left+hb.width/2,ty=hb.top+hb.height/2;
+  const d=document.createElement("div");d.id="flyDot";document.body.appendChild(d);
+  const t0=performance.now();let done=false;
+  function finish(){
+    if(done)return;done=true;d.remove();
+    horizont++;renderStrom();
+    const tag=document.getElementById("plusTagH");
+    if(tag){tag.textContent="+1 Tag";tag.style.opacity=1;setTimeout(()=>{tag.style.opacity=0;},2400);}
+  }
+  function step(t){
+    const p=Math.min((t-t0)/1100,1);
+    const e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+    d.style.left=(sx+(tx-sx)*e-8)+"px";
+    d.style.top=(sy+(ty-sy)*e-8-90*Math.sin(Math.PI*e))+"px";
+    if(p<1&&!done)requestAnimationFrame(step);else finish();
+  }
+  requestAnimationFrame(step);
+  setTimeout(finish,1300);
+}
+
+function stageMeta(z){
+  return [
+    {title:"Neu & kontaktiert",kicker:"TRICHTER-STUFE 1",text:"Alle neuen und bereits kontaktierten Fälle. Hier entscheidet sich, ob die Erstreaktion schnell und sauber passiert.",statuses:["Neu","Kontaktiert"]},
+    {title:"In Klärung",kicker:"TRICHTER-STUFE 2",text:"Fälle mit medizinischer, organisatorischer oder kaufmännischer Klärung. Genau hier entstehen die meisten Engpässe.",statuses:["Qualifizierung","Unterlagen"]},
+    {title:"Aufnahme geplant",kicker:"TRICHTER-STUFE 3",text:"Fälle, bei denen Aufnahme, Bett, Kosten und Unterlagen so weit sind, dass Belegung planbar wird.",statuses:["Aufnahme geplant"]}
+  ][z]||stageMeta(0);
+}
+function stageCases(z){
+  const m=stageMeta(z);
+  return faelle.filter(f=>m.statuses.includes(f.status));
+}
+function renderStageDetail(){
+  const wrap=document.getElementById("stageCases");if(!wrap)return;
+  const meta=stageMeta(activeStage);
+  const cases=stageCases(activeStage);
+  const blocked=cases.filter(f=>f.docs.some(d=>!d)||f.kosten==="offen"||f.consent==="offen").length;
+  const overdue=cases.filter(f=>f.frist&&new Date(f.frist)<heute).length;
+  const premium=cases.filter(f=>f.saluto).length;
+  document.getElementById("stageKicker").textContent=meta.kicker;
+  document.getElementById("stageTitle").textContent=meta.title;
+  document.getElementById("stageText").textContent=meta.text;
+  document.getElementById("stageListLabel").textContent=cases.length+" Fälle in dieser Stufe";
+  document.getElementById("stageSummaries").innerHTML=[
+    ["Fälle",cases.length,"aktuell sichtbar"],
+    ["Blocker",blocked,"Unterlagen, Kosten oder Kontaktfreigabe"],
+    ["Überfällig",overdue,"Frist braucht Aufmerksamkeit"],
+    ["SalutoCare",premium,"Premium-Potenzial"]
+  ].map(x=>"<div class='stage-summary'><div class='sl'>"+x[0]+"</div><div class='sv'>"+x[1]+"</div><div class='sn'>"+x[2]+"</div></div>").join("");
+  wrap.innerHTML=cases.map(f=>
+    "<div class='case-card"+(f.saluto?" saluto":"")+"' onclick='openDetail("+f.id+")'>"
+   +"<div class='case-top'><span class='ava'>"+initialen(f.name)+"</span><span class='pill-a' style='background:"+(ACHSE_COL[f.achse]||"var(--unklar)")+"'>"+escapeHtml(f.achse)+"</span></div>"
+   +"<h3>"+escapeHtml(f.name)+" "+(f.alter?"<span class='alter'>("+f.alter+")</span>":"")+"</h3>"
+   +"<div class='case-meta'>"+escapeHtml(f.quelle)+"<br>"+escapeHtml(f.kt)+" · "+escapeHtml(f.owner)+" · "+escapeHtml(f.status)+"</div>"
+   +"<div class='stagebar'><span style='width:"+statusFortschritt(f.status)+"%'></span></div>"
+   +"<div class='case-action'>"+escapeHtml(f.aufgabe||"Nächsten Schritt festlegen")+(f.frist?" · "+fristText(f.frist):"")+"</div>"
+   +(f.saluto?"<span class='star'>★ SalutoCare</span>":"")
+   +"</div>").join("")||"<div class='case-card'><h3>Keine Fälle</h3><div class='case-meta'>Diese Stufe ist aktuell leer.</div></div>";
+}
+function openStage(z){boardStageFilter=z;renderBoard();switchTab("faelle");}
+function setBoardStage(z){boardStageFilter=z;renderBoard();}
+function renderBoardFocus(){
+  const el=document.getElementById("boardFocus");if(!el)return;
+  const chips=act=>{
+    const items=[["Alle Fälle",null],["Neu & kontaktiert",0],["In Klärung",1],["Aufnahme geplant",2]];
+    return "<div class='bf-chips'>"+items.map(it=>
+      "<button class='bf-chip"+(act===it[1]?" active":"")+"' onclick='setBoardStage("+(it[1]===null?"null":it[1])+")'>"+it[0]+"</button>"
+    ).join("")+"</div>";
+  };
+  if(boardStageFilter===null){
+    const offen=faelle.filter(x=>!["Aufgenommen","Verloren"].includes(x.status)).length;
+    el.innerHTML="<div class='bf-card'><div class='bf-info'><div class='kicker'>Fall-Board</div>"
+      +"<div class='bf-title'><h3>Alle Fälle</h3><span class='bf-count'>"+offen+" offen</span></div>"
+      +"<div class='bf-note'>Ein gemeinsames Board für alle Fälle, vom ersten Kontakt bis zur Aufnahme.</div></div>"
+      +chips(null)+"</div>";
+  }else{
+    const m=stageMeta(boardStageFilter);
+    const n=stageCases(boardStageFilter).length;
+    el.innerHTML="<div class='bf-card'><div class='bf-info'><div class='kicker'>Trichterfokus</div>"
+      +"<div class='bf-title'><h3>"+m.title+"</h3><span class='bf-count'>"+n+" "+(n===1?"Fall":"Fälle")+"</span></div>"
+      +"<div class='bf-note'>Aus dem Überblick gefiltert. Alle Karten bleiben im gemeinsamen Fall-Board.</div></div>"
+      +chips(boardStageFilter)+"</div>";
+  }
+}
+function renderAll(){renderCockpit();renderEingang();renderBoard();renderBestand();renderZuweiser();renderStageDetail();}
+
+/* ---------- Detail-Modal ---------- */
+function openDetail(id){
+  aktuellerFall=faelle.find(x=>x.id===id);const f=aktuellerFall;
+  document.getElementById("dAva").textContent=initialen(f.name);
+  document.getElementById("dName").textContent=f.name+(f.alter?" ("+f.alter+")":"");
+  document.getElementById("dSub").textContent=f.achse+" · "+f.kt+" · "+f.quelle+" · Kanal: "+f.kanal;
+  document.getElementById("dStatus").innerHTML=STATUS.map(s=>"<option"+(s===f.status?" selected":"")+">"+s+"</option>").join("");
+  document.getElementById("dOwner").value=f.owner;
+  document.getElementById("dAufgabe").value=f.aufgabe||"";
+  document.getElementById("dFrist").value=f.frist||"";
+  document.getElementById("dKosten").value=f.kosten;
+  document.getElementById("dConsent").value=f.consent;
+  ["u1","u2","u3","u4"].forEach((u,i)=>document.getElementById(u).checked=f.docs[i]);
+  updateDocCnt();
+  document.getElementById("dSaluto").checked=f.saluto;
+  document.getElementById("dVerlust").value=f.verlust||"";
+  document.getElementById("dNotiz").value="";
+  document.getElementById("dLog").innerHTML=f.log.map(l=>"<div><b>"+l[0]+"</b><br>"+l[1]+"</div>").join("");
+  toggleVerlust();
+  document.getElementById("ovDetail").classList.add("open");
+}
+function updateDocCnt(){const n=["u1","u2","u3","u4"].filter(u=>document.getElementById(u).checked).length;
+  document.getElementById("docCnt").textContent="("+n+" / 4)";}
+["u1","u2","u3","u4"].forEach(u=>document.getElementById(u).addEventListener("change",updateDocCnt));
+function toggleVerlust(){document.getElementById("rowVerlust").classList.toggle("show",document.getElementById("dStatus").value==="Verloren");}
+document.getElementById("dStatus").addEventListener("change",toggleVerlust);
+document.getElementById("dAbbruch").onclick=()=>document.getElementById("ovDetail").classList.remove("open");
+document.getElementById("dSpeichern").onclick=()=>{
+  const f=aktuellerFall;
+  const alt=f.status;
+  const ns=document.getElementById("dStatus").value;
+  if(ns==="Verloren"&&!document.getElementById("dVerlust").value){alert("Bitte Verlustgrund angeben. Genau dafür ist das System da.");return;}
+  if(ns!==f.status)f.log.push([dstr(0),"Status: "+f.status+" zu "+ns]);
+  f.status=ns;
+  f.owner=document.getElementById("dOwner").value;
+  f.aufgabe=document.getElementById("dAufgabe").value;
+  f.frist=document.getElementById("dFrist").value;
+  f.kosten=document.getElementById("dKosten").value;
+  f.consent=document.getElementById("dConsent").value;
+  f.docs=["u1","u2","u3","u4"].map(u=>document.getElementById(u).checked);
+  f.saluto=document.getElementById("dSaluto").checked;
+  f.verlust=document.getElementById("dVerlust").value;
+  const n=document.getElementById("dNotiz").value.trim();
+  if(n)f.log.push([dstr(0),n]);
+  document.getElementById("ovDetail").classList.remove("open");
+  renderAll();
+  if(ns==="Aufnahme geplant"&&alt!=="Aufnahme geplant")flyToFuture(f);
+};
+
+/* ---------- Formular ---------- */
+document.getElementById("formNeu").addEventListener("submit",e=>{
+  e.preventDefault();
+  const id=Math.max(...faelle.map(x=>x.id))+1;
+  faelle.push({id,
+    name:document.getElementById("fName").value,
+    alter:document.getElementById("fAlter").value||null,
+    rolle:document.getElementById("fRolle").value,
+    kanal:document.getElementById("fKanal").value,
+    quelle:document.getElementById("fQuelle").value||document.getElementById("fKanal").value,
+    achse:document.getElementById("fAchse").value,
+    kt:document.getElementById("fKT").value,
+    status:"Neu",owner:document.getElementById("fOwner").value,
+    aufgabe:"Erstreaktion",frist:document.getElementById("fFrist").value||dstr(1),
+    saluto:document.getElementById("fAchse").value==="SalutoCare",
+    docs:[false,false,false,false],kosten:"offen",
+    consent:document.getElementById("fConsent").value,
+    verlust:"",reaktion:null,
+    log:[[dstr(0),"Anfrage erfasst über "+document.getElementById("fKanal").value+(document.getElementById("fNotiz").value?": "+document.getElementById("fNotiz").value:"")]]
+  });
+  e.target.reset();
+  document.getElementById("fFrist").value=dstr(1);
+  renderAll();switchTab("faelle");
+});
+
+/* ---------- Tabs ---------- */
+const TITEL={cockpit:"Überblick",idee:"Die Idee",intelligenz:"Auswertung",eingang:"Anfragen",faelle:"Fälle",neu:"Neue Anfrage",bestand:"Altpatienten",zuweiser:"Zuweiser-Netzwerk",kommunikation:"Prozesse / SOPs"};
+function switchTab(t){
+  if(!TITEL[t])t="cockpit";
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===t));
+  document.querySelectorAll(".content section").forEach(s=>s.classList.toggle("active",s.id==="tab-"+t));
+  document.getElementById("pageTitle").textContent=TITEL[t];
+  if(location.hash!=="#"+t)history.replaceState(null,"","#"+t);
+}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  if(b.dataset.tab==="faelle"&&boardStageFilter!==null){boardStageFilter=null;renderBoard();}
+  switchTab(b.dataset.tab);
+});
+document.getElementById("suche").addEventListener("input",e=>{filter=e.target.value;renderBoard();if(filter)switchTab("faelle");});
+
+document.getElementById("pageDate").textContent=heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+document.getElementById("fFrist").value=dstr(1);
+renderAll();
+if(location.hash){switchTab(location.hash.slice(1));document.getElementById("ovIntro").classList.remove("open");}
+</script>
+</body>
+</html>
