@@ -1,0 +1,1329 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Klinik Bavaria · Privatpatienten-Maschine</title>
+<link rel="icon" href="data:,">
+<meta name="theme-color" content="#141210">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#141210;--surface:#1c1916;--surface2:#211d18;--well:rgba(0,0,0,.28);
+  --ink:#f3ecdf;--muted:#b6ab97;--muted2:#8a7f6c;
+  --line:rgba(201,163,107,.15);--line2:rgba(201,163,107,.09);
+  --gold:#c9a36b;--gold-deep:#b08d57;--gold-dark:#9a7745;
+  --gold-grad:linear-gradient(135deg,#c9a36b,#9a7745);
+  --gold-soft:rgba(201,163,107,.12);--gold-line:rgba(201,163,107,.35);
+  --ok:#8fc9a0;--ok-soft:rgba(143,201,160,.13);
+  --warn:#e0b36a;--warn-soft:rgba(224,179,106,.13);
+  --bad:#e0857a;--bad-soft:rgba(224,133,122,.14);
+  --ortho:#d29a4d;--neuro:#82aee8;--geri:#8fc9a0;--innere:#5fc4b5;--saluto:#c9a36b;--unklar:#9aa3ae;
+  --glow:inset 0 1px 0 rgba(243,236,223,.05);
+}
+*{box-sizing:border-box}
+html{color-scheme:dark;-webkit-text-size-adjust:100%}
+html,body{margin:0}
+body{min-height:100dvh;background:#141210 radial-gradient(120% 46% at 50% -8%,#221d16 0%,#141210 70%) no-repeat;
+  color:var(--ink);font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation;padding:0}
+a{color:var(--gold);touch-action:manipulation}
+.serif,.num{font-family:"Cormorant Garamond",Georgia,serif}
+.num{font-weight:700;font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+
+/* ===== Shell & Kopf ===== */
+.shell{max-width:720px;margin:0 auto;padding:0 18px calc(86px + env(safe-area-inset-bottom));
+  padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:calc(12px + env(safe-area-inset-top)) 0 10px;border-bottom:1px solid var(--line2)}
+.brand .bk{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+@media(min-width:480px){.brand .bk{font-size:11px;letter-spacing:.18em}}
+.brand .bk b{color:var(--gold);font-weight:800}
+.demo-chip{flex-shrink:0;background:var(--gold-soft);border:1px solid var(--gold-line);color:var(--gold);
+  border-radius:6px;padding:3px 9px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.pagehead{padding:16px 0 4px}
+.pagehead h1{font-family:"Cormorant Garamond",Georgia,serif;font-size:34px;font-weight:700;margin:0;line-height:1.05;letter-spacing:.01em}
+.pagehead .date{color:var(--muted2);font-size:13px;margin-top:3px}
+.kicker{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:800}
+.lbl{font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);font-weight:800;margin:24px 0 12px;line-height:1.5}
+.lead{font-size:15px;color:var(--muted);margin:8px 0 0;line-height:1.5}
+
+/* ===== Karten-Basis ===== */
+.card{background:linear-gradient(180deg,#1e1a15,#191613);border:1px solid var(--line);border-radius:20px;box-shadow:var(--glow)}
+.cta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;background:var(--gold-grad);color:#1a150e;
+  border-radius:999px;padding:10px 22px;font-size:14.5px;font-weight:700;letter-spacing:.01em;
+  box-shadow:0 4px 14px rgba(201,163,107,.22),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .18s,opacity .18s}
+.cta:active{transform:scale(.97)}
+.cta.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.cta.sm{min-height:44px;padding:8px 16px;font-size:13px}
+.cta:disabled{background:#3a342b;color:#8a7f6c;cursor:not-allowed;box-shadow:none}
+
+/* ===== Views, Panels, Animation ===== */
+section.view{display:none}section.view.active{display:block}
+.panel{display:none}.panel.active{display:block}
+@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.view.active .stagger>*{animation:enter .28s cubic-bezier(.2,.7,.3,1) both}
+.view.active .stagger>*:nth-child(2){animation-delay:.05s}
+.view.active .stagger>*:nth-child(3){animation-delay:.1s}
+.view.active .stagger>*:nth-child(4){animation-delay:.15s}
+.view.active .stagger>*:nth-child(5){animation-delay:.2s}
+.view.active .stagger>*:nth-child(n+6){animation-delay:.25s}
+
+/* ===== Segmented Sub-Tabs ===== */
+.seg{display:flex;gap:6px;background:var(--well);border:1px solid var(--line2);border-radius:999px;padding:4px;margin:14px 0 4px}
+.seg button{flex:1;min-height:44px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--muted);
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 6px;transition:color .18s}
+.seg button.active{background:var(--gold-soft);color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold-line)}
+.segbadge{min-width:20px;height:20px;border-radius:999px;background:var(--gold-grad);color:#1a150e;font-size:11px;font-weight:800;
+  display:inline-flex;align-items:center;justify-content:center;padding:0 6px;font-variant-numeric:tabular-nums}
+.segbadge.dim{background:rgba(243,236,223,.12);color:var(--muted)}
+
+/* ===== Bottom-Navigation + FAB ===== */
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(18,15,12,.94);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid var(--line);
+  padding:0 6px calc(env(safe-area-inset-bottom))}
+.bnav-inner{max-width:720px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 76px 1fr 1fr;align-items:stretch}
+.bnav button[data-view]{position:relative;min-height:49px;padding:6px 2px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  color:var(--muted2);font-size:11px;font-weight:600;letter-spacing:.02em;transition:color .18s}
+.bnav button[data-view] svg{width:22px;height:22px;stroke-width:1.7}
+.bnav button[data-view].active{color:var(--gold)}
+.navdot{position:absolute;top:4px;left:calc(50% + 7px);min-width:17px;height:17px;border-radius:999px;background:var(--gold-grad);
+  color:#1a150e;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px;font-variant-numeric:tabular-nums}
+.fab{width:56px;height:56px;border-radius:50%;margin:-20px auto 0;background:var(--gold-grad);color:#1a150e;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 22px rgba(201,163,107,.35),inset 0 1.5px 0 rgba(255,255,255,.45),inset 0 -2px 6px rgba(90,62,28,.45);
+  transition:transform .18s}
+.fab:active{transform:scale(.94)}
+.fab svg{width:26px;height:26px;stroke-width:2.4}
+
+/* ===== Heute: Nordstern-Ring ===== */
+.ns-hero{padding:22px 20px 18px;margin-top:14px;text-align:center}
+.ns-hero .kicker{display:block;margin-bottom:4px}
+.ring-box{position:relative;width:216px;margin:14px auto 6px}
+.ring-box svg{width:100%;height:auto;display:block}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.ring-center b{font-family:"Cormorant Garamond",Georgia,serif;font-size:74px;font-weight:700;line-height:.9;
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1;
+  background:linear-gradient(160deg,#e8cf9f,#c9a36b 55%,#a8895a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ring-center i{font-style:normal;font-family:"Cormorant Garamond",Georgia,serif;font-size:25px;color:var(--gold);margin-top:1px}
+.ring-cap{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:8px}
+.ring-sub{font-size:14px;color:var(--muted);margin-top:5px}
+.ns-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line2);margin-top:18px;padding-top:4px;text-align:left}
+.ns-m{padding:12px 12px 2px;border-left:1px solid var(--line2);min-width:0}
+.ns-m:first-child{border-left:0;padding-left:0}
+.ns-m .nl{display:block;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted2);font-weight:700;line-height:1.35;overflow-wrap:break-word;hyphens:auto}
+.ns-m .nv{display:flex;align-items:baseline;gap:5px;margin-top:6px;min-height:34px;flex-wrap:wrap}
+.ns-m .nv b{font-family:"Cormorant Garamond",Georgia,serif;font-size:33px;font-weight:700;line-height:.95;color:var(--ink);
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+.ns-m .nv span,.ns-m .nv i{font-style:normal;font-family:"Cormorant Garamond",Georgia,serif;font-size:16px;color:var(--muted)}
+.ns-m .nsub{display:block;font-size:11.5px;color:var(--muted2);line-height:1.35;margin-top:4px}
+#plusTagH{font-size:13px;color:var(--gold);font-weight:800;opacity:0;transition:opacity .5s;white-space:nowrap}
+.ns-foot{font-size:11.5px;color:var(--muted2);margin-top:14px;border-top:1px solid var(--line2);padding-top:10px}
+#flyDot{position:fixed;width:16px;height:16px;border-radius:50%;background:var(--gold-grad);
+  box-shadow:0 0 14px rgba(201,163,107,.7);pointer-events:none;z-index:99}
+
+/* ===== Heute: Trichter (Signatur) ===== */
+.funnel{padding:20px 18px 16px;margin-top:14px}
+.f-cap{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:800;text-align:center;margin:20px 0 12px}
+.f-cap:first-child{margin-top:0}
+.f-src{display:flex;flex-direction:column}
+.src{display:flex;align-items:center;gap:12px;min-height:48px;padding:6px 4px;border-bottom:1px solid var(--line2);text-align:left;transition:background .18s}
+.src:first-of-type{border-top:1px solid var(--line2)}
+.src:active{background:var(--gold-soft)}
+.src span{font-size:14.5px;color:var(--muted)}
+.src b{margin-left:auto;font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;font-weight:700;color:var(--ink);
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+.src i{font-style:normal;color:var(--gold);font-size:19px;line-height:1}
+.f-stages{display:flex;flex-direction:column;align-items:center;gap:9px}
+.fstage{width:var(--w);min-height:72px;display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 16px;
+  background:linear-gradient(135deg,rgba(201,163,107,.1),rgba(201,163,107,.22));
+  border:1px solid rgba(201,163,107,.32);border-radius:16px;
+  box-shadow:inset 0 1px 0 rgba(243,236,223,.07);transition:transform .18s}
+.fstage:active{transform:scale(.98)}
+.fstage b{font-family:"Cormorant Garamond",Georgia,serif;font-size:44px;font-weight:700;line-height:.9;color:var(--ink);
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+.fstage span{font-size:13.5px;font-weight:700;color:var(--muted);text-align:left;line-height:1.3}
+.fstage i{font-style:normal;color:var(--gold);font-size:21px}
+.stockbadge{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:2px;padding:8px 16px;
+  border:1px solid rgba(224,179,106,.4);border-radius:999px;background:var(--warn-soft);color:var(--warn);font-size:13px;font-weight:700}
+.stockbadge .sdot{width:8px;height:8px;border-radius:50%;background:var(--warn);box-shadow:0 0 8px rgba(224,179,106,.8)}
+.f-res{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.f-res button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:78px;
+  border:1px solid var(--line2);border-radius:14px;background:var(--well);padding:12px 6px;text-align:center;transition:border-color .18s}
+.f-res button:active{border-color:var(--gold-line)}
+.f-res b{font-family:"Cormorant Garamond",Georgia,serif;font-size:30px;font-weight:700;line-height:.95;color:var(--ink);
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+.f-res span{font-size:10.5px;letter-spacing:.04em;color:var(--muted2);line-height:1.3}
+.f-note{font-size:12.5px;color:var(--muted2);text-align:center;margin:16px 4px 2px;line-height:1.45}
+/* ===== Anfragen (Eingang) ===== */
+.inbox{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.mail{background:var(--surface);border:1px solid var(--line2);border-radius:16px;padding:15px 16px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;box-shadow:var(--glow)}
+.mail.done{opacity:.55}
+.chico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:var(--gold-soft);color:var(--gold);border:1px solid var(--line2)}
+.chico svg{width:18px;height:18px}
+.mail .mbodytxt{flex:1;min-width:200px}
+.mail .mtit{font-weight:700;font-size:15px;line-height:1.4}
+.mail .mtxt{font-size:13.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+.mail .right{width:100%;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-left:54px}
+.mail .mtime{font-size:12.5px;color:var(--muted2);white-space:nowrap}
+.chtag{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);
+  background:var(--gold-soft);border:1px solid var(--line2);border-radius:6px;padding:3px 8px}
+.ok-chip{color:var(--ok);font-weight:600;font-size:12.5px}
+
+/* ===== Fall-Board ===== */
+.bf-card{padding:18px;margin:14px 0}
+.bf-title{display:flex;align-items:baseline;gap:10px;margin-top:5px;flex-wrap:wrap}
+.bf-title h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:27px;font-weight:700;margin:0;line-height:1.05}
+.bf-count{font-size:14px;color:var(--gold);font-weight:700}
+.bf-note{font-size:13.5px;color:var(--muted);margin-top:5px;line-height:1.45}
+.bf-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}
+.bf-stat{border:1px solid var(--line2);background:var(--well);border-radius:12px;padding:10px 10px 9px;text-align:center}
+.bf-stat b{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-size:27px;font-weight:700;line-height:1;
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+.bf-stat span{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-top:4px}
+.bf-stat small{display:block;font-size:10.5px;color:var(--muted2);line-height:1.3;margin-top:2px}
+.bf-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.bf-chip{border:1px solid var(--line);border-radius:999px;min-height:44px;padding:9px 16px;font-size:13.5px;font-weight:600;color:var(--muted);transition:all .18s}
+.bf-chip.active{background:var(--gold-grad);border-color:transparent;color:#1a150e;font-weight:700}
+.group{margin:18px 0}
+.group h3{font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:0 2px 9px;display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:700}
+.cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cnt{margin-left:auto;background:var(--well);border:1px solid var(--line2);border-radius:9px;padding:1px 9px;font-size:10.5px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.empty{font-size:13px;color:var(--muted2);border:1px dashed var(--line);border-radius:12px;padding:14px;text-align:center}
+.karte{background:var(--surface);border:1px solid var(--line2);border-radius:16px;padding:14px 15px;margin-bottom:10px;cursor:pointer;box-shadow:var(--glow);transition:transform .18s,border-color .18s}
+.karte:active{transform:scale(.985);border-color:var(--gold-line)}
+.karte.saluto{border-left:3px solid var(--gold)}
+.krow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ava{width:34px;height:34px;border-radius:50%;background:var(--gold-soft);color:var(--gold);border:1px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;flex-shrink:0}
+.karte .name{font-weight:600;font-size:14.5px;line-height:1.3}
+.alter{color:var(--muted2);font-weight:400}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.pill-a{font-size:10px;font-weight:800;color:#1a150e;border-radius:6px;padding:3px 8px}
+.pill-kt{font-size:10px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:2.5px 8px}
+.kmeta{font-size:12.5px;color:var(--muted);line-height:1.55}
+.stagebar{height:4px;background:rgba(243,236,223,.08);border-radius:99px;overflow:hidden;margin:9px 0 7px}
+.stagebar span{display:block;height:100%;border-radius:99px;background:var(--gold-grad)}
+.due{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;border-radius:6px;padding:3px 8px;margin-top:2px}
+.due.ok{background:var(--ok-soft);color:var(--ok)} .due.warn{background:var(--warn-soft);color:var(--warn)} .due.bad{background:var(--bad-soft);color:var(--bad)}
+.star{color:var(--gold);font-size:12px;font-weight:700;margin-left:auto}
+.star.tag{display:inline-block;margin:6px 0 0 8px}
+
+/* ===== Altpatienten ===== */
+.b-hero{padding:20px 18px;margin-top:14px}
+.b-hero h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:29px;font-weight:700;line-height:1.1;margin:6px 0 0}
+.b-hero p{color:var(--muted);font-size:14.5px;margin:9px 0 0;line-height:1.5}
+.bestand-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:15px}
+.bestand-stat{border:1px solid var(--line2);background:var(--well);border-radius:12px;padding:11px 13px}
+.bestand-stat .sl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:800}
+.bestand-stat .sv{font-family:"Cormorant Garamond",Georgia,serif;font-size:29px;font-weight:700;line-height:1.05;margin-top:3px;
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+.bestand-stat .sn{font-size:12px;color:var(--muted2);line-height:1.3}
+.legal{background:var(--warn-soft);border:1px solid rgba(224,179,106,.3);border-radius:12px;padding:12px 15px;font-size:13px;color:#e3c896;line-height:1.5;margin:13px 0}
+.bestand-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:8px}
+.patient-card{background:var(--surface);border:1px solid var(--line2);border-radius:16px;box-shadow:var(--glow);padding:17px;display:flex;flex-direction:column}
+.patient-card.hot{border-color:var(--gold-line);background:linear-gradient(180deg,#1e1a15,#231d14)}
+.patient-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:11px}
+.patient-card h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;line-height:1.05;margin:0;font-weight:700}
+.patient-meta{font-size:13.5px;color:var(--muted);line-height:1.45;margin-top:3px}
+.patient-reason{font-size:14.5px;color:var(--ink);line-height:1.45;margin:12px 0}
+.patient-actions{margin-top:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:4px}
+.status-pill{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:5px 10px;white-space:nowrap}
+.status-pill.ok{background:var(--ok-soft);color:var(--ok)}
+.status-pill.lock{background:rgba(243,236,223,.08);color:var(--muted)}
+.status-pill.bad{background:var(--bad-soft);color:var(--bad)}
+.wv{color:var(--gold);font-weight:600;font-size:13px}
+.pill-row{display:flex;gap:6px;flex-wrap:wrap}
+.soft-pill{font-size:11px;color:var(--muted);background:rgba(243,236,223,.07);border:1px solid var(--line2);border-radius:99px;padding:4px 9px}
+.soft-pill.ok{background:var(--ok-soft);border-color:rgba(143,201,160,.25);color:var(--ok)}
+.soft-pill.warn{background:var(--warn-soft);border-color:rgba(224,179,106,.3);color:var(--warn)}
+.soft-pill.gold{background:var(--gold-soft);border-color:var(--gold-line);color:var(--gold)}
+
+/* ===== Zuweiser ===== */
+.zcat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:14px 0 12px}
+.zcat{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:13px 14px;text-align:left;min-height:44px;transition:border-color .18s,background .18s}
+.zcat:last-child{grid-column:1/-1}
+.zcat.active{border-color:var(--gold-line);background:linear-gradient(180deg,#211c15,#262013)}
+.zcat .zl{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--gold)}
+.zcat .zv{font-family:"Cormorant Garamond",Georgia,serif;font-size:31px;font-weight:700;line-height:1.05;margin-top:3px;
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+.zcat .zn{font-size:12px;color:var(--muted2);line-height:1.3;margin-top:3px}
+.zmap{display:grid;grid-template-columns:1fr;gap:12px;margin:0 0 12px}
+.map-panel,.zsummary{background:var(--surface);border:1px solid var(--line2);border-radius:16px;padding:15px 16px;box-shadow:var(--glow)}
+.map-panel svg{width:100%;height:auto;display:block}
+.map-title{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:9px}
+.map-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.map-legend span{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.map-legend i{display:inline-block;width:9px;height:9px;border-radius:50%}
+.map-index{display:grid;grid-template-columns:1fr;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line2)}
+.map-index span{display:flex;align-items:center;gap:8px;min-width:0;font-size:12px;color:var(--muted);line-height:1.3}
+.map-index b{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:var(--gold-soft);color:var(--gold);font-size:10px;font-weight:800}
+.map-index em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zsummary h3{margin:0 0 7px;font-size:17px;font-weight:800}
+.zsummary p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.route-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.route-card{background:var(--well);border:1px solid var(--line2);border-radius:12px;padding:11px 12px}
+.route-card .rlabel{font-size:10px;color:var(--muted2);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.route-card .rvalue{font-family:"Cormorant Garamond",Georgia,serif;font-size:26px;font-weight:700;margin-top:3px;line-height:1;
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+.route-card .rnote{font-size:11.5px;color:var(--muted2);margin-top:4px;line-height:1.3}
+.zgrid{display:grid;grid-template-columns:1fr;gap:12px}
+.zcard{background:var(--surface);border:1px solid var(--line2);border-radius:16px;padding:16px 17px;box-shadow:var(--glow)}
+.zcard.ziel{border-style:dashed;background:transparent}
+.zstat{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:3px 9px;display:inline-block;margin-bottom:8px}
+.zstat.aktiv{background:var(--ok-soft);color:var(--ok)}
+.zstat.aufbau{background:var(--gold-soft);color:var(--gold)}
+.zstat.ziel{background:rgba(243,236,223,.08);color:var(--muted)}
+.zcard .zname{font-family:"Cormorant Garamond",Georgia,serif;font-size:21px;font-weight:700;line-height:1.15}
+.zcard .ztyp{font-size:10.5px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin:3px 0 10px}
+.zcontact{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}
+.zcontact a,.zcontact span{border:1px solid var(--line2);border-radius:10px;background:var(--well);padding:8px 10px;font-size:12.5px;color:var(--ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-height:44px;display:flex;flex-direction:column;justify-content:center}
+.zcontact small{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:1px}
+.zrow{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--muted);padding:5px 0;border-top:1px solid var(--line2);gap:10px}
+.zrow b{color:var(--ink);font-weight:600;text-align:right}
+.zdraht{color:var(--gold);letter-spacing:3px;font-size:13px}
+.znext{margin-top:10px;background:var(--gold-soft);border:1px dashed var(--gold-line);border-radius:10px;padding:8px 12px;font-size:12.5px;color:#dcc290;line-height:1.45}
+.znext b{color:var(--gold)}
+
+/* ===== System: Idee ===== */
+.idea-head p{font-size:14.5px;line-height:1.5;color:var(--muted);margin:9px 0 0}
+.midea{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:16px}
+.mi-box{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px 17px;text-align:center}
+.mi-box.hub{background:linear-gradient(135deg,rgba(201,163,107,.16),rgba(154,119,69,.3));border-color:var(--gold-line);box-shadow:inset 0 1px 0 rgba(243,236,223,.08)}
+.mi-cap{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:4px}
+.mi-box b{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-size:22px;font-weight:700;color:var(--ink);line-height:1.15}
+.mi-box span{display:block;font-size:13px;color:var(--muted);margin-top:5px;line-height:1.45}
+.mi-box small{display:block;font-size:12px;color:var(--gold);font-weight:600;margin-top:7px}
+.mi-arrow{color:var(--gold);font-size:18px;line-height:1.4}
+.mi-loop{font-size:12.5px;color:var(--muted2);margin:10px 0 0;text-align:center}
+.idea-grid{display:grid;grid-template-columns:1fr;gap:11px;margin-top:14px}
+.idea-block{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:16px 17px;box-shadow:var(--glow)}
+.idea-block h3{font-size:16.5px;margin:0 0 7px;font-weight:800}
+.idea-block p{font-size:14px;color:var(--muted);margin:0;line-height:1.5}
+
+/* ===== System: Auswertung ===== */
+.charts{display:grid;grid-template-columns:1fr;gap:12px}
+.chart{background:var(--surface);border:1px solid var(--line2);border-radius:16px;padding:16px 17px;box-shadow:var(--glow)}
+.chart h3{margin:0 0 13px;font-size:16px;font-weight:800;letter-spacing:-.01em}
+.donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.donut-leg{font-size:14px;color:var(--muted);line-height:2.1}
+.donut-leg b{color:var(--ink);font-variant-numeric:tabular-nums}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+.bar{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13.5px}
+.bar .blbl{width:130px;color:var(--muted);text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .track{flex:1;display:block;background:rgba(243,236,223,.07);border-radius:7px;height:18px;overflow:hidden}
+.bar .fill{display:block;height:100%;border-radius:6px;min-width:4px;background:var(--gold-grad)}
+.bar.warm .fill{background:linear-gradient(90deg,#d99a85,#a85a48)}
+.bar .bnum{width:30px;font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;font-size:17px;color:var(--ink);
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+.module-grid{display:grid;grid-template-columns:1fr;gap:11px}
+.module-card{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:16px 17px;box-shadow:var(--glow)}
+.module-card.accent{border-color:var(--gold-line);background:linear-gradient(180deg,#1e1a15,#251e12)}
+.module-card h3{font-size:16.5px;margin:0 0 8px;font-weight:800}
+.module-card p{color:var(--muted);font-size:13.5px;margin:0 0 13px;line-height:1.5}
+.module-stat{font-family:"Cormorant Garamond",Georgia,serif;font-size:35px;font-weight:700;margin-top:12px;line-height:1;
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+.module-note{font-size:12.5px;color:var(--muted2);margin-top:4px}
+
+/* ===== System: SOPs ===== */
+.process-flow,.help-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.process-card,.flow-card,.faq-card,.help-contact,.template-card{background:var(--surface);border:1px solid var(--line2);border-radius:16px;padding:16px 17px;box-shadow:var(--glow)}
+.process-card h3,.flow-card h3,.faq-card h3,.help-contact h3,.template-card h3{font-size:16.5px;margin:0 0 8px;font-weight:800}
+.process-card>p{font-size:13.5px;color:var(--muted);margin:0;line-height:1.5}
+.process-steps{display:grid;gap:8px;margin-top:12px}
+.pstep{display:grid;grid-template-columns:34px 1fr;gap:11px;align-items:start;background:var(--well);border:1px solid var(--line2);border-radius:12px;padding:11px}
+.pstep b{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gold-soft);color:var(--gold);font-family:"Cormorant Garamond",Georgia,serif;font-size:20px}
+.pstep span{font-size:14.5px;color:var(--ink);font-weight:650}
+.pstep small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px;line-height:1.4}
+.flow-rail{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.flow-node{background:var(--well);border:1px solid var(--line2);border-radius:12px;padding:12px;min-height:96px}
+.flow-node b{font-family:"Cormorant Garamond",Georgia,serif;font-size:25px;line-height:1;color:var(--gold)}
+.flow-node span{display:block;font-size:13.5px;font-weight:800;margin-top:5px}
+.flow-node small{display:block;color:var(--muted2);font-size:12px;line-height:1.35;margin-top:4px}
+.faq-grid,.help-contact-grid,.template-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.faq-card p,.template-card p{font-size:13.5px;color:var(--muted);margin:0;line-height:1.5}
+.help-contact .role,.template-card .role{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:800}
+.help-contact .phone{font-family:"Cormorant Garamond",Georgia,serif;font-size:30px;font-weight:700;line-height:1;margin:7px 0;
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1;color:var(--gold)}
+.help-contact p{font-size:13.5px;color:var(--muted);margin:0;line-height:1.5}
+.template-card .pill-row{margin-top:12px}
+.sys-foot{margin:28px 0 4px;padding-top:14px;border-top:1px solid var(--line2);font-size:12px;color:var(--muted2);line-height:1.6;text-align:center}
+
+/* ===== Formular ===== */
+.formcard{padding:20px 17px;margin-top:8px}
+.fgrid{display:grid;grid-template-columns:1fr;gap:13px}
+label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;font-weight:700}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font:inherit;font-size:16px;min-height:46px;
+  background:var(--well);color:var(--ink);transition:border-color .18s;-webkit-appearance:none;appearance:none}
+select{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23c9a36b' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
+input[type=checkbox]{width:20px;height:20px;min-height:0;accent-color:var(--gold)}
+textarea{resize:vertical;min-height:70px}
+.fsub{margin-top:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.fnote{font-size:12.5px;color:var(--muted2)}
+
+/* ===== Modal ===== */
+.overlay{position:fixed;inset:0;background:rgba(8,6,4,.66);display:none;align-items:flex-end;justify-content:center;
+  padding:24px 0 0;z-index:60;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.overlay.open{display:flex}
+.modal{background:#1e1a16;border:1px solid var(--line);border-bottom:0;border-radius:22px 22px 0 0;max-width:720px;width:100%;
+  box-shadow:0 -18px 60px rgba(0,0,0,.55);overflow:hidden;display:flex;flex-direction:column;max-height:calc(100dvh - 24px);
+  animation:sheetUp .32s cubic-bezier(.2,.7,.3,1) both}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.mhead{background:linear-gradient(135deg,#2b241c,#1c1814);border-bottom:1px solid var(--line);color:var(--ink);padding:18px 22px;display:flex;gap:14px;align-items:center;flex-shrink:0}
+.mhead .ava{width:44px;height:44px;font-size:15px;background:rgba(201,163,107,.2);color:#e6cfa6}
+.mhead h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;font-weight:700;margin:0;line-height:1.1}
+.mhead .msub2{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+.mbody{padding:18px 22px;overflow:auto;-webkit-overflow-scrolling:touch}
+.mgrid{display:grid;grid-template-columns:1fr;gap:13px}
+.docs{display:grid;grid-template-columns:1fr;gap:2px;background:var(--well);border:1px solid var(--line2);border-radius:12px;padding:8px 14px}
+.docs label{font-weight:500;font-size:14.5px;color:var(--ink);display:flex;gap:10px;align-items:center;margin:0;text-transform:none;letter-spacing:0;min-height:44px}
+.docs input{width:20px;min-height:0}
+.timeline{border-left:2px solid var(--gold-line);margin-left:6px;padding-left:16px;max-height:150px;overflow:auto;font-size:13px}
+.timeline div{position:relative;margin:8px 0;color:var(--muted)}
+.timeline div::before{content:"";position:absolute;left:-21px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.timeline b{color:var(--muted2);font-weight:600;font-size:11px}
+.mfoot{display:flex;justify-content:space-between;gap:10px;padding:14px 22px calc(16px + env(safe-area-inset-bottom));border-top:1px solid var(--line2);flex-shrink:0;flex-wrap:wrap}
+.verlustrow{display:none}.verlustrow.show{display:block}
+.saluto-toggle{display:flex;align-items:center;gap:10px;background:var(--gold-soft);border:1px solid var(--gold-line);
+  border-radius:12px;padding:11px 14px;font-size:13.5px;font-weight:500;min-height:48px;color:#e6cfa6}
+.saluto-toggle input{width:20px;min-height:0}
+#docCnt{color:var(--gold)}
+
+/* ===== Breakpoints ===== */
+@media(min-width:640px){
+  .fgrid,.mgrid{grid-template-columns:1fr 1fr}
+  .fgrid .full,.mgrid .full{grid-column:1/-1}
+  .docs{grid-template-columns:1fr 1fr}
+  .charts,.module-grid,.bestand-grid,.zgrid,.faq-grid,.help-contact-grid,.template-grid,.process-flow,.help-grid,.idea-grid{grid-template-columns:repeat(2,1fr)}
+  .help-contact-grid,.template-grid,.idea-grid{grid-template-columns:repeat(3,1fr)}
+  .flow-rail{grid-template-columns:repeat(4,1fr)}
+  .zcat-grid{grid-template-columns:repeat(3,1fr)}
+  .zcat:last-child{grid-column:auto}
+  .map-index{grid-template-columns:1fr 1fr}
+  .mail .right{width:auto;margin-left:auto;padding-left:0}
+  .mail .mbodytxt{min-width:0}
+  .overlay{align-items:flex-start;padding:34px 18px}
+  .modal{border-radius:22px;border-bottom:1px solid var(--line);max-height:calc(100dvh - 68px)}
+  .mfoot{padding-bottom:18px}
+}
+@media(min-width:900px){
+  .pagehead h1{font-size:40px}
+  .ring-box{width:240px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="brand">
+    <span class="bk">KLINIK <b>BAVARIA</b> · Privatpatienten-Maschine</span>
+    <span class="demo-chip">Demo</span>
+  </header>
+
+  <div class="pagehead">
+    <h1 id="pageTitle">Heute</h1>
+    <div class="date" id="pageDate"></div>
+  </div>
+
+  <!-- ============ HEUTE ============ -->
+  <section id="view-heute" class="view active">
+    <div class="stagger">
+      <p class="lead"><span class="kicker">Patientenakquise-Maschine</span><br>Aus Quellen wird planbare Belegung. Der Überblick zeigt die aktive Maschine — die Idee dahinter erklärt der Bereich System.</p>
+
+      <div class="card ns-hero">
+        <span class="kicker">Nordstern · Planbare Privatauslastung</span>
+        <div class="ring-box">
+          <svg viewBox="0 0 220 220" role="img" aria-label="Privatauslastung 78 Prozent, Ziel 90 Prozent">
+            <circle cx="110" cy="110" r="92" fill="none" stroke="rgba(201,163,107,.14)" stroke-width="11"/>
+            <circle cx="110" cy="110" r="92" fill="none" stroke="url(#ringGoldFix)" stroke-width="11" stroke-linecap="round"
+              stroke-dasharray="578.05" stroke-dashoffset="127.17" transform="rotate(-90 110 110)"/>
+            <line x1="55.9" y1="35.6" x2="50" y2="27.5" stroke="rgba(243,236,223,.55)" stroke-width="2" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="ringGoldFix" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#e3c693"/><stop offset=".55" stop-color="#c9a36b"/><stop offset="1" stop-color="#9a7745"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="ring-center"><b>78</b><i>Prozent</i></div>
+        </div>
+        <div class="ring-cap">Privatauslastung</div>
+        <div class="ring-sub">31 von 40 Privatbetten belegt · Ziel 90 %+</div>
+        <div class="ns-row">
+          <div class="ns-m">
+            <span class="nl">Belegungsvorlauf</span>
+            <span class="nv"><b id="nsVorlauf">9</b><i>Tage</i><em id="plusTagH"></em></span>
+            <span class="nsub">Ziel: 21 Tage im Voraus</span>
+          </div>
+          <div class="ns-m">
+            <span class="nl">Ø Erstreaktion</span>
+            <span class="nv" id="nsRz"></span>
+            <span class="nsub">Ziel: unter 24 Stunden</span>
+          </div>
+          <div class="ns-m">
+            <span class="nl">Conversion</span>
+            <span class="nv" id="nsConv"></span>
+            <span class="nsub" id="nsConvSub"></span>
+          </div>
+        </div>
+        <div class="ns-foot">Demo-Daten · Stand heute</div>
+      </div>
+
+      <div class="card funnel">
+        <div class="f-cap">Quellen</div>
+        <div class="f-src">
+          <button class="src" onclick="switchTab('zuweiser')"><span>Krankenhäuser</span><b id="q1"></b><i>›</i></button>
+          <button class="src" onclick="switchTab('zuweiser')"><span>Privatpraxen</span><b id="q2"></b><i>›</i></button>
+          <button class="src" onclick="switchTab('zuweiser')"><span>Hausärzte</span><b id="q3"></b><i>›</i></button>
+          <button class="src" onclick="switchTab('bestand')"><span>Altpatienten</span><b id="q4"></b><i>›</i></button>
+          <button class="src" onclick="switchTab('zuweiser')"><span>Premium-Netzwerke</span><b id="q5"></b><i>›</i></button>
+        </div>
+        <div class="f-cap">Der eine Trichter</div>
+        <div class="f-stages">
+          <button class="fstage" id="fstage0" style="--w:100%" onclick="openStage(0)"><b id="zc0"></b><span>neu &amp;<br>kontaktiert</span><i>›</i></button>
+          <button class="fstage" id="fstage1" style="--w:86%" onclick="openStage(1)"><b id="zc1"></b><span>in Klärung</span><i>›</i></button>
+          <button class="fstage" id="fstage2" style="--w:72%" onclick="openStage(2)"><b id="zc2"></b><span>Aufnahme<br>geplant</span><i>›</i></button>
+          <button class="stockbadge" id="stockBadge" style="display:none" onclick="switchTab('faelle')"><span class="sdot"></span><span id="stockText"></span></button>
+        </div>
+        <div class="f-cap">Ergebnis</div>
+        <div class="f-res">
+          <button onclick="switchTab('intelligenz')"><b id="r1"></b><span>Aufnahmen</span></button>
+          <button onclick="switchTab('intelligenz')"><b>78 %</b><span>Privat&shy;auslastung</span></button>
+          <button onclick="switchTab('intelligenz')"><b id="r3"></b><span>Verloren · gelernt</span></button>
+        </div>
+        <p class="f-note">Verlustgründe und Rückmeldungen fließen zurück in Quellen, Team und Prozesse.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FÄLLE ============ -->
+  <section id="view-faelle" class="view">
+    <div class="seg" role="tablist" aria-label="Fälle-Bereiche">
+      <button data-sub="anfragen" class="active" onclick="setSub('faelle','anfragen')">Anfragen <span class="segbadge" id="badgeEingang"></span></button>
+      <button data-sub="board" onclick="setSub('faelle','board')">Fall-Board <span class="segbadge dim" id="badgeFaelle"></span></button>
+    </div>
+    <div class="panel active" id="panel-anfragen">
+      <div class="stagger">
+        <div class="lbl">Ein Eingang für alle Kanäle · Telefon, E-Mail, Website, Zuweiser, Recare, Premium</div>
+        <div class="inbox" id="inbox"></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-board">
+      <div class="stagger">
+        <div class="lbl">Fall-Board · Karte antippen zum Öffnen</div>
+        <div id="boardFocus"></div>
+        <div id="board"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NETZWERK ============ -->
+  <section id="view-netzwerk" class="view">
+    <div class="seg" role="tablist" aria-label="Netzwerk-Bereiche">
+      <button data-sub="zuweiser" class="active" onclick="setSub('netzwerk','zuweiser')">Zuweiser <span class="segbadge dim" id="badgeZuw"></span></button>
+      <button data-sub="bestand" onclick="setSub('netzwerk','bestand')">Altpatienten <span class="segbadge dim" id="badgeBestand"></span></button>
+    </div>
+    <div class="panel active" id="panel-zuweiser">
+      <div class="stagger">
+        <div class="lbl">Zuweiser-Netzwerk · zuerst Kategorien, dann Kontakte und nächste Aktion</div>
+        <div class="zcat-grid" id="zcatgrid"></div>
+        <div class="zmap" id="zmap"></div>
+        <div class="zgrid" id="zgrid"></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-bestand">
+      <div class="stagger">
+        <div class="card b-hero">
+          <div class="kicker">Altpatienten · Beziehungsgedächtnis</div>
+          <h2>Aus Entlassungen werden warme Beziehungen.</h2>
+          <p>Altpatienten sind kein Archiv, sondern ein steuerbarer Bestand: Wer darf kontaktiert werden, wer braucht Wiedervorlage, wo entsteht SalutoCare-Potenzial?</p>
+          <div class="bestand-stats" id="bestandStats"></div>
+        </div>
+        <div class="lbl">Kontaktfähige Beziehungen · Wiedervorlagen · gesperrte Kontakte</div>
+        <div class="legal"><b>Kontaktfreigabe &amp; Datenschutz:</b> Aktive Ansprache erst nach dokumentierter Freigabe (Einwilligungen, Datenschutz; prüfpflichtig). Der Prototyp zeigt die Logik: Wer eine Einwilligung hat, bekommt Nachsorge-Angebote und Wiedervorlagen. Wer keine hat, bleibt gesperrt.</div>
+        <div class="bestand-grid" id="btable"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SYSTEM ============ -->
+  <section id="view-system" class="view">
+    <div class="seg" role="tablist" aria-label="System-Bereiche">
+      <button data-sub="idee" class="active" onclick="setSub('system','idee')">Die Idee</button>
+      <button data-sub="auswertung" onclick="setSub('system','auswertung')">Auswertung</button>
+      <button data-sub="sops" onclick="setSub('system','sops')">SOPs</button>
+    </div>
+
+    <div class="panel active" id="panel-idee">
+      <div class="stagger">
+        <div class="idea-head">
+          <div class="lbl" style="margin-top:18px">Die Logik der Software</div>
+          <p>Die Software verbindet Markt, Klinikalltag und Belegung. Sie macht sichtbar, wo Patienten entstehen, wer sie führt und was aus jedem Fall gelernt wird.</p>
+        </div>
+        <div class="midea">
+          <div class="mi-box"><div class="mi-cap">Aussen</div><b>Quellen aktivieren</b><span>Zuweiser-Netzwerk · Altpatienten-Bestand · Premium-Kanäle</span></div>
+          <div class="mi-arrow">↓</div>
+          <div class="mi-box hub"><div class="mi-cap">Die Software</div><b>Der eine Trichter</b><span>erfassen · führen · lernen</span><small>Aus jedem Signal wird Steuerung.</small></div>
+          <div class="mi-arrow">↓</div>
+          <div class="mi-box"><div class="mi-cap">Innen</div><b>Klinik steuerbar machen</b><span>Prozesse · Belegung · SalutoCare-Routing</span></div>
+          <p class="mi-loop">↺ Gelerntes fließt zurück in die Quellen.</p>
+        </div>
+        <div class="idea-grid">
+          <div class="idea-block"><h3>Mehr Fälle</h3><p>Alle Quellen laufen in einen Eingang. Zuweiser, Direktanfragen, Altpatienten und Premium-Kanäle werden nicht getrennt gedacht.</p></div>
+          <div class="idea-block"><h3>Verlässlichkeit</h3><p>Jeder Fall hat eine zuständige Person, einen nächsten Schritt und eine Frist. Verlustgründe sind Pflicht, damit nichts still verschwindet.</p></div>
+          <div class="idea-block"><h3>Planbarkeit</h3><p>Der Belegungsvorlauf wird sichtbar und steigt mit jeder geplanten Aufnahme. Rückmeldungen fließen in Quellen und Prozesse zurück.</p></div>
+        </div>
+        <div class="legal"><b>Kontaktfreigabe &amp; Datenschutz:</b> Aktive Ansprache, Newsletter und automatisierte E-Mails sind erst nach dokumentierter Freigabe vorgesehen. Der Prototyp nutzt ausschließlich synthetische Demo-Daten und zeigt die Systemlogik.</div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-auswertung">
+      <div class="stagger">
+        <div class="lbl">Auswertung · Quellen, Engpässe, Team und Fachbereiche</div>
+        <div class="charts">
+          <div class="chart"><h3>Von Anfrage zu Aufnahme</h3><div class="donut-wrap"><svg id="donut" width="116" height="116" viewBox="0 0 120 120"></svg><div class="donut-leg" id="donutLeg"></div></div></div>
+          <div class="chart"><h3>Woher kommen Patienten?</h3><div id="chartQuelle"></div></div>
+          <div class="chart"><h3>Warum gehen Fälle verloren?</h3><div id="chartVerlust"></div></div>
+          <div class="chart"><h3>Wer führt wie viele Fälle?</h3><div id="chartTeam"></div></div>
+          <div class="chart"><h3>Wo stockt es?</h3><div id="chartEngpass"></div></div>
+          <div class="chart"><h3>Welche Fachbereiche?</h3><div id="chartAchse"></div></div>
+        </div>
+        <div class="lbl">Was die Maschine daraus macht</div>
+        <div class="module-grid">
+          <div class="module-card accent">
+            <h3>Nichts geht unter</h3>
+            <p>Neue Anfragen, offene Fristen und blockierte Fälle werden sichtbar, bevor sie im Alltag untergehen.</p>
+            <div class="pill-row"><span class="soft-pill ok">Frist</span><span class="soft-pill">Verantwortung</span><span class="soft-pill">Blocker</span></div>
+            <div class="module-stat" id="autoSignals"></div><div class="module-note">aktive Signale</div>
+          </div>
+          <div class="module-card">
+            <h3>Team steuern</h3>
+            <p>Die Leitung sieht, wo Arbeit liegt: Koordination, Belegung, Abrechnung oder Recovery Manager.</p>
+            <div class="pill-row"><span class="soft-pill gold">Premium</span><span class="soft-pill ok">Zuweiser</span></div>
+            <div class="module-stat" id="autoPremium"></div><div class="module-note">Premium-Signale</div>
+          </div>
+          <div class="module-card">
+            <h3>Aus Verlusten lernen</h3>
+            <p>Verlustgründe und Blocker werden zur Management-Information: Wartezeit, Kosten, Unterlagen, Rückmeldung, Kapazität.</p>
+            <div class="pill-row"><span class="soft-pill warn">Kosten</span><span class="soft-pill">Unterlagen</span><span class="soft-pill">Kapazität</span></div>
+            <div class="module-stat" id="autoLoss"></div><div class="module-note">verlorene Demo-Fälle</div>
+          </div>
+          <div class="module-card">
+            <h3>Kontaktfreigabe</h3>
+            <p>Einwilligungen, Angehörigenkontakt und aktive Ansprache werden nicht versteckt, sondern als Systemstatus geführt.</p>
+            <div class="pill-row"><span class="soft-pill ok">freigegeben</span><span class="soft-pill warn">prüfen</span><span class="soft-pill">gesperrt</span></div>
+            <div class="module-stat" id="autoConsent"></div><div class="module-note">freigegebene Demo-Kontakte</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-sops">
+      <div class="stagger">
+        <div class="lbl">Prozesse / SOPs · interner Hilfe- und Nachschlagebereich</div>
+        <div class="legal"><b>Demo-Logik:</b> Dieser Bereich zeigt Prozesswissen, Ansprechpartner und Vorlagen. Er ist als interne Hilfe gedacht, nicht als echte Versandsoftware. Jede aktive Kommunikation bleibt an Kontaktfreigabe und Zweckbindung gebunden.</div>
+        <div class="process-flow">
+          <div class="process-card">
+            <h3>Aufnahmeprozess</h3>
+            <p>Vom ersten Signal bis zur sauberen Fallübergabe: eine einfache Kette, die Verantwortung, Unterlagen und Fristen sichtbar hält.</p>
+            <div class="process-steps">
+              <div class="pstep"><b>1</b><div><span>Anfrage aufnehmen</span><small>Kanal, Quelle, Patient, Kostenträger und Kontaktstatus erfassen.</small></div></div>
+              <div class="pstep"><b>2</b><div><span>Fall führen</span><small>Verantwortliche Person, nächste Aufgabe und Frist sind immer sichtbar.</small></div></div>
+              <div class="pstep"><b>3</b><div><span>Aufnahme planen</span><small>Kosten, Unterlagen, Bett und Fachbereich werden in einem Status verdichtet.</small></div></div>
+            </div>
+          </div>
+          <div class="process-card">
+            <h3>Beziehungs-SOP</h3>
+            <p>Zuweiser und Altpatienten werden nicht nebenbei gepflegt, sondern als strategische Aufgaben mit sauberer Freigabe geführt.</p>
+            <div class="process-steps">
+              <div class="pstep"><b>1</b><div><span>Kontakt bewerten</span><small>Partnergruppe, Relevanz, letzter Kontakt und nächster Schritt.</small></div></div>
+              <div class="pstep"><b>2</b><div><span>Kontaktfreigabe prüfen</span><small>Aktive Ansprache nur bei dokumentierter Erlaubnis und Zweckbindung.</small></div></div>
+              <div class="pstep"><b>3</b><div><span>Lernen zurückspielen</span><small>Verlustgründe, Engpässe und gute Quellen fließen ins Management zurück.</small></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="lbl">Ablaufdiagramme · was passiert in welcher Reihenfolge?</div>
+        <div class="help-grid">
+          <div class="flow-card">
+            <h3>Pfad: Anfrage bis Aufnahme</h3>
+            <div class="flow-rail">
+              <div class="flow-node"><b>1</b><span>Signal</span><small>Telefon, Website, Zuweiser, Altpatient.</small></div>
+              <div class="flow-node"><b>2</b><span>Klärung</span><small>Unterlagen, Eignung, Kosten, Kontaktfreigabe.</small></div>
+              <div class="flow-node"><b>3</b><span>Planung</span><small>Bett, Fachbereich, Transport, Angehörige.</small></div>
+              <div class="flow-node"><b>4</b><span>Lernen</span><small>Quelle, Verlustgrund oder Erfolg zurückspielen.</small></div>
+            </div>
+          </div>
+          <div class="flow-card">
+            <h3>Pfad: Problem lösen</h3>
+            <div class="flow-rail">
+              <div class="flow-node"><b>A</b><span>Blocker</span><small>Was fehlt gerade?</small></div>
+              <div class="flow-node"><b>B</b><span>Owner</span><small>Wer kann es entscheiden?</small></div>
+              <div class="flow-node"><b>C</b><span>Vorlage</span><small>Welche Nachricht passt?</small></div>
+              <div class="flow-node"><b>D</b><span>Notiz</span><small>Fallverlauf dokumentieren.</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="lbl">Schnellzugriff · interne SOP-Bibliothek</div>
+        <div class="module-grid">
+          <div class="module-card accent">
+            <h3>Erstreaktion</h3>
+            <p>Rückruf, Unterlagenanforderung und erste Einordnung ohne Medienbruch.</p>
+            <div class="pill-row"><span class="soft-pill ok">Frist</span><span class="soft-pill">Verantwortung</span></div>
+            <div class="module-stat">24h</div><div class="module-note">Ziel für Erstkontakt</div>
+          </div>
+          <div class="module-card">
+            <h3>Unterlagen</h3>
+            <p>Entlassbrief, Befunde, Versicherungsdaten und Kostenzusage als klare Checkliste.</p>
+            <div class="pill-row"><span class="soft-pill warn">Blocker</span><span class="soft-pill">Checkliste</span></div>
+            <div class="module-stat">4</div><div class="module-note">Pflichtpunkte im Fall</div>
+          </div>
+          <div class="module-card">
+            <h3>Kontaktfreigabe</h3>
+            <p>Einwilligung, Zweckbindung und Sperrstatus werden als sichtbarer Systemstatus geführt.</p>
+            <div class="pill-row"><span class="soft-pill ok">freigegeben</span><span class="soft-pill warn">prüfen</span></div>
+            <div class="module-stat" id="commConsent"></div><div class="module-note">kontaktfähige Demo-Kontakte</div>
+          </div>
+          <div class="module-card">
+            <h3>Zuweiser-Service</h3>
+            <p>Rückmeldung, Dank, Ansprechpartner und klare Erwartungen je Partnergruppe.</p>
+            <div class="pill-row"><span class="soft-pill">Krankenhaus</span><span class="soft-pill">Praxis</span></div>
+            <div class="module-stat">5</div><div class="module-note">Partnergruppen</div>
+          </div>
+        </div>
+        <div class="lbl">FAQ · häufige Fragen im Alltag</div>
+        <div class="faq-grid">
+          <div class="faq-card"><h3>Was tun, wenn Unterlagen fehlen?</h3><p>Im Fall als Blocker markieren, passende Unterlagen-Vorlage nutzen und Frist setzen. Der Fall bleibt sichtbar, bis die Checkliste vollständig ist.</p></div>
+          <div class="faq-card"><h3>Wann darf aktiv kontaktiert werden?</h3><p>Nur wenn Einwilligung und Zweck dokumentiert sind. Ohne Kontaktfreigabe bleibt der Kontakt gesperrt und es wird keine Ansprache ausgelöst.</p></div>
+          <div class="faq-card"><h3>Wer entscheidet bei Kostenfragen?</h3><p>Abrechnung übernimmt PKV, Beihilfe und Selbstzahler-Klärung. Der Fall bleibt in Klärung, bis Kostenstatus eindeutig ist.</p></div>
+          <div class="faq-card"><h3>Wie wird aus einem Verlust gelernt?</h3><p>Verlustgrund verpflichtend dokumentieren. Die Auswertung zeigt später, ob Wartezeit, Kapazität, Kosten oder Unterlagen wiederholt bremsen.</p></div>
+        </div>
+        <div class="lbl">Interne Ansprechpartner · wenn es stockt</div>
+        <div class="help-contact-grid">
+          <div class="help-contact"><div class="role">Patientenkoordination</div><h3>S. Koordination</h3><div class="phone">100</div><p>Erstreaktion, Angehörige, Unterlagenanforderung, Fristen.</p></div>
+          <div class="help-contact"><div class="role">Belegung</div><h3>M. Belegung</h3><div class="phone">120</div><p>Bett, Fachbereich, Aufnahmedatum, Transportabstimmung.</p></div>
+          <div class="help-contact"><div class="role">Technik-Hotline</div><h3>Patienten-OS Support</h3><div class="phone">199</div><p>Login, Bedienung, Datenfehler, technische Rückfragen.</p></div>
+        </div>
+        <div class="lbl">Vorlagen · Kommunikation vorbereiten</div>
+        <div class="template-grid">
+          <div class="template-card"><div class="role">Patient / Angehörige</div><h3>Unterlagen anfordern</h3><p>Freundliche Checkliste: Entlassbrief, Befunde, Versicherungsdaten, Kostenzusage.</p><div class="pill-row"><span class="soft-pill">E-Mail</span><span class="soft-pill ok">freigabepflichtig</span></div></div>
+          <div class="template-card"><div class="role">Zuweiser</div><h3>Status-Rückmeldung</h3><p>Kurze Rückmeldung zu Übernahmefähigkeit, nächstem Schritt und fester Ansprechperson.</p><div class="pill-row"><span class="soft-pill">Partnerpflege</span><span class="soft-pill gold">Premium</span></div></div>
+          <div class="template-card"><div class="role">Altpatient</div><h3>Nachsorge vormerken</h3><p>Nur bei Kontaktfreigabe: freiwillige Wiedervorlage, Jahres-Check oder SalutoCare-Nachsorge.</p><div class="pill-row"><span class="soft-pill ok">Kontaktfreigabe</span><span class="soft-pill">Wiedervorlage</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sys-foot"><span class="demo-chip">Demo · synthetische Daten</span><br>Interner Prototyp. Alle Daten sind erfunden und leben nur in diesem Browserfenster.</div>
+  </section>
+
+  <!-- ============ NEUE ANFRAGE ============ -->
+  <section id="view-neu" class="view">
+    <div class="stagger">
+      <div class="lbl">Anfrage manuell erfassen (z. B. Telefonnotiz)</div>
+      <div class="card formcard">
+        <form id="formNeu">
+          <div class="fgrid">
+            <div><label for="fName">Name (Patient)</label><input id="fName" placeholder="z. B. Anna Muster" required></div>
+            <div><label for="fAlter">Alter</label><input id="fAlter" type="number" min="18" max="105" placeholder="z. B. 67"></div>
+            <div><label for="fRolle">Wer meldet sich?</label><select id="fRolle"><option>Patient selbst</option><option>Angehörige</option><option>Zuweiser</option></select></div>
+            <div><label for="fKanal">Eingangskanal</label><select id="fKanal"><option>Telefon</option><option>E-Mail</option><option>Website-Formular</option><option>Zuweiser direkt</option><option>Recare</option><option>PRIMO MEDICO</option><option>Empfehlung</option></select></div>
+            <div class="full"><label for="fQuelle">Quelle konkret (wer / woher)</label><input id="fQuelle" placeholder="z. B. Leopoldina Schweinfurt, Sozialdienst"></div>
+            <div><label for="fAchse">Achse</label><select id="fAchse"><option>Unklar</option><option>Orthopädie</option><option>Neurologie</option><option>Geriatrie</option><option>Innere</option><option>SalutoCare</option></select></div>
+            <div><label for="fKT">Kostenträger</label><select id="fKT"><option>Unklar</option><option>PKV</option><option>Beihilfe</option><option>Selbstzahler</option><option>GKV + Komfort</option></select></div>
+            <div><label for="fOwner">Verantwortlich</label><select id="fOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
+            <div><label for="fFrist">Frist Erstreaktion</label><input id="fFrist" type="date"></div>
+            <div class="full"><label for="fNotiz">Anliegen / Notiz</label><textarea id="fNotiz" placeholder="Kurz: worum geht es?"></textarea></div>
+            <div class="full"><label for="fConsent">Einwilligung Kontaktaufnahme</label><select id="fConsent"><option>mündlich erteilt</option><option>schriftlich liegt vor</option><option>offen</option></select></div>
+          </div>
+          <div class="fsub">
+            <button class="cta" type="submit">Als Fall anlegen</button>
+            <span class="fnote">Landet sofort als &bdquo;Neu&ldquo; im Fall-Board.</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /shell -->
+
+<!-- ============ BOTTOM-NAV ============ -->
+<nav class="bnav" aria-label="Hauptnavigation">
+  <div class="bnav-inner">
+    <button data-view="heute" class="active" aria-label="Heute">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3.5 13a8.5 8.5 0 1 1 17 0"/><path d="M12 13l3.5-4"/><path d="M2 17.5h20"/></svg>
+      Heute
+    </button>
+    <button data-view="faelle" aria-label="Fälle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="5" height="7" rx="1.5"/></svg>
+      Fälle
+      <span class="navdot" id="navFaelleBadge" style="display:none"></span>
+    </button>
+    <button class="fab" onclick="go('neu')" aria-label="Neue Anfrage anlegen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <button data-view="netzwerk" aria-label="Netzwerk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="6" r="3"/><circle cx="5" cy="18" r="3"/><circle cx="19" cy="18" r="3"/><path d="M12 9v3m0 0-5 3.5M12 12l5 3.5"/></svg>
+      Netzwerk
+    </button>
+    <button data-view="system" aria-label="System">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2.2"/><circle cx="8" cy="16" r="2.2"/></svg>
+      System
+    </button>
+  </div>
+</nav>
+
+<!-- ============ FALL-DETAIL ============ -->
+<div class="overlay" id="ovDetail">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Fall-Detail">
+    <div class="mhead">
+      <div class="ava" id="dAva"></div>
+      <div><h2 id="dName"></h2><div class="msub2" id="dSub"></div></div>
+    </div>
+    <div class="mbody">
+      <div class="mgrid">
+        <div><label for="dStatus">Status</label><select id="dStatus"></select></div>
+        <div><label for="dOwner">Verantwortlich</label><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
+        <div><label for="dAufgabe">Nächste Aufgabe</label><input id="dAufgabe"></div>
+        <div><label for="dFrist">Frist</label><input id="dFrist" type="date"></div>
+        <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option></select></div>
+        <div><label for="dConsent">Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
+        <div class="full"><label>Unterlagen <span id="docCnt"></span></label>
+          <div class="docs">
+            <label><input type="checkbox" id="u1"> Entlassbrief</label>
+            <label><input type="checkbox" id="u2"> Befunde</label>
+            <label><input type="checkbox" id="u3"> Versicherungsdaten</label>
+            <label><input type="checkbox" id="u4"> Kostenzusage</label>
+          </div>
+        </div>
+        <div class="full"><div class="saluto-toggle"><input type="checkbox" id="dSaluto"><span>★ Für <b>SalutoCare</b> geeignet · Premium-Option aktiv anbieten</span></div></div>
+        <div class="full verlustrow" id="rowVerlust"><label for="dVerlust">Verlustgrund (Pflicht bei &bdquo;Verloren&ldquo;)</label>
+          <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
+        </div>
+        <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
+        <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="cta ghost" id="dAbbruch">Schließen</button>
+      <button class="cta" id="dSpeichern">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STATUS=["Neu","Kontaktiert","Qualifizierung","Unterlagen","Aufnahme geplant","Aufgenommen","Verloren"];
+const STATUS_COL={"Neu":"#c9a36b","Kontaktiert":"#82aee8","Qualifizierung":"#d2a157","Unterlagen":"#b5a88f","Aufnahme geplant":"#8fb585","Aufgenommen":"#8fc9a0","Verloren":"#d97f6a"};
+const ACHSE_COL={"Orthopädie":"var(--ortho)","Neurologie":"var(--neuro)","Geriatrie":"var(--geri)","Innere":"var(--innere)","SalutoCare":"var(--saluto)","Unklar":"var(--unklar)"};
+const heute=new Date();
+function dstr(o){const d=new Date(heute);d.setDate(d.getDate()+o);return d.toISOString().slice(0,10);}
+function initialen(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();}
+
+/* ---------- Daten (synthetisch, unverändert) ---------- */
+let faelle=[
+ {id:1,name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]]},
+ {id:2,name:"Karl Beispiel",alter:74,rolle:"Zuweiser",kanal:"Telefon",quelle:"Leopoldina Schweinfurt, Privatstation",achse:"Orthopädie",kt:"PKV",status:"Neu",owner:"M. Belegung",aufgabe:"Eignungs-Kurzcheck",frist:dstr(1),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,log:[[dstr(0),"Anruf Privatstation: Hüft-TEP, Entlassung in 5 Tagen"]]},
+ {id:3,name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"]]},
+ {id:4,name:"Werner Adler",alter:81,rolle:"Angehörige",kanal:"Empfehlung",quelle:"Empfehlung ehemaliger Patient",achse:"Geriatrie",kt:"Beihilfe",status:"Kontaktiert",owner:"T. Abrechnung",aufgabe:"Beihilfe-Unterlagen erklären",frist:dstr(-1),saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:5,log:[[dstr(-3),"Tochter ruft an, Vater nach Sturz"],[dstr(-2),"Beratungsgespräch geführt"]]},
+ {id:5,name:"Sofia Lehmann",alter:52,rolle:"Zuweiser",kanal:"PRIMO MEDICO",quelle:"PRIMO MEDICO Anfrage",achse:"SalutoCare",kt:"Selbstzahler",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Ärztliches Vorgespräch terminieren",frist:dstr(1),saluto:true,docs:[true,true,false,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-4),"Premium-Anfrage international"],[dstr(-3),"Recovery Manager übernimmt, Erstgespräch geführt"]]},
+ {id:6,name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(0),saluto:true,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss"],[dstr(-4),"Med. Rückfrage an Oberarzt"]]},
+ {id:7,name:"Gisela Brandt",alter:71,rolle:"Patient selbst",kanal:"E-Mail",quelle:"Hausarzt Dr. Sommer, Bad Kissingen",achse:"Innere",kt:"PKV",status:"Unterlagen",owner:"T. Abrechnung",aufgabe:"Kostenzusage PKV nachfassen",frist:dstr(3),saluto:false,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-7),"Mail-Anfrage"],[dstr(-5),"Unterlagen angefordert"],[dstr(-2),"Befunde eingegangen"]]},
+ {id:8,name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage"],[dstr(-4),"Entlassbrief liegt vor"]]},
+ {id:9,name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]]},
+ {id:10,name:"Dieter Franke",alter:66,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Privatstation",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-15),"Anfrage Knie-TEP AHB"],[dstr(-9),"Aufnahme erfolgt"]]},
+ {id:11,name:"Elke Sauer",alter:59,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"SalutoCare",kt:"Selbstzahler",status:"Aufgenommen",owner:"Recovery Manager",aufgabe:"",frist:"",saluto:true,docs:[true,true,true,true],kosten:"Selbstzahler bestätigt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-20),"Premium-Anfrage über Website"],[dstr(-12),"Aufnahme SalutoCare Suite"]]},
+ {id:12,name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage"],[dstr(-11),"Rückruf erst nach 26 Std."],[dstr(-8),"Familie hat anderes Haus gewählt"]]}
+];
+
+let eingang=[
+ {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Nummer notiert, möchte Rückruf heute. Vermutlich PKV.",zeit:"vor 25 Min.",achse:"Innere",done:false},
+ {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Patient (68), PKV, Entlassung in 4 Tagen. Unterlagen anbei.",zeit:"vor 1 Std.",achse:"Neurologie",done:false},
+ {id:103,kanal:"Website",tit:"Website-Formular: Selbstzahlerin (55) fragt nach Premium-Reha",txt:"Interessiert an Suite, fragt nach Preisen und freien Terminen.",zeit:"vor 2 Std.",achse:"SalutoCare",done:false},
+ {id:104,kanal:"E-Mail",tit:"E-Mail: Hausarzt Dr. Sommer empfiehlt Patientin (79)",txt:"Geriatrische Reha angefragt, Beihilfe, Tochter koordiniert.",zeit:"gestern",achse:"Geriatrie",done:true},
+ {id:105,kanal:"Recare",tit:"Recare: Klinikum Fulda sucht Neuro-Reha-Platz",txt:"GKV + Komfort-Wunsch, Übernahme in 6 Tagen möglich.",zeit:"gestern",achse:"Neurologie",done:true},
+ {id:106,kanal:"PRIMO MEDICO",tit:"PRIMO MEDICO: internationale Premium-Anfrage",txt:"Familie fragt für Vater (64) nach Intensiv-Reha mit Beatmung.",zeit:"vor 2 Tagen",achse:"SalutoCare",done:true}
+];
+
+let bestand=[
+ {name:"Margarete Wirth",alter:73,achse:"Orthopädie",entl:"vor 11 Monaten",consent:"ja",anlass:"Jahres-Check nach Knie-TEP steht an",wv:true},
+ {name:"Otto Brenner",alter:68,achse:"Neurologie",entl:"vor 14 Monaten",consent:"ja",anlass:"Nachsorge-Angebot Schlaganfall-Prävention",wv:false},
+ {name:"Use Hartmann",alter:61,achse:"Innere",entl:"vor 8 Monaten",consent:"ja",anlass:"Einladung Gesundheitswoche möglich",wv:false},
+ {name:"Friedrich Lang",alter:77,achse:"Geriatrie",entl:"vor 6 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false},
+ {name:"Hannelore Beck",alter:70,achse:"Orthopädie",entl:"vor 19 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false},
+ {name:"Georg Steiner",alter:65,achse:"Neurologie",entl:"vor 9 Monaten",consent:"widerruf",anlass:"Widerruf am 03.05. dokumentiert",wv:false},
+ {name:"Christa Mohr",alter:58,achse:"SalutoCare",entl:"vor 5 Monaten",consent:"ja",anlass:"Premium-Nachsorge, Recovery Manager kennt Fall",wv:true},
+ {name:"Walter Simon",alter:80,achse:"Innere",entl:"vor 23 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false}
+];
+
+let zuweiser=[
+ {name:"Leopoldina-Krankenhaus",typ:"Akutklinik mit Privatstation",ort:"Schweinfurt (~25 km)",rel:"Ortho (EPZ), Neuro",ap:"Hr. Brenner (Privatstation)",tel:"0971 0000-231",mail:"brenner@demo-klinik.local",faelle:6,letzter:dstr(-1),draht:"●●●",status:"aktiv",next:"Quartalsgespräch vereinbaren"},
+ {name:"RHÖN-KLINIKUM Campus",typ:"Akutklinik · Maximalversorger",ort:"Bad Neustadt (~20 km)",rel:"Neuro, Ortho, SalutoCare",ap:"Fr. Albrecht (Sozialdienst)",tel:"0971 0000-242",mail:"albrecht@demo-klinik.local",faelle:4,letzter:dstr(-3),draht:"●●○",status:"aktiv",next:"Feedback zu letzter Übernahme geben"},
+ {name:"Dr. Sommer",typ:"Hausarzt-Privatpraxis",ort:"Bad Kissingen",rel:"Innere, Geriatrie",ap:"Dr. Sommer",tel:"0971 0000-301",mail:"praxis-sommer@demo.local",faelle:3,letzter:dstr(-2),draht:"●●●",status:"aktiv",next:"Dankesnotiz + Infomaterial"},
+ {name:"Thoraxzentrum Münnerstadt",typ:"Weaning-Zentrum (WeanNet)",ort:"Münnerstadt (~10 km)",rel:"SalutoCare (Beatmung)",ap:"Dr. Castelli (Oberarzt)",tel:"0971 0000-271",mail:"castelli@demo-thorax.local",faelle:2,letzter:dstr(-4),draht:"●●○",status:"aufbau",next:"Besuch mit Recovery Manager planen"},
+ {name:"PRIMO MEDICO",typ:"Premium-Netzwerk",ort:"überregional",rel:"SalutoCare",ap:"Portal-Anfragen",tel:"Portal",mail:"kontakt@demo-primo.local",faelle:2,letzter:dstr(-4),draht:"●●○",status:"aktiv",next:"Profil um neue Suiten ergänzen"},
+ {name:"Uniklinikum Würzburg",typ:"Universitätsklinikum",ort:"Würzburg (~60 km)",rel:"Neuro (Privatstation 2 Nord)",ap:"Fr. Dietrich (Case Mgmt)",tel:"0971 0000-284",mail:"dietrich@demo-ukw.local",faelle:3,letzter:dstr(-9),draht:"●○○",status:"aufbau",next:"Feste Ansprechperson etablieren"},
+ {name:"Klinikum Fulda",typ:"Akutklinik · Maximalversorger",ort:"Fulda (~45 km)",rel:"Neuro, Ortho, Kardio",ap:"über Recare",tel:"Recare",mail:"entlassmanagement@demo-fulda.local",faelle:2,letzter:dstr(-6),draht:"●○○",status:"aufbau",next:"Persönlichen Kontakt zum Sozialdienst aufbauen"},
+ {name:"König-Ludwig-Haus",typ:"Ortho-Fachklinik (EPZmax)",ort:"Würzburg (~60 km)",rel:"Ortho-AHB",ap:"Sekretariat Prof. Ernst",tel:"0971 0000-291",mail:"sekretariat@demo-klh.local",faelle:1,letzter:dstr(-20),draht:"●○○",status:"ziel",next:"Erstkontakt: AHB-Fast-Lane vorstellen"},
+ {name:"Helios Klinikum",typ:"Akutklinik · Stroke Unit",ort:"Meiningen (~50 km)",rel:"Neurologie",ap:"noch offen",tel:"zu recherchieren",mail:"sozialdienst@demo-helios.local",faelle:0,letzter:"",draht:"○○○",status:"ziel",next:"Aus Landkarte: Sozialdienst identifizieren"},
+ {name:"Privatpraxis Dr. Neumann",typ:"Privatpraxis Orthopädie",ort:"Bad Kissingen",rel:"Orthopädie, Selbstzahler",ap:"Dr. Neumann",tel:"0971 0000-317",mail:"neumann@demo-praxis.local",faelle:1,letzter:dstr(-12),draht:"●○○",status:"aufbau",next:"Sprechstunden-Service und Fast-Lane vorstellen"},
+ {name:"Reha-Technik Müller",typ:"Sanitätshaus · Hilfsmittel",ort:"Bad Kissingen",rel:"Hilfsmittel, Angehörigenkontakt",ap:"noch offen",tel:"0971 0000-410",mail:"service@demo-rehatechnik.local",faelle:0,letzter:"",draht:"○○○",status:"ziel",next:"Kooperationspotenzial und Angehörigenpfad prüfen"}
+];
+
+let aktuellerFall=null;let zFilter="krankenhaus";let boardStageFilter=null;
+
+/* ---------- Helpers ---------- */
+function fristKlasse(f){if(!f)return"";const d=(new Date(f)-heute)/86400000;return d<0?"bad":d<1.5?"warn":"ok";}
+function fristText(f){if(!f)return"";const d=Math.round((new Date(f)-heute)/86400000);return d<0?"überfällig ("+Math.abs(d)+" T)":d===0?"heute fällig":"in "+d+" T";}
+function statusFortschritt(s){return Math.max(12,((STATUS.indexOf(s)+1)/STATUS.length*100));}
+function zaehle(arr,key){const m={};arr.forEach(x=>{const k=key(x);if(!k)return;m[k]=(m[k]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
+function bar(el,daten,warm){const max=Math.max(1,...daten.map(d=>d[1]));
+  el.innerHTML=daten.map(d=>"<div class='bar"+(warm?" warm":"")+"'><span class='blbl'>"+d[0]+"</span><span class='track'><span class='fill' style='width:"+(d[1]/max*100)+"%'></span></span><span class='bnum'>"+d[1]+"</span></div>").join("")||"<p style='color:var(--muted);font-size:14px'>noch keine Daten</p>";}
+function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));}
+
+const Z_CATS=[
+  {id:"krankenhaus",label:"Krankenhäuser",note:"Akutkliniken, Sozialdienste, Privatstationen"},
+  {id:"privatpraxis",label:"Privatpraxen",note:"Fachpraxen und direkte ärztliche Empfehlungen"},
+  {id:"hausaerzte",label:"Hausärzte",note:"regionale Lotsen für Innere und Geriatrie"},
+  {id:"sanitaet",label:"Sanitätshäuser",note:"Zielkategorie im Aufbau"},
+  {id:"premium",label:"Premium",note:"SalutoCare, Netzwerke, besondere Kanäle"}
+];
+function zKategorie(z){
+  const s=(z.name+" "+z.typ+" "+z.rel+" "+z.ap).toLowerCase();
+  if(/primo|premium|salutocare|weaning|weannet/.test(s))return"premium";
+  if(/hausarzt/.test(s))return"hausaerzte";
+  if(/privatpraxis|fachpraxis|praxis/.test(s))return"privatpraxis";
+  if(/sanit[aä]t|orthop[aä]die-technik|hilfsmittel/.test(s))return"sanitaet";
+  return"krankenhaus";
+}
+function setZFilter(id){zFilter=id;renderZuweiser();}
+
+const CHAN_ICON={
+ "Telefon":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2'/></svg>",
+ "E-Mail":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>",
+ "Website":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><circle cx='12' cy='12' r='9'/><path d='M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18'/></svg>",
+ "Zuweiser-Fax":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M4 21V5a2 2 0 0 1 2-2h8l6 6v12'/><path d='M14 3v6h6'/></svg>",
+ "Recare":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M3 12h4l3-8 4 16 3-8h4'/></svg>",
+ "PRIMO MEDICO":"<svg viewBox='0 0 24 24' fill='currentColor'><path d='m12 3 2.7 5.8 6.3.8-4.6 4.3 1.2 6.1L12 17l-5.6 3 1.2-6.1L3 9.6l6.3-.8L12 3z'/></svg>"
+};
+
+/* ---------- Render: Anfragen (Eingang) ---------- */
+function renderEingang(){
+  document.getElementById("inbox").innerHTML=eingang.map(m=>
+   "<div class='mail"+(m.done?" done":"")+"'>"
+   +"<span class='chico'>"+(CHAN_ICON[m.kanal]||CHAN_ICON["E-Mail"])+"</span>"
+   +"<div class='mbodytxt'><div class='mtit'>"+m.tit+"</div><div class='mtxt'>"+m.txt+"</div></div>"
+   +"<div class='right'><span class='chtag'>"+m.kanal+"</span><span class='mtime'>"+m.zeit+"</span>"
+   +(m.done?"<span class='ok-chip'>✓ als Fall übernommen</span>":"<button class='cta sm' onclick='uebernehmen("+m.id+")'>Als Fall übernehmen</button>")
+   +"</div></div>").join("");
+}
+function uebernehmen(id){
+  const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
+  m.done=true;
+  const fid=Math.max(...faelle.map(x=>x.id))+1;
+  faelle.push({id:fid,name:"Neuer Fall (aus Eingang)",alter:null,rolle:"offen",kanal:m.kanal,quelle:m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.kanal,
+    achse:m.achse,kt:"Unklar",status:"Neu",owner:"S. Koordination",aufgabe:"Erstreaktion + Daten vervollständigen",frist:dstr(0),
+    saluto:m.achse==="SalutoCare",docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
+    log:[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit]]});
+  renderAll();switchTab("faelle");
+}
+
+/* ---------- Render: Fall-Board ---------- */
+function karteHtml(x){
+  const fk=fristKlasse(x.frist);
+  return "<div class='karte"+(x.saluto?" saluto":"")+"' onclick='openDetail("+x.id+")'>"
+   +"<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter?"("+x.alter+")":"")+"</span></span>"+(x.saluto?"<span class='star'>★</span>":"")+"</div>"
+   +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+escapeHtml(x.achse)+"</span><span class='pill-kt'>"+escapeHtml(x.kt)+"</span></div>"
+   +"<div class='kmeta'>"+escapeHtml(x.quelle)+"<br>"+escapeHtml(x.owner)+(x.aufgabe?" · "+escapeHtml(x.aufgabe):"")+"</div>"
+   +"<div class='stagebar' title='Statusfortschritt'><span style='width:"+statusFortschritt(x.status)+"%'></span></div>"
+   +(x.frist?"<span class='due "+fk+"'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(x.frist)+"</span>":"")
+   +(x.saluto?"<span class='star tag'>★ SalutoCare</span>":"")
+   +"</div>";
+}
+function renderBoard(){
+  const b=document.getElementById("board");if(!b)return;
+  renderBoardFocus();
+  const sichtbar=boardStageFilter===null?STATUS:stageMeta(boardStageFilter).statuses;
+  b.innerHTML=sichtbar.map(st=>{
+    const f=faelle.filter(x=>x.status===st);
+    return "<div class='group'><h3><span class='cdot' style='background:"+STATUS_COL[st]+"'></span>"+st+"<span class='cnt'>"+f.length+"</span></h3>"
+      +(f.length?f.map(karteHtml).join(""):"<div class='empty'>Keine Fälle in diesem Status.</div>")
+      +"</div>";
+  }).join("");
+}
+function stageMeta(z){
+  return [
+    {title:"Neu & kontaktiert",kicker:"Trichter-Stufe 1",text:"Alle neuen und bereits kontaktierten Fälle. Hier entscheidet sich, ob die Erstreaktion schnell und sauber passiert.",statuses:["Neu","Kontaktiert"]},
+    {title:"In Klärung",kicker:"Trichter-Stufe 2",text:"Fälle mit medizinischer, organisatorischer oder kaufmännischer Klärung. Genau hier entstehen die meisten Engpässe.",statuses:["Qualifizierung","Unterlagen"]},
+    {title:"Aufnahme geplant",kicker:"Trichter-Stufe 3",text:"Fälle, bei denen Aufnahme, Bett, Kosten und Unterlagen so weit sind, dass Belegung planbar wird.",statuses:["Aufnahme geplant"]}
+  ][z]||stageMeta(0);
+}
+function stageCases(z){
+  const m=stageMeta(z);
+  return faelle.filter(f=>m.statuses.includes(f.status));
+}
+function openStage(z){boardStageFilter=z;renderBoard();go("faelle","board");}
+function setBoardStage(z){boardStageFilter=z;renderBoard();}
+function renderBoardFocus(){
+  const el=document.getElementById("boardFocus");if(!el)return;
+  const chips=act=>{
+    const items=[["Alle Fälle",null],["Neu & kontaktiert",0],["In Klärung",1],["Aufnahme geplant",2]];
+    return "<div class='bf-chips'>"+items.map(it=>
+      "<button class='bf-chip"+(act===it[1]?" active":"")+"' onclick='setBoardStage("+(it[1]===null?"null":it[1])+")'>"+it[0]+"</button>"
+    ).join("")+"</div>";
+  };
+  if(boardStageFilter===null){
+    const offen=faelle.filter(x=>!["Aufgenommen","Verloren"].includes(x.status)).length;
+    el.innerHTML="<div class='card bf-card'><div class='kicker'>Fall-Board</div>"
+      +"<div class='bf-title'><h3>Alle Fälle</h3><span class='bf-count num'>"+offen+" offen</span></div>"
+      +"<div class='bf-note'>Ein gemeinsames Board für alle Fälle, vom ersten Kontakt bis zur Aufnahme.</div>"
+      +chips(null)+"</div>";
+  }else{
+    const m=stageMeta(boardStageFilter);
+    const cases=stageCases(boardStageFilter);
+    const blocked=cases.filter(f=>f.docs.some(d=>!d)||f.kosten==="offen"||f.consent==="offen").length;
+    const overdue=cases.filter(f=>f.frist&&new Date(f.frist)<heute).length;
+    const premium=cases.filter(f=>f.saluto).length;
+    el.innerHTML="<div class='card bf-card'><div class='kicker'>"+m.kicker+"</div>"
+      +"<div class='bf-title'><h3>"+m.title+"</h3><span class='bf-count num'>"+cases.length+" "+(cases.length===1?"Fall":"Fälle")+"</span></div>"
+      +"<div class='bf-note'>"+m.text+"</div>"
+      +"<div class='bf-stats'>"+[
+        ["Blocker",blocked,"Unterlagen, Kosten, Freigabe"],
+        ["Überfällig",overdue,"Frist braucht Aufmerksamkeit"],
+        ["SalutoCare",premium,"Premium-Potenzial"]
+      ].map(x=>"<div class='bf-stat'><b>"+x[1]+"</b><span>"+x[0]+"</span><small>"+x[2]+"</small></div>").join("")+"</div>"
+      +chips(boardStageFilter)+"</div>";
+  }
+}
+
+/* ---------- Render: Altpatienten (Bestand) ---------- */
+function renderBestand(){
+  const kontakt=bestand.filter(p=>p.consent==="ja").length;
+  const wv=bestand.filter(p=>p.wv).length;
+  const gesperrt=bestand.filter(p=>p.consent!=="ja").length;
+  const saluto=bestand.filter(p=>p.achse==="SalutoCare").length;
+  const stats=document.getElementById("bestandStats");
+  if(stats)stats.innerHTML=[
+    ["Kontaktfähig",kontakt+" / 412","mit dokumentierter Freigabe"],
+    ["Wiedervorlage",wv,"konkret vorgemerkt"],
+    ["Gesperrt",gesperrt,"keine aktive Ansprache"],
+    ["SalutoCare",saluto,"Premium-Nachsorge"]
+  ].map(x=>"<div class='bestand-stat'><div class='sl'>"+x[0]+"</div><div class='sv'>"+x[1]+"</div><div class='sn'>"+x[2]+"</div></div>").join("");
+  document.getElementById("btable").innerHTML=bestand.map((p,i)=>{
+    const c=p.consent==="ja"?"<span class='status-pill ok'>freigegeben</span>":p.consent==="widerruf"?"<span class='status-pill bad'>Widerruf</span>":"<span class='status-pill lock'>gesperrt</span>";
+    const action=p.consent==="ja"
+      ?(p.wv?"<span class='wv'>Wiedervorlage gesetzt</span>":"<button class='cta sm ghost' onclick='wiedervorlage("+i+")'>Nachsorge vormerken</button>")
+      :"<button class='cta sm' disabled>Kontaktfreigabe fehlt</button>";
+    return "<div class='patient-card"+(p.achse==="SalutoCare"||p.wv?" hot":"")+"'>"
+      +"<div class='patient-top'><span class='ava'>"+initialen(p.name)+"</span>"+c+"</div>"
+      +"<h3>"+escapeHtml(p.name)+" <span class='alter'>("+p.alter+")</span></h3>"
+      +"<div class='patient-meta'>"+escapeHtml(p.achse)+" · entlassen "+escapeHtml(p.entl)+"</div>"
+      +"<div class='patient-reason'>"+escapeHtml(p.anlass)+"</div>"
+      +"<div class='pill-row'><span class='soft-pill "+(p.achse==="SalutoCare"?"gold":"")+"'>"+escapeHtml(p.achse)+"</span><span class='soft-pill "+(p.wv?"ok":"")+"'>"+(p.wv?"Wiedervorlage":"kein Termin")+"</span></div>"
+      +"<div class='patient-actions'>"+action+"</div></div>";
+  }).join("");
+}
+function wiedervorlage(i){bestand[i].wv=true;renderBestand();renderCockpit();}
+
+/* ---------- Render: Zuweiser ---------- */
+function renderZuweiser(){
+  const lbl={aktiv:"Aktiver Partner",aufbau:"Im Aufbau",ziel:"Ziel-Partner (Landkarte)"};
+  const catCounts=Object.fromEntries(Z_CATS.map(c=>[c.id,zuweiser.filter(z=>zKategorie(z)===c.id).length]));
+  const cat=Z_CATS.find(c=>c.id===zFilter)||Z_CATS[0];
+  const catEl=document.getElementById("zcatgrid");
+  if(catEl)catEl.innerHTML=Z_CATS.map(c=>
+    "<button type='button' class='zcat"+(c.id===zFilter?" active":"")+"' onclick='setZFilter(\""+c.id+"\")'>"
+   +"<div class='zl'>"+escapeHtml(c.label)+"</div><div class='zv'>"+(catCounts[c.id]||0)+"</div><div class='zn'>"+escapeHtml(c.note)+"</div></button>"
+  ).join("");
+  const filtered=zuweiser.filter(z=>zKategorie(z)===cat.id);
+  const aktiv=filtered.filter(z=>z.status==="aktiv").length;
+  const aufbau=filtered.filter(z=>z.status==="aufbau").length;
+  const ziel=filtered.filter(z=>z.status==="ziel").length;
+  const map=document.getElementById("zmap");
+  if(map)map.innerHTML=
+    "<div class='map-panel'>"
+   +"<div class='map-title'>Netzwerk-Landkarte · "+escapeHtml(cat.label)+"</div>"
+   +"<svg viewBox='0 0 560 246' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Netzwerk-Landkarte der Zuweiserkontakte'>"
+   +"<rect x='1' y='1' width='558' height='228' rx='18' fill='rgba(0,0,0,.25)' stroke='rgba(201,163,107,.16)'/>"
+   +"<path d='M78,154 C126,74 205,54 286,84 C348,107 386,62 458,95 C514,121 501,179 433,191 C351,206 315,154 240,178 C167,202 114,204 78,154Z' fill='rgba(201,163,107,.07)' stroke='rgba(201,163,107,.28)'/>"
+   +"<path d='M132,142 C214,120 297,120 421,112' fill='none' stroke='rgba(201,163,107,.45)' stroke-width='1.2' stroke-dasharray='4 6'/>"
+   +(filtered.length?filtered.map(networkDot).join(""):"<text x='280' y='126' text-anchor='middle' font-family='Inter' font-size='14' fill='#b6ab97'>Noch keine Kontakte in dieser Kategorie</text>")
+   +"</svg><div class='map-legend'><span><i style='background:#8fc9a0'></i>aktiv</span><span><i style='background:#c9a36b'></i>im Aufbau</span><span><i style='background:#9aa3ae'></i>Zielkontakt</span><span>Punktgröße = Fälle</span></div>"
+   +(filtered.length?"<div class='map-index'>"+filtered.map((z,i)=>"<span><b>"+(i+1)+"</b><em>"+escapeHtml(z.name)+" · "+escapeHtml(mapOrt(z.ort))+"</em></span>").join("")+"</div>":"")
+   +"</div>"
+   +"<div class='zsummary'><h3>"+escapeHtml(cat.label)+"</h3><p>"+escapeHtml(cat.note)+". Die Karte zeigt, welche Beziehungen bereits tragen, welche aufgebaut werden und wo der nächste Kontakt entstehen soll.</p>"
+   +"<div class='route-strip'><div class='route-card'><div class='rlabel'>Kontakte</div><div class='rvalue'>"+filtered.length+"</div><div class='rnote'>in dieser Kategorie</div></div>"
+   +"<div class='route-card'><div class='rlabel'>Aktiv</div><div class='rvalue'>"+aktiv+"</div><div class='rnote'>warme Beziehungen</div></div>"
+   +"<div class='route-card'><div class='rlabel'>Aufbau / Ziel</div><div class='rvalue'>"+(aufbau+ziel)+"</div><div class='rnote'>nächste Schritte</div></div></div></div>";
+  const sorted=[...filtered].sort((a,b)=>({aktiv:0,aufbau:1,ziel:2}[a.status]-{aktiv:0,aufbau:1,ziel:2}[b.status]));
+  document.getElementById("zgrid").innerHTML=sorted.length?sorted.map(z=>
+    "<div class='zcard"+(z.status==="ziel"?" ziel":"")+"'>"
+   +"<span class='zstat "+z.status+"'>"+lbl[z.status]+"</span>"
+   +"<div class='zname'>"+escapeHtml(z.name)+"</div><div class='ztyp'>"+escapeHtml(z.typ)+"</div>"
+   +"<div class='zcontact'><span><small>Telefon</small>"+escapeHtml(z.tel||"offen")+"</span><a href='mailto:"+escapeHtml(z.mail||"")+"'><small>E-Mail</small>"+escapeHtml(z.mail||"offen")+"</a></div>"
+   +"<div class='zrow'><span>Ort</span><b>"+escapeHtml(z.ort)+"</b></div>"
+   +"<div class='zrow'><span>Relevanz</span><b>"+escapeHtml(z.rel)+"</b></div>"
+   +"<div class='zrow'><span>Ansprechpartner</span><b>"+escapeHtml(z.ap)+"</b></div>"
+   +"<div class='zrow'><span>Fälle über diesen Weg</span><b class='num' style='font-size:19px;color:var(--gold)'>"+z.faelle+"</b></div>"
+   +"<div class='zrow'><span>Letzter Kontakt</span><b>"+escapeHtml(z.letzter||"noch keiner")+"</b></div>"
+   +"<div class='zrow'><span>Draht</span><span class='zdraht'>"+z.draht+"</span></div>"
+   +"<div class='znext'><b>Nächste Aktion:</b> "+escapeHtml(z.next)+"</div>"
+   +"</div>").join(""):"<div class='zcard ziel'><span class='zstat ziel'>Zielkategorie</span><div class='zname'>Noch keine Kontakte hinterlegt</div><div class='ztyp'>"+escapeHtml(cat.label)+"</div><div class='znext'><b>Nächste Aktion:</b> Zielpartner recherchieren, Kontaktquelle erfassen und ersten SOP-Schritt anlegen.</div></div>";
+}
+function networkDot(z,i){
+  const pos=[[136,154],[282,111],[382,148],[474,100],[472,182],[220,185],[204,118],[330,188],[104,116],[250,158],[430,140]][i%11];
+  const color=z.status==="aktiv"?"#8fc9a0":z.status==="aufbau"?"#c9a36b":"#9aa3ae";
+  const r=8+Math.min(5,z.faelle)*2;
+  return "<g><circle cx='"+pos[0]+"' cy='"+pos[1]+"' r='"+(r+9)+"' fill='"+color+"' opacity='.12'/>"
+    +"<circle cx='"+pos[0]+"' cy='"+pos[1]+"' r='"+r+"' fill='"+color+"' opacity='.92'/>"
+    +"<text x='"+pos[0]+"' y='"+(pos[1]+4)+"' text-anchor='middle' font-family='Inter' font-size='11' font-weight='800' fill='#1a150e'>"+(i+1)+"</text>"
+    +"<text x='"+pos[0]+"' y='"+(pos[1]+r+18)+"' text-anchor='middle' font-family='Inter' font-size='11' font-weight='650' fill='#b6ab97'>"+escapeHtml(mapOrt(z.ort))+"</text></g>";
+}
+function mapOrt(o){return String(o||"").replace(/\s*\(.*/,"").replace("überregional","überreg.");}
+
+/* ---------- Render: Cockpit (Heute) ---------- */
+function renderCockpit(){
+  const offen=faelle.filter(x=>!["Aufgenommen","Verloren"].includes(x.status));
+  const auf=faelle.filter(x=>x.status==="Aufgenommen").length;
+  const verl=faelle.filter(x=>x.status==="Verloren").length;
+  const conv=auf+verl?Math.round(auf/(auf+verl)*100):0;
+  const rz=faelle.filter(x=>x.reaktion!=null);
+  const rzAvg=rz.length?Math.round(rz.reduce((s,x)=>s+x.reaktion,0)/rz.length):0;
+  const ueberf=offen.filter(x=>x.frist&&new Date(x.frist)<heute).length;
+  const neu=eingang.filter(m=>!m.done).length;
+  const kontaktf=bestand.filter(p=>p.consent==="ja").length;
+  const blockers=offen.filter(x=>x.docs.some(d=>!d)||x.kosten==="offen"||x.consent==="offen").length;
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;document.querySelectorAll('[data-sync="'+id+'"]').forEach(n=>n.textContent=val);};
+  const html=(id,val)=>{const el=document.getElementById(id);if(el)el.innerHTML=val;document.querySelectorAll('[data-sync="'+id+'"]').forEach(n=>n.innerHTML=val);};
+  set("commConsent",kontaktf);
+  set("autoSignals",neu+ueberf+blockers);
+  set("autoPremium",faelle.filter(x=>x.saluto).length);
+  set("autoLoss",verl);
+  set("autoConsent",kontaktf);
+  html("nsRz","<b>"+rzAvg+"</b><span>Std.</span>");
+  html("nsConv","<b>"+conv+"</b><span>%</span>");
+  set("nsConvSub","Anfrage → Aufnahme · "+auf+" aufgenommen · "+verl+" verloren");
+  const hospitalRx=/(Klinik|Klinikum|Krankenhaus|Campus|Leopoldina|RHÖN|RHÖN|UKW|Fulda|Thoraxzentrum|Recare)/i;
+  set("q1",faelle.filter(x=>hospitalRx.test(x.quelle)||x.kanal==="Recare").length);
+  const praxisPotenzial=zuweiser.filter(z=>/Privatpraxis|Fachpraxis|Praxis/i.test(z.typ)).length;
+  set("q2",Math.max(2,praxisPotenzial));
+  set("q3",zuweiser.filter(z=>/Hausarzt/i.test(z.typ)||/Hausarzt|Dr\\. Sommer/i.test(z.name+" "+z.rel+" "+z.ap)).length);
+  set("q4",kontaktf);
+  set("q5",faelle.filter(x=>x.kanal==="PRIMO MEDICO").length);
+  set("r1",auf);
+  set("r3",verl);
+  renderStrom();
+  const R=46,U=2*Math.PI*R,off=U*(1-conv/100);
+  html("donut",
+    "<circle cx='60' cy='60' r='"+R+"' fill='none' stroke='rgba(243,236,223,.1)' stroke-width='10'/>"
+   +"<circle cx='60' cy='60' r='"+R+"' fill='none' stroke='url(#gg)' stroke-width='10' stroke-linecap='round' stroke-dasharray='"+U+"' stroke-dashoffset='"+off+"' transform='rotate(-90 60 60)'/>"
+   +"<defs><linearGradient id='gg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#c9a36b'/><stop offset='1' stop-color='#9a7745'/></linearGradient></defs>"
+   +"<text x='60' y='68' text-anchor='middle' font-family='Cormorant Garamond,Georgia,serif' font-size='30' font-weight='700' font-variant-numeric='lining-nums tabular-nums' fill='#f3ecdf'>"+conv+"%</text>");
+  html("donutLeg",
+    "<div><span class='dot' style='background:var(--ok)'></span><b>"+auf+"</b> aufgenommen</div>"
+   +"<div><span class='dot' style='background:var(--bad)'></span><b>"+verl+"</b> verloren</div>"
+   +"<div><span class='dot' style='background:var(--gold)'></span><b>"+offen.length+"</b> in Arbeit</div>");
+  const lossReasons=[
+    ["Fehlende Dokumente",offen.filter(x=>x.docs.some(d=>!d)).length],
+    ["Kostenklärung offen",offen.filter(x=>x.kosten==="offen").length],
+    ["Keine Rückmeldung",faelle.filter(x=>x.verlust==="Keine Rückmeldung mehr").length+1],
+    ["Zu lange Wartezeit",faelle.filter(x=>x.verlust==="Zu lange Wartezeit").length],
+    ["Kapazität fehlte",faelle.filter(x=>x.verlust==="Kapazität fehlte").length+1]
+  ].filter(x=>x[1]>0);
+  const engpass=[
+    ["Unterlagen",offen.filter(x=>x.docs.some(d=>!d)).length],
+    ["Kostenklärung",offen.filter(x=>x.kosten==="offen").length],
+    ["Frist überfällig",ueberf],
+    ["Kontaktfreigabe",offen.filter(x=>x.consent==="offen").length],
+    ["Aufnahmeplanung",offen.filter(x=>x.status==="Aufnahme geplant").length]
+  ].filter(x=>x[1]>0);
+  if(document.getElementById("chartQuelle"))bar(document.getElementById("chartQuelle"),zaehle(faelle,x=>x.kanal));
+  if(document.getElementById("chartVerlust"))bar(document.getElementById("chartVerlust"),lossReasons,true);
+  if(document.getElementById("chartTeam"))bar(document.getElementById("chartTeam"),zaehle(offen,x=>x.owner));
+  if(document.getElementById("chartEngpass"))bar(document.getElementById("chartEngpass"),engpass,true);
+  if(document.getElementById("chartAchse"))bar(document.getElementById("chartAchse"),zaehle(faelle,x=>x.achse));
+  // Badges
+  const setBadge=(id,val,hideZero)=>{const el=document.getElementById(id);if(!el)return;el.textContent=val;el.style.display=(hideZero&&!val)?"none":"";};
+  setBadge("badgeEingang",neu,true);
+  setBadge("navFaelleBadge",neu,true);
+  setBadge("badgeFaelle",offen.length,false);
+  setBadge("badgeZuw",zuweiser.length,false);
+  setBadge("badgeBestand",kontaktf,false);
+}
+
+/* ---------- Trichter-Maschine ---------- */
+let horizont=9;
+function zoneOf(s){if(s==="Neu"||s==="Kontaktiert")return 0;if(s==="Qualifizierung"||s==="Unterlagen")return 1;if(s==="Aufnahme geplant")return 2;return -1;}
+function stockt(f){
+  const fr=f.frist&&new Date(f.frist)<new Date(dstr(0));
+  const blk=["Unterlagen","Aufnahme geplant"].includes(f.status)&&f.kosten==="offen";
+  return fr||blk;
+}
+function renderStrom(){
+  const offen=faelle.filter(x=>!["Aufgenommen","Verloren"].includes(x.status));
+  const zonen=[[],[],[]];
+  offen.forEach(f=>{const z=zoneOf(f.status);if(z>=0)zonen[z].push(f);});
+  for(let i=0;i<3;i++){
+    const e=document.getElementById("zc"+i);
+    if(e)e.textContent=zonen[i].length;
+  }
+  const stock=offen.filter(f=>zoneOf(f.status)>=0&&stockt(f));
+  const badge=document.getElementById("stockBadge");
+  const txt=document.getElementById("stockText");
+  if(badge){
+    badge.style.display=stock.length?"":"none";
+    if(txt)txt.textContent=stock.length?(stock.length===1?"1 Fall stockt":stock.length+" Fälle stocken"):"";
+    badge.title=stock.length?stock.map(f=>f.name+" · "+(f.aufgabe||f.status)).join(", "):"";
+  }
+  const ns=document.getElementById("nsVorlauf");
+  if(ns)ns.textContent=horizont;
+}
+function flyToFuture(){
+  go("heute");
+  const tag=document.getElementById("plusTagH");
+  const bump=()=>{horizont++;renderStrom();
+    if(tag){tag.textContent="+1 Tag";tag.style.opacity=1;setTimeout(()=>{tag.style.opacity=0;},2400);}};
+  const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const src=document.getElementById("fstage2"),target=document.getElementById("nsVorlauf");
+  if(reduce||!src||!target){bump();return;}
+  requestAnimationFrame(()=>{
+    const sb=src.getBoundingClientRect(),hb=target.getBoundingClientRect();
+    const sx=sb.left+sb.width/2,sy=sb.top+sb.height/2;
+    const tx=hb.left+hb.width/2,ty=hb.top+hb.height/2;
+    const d=document.createElement("div");d.id="flyDot";document.body.appendChild(d);
+    const t0=performance.now();let done=false;
+    function finish(){if(done)return;done=true;d.remove();bump();}
+    function step(t){
+      const p=Math.min((t-t0)/950,1);
+      const e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+      d.style.left=(sx+(tx-sx)*e-8)+"px";
+      d.style.top=(sy+(ty-sy)*e-8-70*Math.sin(Math.PI*e))+"px";
+      if(p<1&&!done)requestAnimationFrame(step);else finish();
+    }
+    requestAnimationFrame(step);
+    setTimeout(finish,1200);
+  });
+}
+function renderAll(){renderCockpit();renderEingang();renderBoard();renderBestand();renderZuweiser();}
+
+/* ---------- Detail-Modal ---------- */
+function openDetail(id){
+  aktuellerFall=faelle.find(x=>x.id===id);const f=aktuellerFall;
+  document.getElementById("dAva").textContent=initialen(f.name);
+  document.getElementById("dName").textContent=f.name+(f.alter?" ("+f.alter+")":"");
+  document.getElementById("dSub").textContent=f.achse+" · "+f.kt+" · "+f.quelle+" · Kanal: "+f.kanal;
+  document.getElementById("dStatus").innerHTML=STATUS.map(s=>"<option"+(s===f.status?" selected":"")+">"+s+"</option>").join("");
+  document.getElementById("dOwner").value=f.owner;
+  document.getElementById("dAufgabe").value=f.aufgabe||"";
+  document.getElementById("dFrist").value=f.frist||"";
+  document.getElementById("dKosten").value=f.kosten;
+  document.getElementById("dConsent").value=f.consent;
+  ["u1","u2","u3","u4"].forEach((u,i)=>document.getElementById(u).checked=f.docs[i]);
+  updateDocCnt();
+  document.getElementById("dSaluto").checked=f.saluto;
+  document.getElementById("dVerlust").value=f.verlust||"";
+  document.getElementById("dNotiz").value="";
+  document.getElementById("dLog").innerHTML=f.log.map(l=>"<div><b>"+l[0]+"</b><br>"+l[1]+"</div>").join("");
+  toggleVerlust();
+  document.getElementById("ovDetail").classList.add("open");
+}
+function updateDocCnt(){const n=["u1","u2","u3","u4"].filter(u=>document.getElementById(u).checked).length;
+  document.getElementById("docCnt").textContent="("+n+" / 4)";}
+["u1","u2","u3","u4"].forEach(u=>document.getElementById(u).addEventListener("change",updateDocCnt));
+function toggleVerlust(){document.getElementById("rowVerlust").classList.toggle("show",document.getElementById("dStatus").value==="Verloren");}
+document.getElementById("dStatus").addEventListener("change",toggleVerlust);
+document.getElementById("dAbbruch").onclick=()=>document.getElementById("ovDetail").classList.remove("open");
+document.getElementById("dSpeichern").onclick=()=>{
+  const f=aktuellerFall;
+  const alt=f.status;
+  const ns=document.getElementById("dStatus").value;
+  if(ns==="Verloren"&&!document.getElementById("dVerlust").value){alert("Bitte Verlustgrund angeben. Genau dafür ist das System da.");return;}
+  if(ns!==f.status)f.log.push([dstr(0),"Status: "+f.status+" zu "+ns]);
+  f.status=ns;
+  f.owner=document.getElementById("dOwner").value;
+  f.aufgabe=document.getElementById("dAufgabe").value;
+  f.frist=document.getElementById("dFrist").value;
+  f.kosten=document.getElementById("dKosten").value;
+  f.consent=document.getElementById("dConsent").value;
+  f.docs=["u1","u2","u3","u4"].map(u=>document.getElementById(u).checked);
+  f.saluto=document.getElementById("dSaluto").checked;
+  f.verlust=document.getElementById("dVerlust").value;
+  const n=document.getElementById("dNotiz").value.trim();
+  if(n)f.log.push([dstr(0),n]);
+  document.getElementById("ovDetail").classList.remove("open");
+  renderAll();
+  if(ns==="Aufnahme geplant"&&alt!=="Aufnahme geplant")flyToFuture();
+};
+
+/* ---------- Formular ---------- */
+document.getElementById("formNeu").addEventListener("submit",e=>{
+  e.preventDefault();
+  const id=Math.max(...faelle.map(x=>x.id))+1;
+  faelle.push({id,
+    name:document.getElementById("fName").value,
+    alter:document.getElementById("fAlter").value||null,
+    rolle:document.getElementById("fRolle").value,
+    kanal:document.getElementById("fKanal").value,
+    quelle:document.getElementById("fQuelle").value||document.getElementById("fKanal").value,
+    achse:document.getElementById("fAchse").value,
+    kt:document.getElementById("fKT").value,
+    status:"Neu",owner:document.getElementById("fOwner").value,
+    aufgabe:"Erstreaktion",frist:document.getElementById("fFrist").value||dstr(1),
+    saluto:document.getElementById("fAchse").value==="SalutoCare",
+    docs:[false,false,false,false],kosten:"offen",
+    consent:document.getElementById("fConsent").value,
+    verlust:"",reaktion:null,
+    log:[[dstr(0),"Anfrage erfasst über "+document.getElementById("fKanal").value+(document.getElementById("fNotiz").value?": "+document.getElementById("fNotiz").value:"")]]
+  });
+  e.target.reset();
+  document.getElementById("fFrist").value=dstr(1);
+  renderAll();switchTab("faelle");
+});
+
+/* ---------- Navigation: 4 Ziele + FAB ---------- */
+const ROUTE={cockpit:["heute"],eingang:["faelle","anfragen"],faelle:["faelle","board"],zuweiser:["netzwerk","zuweiser"],bestand:["netzwerk","bestand"],idee:["system","idee"],intelligenz:["system","auswertung"],kommunikation:["system","sops"],neu:["neu"]};
+const VTITLE={heute:"Heute",neu:"Neue Anfrage"};
+const STITLE={anfragen:"Anfragen",board:"Fall-Board",zuweiser:"Zuweiser-Netzwerk",bestand:"Altpatienten",idee:"Die Idee",auswertung:"Auswertung",sops:"Prozesse / SOPs"};
+let view="heute";
+let subOf={faelle:"anfragen",netzwerk:"zuweiser",system:"idee"};
+function go(v,s){
+  if(!document.getElementById("view-"+v))v="heute";
+  view=v;
+  if(s&&document.getElementById("panel-"+s))subOf[v]=s;
+  document.querySelectorAll("section.view").forEach(sec=>sec.classList.toggle("active",sec.id==="view-"+v));
+  const cur=subOf[v];
+  if(cur){
+    document.querySelectorAll("#view-"+v+" .panel").forEach(p=>p.classList.toggle("active",p.id==="panel-"+cur));
+    document.querySelectorAll("#view-"+v+" .seg button").forEach(b=>b.classList.toggle("active",b.dataset.sub===cur));
+  }
+  document.querySelectorAll(".bnav button[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===v));
+  document.getElementById("pageTitle").textContent=cur?STITLE[cur]:VTITLE[v];
+  window.scrollTo(0,0);
+  const h=v+(cur?"/"+cur:"");
+  if(location.hash!=="#"+h)history.replaceState(null,"","#"+h);
+}
+function setSub(v,s){go(v,s);}
+function switchTab(t){const r=ROUTE[t]||["heute"];go(r[0],r[1]);}
+document.querySelectorAll(".bnav button[data-view]").forEach(b=>b.onclick=()=>{
+  if(b.dataset.view==="faelle"&&boardStageFilter!==null){boardStageFilter=null;renderBoard();}
+  go(b.dataset.view);
+});
+
+/* ---------- Init ---------- */
+document.getElementById("pageDate").textContent=heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+document.getElementById("fFrist").value=dstr(1);
+renderAll();
+(function(){
+  const h=location.hash.slice(1);
+  if(!h)return;
+  const parts=h.split("/");
+  if(ROUTE[parts[0]]){switchTab(parts[0]);return;}
+  if(document.getElementById("view-"+parts[0]))go(parts[0],parts[1]);
+})();
+</script>
+</body>
+</html>
