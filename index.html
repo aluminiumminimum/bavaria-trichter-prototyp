@@ -86,7 +86,11 @@
     background:radial-gradient(circle at 35% 30%,#3a332e,#262220);color:#d3b78a;
     display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",Georgia,serif;
     font-size:17px;font-weight:700;letter-spacing:.06em;box-shadow:inset 0 1px 0 rgba(251,250,248,.8),0 2px 6px rgba(50,42,35,.12)}
-  .g-line{font-size:15px;color:#ddd5c8;margin:16px 0 0;line-height:1.5;border-left:2px solid #bca37d;padding-left:12px}
+  .g-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px;position:relative}
+  .g-stat{background:rgba(255,248,236,.06);border:1px solid rgba(188,163,125,.38);border-radius:14px;
+    padding:11px 6px 9px;text-align:center;color:inherit;font:inherit;min-height:44px;touch-action:manipulation}
+  .g-stat b{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-size:28px;font-weight:700;color:#ecdfc8;line-height:1}
+  .g-stat span{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:#b29a76;font-weight:600;margin-top:5px;line-height:1.35}
 
   /* ===== Heute: Nordstern-Bogen ===== */
   .ns-card{margin-top:24px;padding:20px 20px 16px;text-align:center;background:linear-gradient(180deg,#fdfbf7,#f6f0e4)}
@@ -204,11 +208,10 @@
   .t-title{font-family:"Cormorant Garamond",Georgia,serif;font-size:23px;font-weight:700;line-height:1.1;margin-top:1px}
   .t-sub{font-size:14px;color:var(--muted);margin-top:2px}
   .teaser .chev{margin-left:auto}
-  .demo-foot{margin:38px 0 6px;text-align:center;font-size:12.5px;color:var(--faint);letter-spacing:.06em}
-  .demo-foot b{color:var(--brass-deep);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:11px}
 
   /* ===== Bereichsköpfe & Segmente ===== */
   .vhead{margin:6px 0 18px}
+  .neu-cta{margin-top:12px;width:100%}
   .vhead h1{font-family:"Cormorant Garamond",Georgia,serif;font-size:36px;font-weight:700;line-height:1;margin:0}
   .vhead .kicker{margin-bottom:6px}
   .segments{display:flex;gap:6px;margin-top:16px;background:var(--cream2);border:1px solid var(--hair);
@@ -471,19 +474,18 @@
     border-top:1px solid var(--hair)}
   .tabbar-inner{max-width:720px;margin:0 auto;display:flex;align-items:stretch;gap:8px;
     padding:6px 8px calc(8px + env(safe-area-inset-bottom))}
-  .tabbar [data-nav]{flex:1;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:3px;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.04em;position:relative;border-radius:12px}
-  .tabbar [data-nav] svg{width:21px;height:21px;stroke-width:1.7}
-  .tabbar [data-nav].active{color:var(--brass-deep)}
-  .tabbar [data-nav].active::after{content:"";position:absolute;top:2px;width:18px;height:2px;border-radius:2px;background:var(--brass)}
+  .tabbar [data-nav]{flex:1;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:4px;color:var(--muted);font-size:12.5px;font-weight:600;letter-spacing:.04em;position:relative;border-radius:12px}
+  .tabbar [data-nav="heute"]{--tabc:#a5854e}
+  .tabbar [data-nav="faelle"]{--tabc:#4d6f91}
+  .tabbar [data-nav="netzwerk"]{--tabc:#56745a}
+  .tabbar [data-nav="system"]{--tabc:#a8543f}
+  .tabbar [data-nav] svg{width:27px;height:27px;stroke-width:1.8;color:var(--tabc);opacity:.78;transition:opacity .15s}
+  .tabbar [data-nav].active{color:var(--tabc);font-weight:700}
+  .tabbar [data-nav].active svg{opacity:1}
+  .tabbar [data-nav].active::after{content:"";position:absolute;top:2px;width:20px;height:2.5px;border-radius:2px;background:var(--tabc)}
   .nbadge{position:absolute;top:4px;right:calc(50% - 22px);min-width:16px;height:16px;border-radius:999px;
     background:var(--brass);color:#faf8f4;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}
-  .fab{flex:0 0 64px;display:flex;align-items:flex-start;justify-content:center}
-  .fab button{width:56px;height:56px;margin-top:-24px;border-radius:50%;background:var(--brass-grad);
-    border:1px solid #6e5d4e;color:#faf8f4;display:flex;align-items:center;justify-content:center;
-    box-shadow:inset 0 1px 0 rgba(250,248,244,.45),0 6px 16px rgba(50,42,35,.35);transition:transform .15s}
-  .fab button:active{transform:scale(.94)}
-  .fab svg{width:24px;height:24px;stroke-width:2}
 
   body.locked{overflow:hidden}
 
@@ -517,7 +519,11 @@
         </div>
         <span class="g-mono" aria-hidden="true">KB</span>
       </div>
-      <p class="g-line" id="greetLine"></p>
+      <div class="g-stats">
+        <button class="g-stat" onclick="go('faelle','anfragen')"><b class="num" id="gsNeu"></b><span>Neue<br>Anfragen</span></button>
+        <button class="g-stat" onclick="go('faelle','board')"><b class="num" id="gsStock"></b><span>Fälle<br>stocken</span></button>
+        <button class="g-stat" onclick="window.scrollTo({top:document.querySelector('.ns-card').offsetTop-70,behavior:'smooth'})"><b class="num">78&#8239;%</b><span>Belegung</span></button>
+      </div>
     </header>
 
     <div class="chap">
@@ -776,25 +782,6 @@
       <div class="card list-card" id="wichtigList"></div>
     </div>
 
-    <div class="chap">
-      <div class="kicker">Kapitel</div>
-      <button class="teaser" onclick="go('netzwerk')">
-        <span>
-          <span class="t-kicker">Beziehungen</span>
-          <span class="t-title serif" style="display:block">Netzwerk</span>
-          <span class="t-sub" id="teaserNetz" style="display:block"></span>
-        </span>
-        <span class="chev">›</span>
-      </button>
-      <button class="teaser" onclick="go('system')">
-        <span>
-          <span class="t-kicker">Steuerung</span>
-          <span class="t-title serif" style="display:block">System</span>
-          <span class="t-sub" id="teaserSystem" style="display:block"></span>
-        </span>
-        <span class="chev">›</span>
-      </button>
-    </div>
   </section>
 
   <!-- ============ FÄLLE ============ -->
@@ -806,6 +793,7 @@
         <button class="seg active" data-seg="anfragen" role="tab">Anfragen <b class="segn num" id="segCntAnfragen"></b></button>
         <button class="seg" data-seg="board" role="tab">Board <b class="segn num" id="segCntBoard"></b></button>
       </div>
+      <button class="btn btn-sm neu-cta" onclick="openSheetNeu()">＋ Neue Anfrage aufnehmen</button>
     </header>
     <div class="sub active" id="sub-faelle-anfragen">
       <p class="lblline">Ein Eingang für alle Kanäle · Telefon, E-Mail, Website, Zuweiser, Recare, Premium.</p>
@@ -1007,8 +995,6 @@
       </div>
     </div>
   </section>
-
-  <footer class="demo-foot"><b>Demo · synthetische Daten</b><br>Interner Prototyp · Klinik Bavaria, SalutoCare Bad Kissingen · alle Angaben erfunden.</footer>
 </main>
 </div>
 
@@ -1017,7 +1003,6 @@
   <div class="tabbar-inner">
     <button data-nav="heute" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>Heute</button>
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="5" height="7" rx="1.5"/></svg>Fälle<span class="nbadge num" id="navBadgeFaelle"></span></button>
-    <span class="fab"><button onclick="openSheetNeu()" aria-label="Neue Anfrage anlegen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg></button></span>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="6" r="3"/><circle cx="5" cy="18" r="3"/><circle cx="19" cy="18" r="3"/><path d="M12 9v3m0 0-5 3.5M12 12l5 3.5"/></svg>Netzwerk</button>
     <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2.2"/><circle cx="8" cy="16" r="2.2"/></svg>System</button>
   </div>
@@ -1406,9 +1391,8 @@ function renderHeute(){
   const html=(id,val)=>{const el=document.getElementById(id);if(el)el.innerHTML=val;document.querySelectorAll('[data-sync="'+id+'"]').forEach(n=>n.innerHTML=val);};
   // Status-Satz
   set("greetDate",heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"}));
-  const sNeu=k.neu===0?"keine neuen Anfragen":k.neu===1?"1 neue Anfrage":k.neu+" neue Anfragen";
-  const sStock=k.stock.length===0?"nichts stockt":k.stock.length===1?"1 Fall stockt":k.stock.length+" Fälle stocken";
-  set("greetLine",sNeu.charAt(0).toUpperCase()+sNeu.slice(1)+", "+sStock+", Belegung 78 %.");
+  set("gsNeu",k.neu);
+  set("gsStock",k.stock.length);
   // Nordstern-Metriken
   set("nsVorlauf",horizont);
   html("nsRz","<b>"+k.rzAvg+"</b> <span>Std.</span>");
