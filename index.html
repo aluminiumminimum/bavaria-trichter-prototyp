@@ -145,9 +145,9 @@
   .funnel-stage .fn-click rect.pill{transition:fill .18s}
   .funnel-stage .fn-click:hover rect.pill{fill:rgba(176,141,87,.07)}
   .funnel-stage .fn-click:hover .fn-chev{opacity:1}
-  .funnel-stage .fn-cap{fill:#8e8578;font-size:13px;letter-spacing:.22em;font-weight:800}
-  .funnel-stage .fn-lab{fill:#5f574d;font-size:15px}
-  .funnel-stage .fn-stage{fill:#5f574d;font-size:13px;font-weight:700;letter-spacing:.01em}
+  .funnel-stage .fn-cap{fill:#8e8578;font-size:14px;letter-spacing:.22em;font-weight:800}
+  .funnel-stage .fn-lab{fill:#5f574d;font-size:17px}
+  .funnel-stage .fn-stage{fill:#5f574d;font-size:15px;font-weight:700;letter-spacing:.01em}
   .funnel-stage .fn-stage-sub{fill:#7d6138;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
   .funnel-stage .fn-note{fill:#a89b85;font-size:13px;font-weight:400}
   .funnel-stage .fn-num{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;fill:#171512;font-variant-numeric:lining-nums tabular-nums}
@@ -449,6 +449,32 @@
   .intro-head .s{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#8d8273;margin-top:5px}
   .intro-body{padding:22px 34px 28px}
   .intro-body li{margin:7px 0}
+  /* ===== Mobiler Trichter (nur ≤900px) ===== */
+  .mfunnel{display:none}
+  @media(max-width:900px){
+    .funnel-stage{display:none}
+    .mfunnel{display:block;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:18px 18px 14px}
+    .mf-cap{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#7d6138;font-weight:800;margin:18px 0 9px;text-align:center}
+    .mf-cap:first-child{margin-top:0}
+    .mfunnel button{font:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation;color:inherit;padding:0}
+    .mf-sources{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+    .mf-src{display:flex;align-items:center;gap:8px;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface2)}
+    .mf-src span{font-size:13.5px;color:var(--muted)}
+    .mf-src b{font-family:"Cormorant Garamond",Georgia,serif;font-size:20px;font-weight:700;color:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+    .mf-stages{display:flex;flex-direction:column;align-items:center;gap:7px}
+    .mf-stage{width:var(--w);min-height:64px;display:flex;align-items:center;justify-content:center;gap:12px;
+      background:linear-gradient(135deg,rgba(176,141,87,.10),rgba(176,141,87,.22));border:1px solid #d9c6a4;border-radius:14px;padding:10px 16px}
+    .mf-stage b{font-family:"Cormorant Garamond",Georgia,serif;font-size:36px;font-weight:700;color:var(--ink);line-height:1;font-variant-numeric:lining-nums tabular-nums}
+    .mf-stage span{font-size:13.5px;font-weight:700;color:#5f574d}
+    .mf-stage::after{content:"›";color:var(--gold-deep);font-size:20px;margin-left:2px}
+    .mf-results{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .mf-res{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:64px;
+      border:1px solid var(--line2);border-radius:12px;background:var(--surface2);padding:10px 6px;text-align:center}
+    .mf-res b{font-family:"Cormorant Garamond",Georgia,serif;font-size:26px;font-weight:700;color:var(--ink);line-height:1;font-variant-numeric:lining-nums tabular-nums}
+    .mf-res span{font-size:10.5px;letter-spacing:.04em;color:var(--muted);line-height:1.2}
+    .mf-note{font-size:12.5px;color:#a89b85;text-align:center;margin:14px 4px 2px;line-height:1.4}
+  }
+
   /* ===== Mobiler Kopf & Navigation (nur ≤900px sichtbar) ===== */
   .mhead-mobile,.mnav{display:none}
   @media(max-width:900px){
@@ -602,35 +628,35 @@
           <g class="fn-click" onclick="switchTab('zuweiser')">
             <rect class="pill" x="16" y="42" width="238" height="42" rx="10" fill="transparent"/>
             <text class="fn-lab" x="24" y="70">Krankenhäuser</text>
-            <text class="fn-num" x="232" y="72" text-anchor="end" font-size="25" id="q1"></text>
+            <text class="fn-num" x="232" y="72" text-anchor="end" font-size="29" id="q1"></text>
             <line class="fn-hair" x1="24" y1="82" x2="246" y2="82"/>
             <text class="fn-chev" x="240" y="72">›</text>
           </g>
           <g class="fn-click" onclick="switchTab('zuweiser')">
             <rect class="pill" x="16" y="104" width="238" height="42" rx="10" fill="transparent"/>
             <text class="fn-lab" x="24" y="132">Privatpraxen</text>
-            <text class="fn-num" x="232" y="134" text-anchor="end" font-size="25" id="q2"></text>
+            <text class="fn-num" x="232" y="134" text-anchor="end" font-size="29" id="q2"></text>
             <line class="fn-hair" x1="24" y1="144" x2="246" y2="144"/>
             <text class="fn-chev" x="240" y="134">›</text>
           </g>
           <g class="fn-click" onclick="switchTab('zuweiser')">
             <rect class="pill" x="16" y="166" width="238" height="42" rx="10" fill="transparent"/>
             <text class="fn-lab" x="24" y="194">Hausärzte</text>
-            <text class="fn-num" x="232" y="196" text-anchor="end" font-size="25" id="q3"></text>
+            <text class="fn-num" x="232" y="196" text-anchor="end" font-size="29" id="q3"></text>
             <line class="fn-hair" x1="24" y1="206" x2="246" y2="206"/>
             <text class="fn-chev" x="240" y="196">›</text>
           </g>
           <g class="fn-click" onclick="switchTab('bestand')">
             <rect class="pill" x="16" y="228" width="238" height="42" rx="10" fill="transparent"/>
             <text class="fn-lab" x="24" y="256">Altpatienten</text>
-            <text class="fn-num" x="232" y="258" text-anchor="end" font-size="25" id="q4"></text>
+            <text class="fn-num" x="232" y="258" text-anchor="end" font-size="29" id="q4"></text>
             <line class="fn-hair" x1="24" y1="268" x2="246" y2="268"/>
             <text class="fn-chev" x="240" y="258">›</text>
           </g>
           <g class="fn-click" onclick="switchTab('zuweiser')">
             <rect class="pill" x="16" y="290" width="238" height="42" rx="10" fill="transparent"/>
             <text class="fn-lab" x="24" y="318">Premium-Netzwerke</text>
-            <text class="fn-num" x="232" y="320" text-anchor="end" font-size="25" id="q5"></text>
+            <text class="fn-num" x="232" y="320" text-anchor="end" font-size="29" id="q5"></text>
             <line class="fn-hair" x1="24" y1="330" x2="246" y2="330"/>
             <text class="fn-chev" x="240" y="320">›</text>
           </g>
@@ -645,11 +671,11 @@
                 fill="url(#funnelWash)" stroke="#d9c6a4" stroke-width="1.2"/>
           <path d="M584,100 L584,300" stroke="#c9b48b" stroke-width="1" opacity=".45"/>
           <path d="M698,126 L698,274" stroke="#c9b48b" stroke-width="1" opacity=".45"/>
-          <text class="fn-num" x="527" y="178" text-anchor="middle" font-size="42" id="zc0"></text>
+          <text class="fn-num" x="527" y="178" text-anchor="middle" font-size="52" id="zc0"></text>
           <text class="fn-stage" x="527" y="206" text-anchor="middle"><tspan x="527" dy="0">neu &amp;</tspan><tspan x="527" dy="17">kontaktiert <tspan fill="#b08d57">›</tspan></tspan></text>
-          <text class="fn-num" x="641" y="178" text-anchor="middle" font-size="42" id="zc1"></text>
+          <text class="fn-num" x="641" y="178" text-anchor="middle" font-size="52" id="zc1"></text>
           <text class="fn-stage" x="641" y="223" text-anchor="middle">in Klärung <tspan fill="#b08d57">›</tspan></text>
-          <text class="fn-num" x="755" y="178" text-anchor="middle" font-size="42" id="zc2"></text>
+          <text class="fn-num" x="755" y="178" text-anchor="middle" font-size="52" id="zc2"></text>
           <text class="fn-stage" x="755" y="206" text-anchor="middle"><tspan x="755" dy="0">Aufnahme</tspan><tspan x="755" dy="17">geplant <tspan fill="#b08d57">›</tspan></tspan></text>
           <g class="fn-click stage-hit" clip-path="url(#trichterClip)" onclick="openStage(0)">
             <rect class="pulse0" x="470" y="88" width="114" height="222"/>
@@ -674,13 +700,13 @@
           <g class="fn-click" onclick="switchTab('intelligenz')">
             <rect class="pill" x="940" y="74" width="236" height="250" rx="12" fill="transparent"/>
             <text class="fn-lab" x="948" y="100">Aufnahmen</text>
-            <text class="fn-num" x="1156" y="104" text-anchor="end" font-size="27" id="r1"></text>
+            <text class="fn-num" x="1156" y="104" text-anchor="end" font-size="31" id="r1"></text>
             <line class="fn-hair" x1="948" y1="118" x2="1156" y2="118"/>
             <text class="fn-lab" x="948" y="194">Privatauslastung</text>
-            <text class="fn-num" x="1156" y="200" text-anchor="end" font-size="27">78 %</text>
+            <text class="fn-num" x="1156" y="200" text-anchor="end" font-size="31">78 %</text>
             <line class="fn-hair" x1="948" y1="214" x2="1156" y2="214"/>
             <text class="fn-lab" x="948" y="286">Verloren · gelernt</text>
-            <text class="fn-num" x="1156" y="292" text-anchor="end" font-size="27" id="r3"></text>
+            <text class="fn-num" x="1156" y="292" text-anchor="end" font-size="31" id="r3"></text>
             <line class="fn-hair" x1="948" y1="306" x2="1156" y2="306"/>
             <text class="fn-chev" x="1164" y="104">›</text>
             <text class="fn-chev" x="1164" y="200">›</text>
@@ -696,6 +722,29 @@
           <circle cx="260" cy="314" r="3.5" class="fn-dot" opacity=".45"><animateMotion dur="9s" begin="5s" repeatCount="indefinite" path="M0,0 C76,0 130,-40 208,-26"/></circle>
           <circle cx="812" cy="200" r="3.5" fill="#9a7745" opacity=".5"><animateMotion dur="6s" begin="1s" repeatCount="indefinite" path="M0,0 C48,0 72,0 124,0"/></circle>
         </svg>
+      </div>
+      <div class="mfunnel">
+        <div class="mf-cap">Quellen</div>
+        <div class="mf-sources">
+          <button class="mf-src" onclick="switchTab('zuweiser')"><span>Krankenhäuser</span><b data-sync="q1"></b></button>
+          <button class="mf-src" onclick="switchTab('zuweiser')"><span>Privatpraxen</span><b data-sync="q2"></b></button>
+          <button class="mf-src" onclick="switchTab('zuweiser')"><span>Hausärzte</span><b data-sync="q3"></b></button>
+          <button class="mf-src" onclick="switchTab('bestand')"><span>Altpatienten</span><b data-sync="q4"></b></button>
+          <button class="mf-src" onclick="switchTab('zuweiser')"><span>Premium-Netzwerke</span><b data-sync="q5"></b></button>
+        </div>
+        <div class="mf-cap">Der eine Trichter</div>
+        <div class="mf-stages">
+          <button class="mf-stage" style="--w:100%" onclick="openStage(0)"><b data-sync="zc0"></b><span>neu &amp; kontaktiert</span></button>
+          <button class="mf-stage" style="--w:86%" onclick="openStage(1)"><b data-sync="zc1"></b><span>in Klärung</span></button>
+          <button class="mf-stage" style="--w:72%" onclick="openStage(2)"><b data-sync="zc2"></b><span>Aufnahme geplant</span></button>
+        </div>
+        <div class="mf-cap">Ergebnis</div>
+        <div class="mf-results">
+          <button class="mf-res" onclick="switchTab('intelligenz')"><b data-sync="r1"></b><span>Aufnahmen</span></button>
+          <button class="mf-res" onclick="switchTab('intelligenz')"><b>78 %</b><span>Privatauslastung</span></button>
+          <button class="mf-res" onclick="switchTab('intelligenz')"><b data-sync="r3"></b><span>Verloren · gelernt</span></button>
+        </div>
+        <p class="mf-note">Verlustgründe und Rückmeldungen fließen zurück in Quellen, Team und Prozesse.</p>
       </div>
     </section>
 
@@ -1285,8 +1334,8 @@ function renderCockpit(){
   const direct=faelle.filter(x=>["Telefon","E-Mail","Website-Formular","Empfehlung"].includes(x.kanal)).length;
   const ownerRate=offen.length?Math.round(offen.filter(x=>x.owner).length/offen.length*100):100;
   const zuwActions=zuweiser.filter(z=>z.next).length;
-  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
-  const html=(id,val)=>{const el=document.getElementById(id);if(el)el.innerHTML=val;};
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;document.querySelectorAll('[data-sync="'+id+'"]').forEach(n=>n.textContent=val);};
+  const html=(id,val)=>{const el=document.getElementById(id);if(el)el.innerHTML=val;document.querySelectorAll('[data-sync="'+id+'"]').forEach(n=>n.innerHTML=val);};
   set("mZuwAktiv",zuweiser.filter(z=>z.status==="aktiv").length);
   set("mZuwZiel",zuweiser.filter(z=>z.status!=="aktiv").length);
   set("mBestand",kontaktf+" / 412");
@@ -1385,6 +1434,7 @@ function renderStrom(){
   for(let i=0;i<3;i++){
     const e=document.getElementById("zc"+i);
     if(e)e.textContent=zonen[i].length;
+    document.querySelectorAll('[data-sync="zc'+i+'"]').forEach(n=>n.textContent=zonen[i].length);
   }
   const stock=offen.filter(f=>zoneOf(f.status)>=0&&stockt(f));
   const badge=document.getElementById("stockBadge");
