@@ -17,7 +17,7 @@
     --sage:#6f8f72; --sage-deep:#56745a; --sage-soft:#e8efe6;
     --terra:#a8543f; --terra-soft:#f5e3dc;
     --espresso-grad:linear-gradient(135deg,#353030,#1f1c1c);
-    --brass-grad:linear-gradient(180deg,#ac9377,#84705e);
+    --brass-grad:linear-gradient(180deg,#cdb083,#9b8573 55%,#7e6a55);
     --ortho:#a8742f; --neuro:#54718f; --geri:#6f8f72; --innere:#48817a; --saluto:#9b8573; --unklar:#8d877c;
     --shadow:0 1px 2px rgba(40,35,30,.05),0 10px 28px rgba(40,35,30,.07);
     --shadow-soft:0 1px 2px rgba(40,35,30,.04),0 6px 18px rgba(40,35,30,.05);
@@ -46,13 +46,15 @@
   .sub{display:none}
   .sub.active{display:block}
 
-  .kicker{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--brass-deep);font-weight:700;margin:0 0 10px}
+  .kicker{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#8f7448;font-weight:700;margin:0 0 10px}
   .chap{margin-top:34px}
   .chap-intro{font-size:14.5px;color:var(--ink-soft);margin:0 0 16px;max-width:46ch}
   .dcap::first-letter{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;float:left;
     font-size:46px;line-height:.82;padding:4px 8px 0 0;color:var(--brass-deep)}
   .hairline{border:0;border-top:1px solid var(--hair);margin:26px 0}
-  .card{background:var(--paper);border:1px solid var(--hair);border-radius:18px;box-shadow:var(--shadow-soft);padding:18px}
+  .card{background:var(--paper);border:1px solid var(--hair);border-radius:18px;box-shadow:var(--shadow-soft);padding:18px;position:relative}
+  .card::before{content:"";position:absolute;top:0;left:22px;right:22px;height:2px;border-radius:0 0 3px 3px;
+    background:linear-gradient(90deg,transparent,#cdb083 30%,#cdb083 70%,transparent);opacity:.5;pointer-events:none}
   .empty{color:var(--muted);font-size:14px;margin:6px 0}
 
   /* ===== Schaltflächen — gravierte Messingplaketten ===== */
@@ -70,23 +72,28 @@
   .btn-sm{min-height:44px;padding:9px 16px;font-size:13.5px}
 
   /* ===== Heute: Begrüßung ===== */
-  .greet{margin:6px 0 4px}
+  .greet{margin:2px 0 4px;background:linear-gradient(140deg,#332d2a,#1f1c1c 55%,#282320);border-radius:20px;
+    padding:22px 20px 20px;box-shadow:0 14px 34px rgba(31,28,28,.26),inset 0 1px 0 rgba(255,248,236,.07);
+    position:relative;overflow:hidden}
+  .greet::after{content:"";position:absolute;top:-50px;right:-36px;width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,rgba(188,163,125,.2),transparent 70%);pointer-events:none}
   .g-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
-  .greet h1{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:600;
-    font-size:28px;line-height:1.12;margin:0;letter-spacing:.005em}
-  .g-date{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:9px;font-weight:600}
-  .g-mono{flex-shrink:0;width:46px;height:46px;border-radius:50%;border:1px solid var(--brass-line);
-    background:radial-gradient(circle at 35% 30%,#f7eed9,#e9d9b8);color:var(--brass-deep);
+  .greet h1{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:600;color:#f4eee3;
+    font-size:28px;line-height:1.14;margin:0;letter-spacing:.005em}
+  .greet h1 em{font-style:inherit;color:#d3b78a}
+  .g-date{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#b29a76;margin-top:9px;font-weight:600}
+  .g-mono{flex-shrink:0;width:46px;height:46px;border-radius:50%;border:1px solid #8f7448;
+    background:radial-gradient(circle at 35% 30%,#3a332e,#262220);color:#d3b78a;
     display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",Georgia,serif;
     font-size:17px;font-weight:700;letter-spacing:.06em;box-shadow:inset 0 1px 0 rgba(251,250,248,.8),0 2px 6px rgba(50,42,35,.12)}
-  .g-line{font-size:15px;color:var(--ink-soft);margin:14px 0 0;line-height:1.5;border-left:2px solid var(--brass-line);padding-left:12px}
+  .g-line{font-size:15px;color:#ddd5c8;margin:16px 0 0;line-height:1.5;border-left:2px solid #bca37d;padding-left:12px}
 
   /* ===== Heute: Nordstern-Bogen ===== */
-  .ns-card{margin-top:24px;padding:20px 20px 16px;text-align:center}
+  .ns-card{margin-top:24px;padding:20px 20px 16px;text-align:center;background:linear-gradient(180deg,#fdfbf7,#f6f0e4)}
   .ns-card .kicker{text-align:center}
   .gauge{display:block;width:min(230px,72%);margin:2px auto 0;height:auto}
   .gauge .track{fill:none;stroke:#e8ddc2;stroke-width:3;stroke-linecap:round}
-  .gauge .val{fill:none;stroke:var(--brass);stroke-width:3;stroke-linecap:round}
+  .gauge .val{fill:none;stroke:url(#gaugeGold);stroke-width:3.4;stroke-linecap:round}
   .gauge .tick{stroke:var(--faint);stroke-width:1.4}
   .gauge .gnum{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;font-size:64px;fill:var(--ink)}
   .gauge .gpct{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:26px;fill:var(--brass-deep)}
@@ -141,12 +148,12 @@
   .strom .fn-note{fill:#a39a8e;font-size:12.5px}
   .strom .fn-tiny{fill:#847c71;font-size:13px}
   .strom .fn-num{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;fill:#1f1c1c;font-variant-numeric:lining-nums tabular-nums}
-  .strom .fn-chev{fill:#9b8573;font-size:19px;opacity:.8;transition:opacity .18s}
+  .strom .fn-chev{fill:#a5854e;font-size:19px;opacity:.8;transition:opacity .18s}
   .strom .fn-hair{stroke:var(--hair)}
-  .strom .fn-link{stroke:#c9bcab;stroke-width:1.35;fill:none;opacity:.9;stroke-linecap:round}
-  .strom .fn-dot{fill:#9b8573;opacity:.5}
+  .strom .fn-link{stroke:#c3a97f;stroke-width:1.35;fill:none;opacity:.9;stroke-linecap:round}
+  .strom .fn-dot{fill:#ab8d60;opacity:.5}
   .strom .fn-stockt{fill:#a8543f;font-size:10.5px;font-weight:800;letter-spacing:.03em}
-  .strom .fn-box{fill:#f3f0ea;stroke:#ddd8cf;stroke-width:1;transition:fill .18s}
+  .strom .fn-box{fill:#f7f1e4;stroke:#d9c5a1;stroke-width:1;transition:fill .18s}
   .strom .fn-click:hover .fn-box{fill:#ece7df}
   .strom .fn-box-lab{fill:#6f6862;font-size:10.5px;font-weight:600;letter-spacing:.01em}
   .strom .fn-box-sub{fill:#847c71;font-size:9.5px}
@@ -505,7 +512,7 @@
     <header class="greet">
       <div class="g-row">
         <div>
-          <h1 id="greetTitle">Aus Quellen wird planbare Belegung.</h1>
+          <h1 id="greetTitle">Aus Quellen wird <em>planbare Belegung.</em></h1>
           <div class="g-date" id="greetDate"></div>
         </div>
         <span class="g-mono" aria-hidden="true">KB</span>
@@ -520,8 +527,8 @@
         <svg id="strom" viewBox="0 0 1180 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der eine Trichter, Ergebnis">
           <defs>
             <linearGradient id="funnelWash" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#9b8573" stop-opacity=".07"/>
-              <stop offset="1" stop-color="#9b8573" stop-opacity=".23"/>
+              <stop offset="0" stop-color="#bca37d" stop-opacity=".12"/>
+              <stop offset="1" stop-color="#bca37d" stop-opacity=".32"/>
             </linearGradient>
             <linearGradient id="ggold" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#bca37d"/><stop offset="1" stop-color="#7e6a55"/>
@@ -576,15 +583,15 @@
           <path class="fn-link" d="M260,314 C326,314 382,274 468,288"/>
 
           <path d="M470,84 C600,92 720,132 812,156 L812,244 C720,268 600,308 470,316 Z"
-                fill="url(#funnelWash)" stroke="#d7c8bc" stroke-width="1.2"/>
+                fill="url(#funnelWash)" stroke="#cdb285" stroke-width="1.2"/>
           <path d="M584,100 L584,300" stroke="#c0ae9b" stroke-width="1" opacity=".45"/>
           <path d="M698,126 L698,274" stroke="#c0ae9b" stroke-width="1" opacity=".45"/>
           <text class="fn-num" x="527" y="178" text-anchor="middle" font-size="52" id="zc0"></text>
-          <text class="fn-stage" x="527" y="206" text-anchor="middle"><tspan x="527" dy="0">neu &amp;</tspan><tspan x="527" dy="17">kontaktiert <tspan fill="#9b8573">›</tspan></tspan></text>
+          <text class="fn-stage" x="527" y="206" text-anchor="middle"><tspan x="527" dy="0">neu &amp;</tspan><tspan x="527" dy="17">kontaktiert <tspan fill="#a5854e">›</tspan></tspan></text>
           <text class="fn-num" x="641" y="178" text-anchor="middle" font-size="52" id="zc1"></text>
-          <text class="fn-stage" x="641" y="223" text-anchor="middle">in Klärung <tspan fill="#9b8573">›</tspan></text>
+          <text class="fn-stage" x="641" y="223" text-anchor="middle">in Klärung <tspan fill="#a5854e">›</tspan></text>
           <text class="fn-num" x="755" y="178" text-anchor="middle" font-size="52" id="zc2"></text>
-          <text class="fn-stage" x="755" y="206" text-anchor="middle"><tspan x="755" dy="0">Aufnahme</tspan><tspan x="755" dy="17">geplant <tspan fill="#9b8573">›</tspan></tspan></text>
+          <text class="fn-stage" x="755" y="206" text-anchor="middle"><tspan x="755" dy="0">Aufnahme</tspan><tspan x="755" dy="17">geplant <tspan fill="#a5854e">›</tspan></tspan></text>
           <g class="fn-click stage-hit" clip-path="url(#trichterClip)" onclick="openStage(0)">
             <rect class="pulse0" x="470" y="88" width="114" height="222"/>
             <title>Fälle: neu und kontaktiert anzeigen</title>
@@ -635,8 +642,8 @@
         <svg viewBox="0 0 390 548" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der eine Trichter, Ergebnis">
           <defs>
             <linearGradient id="funnelWashM" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#9b8573" stop-opacity=".07"/>
-              <stop offset="1" stop-color="#9b8573" stop-opacity=".23"/>
+              <stop offset="0" stop-color="#bca37d" stop-opacity=".12"/>
+              <stop offset="1" stop-color="#bca37d" stop-opacity=".32"/>
             </linearGradient>
           </defs>
           <text class="fn-cap" x="195" y="20" text-anchor="middle">QUELLEN</text>
@@ -672,18 +679,18 @@
           <path class="fn-link" d="M127,152 C127,175 136,200 148,214"/>
           <path class="fn-link" d="M263,152 C263,175 252,200 242,214"/>
 
-          <path d="M65,216 L325,216 L255,390 L135,390 Z" fill="url(#funnelWashM)" stroke="#d7c8bc" stroke-width="1.2"/>
-          <line x1="88" y1="274" x2="302" y2="274" stroke="#c9bba9" stroke-width="1" opacity=".45"/>
-          <line x1="112" y1="332" x2="278" y2="332" stroke="#c9bba9" stroke-width="1" opacity=".45"/>
+          <path d="M65,216 L325,216 L255,390 L135,390 Z" fill="url(#funnelWashM)" stroke="#cdb285" stroke-width="1.2"/>
+          <line x1="88" y1="274" x2="302" y2="274" stroke="#c8ab7c" stroke-width="1" opacity=".45"/>
+          <line x1="112" y1="332" x2="278" y2="332" stroke="#c8ab7c" stroke-width="1" opacity=".45"/>
 
           <text class="fn-num" x="142" y="254" text-anchor="end" font-size="30" data-sync="zc0"></text>
-          <text class="fn-stage" x="154" y="250">neu &amp; kontaktiert <tspan fill="#9b8573">›</tspan></text>
+          <text class="fn-stage" x="154" y="250">neu &amp; kontaktiert <tspan fill="#a5854e">›</tspan></text>
           <text class="fn-stockt" x="195" y="270" text-anchor="middle" data-sync="stock0"></text>
           <text class="fn-num" x="132" y="312" text-anchor="end" font-size="30" data-sync="zc2"></text>
-          <text class="fn-stage" x="144" y="308">Aufnahme geplant <tspan fill="#9b8573">›</tspan></text>
+          <text class="fn-stage" x="144" y="308">Aufnahme geplant <tspan fill="#a5854e">›</tspan></text>
           <text class="fn-stockt" x="195" y="328" text-anchor="middle" data-sync="stock2"></text>
           <text class="fn-num" x="160" y="366" text-anchor="end" font-size="30" data-sync="zc1"></text>
-          <text class="fn-stage" x="172" y="362">in Klärung <tspan fill="#9b8573">›</tspan></text>
+          <text class="fn-stage" x="172" y="362">in Klärung <tspan fill="#a5854e">›</tspan></text>
           <text class="fn-stockt" x="195" y="386" text-anchor="middle" data-sync="stock1"></text>
 
           <g class="fn-click stage-hit" onclick="openStage(0)">
@@ -733,6 +740,9 @@
     <div class="card ns-card">
       <div class="kicker">Nordstern · Privatauslastung</div>
       <svg class="gauge" viewBox="0 0 200 152" role="img" aria-label="Privatauslastung 78 Prozent, Ziel 90 Prozent">
+        <defs><linearGradient id="gaugeGold" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#d6ba8c"/><stop offset=".55" stop-color="#bca37d"/><stop offset="1" stop-color="#8f7448"/>
+        </linearGradient></defs>
         <path class="track" d="M34.2,134 A76,76 0 1 1 165.8,134"/>
         <path class="val" d="M34.2,134 A76,76 0 1 1 165.8,134" stroke-dasharray="248.3 318.3"/>
         <line class="tick" x1="167.6" y1="103.1" x2="183.5" y2="104.8"/>
