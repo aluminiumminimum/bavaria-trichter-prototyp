@@ -1271,6 +1271,24 @@ let faelle=[
  {id:12,name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage"],[dstr(-11),"Rückruf erst nach 26 Std."],[dstr(-8),"Familie hat anderes Haus gewählt"]]}
 ];
 
+/* Werdegang-Beispielschritte (nur für Demo-Fälle gesetzt; Rest wird generisch abgeleitet) */
+faelle.find(f=>f.id===3).schritte=[
+ {label:"Anfrage erhalten",who:"Website-Formular",ts:dstr(-2)+" 09:12",dauerMin:0,done:true},
+ {label:"Empfang geprüft",who:"S. Koordination",ts:dstr(-2)+" 09:30",dauerMin:18,done:true},
+ {label:"Erstkontakt raus",who:"S. Koordination",ts:dstr(-2)+" 12:14",dauerMin:164,done:true},
+ {label:"Unterlagen vollständig",who:"T. Abrechnung",ts:dstr(-1)+" 16:00",dauerMin:null,done:false},
+ {label:"Rehaplatz reserviert",who:"M. Belegung",ts:"",dauerMin:null,done:false},
+ {label:"Antwort-Mail raus",who:"S. Koordination",ts:"",dauerMin:null,done:false}
+];
+/* Passiver Pfad: Broschüre + Freigabe, noch keine Anfrage → als Lead geführt */
+const passivLead={id:201,name:"Sabine Vogt",alter:54,rolle:"Patient selbst",kanal:"Broschüre-Download",quelle:"Website (Broschüre)",achse:"Orthopädie",kt:"PKV",status:"Lead",owner:"—",aufgabe:"",frist:"",saluto:false,docs:[false,false,false,false],kosten:"—",consent:"Kontaktfreigabe erteilt",verlust:"",reaktion:null,
+ schritte:[
+  {label:"Broschüre geladen",who:"Website",ts:dstr(-3)+" 20:41",dauerMin:0,done:true},
+  {label:"E-Mail hinterlegt + Freigabe angeklickt",who:"Patient",ts:dstr(-3)+" 20:41",dauerMin:0,done:true},
+  {label:"Als Lead (Stufe 2) erfasst",who:"System",ts:dstr(-3)+" 20:42",dauerMin:1,done:true},
+  {label:"Info-Mail geplant (nach 7 Tagen)",who:"Automation",ts:dstr(4),dauerMin:null,done:false}
+ ],log:[]};
+
 let eingang=[
  {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Nummer notiert, möchte Rückruf heute. Vermutlich PKV.",zeit:"vor 25 Min.",achse:"Innere",done:false},
  {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Patient (68), PKV, Entlassung in 4 Tagen. Unterlagen anbei.",zeit:"vor 1 Std.",achse:"Neurologie",done:false},
@@ -1281,14 +1299,17 @@ let eingang=[
 ];
 
 let bestand=[
- {name:"Margarete Wirth",alter:73,achse:"Orthopädie",entl:"vor 11 Monaten",consent:"ja",anlass:"Jahres-Check nach Knie-TEP steht an",wv:true},
- {name:"Otto Brenner",alter:68,achse:"Neurologie",entl:"vor 14 Monaten",consent:"ja",anlass:"Nachsorge-Angebot Schlaganfall-Prävention",wv:false},
- {name:"Use Hartmann",alter:61,achse:"Innere",entl:"vor 8 Monaten",consent:"ja",anlass:"Einladung Gesundheitswoche möglich",wv:false},
- {name:"Friedrich Lang",alter:77,achse:"Geriatrie",entl:"vor 6 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false},
- {name:"Hannelore Beck",alter:70,achse:"Orthopädie",entl:"vor 19 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false},
- {name:"Georg Steiner",alter:65,achse:"Neurologie",entl:"vor 9 Monaten",consent:"widerruf",anlass:"Widerruf am 03.05. dokumentiert",wv:false},
- {name:"Christa Mohr",alter:58,achse:"SalutoCare",entl:"vor 5 Monaten",consent:"ja",anlass:"Premium-Nachsorge, Recovery Manager kennt Fall",wv:true},
- {name:"Walter Simon",alter:80,achse:"Innere",entl:"vor 23 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false}
+ {name:"Margarete Wirth",alter:73,achse:"Orthopädie",entl:"vor 11 Monaten",consent:"ja",anlass:"Jahres-Check nach Knie-TEP steht an",wv:true, stufe:3,quelle:"Altpatient",auto:"Check-in-Mail alle 3 Monate"},
+ {name:"Otto Brenner",alter:68,achse:"Neurologie",entl:"vor 14 Monaten",consent:"ja",anlass:"Nachsorge-Angebot Schlaganfall-Prävention",wv:false, stufe:3,quelle:"Altpatient",auto:"Halbjahres-Nachsorge-Mail"},
+ {name:"Use Hartmann",alter:61,achse:"Innere",entl:"vor 8 Monaten",consent:"ja",anlass:"Einladung Gesundheitswoche möglich",wv:false, stufe:3,quelle:"Altpatient",auto:"Event-Einladung bei Belegungslücke"},
+ {name:"Friedrich Lang",alter:77,achse:"Geriatrie",entl:"vor 6 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache"},
+ {name:"Hannelore Beck",alter:70,achse:"Orthopädie",entl:"vor 19 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache"},
+ {name:"Georg Steiner",alter:65,achse:"Neurologie",entl:"vor 9 Monaten",consent:"widerruf",anlass:"Widerruf am 03.05. dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — Widerruf"},
+ {name:"Christa Mohr",alter:58,achse:"SalutoCare",entl:"vor 5 Monaten",consent:"ja",anlass:"Premium-Nachsorge, Recovery Manager kennt Fall",wv:true, stufe:4,quelle:"Altpatient",auto:"persönlicher Recovery-Manager-Kontakt"},
+ {name:"Walter Simon",alter:80,achse:"Innere",entl:"vor 23 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache"},
+ {name:"Sabine Vogt",alter:54,achse:"Orthopädie",entl:"—",consent:"ja",anlass:"Reha-Broschüre geladen, Kontaktfreigabe erteilt, kein Anliegen",wv:false, stufe:2,quelle:"Broschüre-Download",auto:"1 Info-Mail nach 7 Tagen, dann ruhend"},
+ {name:"Markus Pfeiffer",alter:60,achse:"SalutoCare",entl:"—",consent:"ja",anlass:"Premium-Broschüre geladen, Freigabe erteilt",wv:true, stufe:2,quelle:"Broschüre-Download",auto:"Premium-Nurture-Strecke (freigegeben)"},
+ {name:"Unbekannt (Website)",alter:null,achse:"—",entl:"—",consent:"nein",anlass:"nur E-Mail hinterlegt, keine Freigabe angeklickt",wv:false, stufe:1,quelle:"Website-Mail",auto:"keine Ansprache erlaubt"}
 ];
 
 let zuweiser=[
@@ -1304,6 +1325,37 @@ let zuweiser=[
  {name:"Privatpraxis Dr. Neumann",typ:"Privatpraxis Orthopädie",ort:"Bad Kissingen",rel:"Orthopädie, Selbstzahler",ap:"Dr. Neumann",tel:"0971 0000-317",mail:"neumann@demo-praxis.local",faelle:1,letzter:dstr(-12),draht:"●○○",status:"aufbau",next:"Sprechstunden-Service und Fast-Lane vorstellen"},
  {name:"Reha-Technik Müller",typ:"Sanitätshaus · Hilfsmittel",ort:"Bad Kissingen",rel:"Hilfsmittel, Angehörigenkontakt",ap:"noch offen",tel:"0971 0000-410",mail:"service@demo-rehatechnik.local",faelle:0,letzter:"",draht:"○○○",status:"ziel",next:"Kooperationspotenzial und Angehörigenpfad prüfen"}
 ];
+
+/* ----- Matrix-Konfiguration (2×3) ----- */
+const MATRIX=[
+ {row:"B2B",col:"vor",titel:"Zuweiser-Portal",zweck:"Anmeldung, Auslastung, Datei-Upload",metricId:"mxBBvor",status:"aufbau",route:["ref","portal"]},
+ {row:"B2B",col:"in", titel:"Behandlungs-Einblick",zweck:"Tagesberichte für Zuweiser",metricId:"mxBBin", status:"geplant",route:["ref","dashboard"]},
+ {row:"B2B",col:"nach",titel:"Abschluss-Paket",zweck:"Briefe, Empfehlungen, Rücksprache",metricId:"mxBBnach",status:"geplant",route:["ref","dashboard"]},
+ {row:"B2C",col:"vor",titel:"Lead-Scoring & Bestand",zweck:"Stufe 1–5, Broschüren-Leads, Automation",metricId:"mxBCvor",status:"aufbau",route:["netzwerk","bestand"]},
+ {row:"B2C",col:"in", titel:"Aufnahme-Trichter",zweck:"Anfrage → Aufnahme (live)",metricId:"mxBCin", status:"aktiv",route:["faelle","board"]},
+ {row:"B2C",col:"nach",titel:"Nachsorge & Reaktivierung",zweck:"Wiedervorlagen, Altpatienten-Pflege",metricId:"mxBCnach",status:"aufbau",route:["netzwerk","bestand"]}
+];
+/* ----- Belegung je Achse × Woche (freie Plätze) — für Portal ----- */
+let belegung=[
+ {achse:"Orthopädie", frei:[2,1,3,4]},
+ {achse:"Neurologie", frei:[1,0,2,2]},
+ {achse:"Geriatrie",  frei:[3,2,2,1]},
+ {achse:"SalutoCare", frei:[1,1,0,1]}
+];
+/* ----- Tagesberichte laufender Reha (in der Reha) — für Dashboard ----- */
+let tagesberichte=[
+ {pat:"Dieter Franke",tag:6,von:9,achse:"Orthopädie",eintraege:[
+   {d:dstr(-1),txt:"Mobilisation an Unterarmgehstützen, 30 m Gehstrecke erreicht."},
+   {d:dstr(-2),txt:"Schmerz unter Belastung NRS 3, Lymphdrainage begonnen."}]},
+ {pat:"Elke Sauer",tag:4,von:14,achse:"SalutoCare",eintraege:[
+   {d:dstr(-1),txt:"SalutoCare-Suite, Atemtherapie planmäßig, Werte stabil."},
+   {d:dstr(-2),txt:"Erstgespräch Recovery Manager, Zielplan abgestimmt."}]}
+];
+/* ----- Demo-Entlassdokument (nach der Reha) — für Dashboard ----- */
+const entlassDoc={pat:"Werner Adler",achse:"Geriatrie",entlassen:dstr(-3),
+ brief:"Entlassbericht: geriatrische Komplexreha abgeschlossen, Gangbild stabilisiert, Hilfsmittel angepasst.",
+ empfehlungen:["Ambulante Physiotherapie 2×/Woche, 6 Wochen","Sturzprophylaxe-Training","Wiedervorstellung Hausarzt in 2 Wochen"],
+ ruecksprache:"0971 0000-100 (Recovery-Line, Mo–Fr 8–16 Uhr)"};
 
 let aktuellerFall=null;let zFilter="krankenhaus";let boardStageFilter=null;let horizont=9;
 
