@@ -292,6 +292,8 @@
   .mtime{font-size:13px;color:var(--faint)}
   .mail .btn-brass{margin-top:11px}
   .ok-chip{display:inline-block;margin-top:11px;color:var(--sage-deep);font-weight:600;font-size:14px}
+  .typ-chip{font:600 10px/1 Inter;padding:3px 7px;border-radius:99px;margin-left:6px}
+  .typ-chip.qual{background:#e7f0e7;color:#5d7f60}.typ-chip.passiv{background:#efedea;color:#8a837d}
 
   /* ===== Board ===== */
   .bf{margin-bottom:14px}
@@ -1511,8 +1513,11 @@ function renderEingang(){
    "<article class='mail"+(m.done?" done":"")+"'>"
    +"<span class='chico'>"+(CHAN_ICON[m.kanal]||CHAN_ICON["E-Mail"])+"</span>"
    +"<div class='mwrap'><div class='mtit'>"+escapeHtml(m.tit)+"</div><div class='mtxt'>"+escapeHtml(m.txt)+"</div>"
-   +"<div class='mmeta'><span class='chtag'>"+escapeHtml(m.kanal)+"</span><span class='mtime'>"+escapeHtml(m.zeit)+"</span></div>"
-   +(m.done?"<span class='ok-chip'>✓ als Fall übernommen</span>":"<button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Als Fall übernehmen</button>")
+   +"<div class='mmeta'><span class='chtag'>"+escapeHtml(m.kanal)+"</span><span class='mtime'>"+escapeHtml(m.zeit)+"</span>"+"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span></div>"
+   +(m.done?"<span class='ok-chip'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall übernommen")+"</span>"
+     :m.typ==="passiv"
+       ?"<button class='btn-ghost btn-sm' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>"
+       :"<button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Als Fall übernehmen</button>")
    +"</div></article>").join("");
 }
 function uebernehmen(id){
@@ -1524,6 +1529,15 @@ function uebernehmen(id){
     saluto:m.achse==="SalutoCare",docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
     log:[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit]]});
   renderAll();go("faelle","board");
+}
+function inDatenbank(id){
+ const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
+ m.done=true;
+ bestand.unshift({name:m.tit.split(":")[1]?m.tit.split(":")[1].trim():"Neuer Kontakt",alter:null,achse:m.achse,entl:"—",
+   consent:(m.tit+" "+m.txt).toLowerCase().includes("freigabe")?"ja":"nein",
+   anlass:"Aus Eingang ("+m.kanal+"): "+m.txt,wv:false,stufe:2,quelle:"Broschüre-Download",
+   auto:"1 Info-Mail nach 7 Tagen, dann ruhend",board:"neu",owner:"S. Koordination"});
+ renderAll();go("netzwerk","bestand");
 }
 
 /* ---------- Render: Board ---------- */
