@@ -308,6 +308,18 @@
   .board{display:flex;gap:11px;overflow-x:auto;margin:0 -20px;padding:4px 20px 16px;
     -webkit-overflow-scrolling:touch;scrollbar-width:none}
   .board::-webkit-scrollbar{display:none}
+  .wg-case{border:1px solid #E3D4C8;border-radius:14px;padding:14px;margin-bottom:14px;background:#fff}
+  .wg-case h3{font:600 16px/1.2 Inter;margin:0 0 2px}
+  .wg-tag{display:inline-block;font:600 11px/1 Inter;padding:3px 8px;border-radius:99px;background:#f6ecd9;color:#b58a3e;margin-bottom:10px}
+  .wg-tag.passiv{background:#eef0ee;color:#6f8f72}
+  .stepper{display:flex;flex-direction:column;gap:0}
+  .stp{display:grid;grid-template-columns:22px 1fr;gap:10px;position:relative;padding-bottom:14px}
+  .stp:not(:last-child)::before{content:"";position:absolute;left:10px;top:18px;bottom:0;width:2px;background:#E3D4C8}
+  .stp .dot{width:18px;height:18px;border-radius:99px;border:2px solid #bca37d;background:#fff;margin-top:1px}
+  .stp.done .dot{background:#6f8f72;border-color:#6f8f72}
+  .stp b{font:600 14px/1.2 Inter;color:#1F1C1C}
+  .stp small{display:block;font:400 12px/1.3 Inter;color:#8a837d;margin-top:1px}
+  .stp .dur{color:#b58a3e;font-weight:600}
   .col{background:var(--cream2);border:1px solid var(--hair2);border-radius:16px;min-width:236px;width:236px;flex-shrink:0;padding:10px}
   .col h3{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;margin:4px 6px 9px;display:flex;align-items:center;gap:7px;color:var(--ink-soft);font-weight:700}
   .col h3 .cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -977,6 +989,7 @@
       <div class="segments" role="tablist" aria-label="Fälle-Bereiche">
         <button class="seg active" data-seg="anfragen" role="tab">Anfragen <b class="segn num" id="segCntAnfragen"></b></button>
         <button class="seg" data-seg="board" role="tab">Board <b class="segn num" id="segCntBoard"></b></button>
+        <button class="seg" data-seg="werdegang" role="tab">Werdegang</button>
       </div>
       <button class="btn btn-sm neu-cta" onclick="openSheetNeu()">＋ Neue Anfrage aufnehmen</button>
     </header>
@@ -989,6 +1002,10 @@
       <div class="bf" id="boardFocus"></div>
       <div class="board" id="board"></div>
     </div>
+      <div class="sub" id="sub-faelle-werdegang">
+        <p class="lblline">Der Werdegang eines Falls — zwei Wege in die Maschine.</p>
+        <div id="werdegang"></div>
+      </div>
   </section>
 
   <!-- ============ NETZWERK ============ -->
@@ -1751,7 +1768,22 @@ function renderMatrix(){
  }).join("");
 }
 function mxGo(a,b){ if(a==="ref"){ if(typeof openReferrer==="function") openReferrer(b,"Leopoldina-Krankenhaus"); return; } go(a,b); }
-function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();}
+function stepper(schritte){
+ return `<div class="stepper">`+schritte.map(s=>{
+  const dur=s.dauerMin!=null?` · <span class="dur">${s.dauerMin>=60?Math.round(s.dauerMin/60)+" Std":s.dauerMin+" Min"}</span>`:"";
+  const meta=[s.who,s.ts].filter(Boolean).join(" · ");
+  return `<div class="stp ${s.done?"done":""}"><span class="dot"></span><span><b>${escapeHtml(s.label)}</b><small>${escapeHtml(meta)}${dur}</small></span></div>`;
+ }).join("")+`</div>`;
+}
+function renderWerdegang(){
+ const aktiv=faelle.find(f=>f.id===3);
+ const passiv=passivLead;
+ const card=(f,tag,cls)=>`<div class="wg-case"><span class="wg-tag ${cls}">${tag}</span><h3>${escapeHtml(f.name)} · ${escapeHtml(f.achse)}</h3>${stepper(f.schritte)}</div>`;
+ document.getElementById("werdegang").innerHTML=
+   card(aktiv,"Aktiver Weg — Anfrage per Formular","")+
+   card(passiv,"Passiver Weg — Broschüre + Freigabe","passiv");
+}
+function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();renderWerdegang();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ---------- */
 function celebratePlanned(){
@@ -1848,7 +1880,7 @@ document.getElementById("formNeu").addEventListener("submit",e=>{
 });
 
 /* ---------- Navigation ---------- */
-const SEGS={faelle:["anfragen","board"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
+const SEGS={faelle:["anfragen","board","werdegang"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
 let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",system:"idee"}};
 function go(dest,seg){
   if(!document.getElementById("view-"+dest))dest="heute";
