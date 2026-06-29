@@ -343,7 +343,7 @@ function deriveSchritte(f){ // generic stepper from STATUS for cases without exp
  return STATUS.slice(0,6).map((s,i)=>({label:s,who:i<=cur?(f.owner||""):"",ts:"",dauerMin:null,done:i<cur}));
 }
 function advanceFall(){ const f=aktuellerFall;if(!f)return;
- const cur=STATUS.indexOf(f.status); if(cur<0||cur>=4)return; // 4 = Aufnahme geplant is last advanceable → Aufgenommen
+ const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return; // allow up to Aufnahme geplant(4)→Aufgenommen(5); block at Aufgenommen/Verloren
  const ns=STATUS[cur+1]; f.log.push([dstr(0),"Aufgabe erledigt · Status: "+f.status+" → "+ns]);
  if(f.schritte&&f.schritte[cur]) f.schritte[cur].done=true;
  f.status=ns; renderAll(); openDetail(f.id); // re-open to refresh track + dropdown
