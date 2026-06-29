@@ -293,12 +293,15 @@ Then inside `renderBestand`, after the stats block, branch on `dbView`: if `boar
 
 - [ ] **Step 1: Confirm current** — `grep -c 'owner:"S. Koordination",aufgabe:"Erstreaktion' index.html` → `1`
 
-- [ ] **Step 2: Prompt for owner on takeover.** Replace the hardcoded `owner:"S. Koordination"` in the pushed Fall with a chosen value. At the top of `uebernehmen`, after the guard, add:
+- [ ] **Step 2: Inline styled owner-select (premium, no native prompt).** In `renderEingang`, the qualified action becomes a styled select + button:
 ```js
- const who=prompt("Fall zuweisen an:\n"+TEAM.map((t,i)=>(i+1)+") "+t).join("\n")+"\n\nNummer eingeben:","1");
- const owner=TEAM[(parseInt(who,10)||1)-1]||TEAM[0];
+"<div class='eingang-act'><select class='eingang-owner' id='eo-"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select><button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Als Fall übernehmen</button></div>"
 ```
-Then in the `faelle.push({…})` change `owner:"S. Koordination"` → `owner:owner`, and append `+" — zugewiesen an "+owner` to the initial log text.
+In `uebernehmen`, after the guard read the select: `const sel=document.getElementById("eo-"+id); const owner=sel?sel.value:TEAM[0];`. Change the pushed Fall `owner:"S. Koordination"` → `owner:owner`, and append `+" — zugewiesen an "+owner` to the initial log text. CSS:
+```css
+.eingang-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.eingang-owner{font-size:13px;padding:8px 10px;border:1px solid #E3D4C8;border-radius:9px;min-height:38px;background:#fff;color:#1F1C1C}
+```
 
 - [ ] **Step 3: Verify** — `grep -c 'Fall zuweisen an' index.html` → `1`; JS-parse OK; orchestrator (DOM): stub `window.prompt` to return "2", click a qualified Anfrage's übernehmen, confirm the new Fall's `owner` = TEAM[1].
 
