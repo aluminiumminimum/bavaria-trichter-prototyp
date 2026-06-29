@@ -624,6 +624,22 @@
 .ref-field input,.ref-field select{width:100%;font-size:16px;padding:11px;border:1px solid #E3D4C8;border-radius:10px;margin-top:4px;min-height:44px}
 .ref-upload{border:1.5px dashed #bca37d;border-radius:10px;padding:16px;text-align:center;color:#9B8573;font:500 13px/1.3 Inter}
 .ref-btn{background:#1F1C1C;color:#fff;border:none;border-radius:99px;padding:12px 16px;font:600 14px/1 Inter;min-height:44px;width:100%}
+.ir-card{border:1px solid #E3D4C8;border-radius:16px;background:#fff;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(31,28,28,.05)}
+.ir-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px}
+.ir-head h3{font:600 17px/1.2 Inter;margin:0}
+.ir-icd{font:500 12px/1.3 Inter;color:#9B8573;margin:2px 0 12px}
+.ir-rings{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.ring{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:74px}
+.ring svg{display:block}
+.ring .rl{font:600 10px/1.1 Inter;letter-spacing:.06em;text-transform:uppercase;color:#9B8573;text-align:center}
+.ring .rd{font:700 10px/1 Inter;color:#5d7f60}
+.ir-stay{margin:8px 0 12px}
+.ir-stay .lbl{font:600 10px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:#9B8573;display:flex;justify-content:space-between}
+.ir-stay .track{position:relative;height:8px;background:#EFEAE3;border-radius:99px;margin-top:5px}
+.ir-stay .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#bca37d,#9B8573);border-radius:99px}
+.ir-stay .plan{position:absolute;top:-2px;width:2px;height:12px;background:#1F1C1C;opacity:.5}
+.ir-rep{border-left:2px solid #bca37d;padding:3px 0 8px 12px;margin-left:2px}
+.ir-rep small{color:#9B8573;font:600 11px/1 Inter}.ir-rep p{font:400 13px/1.4 Inter;margin:2px 0 0}
 </style>
 </head>
 <body>
@@ -1030,6 +1046,7 @@
         <button class="seg active" data-seg="anfragen" role="tab">Anfragen <b class="segn num" id="segCntAnfragen"></b></button>
         <button class="seg" data-seg="board" role="tab">Board <b class="segn num" id="segCntBoard"></b></button>
         <button class="seg" data-seg="werdegang" role="tab">Werdegang</button>
+        <button class="seg" data-seg="inreha" role="tab">In Reha</button>
       </div>
       <button class="btn btn-sm neu-cta" onclick="openSheetNeu()">＋ Neue Anfrage aufnehmen</button>
     </header>
@@ -1045,6 +1062,10 @@
       <div class="sub" id="sub-faelle-werdegang">
         <p class="lblline">Der Werdegang eines Falls — zwei Wege in die Maschine.</p>
         <div id="werdegang"></div>
+      </div>
+      <div class="sub" id="sub-faelle-inreha">
+        <p class="lblline">Patienten aktuell in Behandlung — Live-KPIs.</p>
+        <div id="inrehaGrid"></div>
       </div>
   </section>
 
@@ -1896,7 +1917,35 @@ function renderDashboard(zName){
        <ul class="rec-list">${entlassDoc.empfehlungen.map(r=>`<li>${escapeHtml(r)}</li>`).join("")}</ul>
        <a class="rec-call" href="#" onclick="refToast();return false">☎ Rücksprache: ${escapeHtml(entlassDoc.ruecksprache)}</a></div>`);
 }
-function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();renderWerdegang();}
+function kpiRing(val,max,label,sub){
+ const r=22,c=2*Math.PI*r,pct=Math.max(0,Math.min(1,val/max)),off=c*(1-pct);
+ return `<div class="ring"><svg width="56" height="56" viewBox="0 0 56 56">
+   <circle cx="28" cy="28" r="${r}" fill="none" stroke="#E3D4C8" stroke-width="5"/>
+   <circle cx="28" cy="28" r="${r}" fill="none" stroke="#bca37d" stroke-width="5" stroke-linecap="round"
+     stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 28 28)"/>
+   <text x="28" y="32" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="17" font-weight="600" fill="#1F1C1C">${val}</text></svg>
+   <span class="rl">${escapeHtml(label)}</span>${sub?`<span class="rd">${escapeHtml(sub)}</span>`:""}</div>`;
+}
+function renderInReha(){
+ const el=document.getElementById("inrehaGrid");if(!el)return;
+ el.innerHTML=inReha.map(p=>{
+  const rest=Math.max(0,p.verweildauer.plan-p.verweildauer.ist);
+  const stayPct=Math.min(100,p.verweildauer.ist/p.verweildauer.plan*100);
+  return `<div class="ir-card${p.achse==="SalutoCare"?" hot":""}">
+    <div class="ir-head"><div><h3>${escapeHtml(p.name)} <span style="color:#9B8573;font-weight:400">(${p.alter})</span></h3>
+      <div class="ir-icd">${escapeHtml(p.achse)} · ${escapeHtml(p.icd)} · ${escapeHtml(p.owner)}</div></div></div>
+    <div class="ir-rings">
+      ${kpiRing(p.barthel.akt,100,"Barthel","▲ "+(p.barthel.akt-p.barthel.auf))}
+      ${kpiRing(p.fim.akt,126,"FIM","▲ "+(p.fim.akt-p.fim.auf))}
+      ${kpiRing(p.ziel,100,"Reha-Ziel",p.ziel+" %")}
+    </div>
+    <div class="ir-stay"><div class="lbl"><span>Verweildauer</span><span>Tag ${p.verweildauer.ist} / ${p.verweildauer.plan} · noch ${rest} T</span></div>
+      <div class="track"><div class="fill" style="width:${stayPct}%"></div><div class="plan" style="left:100%"></div></div></div>
+    ${p.eintraege.map(e=>`<div class="ir-rep"><small>${escapeHtml(e.d)}</small><p>${escapeHtml(e.txt)}</p></div>`).join("")}
+   </div>`;
+ }).join("")||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
+}
+function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();renderWerdegang();renderInReha();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ---------- */
 function celebratePlanned(){
@@ -1993,7 +2042,7 @@ document.getElementById("formNeu").addEventListener("submit",e=>{
 });
 
 /* ---------- Navigation ---------- */
-const SEGS={faelle:["anfragen","board","werdegang"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
+const SEGS={faelle:["anfragen","board","inreha"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
 let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",system:"idee"}};
 function go(dest,seg){
   if(!document.getElementById("view-"+dest))dest="heute";
