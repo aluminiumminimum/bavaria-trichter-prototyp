@@ -432,6 +432,19 @@
   .status-pill.lock{background:#eeeae0;color:#8a8076}
   .status-pill.bad{background:var(--terra-soft);color:var(--terra)}
   .wv{color:var(--brass-deep);font-weight:600;font-size:14px}
+  .tier-legend{font:400 12px/1.5 Inter;color:#6b6460;margin:4px 0 8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .tier-pill{font:600 11px/1 Inter;padding:4px 8px;border-radius:99px}
+  .tier-pill.s5{background:#e7f0e7;color:#5d7f60}.tier-pill.s4{background:#eaf0e9;color:#6f8f72}.tier-pill.s3{background:#f6ecd9;color:#b58a3e}.tier-pill.s2{background:#efedea;color:#8a837d}.tier-pill.s1{background:#f3eeea;color:#a08f7e}
+  .tier-filter{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+  .tier-filter button{font:600 12px/1 Inter;padding:8px 12px;border-radius:99px;border:1px solid #E3D4C8;background:#fff;min-height:36px}
+  .tier-filter button.on{background:#1F1C1C;color:#fff;border-color:#1F1C1C}
+  .tier-group{margin-bottom:6px}
+  .tier-group>h4{font:600 12px/1.3 Inter;color:#9B8573;letter-spacing:.04em;margin:16px 0 8px;text-transform:uppercase}
+  .tier-group>h4 span{display:block;text-transform:none;letter-spacing:0;font-weight:400;color:#b1a89f;font-size:11.5px;margin-top:2px}
+  .stufe-badge{font:700 11px/1 Inter;padding:3px 7px;border-radius:99px;margin-left:auto}
+  .stufe-badge.s5{background:#e7f0e7;color:#5d7f60}.stufe-badge.s4{background:#eaf0e9;color:#6f8f72}.stufe-badge.s3{background:#f6ecd9;color:#b58a3e}.stufe-badge.s2{background:#efedea;color:#8a837d}.stufe-badge.s1{background:#f3eeea;color:#a08f7e}
+  .tr-auto{font:400 12px/1.3 Inter;color:#6f8f72;margin:6px 0 0}
+  .tr-auto.blocked{color:#a8543f}
   .pill-row{display:flex;gap:6px;flex-wrap:wrap}
   .soft-pill{font-size:12px;color:var(--ink-soft);background:var(--cream2);border:1px solid var(--hair);border-radius:99px;padding:4px 9px}
   .soft-pill.ok{background:var(--sage-soft);border-color:#cdddcc;color:var(--sage-deep)}
@@ -1030,6 +1043,11 @@
       <p class="chap-intro dcap">Altpatienten sind kein Archiv, sondern ein steuerbarer Bestand: Wer darf kontaktiert werden, wer braucht Wiedervorlage, wo entsteht SalutoCare-Potenzial?</p>
       <div class="bestand-stats" id="bestandStats"></div>
       <div class="legal"><b>Kontaktfreigabe &amp; Datenschutz:</b> Aktive Ansprache erst nach dokumentierter Freigabe (Einwilligungen, Datenschutz; prüfpflichtig). Der Prototyp zeigt die Logik: Wer eine Einwilligung hat, bekommt Nachsorge-Angebote und Wiedervorlagen. Wer keine hat, bleibt gesperrt.</div>
+        <div class="tier-legend"><b>Lead-Stufen:</b>
+          <span class="tier-pill s5">5 angefragt</span><span class="tier-pill s4">4 lose</span>
+          <span class="tier-pill s3">3 Anlass</span><span class="tier-pill s2">2 Broschüre</span>
+          <span class="tier-pill s1">1 nur Mail</span></div>
+        <div class="tier-filter" id="stufeFilter"></div>
       <div class="bestand-grid" id="btable"></div>
     </div>
   </section>
@@ -1512,6 +1530,8 @@ function renderBoard(){
 }
 
 /* ---------- Render: Altpatienten (Bestand) ---------- */
+let stufeFilter=0; // 0 = alle
+const STUFE_LBL={5:"angefragt / kurz vor Aufnahme",4:"lose angefragt",3:"Altpatient mit Anlass",2:"Broschüre + Freigabe",1:"nur E-Mail / keine Freigabe"};
 function renderBestand(){
   const kontakt=bestand.filter(p=>p.consent==="ja").length;
   const wv=bestand.filter(p=>p.wv).length;
@@ -1523,19 +1543,28 @@ function renderBestand(){
     ["Gesperrt",gesperrt,"keine aktive Ansprache"],
     ["SalutoCare",saluto,"Premium-Nachsorge"]
   ].map(x=>"<div class='bestand-stat'><div class='sl'>"+x[0]+"</div><div class='sv num'>"+x[1]+"</div><div class='sn'>"+x[2]+"</div></div>").join("");
-  document.getElementById("btable").innerHTML=bestand.map((p,i)=>{
-    const c=p.consent==="ja"?"<span class='status-pill ok'>freigegeben</span>":p.consent==="widerruf"?"<span class='status-pill bad'>Widerruf</span>":"<span class='status-pill lock'>gesperrt</span>";
-    const action=p.consent==="ja"
-      ?(p.wv?"<span class='wv'>Wiedervorlage gesetzt</span>":"<button class='btn-ghost btn-sm' onclick='wiedervorlage("+i+")'>Nachsorge vormerken</button>")
-      :"<button class='btn-brass btn-sm' disabled>Kontaktfreigabe fehlt</button>";
-    return "<div class='patient-card"+(p.achse==="SalutoCare"||p.wv?" hot":"")+"'>"
-      +"<div class='patient-top'><span class='ava'>"+initialen(p.name)+"</span>"+c+"</div>"
-      +"<h3>"+escapeHtml(p.name)+" <span class='alter'>("+p.alter+")</span></h3>"
-      +"<div class='patient-meta'>"+escapeHtml(p.achse)+" · entlassen "+escapeHtml(p.entl)+"</div>"
-      +"<div class='patient-reason'>"+escapeHtml(p.anlass)+"</div>"
-      +"<div class='pill-row'><span class='soft-pill "+(p.achse==="SalutoCare"?"gold":"")+"'>"+escapeHtml(p.achse)+"</span><span class='soft-pill "+(p.wv?"ok":"")+"'>"+(p.wv?"Wiedervorlage":"kein Termin")+"</span></div>"
-      +"<div class='patient-actions'>"+action+"</div></div>";
-  }).join("");
+  const fil=document.getElementById("stufeFilter");
+  if(fil)fil.innerHTML=[0,5,4,3,2,1].map(s=>"<button class='"+(stufeFilter===s?"on":"")+"' onclick='stufeFilter="+s+";renderBestand()'>"+(s===0?"Alle":"Stufe "+s)+"</button>").join("");
+  const shown=[5,4,3,2,1].filter(s=>stufeFilter===0||stufeFilter===s);
+  document.getElementById("btable").innerHTML=shown.map(s=>{
+    const rows=bestand.map((p,i)=>[p,i]).filter(pi=>(pi[0].stufe||1)===s);
+    if(!rows.length)return"";
+    return "<div class='tier-group'><h4>Stufe "+s+" · "+rows.length+"<span>"+escapeHtml(STUFE_LBL[s]||"")+"</span></h4>"+rows.map(pi=>{
+      const p=pi[0],i=pi[1];
+      const c=p.consent==="ja"?"<span class='status-pill ok'>freigegeben</span>":p.consent==="widerruf"?"<span class='status-pill bad'>Widerruf</span>":"<span class='status-pill lock'>gesperrt</span>";
+      const action=p.consent==="ja"
+        ?(p.wv?"<span class='wv'>Wiedervorlage gesetzt</span>":"<button class='btn-ghost btn-sm' onclick='wiedervorlage("+i+")'>Nachsorge vormerken</button>")
+        :"<button class='btn-brass btn-sm' disabled>Kontaktfreigabe fehlt</button>";
+      const blocked=p.consent!=="ja";
+      return "<div class='patient-card"+(p.achse==="SalutoCare"||p.wv?" hot":"")+"'>"
+        +"<div class='patient-top'><span class='ava'>"+initialen(p.name)+"</span><span class='stufe-badge s"+s+"'>★ "+s+"</span>"+c+"</div>"
+        +"<h3>"+escapeHtml(p.name)+(p.alter?" <span class='alter'>("+p.alter+")</span>":"")+"</h3>"
+        +"<div class='patient-meta'>"+escapeHtml(p.achse)+" · "+escapeHtml(p.quelle||"Altpatient")+(p.entl&&p.entl!=="—"?" · entlassen "+escapeHtml(p.entl):"")+"</div>"
+        +"<div class='patient-reason'>"+escapeHtml(p.anlass)+"</div>"
+        +"<div class='tr-auto"+(blocked?" blocked":"")+"'>⟳ "+escapeHtml(p.auto||"")+"</div>"
+        +"<div class='patient-actions'>"+action+"</div></div>";
+    }).join("")+"</div>";
+  }).join("")||"<p class='empty'>Keine Kontakte in dieser Stufe.</p>";
 }
 function wiedervorlage(i){bestand[i].wv=true;renderBestand();renderHeute();}
 
