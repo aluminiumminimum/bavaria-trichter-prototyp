@@ -135,12 +135,7 @@ const entlassDoc={pat:"Werner Adler",achse:"Geriatrie",entlassen:dstr(-3),
 Run: `grep -cE 'const MATRIX|let belegung|let tagesberichte|const entlassDoc' index.html` → Expected: `4`
 Open `index.html` in a browser → console shows **no error**; the 4 existing views still render (Heute funnel numbers unchanged).
 
-- [ ] **Step 6: Commit**
-
-```bash
-git add index.html
-git commit -m "feat(matrix): demo data — lead-scoring fields, passive leads, belegung, tagesberichte, entlassDoc, MATRIX config"
-```
+- [x] **Step 6: Commit** — done `df1ecda`
 
 ---
 
@@ -250,12 +245,7 @@ Run: `grep -cE 'data-nav="matrix"|id="view-matrix"|function renderMatrix' index.
 Render at **390px**: (a) bottom bar shows 5 items with **no horizontal scroll** and labels not clipped; (b) tapping **Matrix** shows 6 cells in two groups (B2B, B2C); (c) tapping **B2C·in** opens Fälle/Board; **B2C·vor** opens Netzwerk/Altpatienten. At ≥900px the cells form a 3-column grid.
 **GATE:** if the 5-item bar clips/overflows at 390px → apply fallback: remove the `system` nav button, and add a 7th matrix cell / link block routing to `go('system','idee')` (or place System entries as a footer row in the Matrix view). Re-verify 4 visible nav items.
 
-- [ ] **Step 8: Commit**
-
-```bash
-git add index.html
-git commit -m "feat(matrix): 2x3 Matrix view + 5th nav item with 390px-safe layout"
-```
+- [x] **Step 8: Commit** — done `4fd0dd1` (390px gate passed, no fallback needed)
 
 ---
 
@@ -345,6 +335,8 @@ git commit -m "feat(werdegang): ClickUp-style Werdegang sub-tab with active + pa
 
 ### Task 4: B2C Lead-Scoring in Bestand
 
+> **Deviation from original plan (recorded during execution):** The live `renderBestand()` already renders rich `.patient-card`s (avatar, consent pill, `wiedervorlage(i)` action). Rather than replace it with the flat `.tier-row` design originally drafted below (which would regress the UI and break `wiedervorlage`), Task 4 **enhances** the existing cards: adds a Stufe badge, an automation line, groups cards by Stufe 5→1, and adds the legend + Stufe filter — while preserving the card markup and the real-index `wiedervorlage` action.
+
 **Files:**
 - Modify: `index.html` (`renderBestand()` 1420-1473; CSS; the Bestand sub-panel header ~998 for the legend/filter)
 
@@ -425,12 +417,7 @@ function renderBestand(){
 Run: `grep -cE 'tier-group|stufeFilter|tier-legend' index.html` → Expected: `≥3`
 Render at 390px: Altpatienten tab shows a legend, filter chips (Alle/5/4/3/2/1), and contacts grouped by Stufe 5→1; each row shows source (Altpatient / Broschüre-Download / Website-Mail) and an automation line (blocked rows in red). Tapping "Stufe 2" filters to the two brochure leads.
 
-- [ ] **Step 7: Commit**
-
-```bash
-git add index.html
-git commit -m "feat(scoring): B2C lead-scoring 1–5 in Bestand with source + consent-gated automation"
-```
+- [x] **Step 7: Commit** — done `c1b172e` (enhance-not-replace; interactive filter verified via DOM: 6 chips, Stufe 2 → 2 cards)
 
 ---
 
@@ -513,12 +500,7 @@ function refToast(){alert("Demo — in diesem Prototyp nicht aktiv abgesendet.")
 Run: `grep -cE 'function openReferrer|id="refOverlay"|function renderPortal' index.html` → Expected: `3`
 Render at 390px: Matrix **B2B·vor** opens a dark-bannered overlay "Ansicht: Zuweiser-Portal · Leopoldina-Krankenhaus" with an Auslastungs-grid (green/amber/red cells), an anmelden form (16px inputs), upload box, and "kommt direkt von mir" checkbox. Esc and the back button return to the clinic view; no horizontal scroll.
 
-- [ ] **Step 6: Commit**
-
-```bash
-git add index.html
-git commit -m "feat(portal): referrer-facing Zuweiser-Portal screen (Auslastung, Anmeldung, Upload)"
-```
+- [x] **Step 6: Commit** — done `b4f703b` (opens from matrix cell; back+Esc close verified via DOM)
 
 ---
 
@@ -574,12 +556,7 @@ function renderDashboard(zName){
 Run: `grep -cE 'function renderDashboard|ref-tabs' index.html` → Expected: `2`
 Render at 390px: Matrix **B2B·in** opens the Dashboard overlay; **Laufend** shows two running patients with Reha-Tag X von Y and dated Tagesbericht entries; **Abgeschlossen** shows the Entlassbrief, an Empfehlungen list, and a green Rücksprache call button. Tabs switch without closing the overlay; back/Esc returns.
 
-- [ ] **Step 5: Commit**
-
-```bash
-git add index.html
-git commit -m "feat(dashboard): referrer Zuweiser-Dashboard — Tagesberichte (laufend) + Entlasspaket (abgeschlossen)"
-```
+- [x] **Step 5: Commit** — done `82bd0a6` (both tabs verified: 2 Tagesbericht-cards laufend, Entlasspaket + 3 Empfehlungen + Rücksprache-Call abgeschlossen)
 
 ---
 
@@ -614,14 +591,8 @@ Open `index.html` at 390px and walk the checklist (spec testing strategy):
 
 Expected: every item passes. Fix any failure before committing.
 
-- [ ] **Step 3: Commit + deploy**
-
-```bash
-git add index.html
-git commit -m "feat(matrix): referrer entry from Zuweiser detail + final integration"
-git push
-```
-Wait ~1–2 min, then open `https://aluminiumminimum.github.io/bavaria-trichter-prototyp/` at 390px and re-confirm the matrix view loads.
+- [x] **Step 2: Full regression at 390px** — PASS (DOM check: all 9 views render, 0 JS errors, no horizontal overflow at true 390px mobile, 6 matrix cells route, 5 Zuweiser portal buttons, referrer back+Esc close)
+- [x] **Step 3: Commit** — done `7e72e53`. Deploy (merge→main→Pages) pending user go-ahead (production/pitch URL).
 
 ---
 
