@@ -664,6 +664,11 @@
 .mp-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0e9e2}
 .mp-row:last-child{border-bottom:none}.mp-row b{font:600 14px/1.2 Inter}.mp-row small{display:block;font:400 12px/1.3 Inter;color:#8a837d;margin-top:1px}
 .mp-link{background:#E3D4C8;color:#1F1C1C;border:none;border-radius:99px;padding:8px 12px;font:600 12px/1 Inter;min-height:36px;white-space:nowrap}
+/* --- iter2 premium polish: transitions, hover-lift, tabular figures --- */
+.ref-overlay,.sub,.mx-cell,.ir-card,.db-lead,.tier-row,.zcard{transition:transform .18s ease,box-shadow .18s ease,opacity .18s ease}
+@media(hover:hover){.mx-cell:hover,.ir-card:hover,.zcard:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(31,28,28,.08)}}
+.num,.rv,.mx-metric,.tr-stufe,.ir-stay .lbl,.db-col h4 span{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
