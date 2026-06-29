@@ -291,6 +291,8 @@
     background:var(--brass-soft);border:1px solid var(--brass-line);border-radius:6px;padding:2px 8px}
   .mtime{font-size:13px;color:var(--faint)}
   .mail .btn-brass{margin-top:11px}
+  .eingang-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .eingang-owner{font-size:13px;padding:8px 10px;border:1px solid #E3D4C8;border-radius:9px;min-height:38px;background:#fff;color:#1F1C1C}
   .ok-chip{display:inline-block;margin-top:11px;color:var(--sage-deep);font-weight:600;font-size:14px}
   .typ-chip{font:600 10px/1 Inter;padding:3px 7px;border-radius:99px;margin-left:6px}
   .typ-chip.qual{background:#e7f0e7;color:#5d7f60}.typ-chip.passiv{background:#efedea;color:#8a837d}
@@ -1528,17 +1530,18 @@ function renderEingang(){
    +(m.done?"<span class='ok-chip'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall übernommen")+"</span>"
      :m.typ==="passiv"
        ?"<button class='btn-ghost btn-sm' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>"
-       :"<button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Als Fall übernehmen</button>")
+       :"<div class='eingang-act'><select class='eingang-owner' id='eo-"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select><button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Als Fall übernehmen</button></div>")
    +"</div></article>").join("");
 }
 function uebernehmen(id){
   const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
+  const sel=document.getElementById("eo-"+id); const owner=sel?sel.value:TEAM[0];
   m.done=true;
   const fid=Math.max(...faelle.map(x=>x.id))+1;
   faelle.push({id:fid,name:"Neuer Fall (aus Eingang)",alter:null,rolle:"offen",kanal:m.kanal,quelle:m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.kanal,
-    achse:m.achse,kt:"Unklar",status:"Neu",owner:"S. Koordination",aufgabe:"Erstreaktion + Daten vervollständigen",frist:dstr(0),
+    achse:m.achse,kt:"Unklar",status:"Neu",owner:owner,aufgabe:"Erstreaktion + Daten vervollständigen",frist:dstr(0),
     saluto:m.achse==="SalutoCare",docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
-    log:[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit]]});
+    log:[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit+" — zugewiesen an "+owner]]});
   renderAll();go("faelle","board");
 }
 function inDatenbank(id){
