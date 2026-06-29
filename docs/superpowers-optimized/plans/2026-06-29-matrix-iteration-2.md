@@ -51,7 +51,7 @@ let inReha=[
    eintraege:[{d:dstr(-1),txt:"Mobilisation an Unterarmgehstützen, 30 m Gehstrecke erreicht."},{d:dstr(-2),txt:"Schmerz unter Belastung NRS 3, Lymphdrainage begonnen."}]},
  {name:"Elke Sauer",alter:59,achse:"SalutoCare",owner:"Recovery Manager",icd:"I69.4 — Folgen Schlaganfall",aufnahme:dstr(-4),verweildauer:{ist:4,plan:28},barthel:{auf:30,akt:50},fim:{auf:62,akt:84},ziel:35,
    eintraege:[{d:dstr(-1),txt:"SalutoCare-Suite, Atemtherapie planmäßig, Werte stabil."},{d:dstr(-2),txt:"Erstgespräch Recovery Manager, Zielplan abgestimmt."}]},
- {name:"Ruth Winkler",alter:77,achse:"Neurologie",owner:"M. Belegung",icd:"I63.9 — Hirninfarkt",aufnahme:dstr(-2),verweildauer:{ist:2,plan:25},barthel:{auf:25,akt:35},fim:{auf:55,akt:63},ziel:18,
+ {name:"Lydia Sommer",alter:77,achse:"Neurologie",owner:"M. Belegung",icd:"I63.9 — Hirninfarkt",aufnahme:dstr(-2),verweildauer:{ist:2,plan:25},barthel:{auf:25,akt:35},fim:{auf:55,akt:63},ziel:18,
    eintraege:[{d:dstr(-1),txt:"Aufnahme abgeschlossen, neurologisches Assessment, Therapieplan erstellt."}]}
 ];
 ```
@@ -69,7 +69,7 @@ let inReha=[
 ```
 Apply the analogous `board`/`owner` addition to all 11 entries.
 
-- [ ] **Step 5: Reduce `faelle` 12→6.** Keep ids 3 (has `schritte`), 1, 4, 6, 9, 12 — one per pipeline stage (Neu, Kontaktiert, Qualifizierung/Unterlagen, Aufnahme geplant, Aufgenommen, Verloren). Delete the other 6 object literals from `let faelle=[…]`. Leave the kept entries byte-for-byte unchanged.
+- [ ] **Step 5: Reduce `faelle` 12→6.** Keep ids **1** (Neu), **3** (Kontaktiert, has `schritte`), **6** (Qualifizierung), **8** (Unterlagen), **9** (Aufnahme geplant), **12** (Verloren). **Delete ids 2, 4, 5, 7, 10, 11.** Rationale: admitted patients (old ids 10 Dieter / 11 Elke) now live in `inReha`, not the pre-admission board — no name collision with `inReha` (Dieter/Elke/Lydia). Leave kept entries byte-for-byte unchanged; fix array commas.
 
 - [ ] **Step 6: Re-route + relabel `MATRIX` B2C row** (1424). Replace the three B2C cells:
 ```js
