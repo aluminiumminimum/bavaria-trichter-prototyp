@@ -549,6 +549,13 @@
   .mhead h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;font-weight:700;margin:0;line-height:1.1}
   .msub2{font-size:13px;color:#b5aa94;margin-top:3px;line-height:1.4}
   .mbody{padding:18px 20px;overflow:auto;-webkit-overflow-scrolling:touch}
+  .d-track-wrap{margin-bottom:6px}
+  .d-track .kicker{margin-bottom:8px}
+  @media(min-width:900px){
+   .mbody.two-track{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start}
+   .mbody.two-track .mgrid{grid-column:1}
+   .mbody.two-track .d-track-wrap{grid-column:2}
+  }
   .mgrid{display:grid;grid-template-columns:1fr;gap:13px}
   .docs{display:grid;grid-template-columns:1fr;gap:4px;background:var(--paper2);border:1px solid var(--hair2);border-radius:12px;padding:10px 14px}
   .docs label{font-weight:500;font-size:14.5px;color:var(--ink);display:flex;gap:10px;align-items:center;margin:0;
@@ -1059,7 +1066,6 @@
       <div class="segments" role="tablist" aria-label="Fälle-Bereiche">
         <button class="seg active" data-seg="anfragen" role="tab">Anfragen <b class="segn num" id="segCntAnfragen"></b></button>
         <button class="seg" data-seg="board" role="tab">Board <b class="segn num" id="segCntBoard"></b></button>
-        <button class="seg" data-seg="werdegang" role="tab">Werdegang</button>
         <button class="seg" data-seg="inreha" role="tab">In Reha</button>
       </div>
       <button class="btn btn-sm neu-cta" onclick="openSheetNeu()">＋ Neue Anfrage aufnehmen</button>
@@ -1073,10 +1079,6 @@
       <div class="bf" id="boardFocus"></div>
       <div class="board" id="board"></div>
     </div>
-      <div class="sub" id="sub-faelle-werdegang">
-        <p class="lblline">Der Werdegang eines Falls — zwei Wege in die Maschine.</p>
-        <div id="werdegang"></div>
-      </div>
       <div class="sub" id="sub-faelle-inreha">
         <p class="lblline">Patienten aktuell in Behandlung — Live-KPIs.</p>
         <div id="inrehaGrid"></div>
@@ -1347,7 +1349,11 @@
       <div class="ava" id="dAva"></div>
       <div><h2 id="dName"></h2><div class="msub2" id="dSub"></div></div>
     </div>
-    <div class="mbody">
+    <div class="mbody two-track">
+      <div class="d-track-wrap">
+        <button id="dAdvance" class="btn-brass btn-sm" style="width:100%;margin-bottom:10px" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
+        <div id="dWerdegang" class="d-track"></div>
+      </div>
       <div class="mgrid">
         <div><label for="dStatus">Status</label><select id="dStatus"></select></div>
         <div><label for="dOwner">Verantwortlich</label><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
@@ -1901,14 +1907,6 @@ function stepper(schritte){
   return `<div class="stp ${s.done?"done":""}"><span class="dot"></span><span><b>${escapeHtml(s.label)}</b><small>${escapeHtml(meta)}${dur}</small></span></div>`;
  }).join("")+`</div>`;
 }
-function renderWerdegang(){
- const aktiv=faelle.find(f=>f.id===3);
- const passiv=passivLead;
- const card=(f,tag,cls)=>`<div class="wg-case"><span class="wg-tag ${cls}">${tag}</span><h3>${escapeHtml(f.name)} · ${escapeHtml(f.achse)}</h3>${stepper(f.schritte)}</div>`;
- document.getElementById("werdegang").innerHTML=
-   card(aktiv,"Aktiver Weg — Anfrage per Formular","")+
-   card(passiv,"Passiver Weg — Broschüre + Freigabe","passiv");
-}
 function openReferrer(screen,zName){
  const ov=document.getElementById("refOverlay");
  document.getElementById("refWho").textContent="Ansicht: Zuweiser-"+(screen==="portal"?"Portal":"Dashboard")+" · "+zName;
@@ -1982,7 +1980,7 @@ function renderInReha(){
    </div>`;
  }).join("")||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
 }
-function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();renderWerdegang();renderInReha();}
+function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();renderInReha();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ---------- */
 function celebratePlanned(){
@@ -1994,6 +1992,16 @@ function celebratePlanned(){
 }
 
 /* ---------- Fall-Detail ---------- */
+function deriveSchritte(f){
+ const cur=STATUS.indexOf(f.status);
+ return STATUS.slice(0,6).map((s,i)=>({label:s,who:i<=cur?(f.owner||""):"",ts:"",dauerMin:null,done:i<cur}));
+}
+function advanceFall(){ const f=aktuellerFall;if(!f)return;
+ const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return;
+ const ns=STATUS[cur+1]; f.log.push([dstr(0),"Aufgabe erledigt · Status: "+f.status+" → "+ns]);
+ if(f.schritte&&f.schritte[cur]) f.schritte[cur].done=true;
+ f.status=ns; renderAll(); openDetail(f.id);
+}
 function openDetail(id){
   aktuellerFall=faelle.find(x=>x.id===id);const f=aktuellerFall;if(!f)return;
   document.getElementById("dAva").textContent=initialen(f.name);
@@ -2011,6 +2019,8 @@ function openDetail(id){
   document.getElementById("dVerlust").value=f.verlust||"";
   document.getElementById("dNotiz").value="";
   document.getElementById("dLog").innerHTML=f.log.map(l=>"<div><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>").join("");
+  document.getElementById("dWerdegang").innerHTML="<div class='kicker'>Werdegang</div>"+stepper(f.schritte||deriveSchritte(f));
+  document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
   toggleVerlust();
   document.getElementById("ovDetail").classList.add("open");
   document.body.classList.add("locked");
