@@ -392,6 +392,22 @@
   .bestand-stat .sn{font-size:12.5px;color:var(--muted);line-height:1.3}
   .legal{background:#f4ecda;border:1px solid #e6d8b8;border-radius:13px;padding:11px 15px;font-size:13.5px;color:#6e5a33;line-height:1.55;margin-bottom:14px}
   .bestand-grid{display:grid;grid-template-columns:1fr;gap:12px}
+  .matrix-grid{display:flex;flex-direction:column;gap:14px}
+  .mx-row{display:flex;flex-direction:column;gap:8px}
+  .mx-rowlbl{font:600 12px/1 Inter;letter-spacing:.08em;text-transform:uppercase;color:#9B8573}
+  .mx-cell{display:block;width:100%;text-align:left;border:1px solid #E3D4C8;border-radius:14px;padding:13px 14px;background:#fff;min-height:44px}
+  .mx-cell .mx-col{font:600 11px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:#bca37d}
+  .mx-cell h4{font:600 16px/1.2 Inter;margin:3px 0 2px;color:#1F1C1C}
+  .mx-cell p{font:400 13px/1.35 Inter;color:#6b6460;margin:0}
+  .mx-cell .mx-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+  .mx-metric{font:700 18px/1 Inter;color:#1F1C1C}
+  .mx-chip{font:600 11px/1 Inter;padding:3px 8px;border-radius:99px}
+  .mx-chip.aktiv{background:#e7f0e7;color:#5d7f60}.mx-chip.aufbau{background:#f6ecd9;color:#b58a3e}.mx-chip.geplant{background:#efedea;color:#8a837d}
+  @media(min-width:900px){
+   .matrix-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+   .mx-row{display:contents}
+   .mx-rowlbl{grid-column:1/-1;margin-top:6px}
+  }
   .patient-card{background:var(--paper);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow-soft);padding:16px;display:flex;flex-direction:column}
   .patient-card.hot{border-color:var(--brass-line);background:linear-gradient(180deg,var(--paper),#fdf6e8)}
   .patient-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
@@ -1001,6 +1017,15 @@
     </div>
   </section>
 
+  <!-- ============ MATRIX ============ -->
+  <section id="view-matrix" class="view">
+    <header class="vhead"><div class="kicker">Die ganze Maschine</div><h1>Matrix</h1>
+      <p class="lblline">B2B · B2C  ×  vor · in · nach der Reha. Jede Zelle ist ein Bereich der Software.</p>
+    </header>
+    <div id="matrixGrid" class="matrix-grid"></div>
+    <div class="legal" style="margin-top:14px"><b>Lesart:</b> ✓ aktiv · ⚙ im Aufbau · ○ geplant. Tippen öffnet den jeweiligen Bereich. Synthetische Demo-Daten.</div>
+  </section>
+
   <!-- ============ SYSTEM ============ -->
   <section id="view-system" class="view">
     <header class="vhead">
@@ -1174,6 +1199,7 @@
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg>Fälle<span class="nbadge num" id="navBadgeFaelle"></span></button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg>Netzwerk</button>
     <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg>System</button>
+    <button data-nav="matrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 12h17M9.5 4v16M15.5 4v16"/></svg>Matrix</button>
   </div>
 </nav>
 
@@ -1698,7 +1724,34 @@ function renderCharts(){
   document.getElementById("autoConsent").textContent=k.kontaktf;
   document.getElementById("commConsent").textContent=k.kontaktf;
 }
-function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();}
+function mxMetric(id){
+ switch(id){
+  case"mxBBvor":return zuweiser.filter(z=>z.status!=="ziel").length+" Zuweiser";
+  case"mxBBin":return tagesberichte.length+" laufend";
+  case"mxBBnach":return "1 Abschluss";
+  case"mxBCvor":return bestand.length+" Kontakte";
+  case"mxBCin":return offeneFaelle().length+" Fälle";
+  case"mxBCnach":return bestand.filter(b=>b.wv).length+" Wiedervorlagen";
+ } return"";
+}
+function renderMatrix(){
+ const cols={vor:"vor der Reha",in:"in der Reha",nach:"nach der Reha"};
+ const rows=[["B2B","Zuweiser (B2B)"],["B2C","Patient direkt (B2C)"]];
+ const chip={aktiv:"✓ aktiv",aufbau:"⚙ im Aufbau",geplant:"○ geplant"};
+ document.getElementById("matrixGrid").innerHTML=rows.map(([rk,rlbl])=>{
+  const cells=["vor","in","nach"].map(ck=>{
+   const c=MATRIX.find(m=>m.row===rk&&m.col===ck);
+   return `<button class="mx-cell" onclick="mxGo('${c.route[0]}','${c.route[1]||""}')">
+     <span class="mx-col">${cols[ck]}</span>
+     <h4>${c.titel}</h4><p>${c.zweck}</p>
+     <span class="mx-foot"><span class="mx-metric">${mxMetric(c.metricId)}</span>
+     <span class="mx-chip ${c.status}">${chip[c.status]}</span></span></button>`;
+  }).join("");
+  return `<div class="mx-row"><div class="mx-rowlbl">${rlbl}</div>${cells}</div>`;
+ }).join("");
+}
+function mxGo(a,b){ if(a==="ref"){ if(typeof openReferrer==="function") openReferrer(b,"Leopoldina-Krankenhaus"); return; } go(a,b); }
+function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ---------- */
 function celebratePlanned(){
