@@ -393,6 +393,7 @@
   .zrow .zfall{font-family:"Cormorant Garamond",Georgia,serif;font-size:19px;color:var(--brass-deep);font-weight:700}
   .zdraht{color:var(--brass);letter-spacing:3px;font-size:14px}
   .znext{margin-top:10px;background:var(--paper2);border:1px dashed var(--brass-line);border-radius:10px;padding:8px 12px;font-size:13.5px;color:#6e5a33;line-height:1.45}
+  .zw-portal{margin-top:10px;font:600 12px/1 Inter;color:#1F1C1C;background:#E3D4C8;border:none;border-radius:99px;padding:9px 13px;min-height:38px;cursor:pointer}
   .znext b{color:var(--brass-deep)}
 
   /* ===== Netzwerk: Altpatienten ===== */
@@ -1667,6 +1668,7 @@ function renderZuweiser(){
    +"<div class='zrow'><span>Letzter Kontakt</span><b>"+escapeHtml(z.letzter||"noch keiner")+"</b></div>"
    +"<div class='zrow'><span>Draht</span><span class='zdraht'>"+z.draht+"</span></div>"
    +"<div class='znext'><b>Nächste Aktion:</b> "+escapeHtml(z.next)+"</div>"
+   +"<button type='button' class='zw-portal' onclick='openReferrer(&quot;portal&quot;,&quot;"+escapeHtml(z.name)+"&quot;)'>Portal-Ansicht des Zuweisers ›</button>"
    +"</div>").join(""):"<div class='zcard ziel'><span class='zstat ziel'>Zielkategorie</span><div class='zname'>Noch keine Kontakte hinterlegt</div><div class='ztyp'>"+escapeHtml(cat.label)+"</div><div class='znext'><b>Nächste Aktion:</b> Zielpartner recherchieren, Kontaktquelle erfassen und ersten SOP-Schritt anlegen.</div></div>";
 }
 /* ---------- Render: Heute (Cockpit-Erzählung) ---------- */
