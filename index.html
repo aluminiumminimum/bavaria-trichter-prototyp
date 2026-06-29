@@ -1352,16 +1352,10 @@ function initialen(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpp
 /* ---------- Daten (synthetisch, unverändert) ---------- */
 let faelle=[
  {id:1,name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]]},
- {id:2,name:"Karl Beispiel",alter:74,rolle:"Zuweiser",kanal:"Telefon",quelle:"Leopoldina Schweinfurt, Privatstation",achse:"Orthopädie",kt:"PKV",status:"Neu",owner:"M. Belegung",aufgabe:"Eignungs-Kurzcheck",frist:dstr(1),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,log:[[dstr(0),"Anruf Privatstation: Hüft-TEP, Entlassung in 5 Tagen"]]},
  {id:3,name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"]]},
- {id:4,name:"Werner Adler",alter:81,rolle:"Angehörige",kanal:"Empfehlung",quelle:"Empfehlung ehemaliger Patient",achse:"Geriatrie",kt:"Beihilfe",status:"Kontaktiert",owner:"T. Abrechnung",aufgabe:"Beihilfe-Unterlagen erklären",frist:dstr(-1),saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:5,log:[[dstr(-3),"Tochter ruft an, Vater nach Sturz"],[dstr(-2),"Beratungsgespräch geführt"]]},
- {id:5,name:"Sofia Lehmann",alter:52,rolle:"Zuweiser",kanal:"PRIMO MEDICO",quelle:"PRIMO MEDICO Anfrage",achse:"SalutoCare",kt:"Selbstzahler",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Ärztliches Vorgespräch terminieren",frist:dstr(1),saluto:true,docs:[true,true,false,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-4),"Premium-Anfrage international"],[dstr(-3),"Recovery Manager übernimmt, Erstgespräch geführt"]]},
  {id:6,name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(0),saluto:true,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss"],[dstr(-4),"Med. Rückfrage an Oberarzt"]]},
- {id:7,name:"Gisela Brandt",alter:71,rolle:"Patient selbst",kanal:"E-Mail",quelle:"Hausarzt Dr. Sommer, Bad Kissingen",achse:"Innere",kt:"PKV",status:"Unterlagen",owner:"T. Abrechnung",aufgabe:"Kostenzusage PKV nachfassen",frist:dstr(3),saluto:false,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-7),"Mail-Anfrage"],[dstr(-5),"Unterlagen angefordert"],[dstr(-2),"Befunde eingegangen"]]},
  {id:8,name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage"],[dstr(-4),"Entlassbrief liegt vor"]]},
  {id:9,name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]]},
- {id:10,name:"Dieter Franke",alter:66,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Privatstation",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-15),"Anfrage Knie-TEP AHB"],[dstr(-9),"Aufnahme erfolgt"]]},
- {id:11,name:"Elke Sauer",alter:59,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"SalutoCare",kt:"Selbstzahler",status:"Aufgenommen",owner:"Recovery Manager",aufgabe:"",frist:"",saluto:true,docs:[true,true,true,true],kosten:"Selbstzahler bestätigt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-20),"Premium-Anfrage über Website"],[dstr(-12),"Aufnahme SalutoCare Suite"]]},
  {id:12,name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage"],[dstr(-11),"Rückruf erst nach 26 Std."],[dstr(-8),"Familie hat anderes Haus gewählt"]]}
 ];
 
@@ -1384,26 +1378,28 @@ const passivLead={id:201,name:"Sabine Vogt",alter:54,rolle:"Patient selbst",kana
  ],log:[]};
 
 let eingang=[
- {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Nummer notiert, möchte Rückruf heute. Vermutlich PKV.",zeit:"vor 25 Min.",achse:"Innere",done:false},
- {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Patient (68), PKV, Entlassung in 4 Tagen. Unterlagen anbei.",zeit:"vor 1 Std.",achse:"Neurologie",done:false},
- {id:103,kanal:"Website",tit:"Website-Formular: Selbstzahlerin (55) fragt nach Premium-Reha",txt:"Interessiert an Suite, fragt nach Preisen und freien Terminen.",zeit:"vor 2 Std.",achse:"SalutoCare",done:false},
- {id:104,kanal:"E-Mail",tit:"E-Mail: Hausarzt Dr. Sommer empfiehlt Patientin (79)",txt:"Geriatrische Reha angefragt, Beihilfe, Tochter koordiniert.",zeit:"gestern",achse:"Geriatrie",done:true},
- {id:105,kanal:"Recare",tit:"Recare: Klinikum Fulda sucht Neuro-Reha-Platz",txt:"GKV + Komfort-Wunsch, Übernahme in 6 Tagen möglich.",zeit:"gestern",achse:"Neurologie",done:true},
- {id:106,kanal:"PRIMO MEDICO",tit:"PRIMO MEDICO: internationale Premium-Anfrage",txt:"Familie fragt für Vater (64) nach Intensiv-Reha mit Beatmung.",zeit:"vor 2 Tagen",achse:"SalutoCare",done:true}
+ {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Nummer notiert, möchte Rückruf heute. Vermutlich PKV.",zeit:"vor 25 Min.",achse:"Innere",done:false,typ:"qualifiziert"},
+ {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Patient (68), PKV, Entlassung in 4 Tagen. Unterlagen anbei.",zeit:"vor 1 Std.",achse:"Neurologie",done:false,typ:"qualifiziert"},
+ {id:103,kanal:"Website",tit:"Website-Formular: Selbstzahlerin (55) fragt nach Premium-Reha",txt:"Interessiert an Suite, fragt nach Preisen und freien Terminen.",zeit:"vor 2 Std.",achse:"SalutoCare",done:false,typ:"qualifiziert"},
+ {id:104,kanal:"E-Mail",tit:"E-Mail: Hausarzt Dr. Sommer empfiehlt Patientin (79)",txt:"Geriatrische Reha angefragt, Beihilfe, Tochter koordiniert.",zeit:"gestern",achse:"Geriatrie",done:true,typ:"qualifiziert"},
+ {id:105,kanal:"Recare",tit:"Recare: Klinikum Fulda sucht Neuro-Reha-Platz",txt:"GKV + Komfort-Wunsch, Übernahme in 6 Tagen möglich.",zeit:"gestern",achse:"Neurologie",done:true,typ:"qualifiziert"},
+ {id:106,kanal:"PRIMO MEDICO",tit:"PRIMO MEDICO: internationale Premium-Anfrage",txt:"Familie fragt für Vater (64) nach Intensiv-Reha mit Beatmung.",zeit:"vor 2 Tagen",achse:"SalutoCare",done:true,typ:"qualifiziert"}
+ ,{id:107,kanal:"Website",tit:"Broschüre-Download: Interessentin (57) lädt Reha-Broschüre",txt:"E-Mail hinterlegt, Kontaktfreigabe erteilt. Keine konkrete Anfrage.",zeit:"vor 40 Min.",achse:"Orthopädie",done:false,typ:"passiv"}
+ ,{id:108,kanal:"E-Mail",tit:"Lose Mail: Habt ihr eigentlich freie Plätze?",txt:"Einmalige Frage, kein Name, keine Unterlagen, kein Follow-up.",zeit:"vor 3 Std.",achse:"Innere",done:false,typ:"passiv"}
 ];
 
 let bestand=[
- {name:"Margarete Wirth",alter:73,achse:"Orthopädie",entl:"vor 11 Monaten",consent:"ja",anlass:"Jahres-Check nach Knie-TEP steht an",wv:true, stufe:3,quelle:"Altpatient",auto:"Check-in-Mail alle 3 Monate"},
- {name:"Otto Brenner",alter:68,achse:"Neurologie",entl:"vor 14 Monaten",consent:"ja",anlass:"Nachsorge-Angebot Schlaganfall-Prävention",wv:false, stufe:3,quelle:"Altpatient",auto:"Halbjahres-Nachsorge-Mail"},
- {name:"Use Hartmann",alter:61,achse:"Innere",entl:"vor 8 Monaten",consent:"ja",anlass:"Einladung Gesundheitswoche möglich",wv:false, stufe:3,quelle:"Altpatient",auto:"Event-Einladung bei Belegungslücke"},
- {name:"Friedrich Lang",alter:77,achse:"Geriatrie",entl:"vor 6 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache"},
- {name:"Hannelore Beck",alter:70,achse:"Orthopädie",entl:"vor 19 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache"},
- {name:"Georg Steiner",alter:65,achse:"Neurologie",entl:"vor 9 Monaten",consent:"widerruf",anlass:"Widerruf am 03.05. dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — Widerruf"},
- {name:"Christa Mohr",alter:58,achse:"SalutoCare",entl:"vor 5 Monaten",consent:"ja",anlass:"Premium-Nachsorge, Recovery Manager kennt Fall",wv:true, stufe:4,quelle:"Altpatient",auto:"persönlicher Recovery-Manager-Kontakt"},
- {name:"Walter Simon",alter:80,achse:"Innere",entl:"vor 23 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache"},
- {name:"Sabine Vogt",alter:54,achse:"Orthopädie",entl:"—",consent:"ja",anlass:"Reha-Broschüre geladen, Kontaktfreigabe erteilt, kein Anliegen",wv:false, stufe:2,quelle:"Broschüre-Download",auto:"1 Info-Mail nach 7 Tagen, dann ruhend"},
- {name:"Markus Pfeiffer",alter:60,achse:"SalutoCare",entl:"—",consent:"ja",anlass:"Premium-Broschüre geladen, Freigabe erteilt",wv:true, stufe:2,quelle:"Broschüre-Download",auto:"Premium-Nurture-Strecke (freigegeben)"},
- {name:"Unbekannt (Website)",alter:null,achse:"—",entl:"—",consent:"nein",anlass:"nur E-Mail hinterlegt, keine Freigabe angeklickt",wv:false, stufe:1,quelle:"Website-Mail",auto:"keine Ansprache erlaubt"}
+ {name:"Margarete Wirth",alter:73,achse:"Orthopädie",entl:"vor 11 Monaten",consent:"ja",anlass:"Jahres-Check nach Knie-TEP steht an",wv:true, stufe:3,quelle:"Altpatient",auto:"Check-in-Mail alle 3 Monate", board:"ansprache",owner:"S. Koordination"},
+ {name:"Otto Brenner",alter:68,achse:"Neurologie",entl:"vor 14 Monaten",consent:"ja",anlass:"Nachsorge-Angebot Schlaganfall-Prävention",wv:false, stufe:3,quelle:"Altpatient",auto:"Halbjahres-Nachsorge-Mail", board:"ansprache",owner:"M. Belegung"},
+ {name:"Use Hartmann",alter:61,achse:"Innere",entl:"vor 8 Monaten",consent:"ja",anlass:"Einladung Gesundheitswoche möglich",wv:false, stufe:3,quelle:"Altpatient",auto:"Event-Einladung bei Belegungslücke", board:"ansprache",owner:"T. Abrechnung"},
+ {name:"Friedrich Lang",alter:77,achse:"Geriatrie",entl:"vor 6 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache", board:"ruhend",owner:"Recovery Manager"},
+ {name:"Hannelore Beck",alter:70,achse:"Orthopädie",entl:"vor 19 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache", board:"ruhend",owner:"S. Koordination"},
+ {name:"Georg Steiner",alter:65,achse:"Neurologie",entl:"vor 9 Monaten",consent:"widerruf",anlass:"Widerruf am 03.05. dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — Widerruf", board:"ruhend",owner:"M. Belegung"},
+ {name:"Christa Mohr",alter:58,achse:"SalutoCare",entl:"vor 5 Monaten",consent:"ja",anlass:"Premium-Nachsorge, Recovery Manager kennt Fall",wv:true, stufe:4,quelle:"Altpatient",auto:"persönlicher Recovery-Manager-Kontakt", board:"reagiert",owner:"T. Abrechnung"},
+ {name:"Walter Simon",alter:80,achse:"Innere",entl:"vor 23 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache", board:"ruhend",owner:"Recovery Manager"},
+ {name:"Sabine Vogt",alter:54,achse:"Orthopädie",entl:"—",consent:"ja",anlass:"Reha-Broschüre geladen, Kontaktfreigabe erteilt, kein Anliegen",wv:false, stufe:2,quelle:"Broschüre-Download",auto:"1 Info-Mail nach 7 Tagen, dann ruhend", board:"neu",owner:"S. Koordination"},
+ {name:"Markus Pfeiffer",alter:60,achse:"SalutoCare",entl:"—",consent:"ja",anlass:"Premium-Broschüre geladen, Freigabe erteilt",wv:true, stufe:2,quelle:"Broschüre-Download",auto:"Premium-Nurture-Strecke (freigegeben)", board:"neu",owner:"M. Belegung"},
+ {name:"Unbekannt (Website)",alter:null,achse:"—",entl:"—",consent:"nein",anlass:"nur E-Mail hinterlegt, keine Freigabe angeklickt",wv:false, stufe:1,quelle:"Website-Mail",auto:"keine Ansprache erlaubt", board:"ruhend",owner:"T. Abrechnung"}
 ];
 
 let zuweiser=[
@@ -1425,9 +1421,9 @@ const MATRIX=[
  {row:"B2B",col:"vor",titel:"Zuweiser-Portal",zweck:"Anmeldung, Auslastung, Datei-Upload",metricId:"mxBBvor",status:"aufbau",route:["ref","portal"]},
  {row:"B2B",col:"in", titel:"Behandlungs-Einblick",zweck:"Tagesberichte für Zuweiser",metricId:"mxBBin", status:"geplant",route:["ref","dashboard"]},
  {row:"B2B",col:"nach",titel:"Abschluss-Paket",zweck:"Briefe, Empfehlungen, Rücksprache",metricId:"mxBBnach",status:"geplant",route:["ref","dashboard"]},
- {row:"B2C",col:"vor",titel:"Lead-Scoring & Bestand",zweck:"Stufe 1–5, Broschüren-Leads, Automation",metricId:"mxBCvor",status:"aufbau",route:["netzwerk","bestand"]},
- {row:"B2C",col:"in", titel:"Aufnahme-Trichter",zweck:"Anfrage → Aufnahme (live)",metricId:"mxBCin", status:"aktiv",route:["faelle","board"]},
- {row:"B2C",col:"nach",titel:"Nachsorge & Reaktivierung",zweck:"Wiedervorlagen, Altpatienten-Pflege",metricId:"mxBCnach",status:"aufbau",route:["netzwerk","bestand"]}
+ {row:"B2C",col:"vor",titel:"Intake & Qualifizierung",zweck:"Anfragen → Fälle-Board · passive Leads → Datenbank",metricId:"mxBCvor",status:"aktiv",route:["faelle","board"]},
+ {row:"B2C",col:"in", titel:"Behandlung & Reha-KPIs",zweck:"Verweildauer, Barthel, FIM, Ziel-Fortschritt",metricId:"mxBCin", status:"aktiv",route:["faelle","inreha"]},
+ {row:"B2C",col:"nach",titel:"Nachsorge & Reaktivierung",zweck:"Wiedervorlagen, Datenbank-Pflege",metricId:"mxBCnach",status:"aufbau",route:["netzwerk","bestand"]}
 ];
 /* ----- Belegung je Achse × Woche (freie Plätze) — für Portal ----- */
 let belegung=[
@@ -1450,6 +1446,17 @@ const entlassDoc={pat:"Werner Adler",achse:"Geriatrie",entlassen:dstr(-3),
  brief:"Entlassbericht: geriatrische Komplexreha abgeschlossen, Gangbild stabilisiert, Hilfsmittel angepasst.",
  empfehlungen:["Ambulante Physiotherapie 2×/Woche, 6 Wochen","Sturzprophylaxe-Training","Wiedervorstellung Hausarzt in 2 Wochen"],
  ruecksprache:"0971 0000-100 (Recovery-Line, Mo–Fr 8–16 Uhr)"};
+
+const TEAM=["S. Koordination","M. Belegung","T. Abrechnung","Recovery Manager"];
+/* ----- Patienten aktuell in der Reha (in-treatment) — Reha-KPIs ----- */
+let inReha=[
+ {name:"Dieter Franke",alter:66,achse:"Orthopädie",owner:"M. Belegung",icd:"M17.1 — Gonarthrose (sekundär)",aufnahme:dstr(-6),verweildauer:{ist:6,plan:21},barthel:{auf:45,akt:75},fim:{auf:78,akt:101},ziel:60,
+   eintraege:[{d:dstr(-1),txt:"Mobilisation an Unterarmgehstützen, 30 m Gehstrecke erreicht."},{d:dstr(-2),txt:"Schmerz unter Belastung NRS 3, Lymphdrainage begonnen."}]},
+ {name:"Elke Sauer",alter:59,achse:"SalutoCare",owner:"Recovery Manager",icd:"I69.4 — Folgen Schlaganfall",aufnahme:dstr(-4),verweildauer:{ist:4,plan:28},barthel:{auf:30,akt:50},fim:{auf:62,akt:84},ziel:35,
+   eintraege:[{d:dstr(-1),txt:"SalutoCare-Suite, Atemtherapie planmäßig, Werte stabil."},{d:dstr(-2),txt:"Erstgespräch Recovery Manager, Zielplan abgestimmt."}]},
+ {name:"Lydia Sommer",alter:77,achse:"Neurologie",owner:"M. Belegung",icd:"I63.9 — Hirninfarkt",aufnahme:dstr(-2),verweildauer:{ist:2,plan:25},barthel:{auf:25,akt:35},fim:{auf:55,akt:63},ziel:18,
+   eintraege:[{d:dstr(-1),txt:"Aufnahme abgeschlossen, neurologisches Assessment, Therapieplan erstellt."}]}
+];
 
 let aktuellerFall=null;let zFilter="krankenhaus";let boardStageFilter=null;let horizont=9;
 
@@ -1807,10 +1814,10 @@ function renderCharts(){
 function mxMetric(id){
  switch(id){
   case"mxBBvor":return zuweiser.filter(z=>z.status!=="ziel").length+" Zuweiser";
-  case"mxBBin":return tagesberichte.length+" laufend";
+  case"mxBBin":return inReha.length+" laufend";
   case"mxBBnach":return "1 Abschluss";
   case"mxBCvor":return bestand.length+" Kontakte";
-  case"mxBCin":return offeneFaelle().length+" Fälle";
+  case"mxBCin":return inReha.length+" in Reha";
   case"mxBCnach":return bestand.filter(b=>b.wv).length+" Wiedervorlagen";
  } return"";
 }
