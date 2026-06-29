@@ -661,6 +661,9 @@
 .db-lead b{font:600 13.5px/1.2 Inter}
 .db-lead small{display:block;font:400 11.5px/1.3 Inter;color:#8a837d;margin-top:2px}
 .db-lead select{width:100%;font-size:12px;padding:5px;border:1px solid #E3D4C8;border-radius:7px;margin-top:6px;min-height:32px}
+.mp-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0e9e2}
+.mp-row:last-child{border-bottom:none}.mp-row b{font:600 14px/1.2 Inter}.mp-row small{display:block;font:400 12px/1.3 Inter;color:#8a837d;margin-top:1px}
+.mp-link{background:#E3D4C8;color:#1F1C1C;border:none;border-radius:99px;padding:8px 12px;font:600 12px/1 Inter;min-height:36px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -1931,7 +1934,10 @@ function renderPortal(zName){
    <div class="ref-upload">📎 Unterlagen hierher ziehen oder tippen (Demo)</div>
    <button class="ref-btn" onclick="refToast()">Anmeldung absenden</button></div>
   <div class="ref-card"><h3>Meine angemeldeten Fälle</h3>
-   <p style="font:400 13px/1.4 Inter;color:#6b6460">Heinz Vogel · SalutoCare · in Klärung &nbsp;·&nbsp; Karl Beispiel · Orthopädie · Aufnahme geplant</p></div>`;
+   <p style="font:400 13px/1.4 Inter;color:#6b6460">Heinz Vogel · SalutoCare · in Klärung &nbsp;·&nbsp; Karl Beispiel · Orthopädie · Aufnahme geplant</p></div>`
+ +`<div class="ref-card"><h3>Meine Patienten — Live-Status</h3>`
+ +inReha.slice(0,2).map(p=>`<div class="mp-row"><div><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.achse)} · in Reha, Tag ${p.verweildauer.ist}/${p.verweildauer.plan}</small></div><button class="mp-link" onclick="openReferrer('dashboard','${escapeHtml(zName)}')">KPIs ›</button></div>`).join("")
+ +`<div class="mp-row"><div><b>${escapeHtml(entlassDoc.pat)}</b><small>${escapeHtml(entlassDoc.achse)} · entlassen ${escapeHtml(entlassDoc.entlassen)}</small></div><button class="mp-link" onclick="refTab='fertig';openReferrer('dashboard','${escapeHtml(zName)}')">Abschlusspaket ›</button></div></div>`;
 }
 function refToast(){alert("Demo — in diesem Prototyp nicht aktiv abgesendet.");}
 let refTab="laufend";
