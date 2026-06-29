@@ -605,6 +605,15 @@
 .ref-body h2{font:600 22px/1.2 'Cormorant Garamond',serif;margin:2px 0 10px}
 .ref-body h3{font:600 14px/1.2 Inter;margin:0 0 8px}
 .ref-card{border:1px solid #E3D4C8;border-radius:14px;background:#fff;padding:14px;margin-bottom:14px}
+.ref-tabs{display:flex;gap:8px;margin-bottom:12px}
+.ref-tabs button{flex:1;font:600 13px/1 Inter;padding:11px;border-radius:99px;border:1px solid #E3D4C8;background:#fff;min-height:44px}
+.ref-tabs button.on{background:#1F1C1C;color:#fff;border-color:#1F1C1C}
+.tb-entry{border-left:2px solid #bca37d;padding:4px 0 10px 12px;margin-left:4px}
+.tb-entry small{color:#9B8573;font:600 11px/1 Inter}
+.tb-entry p{font:400 13.5px/1.4 Inter;margin:2px 0 0}
+.rec-list{list-style:none;padding:0;margin:6px 0 0}
+.rec-list li{padding:7px 0;border-bottom:1px solid #f0e9e2;font:400 13.5px/1.35 Inter}
+.rec-call{display:inline-block;margin-top:10px;background:#6f8f72;color:#fff;border-radius:99px;padding:10px 14px;font:600 13px/1 Inter;text-decoration:none}
 .bel-grid{display:grid;grid-template-columns:1.2fr repeat(4,1fr);gap:6px;align-items:center;font:500 13px/1.2 Inter}
 .bel-grid .hd{font:600 11px/1 Inter;color:#9B8573;text-transform:uppercase}
 .bel-cell{text-align:center;border-radius:8px;padding:7px 0;font-weight:700}
@@ -1862,6 +1871,22 @@ function renderPortal(zName){
    <p style="font:400 13px/1.4 Inter;color:#6b6460">Heinz Vogel · SalutoCare · in Klärung &nbsp;·&nbsp; Karl Beispiel · Orthopädie · Aufnahme geplant</p></div>`;
 }
 function refToast(){alert("Demo — in diesem Prototyp nicht aktiv abgesendet.");}
+let refTab="laufend";
+function renderDashboard(zName){
+ return `<h2>Behandlungs-Einblick</h2>
+  <div class="ref-tabs"><button class="${refTab==="laufend"?"on":""}" onclick="refTab='laufend';document.getElementById('refBody').innerHTML=renderDashboard('${zName}')">Laufend</button>
+   <button class="${refTab==="fertig"?"on":""}" onclick="refTab='fertig';document.getElementById('refBody').innerHTML=renderDashboard('${zName}')">Abgeschlossen</button></div>`+
+  (refTab==="laufend"
+   ? tagesberichte.map(t=>`<div class="ref-card"><h3>${escapeHtml(t.pat)} · ${escapeHtml(t.achse)}</h3>
+       <p style="font:600 12px/1 Inter;color:#b58a3e;margin:0 0 8px">Reha-Tag ${t.tag} von ${t.von}</p>`+
+       t.eintraege.map(e=>`<div class="tb-entry"><small>${escapeHtml(e.d)}</small><p>${escapeHtml(e.txt)}</p></div>`).join("")+`</div>`).join("")
+   : `<div class="ref-card"><h3>${escapeHtml(entlassDoc.pat)} · ${escapeHtml(entlassDoc.achse)}</h3>
+       <p style="font:600 12px/1 Inter;color:#6f8f72;margin:0 0 8px">entlassen ${escapeHtml(entlassDoc.entlassen)}</p>
+       <p style="font:400 13.5px/1.4 Inter">${escapeHtml(entlassDoc.brief)}</p>
+       <b style="font:600 13px/1 Inter;display:block;margin-top:8px">Empfehlungen</b>
+       <ul class="rec-list">${entlassDoc.empfehlungen.map(r=>`<li>${escapeHtml(r)}</li>`).join("")}</ul>
+       <a class="rec-call" href="#" onclick="refToast();return false">☎ Rücksprache: ${escapeHtml(entlassDoc.ruecksprache)}</a></div>`);
+}
 function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();renderWerdegang();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ---------- */
