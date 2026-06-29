@@ -1453,15 +1453,7 @@ let belegung=[
  {achse:"Geriatrie",  frei:[3,2,2,1]},
  {achse:"SalutoCare", frei:[1,1,0,1]}
 ];
-/* ----- Tagesberichte laufender Reha (in der Reha) — für Dashboard ----- */
-let tagesberichte=[
- {pat:"Dieter Franke",tag:6,von:9,achse:"Orthopädie",eintraege:[
-   {d:dstr(-1),txt:"Mobilisation an Unterarmgehstützen, 30 m Gehstrecke erreicht."},
-   {d:dstr(-2),txt:"Schmerz unter Belastung NRS 3, Lymphdrainage begonnen."}]},
- {pat:"Elke Sauer",tag:4,von:14,achse:"SalutoCare",eintraege:[
-   {d:dstr(-1),txt:"SalutoCare-Suite, Atemtherapie planmäßig, Werte stabil."},
-   {d:dstr(-2),txt:"Erstgespräch Recovery Manager, Zielplan abgestimmt."}]}
-];
+
 /* ----- Demo-Entlassdokument (nach der Reha) — für Dashboard ----- */
 const entlassDoc={pat:"Werner Adler",achse:"Geriatrie",entlassen:dstr(-3),
  brief:"Entlassbericht: geriatrische Komplexreha abgeschlossen, Gangbild stabilisiert, Hilfsmittel angepasst.",
@@ -1907,9 +1899,11 @@ function renderDashboard(zName){
   <div class="ref-tabs"><button class="${refTab==="laufend"?"on":""}" onclick="refTab='laufend';document.getElementById('refBody').innerHTML=renderDashboard('${zName}')">Laufend</button>
    <button class="${refTab==="fertig"?"on":""}" onclick="refTab='fertig';document.getElementById('refBody').innerHTML=renderDashboard('${zName}')">Abgeschlossen</button></div>`+
   (refTab==="laufend"
-   ? tagesberichte.map(t=>`<div class="ref-card"><h3>${escapeHtml(t.pat)} · ${escapeHtml(t.achse)}</h3>
-       <p style="font:600 12px/1 Inter;color:#b58a3e;margin:0 0 8px">Reha-Tag ${t.tag} von ${t.von}</p>`+
-       t.eintraege.map(e=>`<div class="tb-entry"><small>${escapeHtml(e.d)}</small><p>${escapeHtml(e.txt)}</p></div>`).join("")+`</div>`).join("")
+   ? inReha.map(t=>{const rest=Math.max(0,t.verweildauer.plan-t.verweildauer.ist);
+       return `<div class="ref-card"><h3>${escapeHtml(t.name)} · ${escapeHtml(t.achse)}</h3>
+       <p style="font:600 12px/1 Inter;color:#b58a3e;margin:0 0 10px">Reha-Tag ${t.verweildauer.ist} von ${t.verweildauer.plan} · noch ${rest} T</p>
+       <div class="ir-rings">${kpiRing(t.barthel.akt,100,"Barthel","▲ "+(t.barthel.akt-t.barthel.auf))}${kpiRing(t.fim.akt,126,"FIM","▲ "+(t.fim.akt-t.fim.auf))}${kpiRing(t.ziel,100,"Ziel",t.ziel+" %")}</div>`+
+       t.eintraege.map(e=>`<div class="tb-entry"><small>${escapeHtml(e.d)}</small><p>${escapeHtml(e.txt)}</p></div>`).join("")+`</div>`}).join("")
    : `<div class="ref-card"><h3>${escapeHtml(entlassDoc.pat)} · ${escapeHtml(entlassDoc.achse)}</h3>
        <p style="font:600 12px/1 Inter;color:#6f8f72;margin:0 0 8px">entlassen ${escapeHtml(entlassDoc.entlassen)}</p>
        <p style="font:400 13.5px/1.4 Inter">${escapeHtml(entlassDoc.brief)}</p>
