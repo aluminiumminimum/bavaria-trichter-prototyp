@@ -750,6 +750,15 @@
   #view-heute>.chap:last-of-type{grid-column:1/-1}
   #view-heute>.chap{margin-top:0}
 }
+/* ===== DESKTOP TASK 5 — breitere Grids + Feinbreakpoint ===== */
+@media(min-width:1024px){
+  .bestand-grid,.zgrid,.module-grid,.idea-grid{gap:18px}
+  .matrix-grid{gap:16px}
+}
+@media(min-width:1320px){
+  .zgrid,.bestand-grid{grid-template-columns:1fr 1fr 1fr}
+  .module-grid{grid-template-columns:1fr 1fr 1fr}
+}
 </style>
 </head>
 <body>
