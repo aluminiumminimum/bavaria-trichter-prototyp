@@ -414,21 +414,41 @@
   .bestand-stat .sn{font-size:12.5px;color:var(--muted);line-height:1.3}
   .legal{background:#f4ecda;border:1px solid #e6d8b8;border-radius:13px;padding:11px 15px;font-size:13.5px;color:#6e5a33;line-height:1.55;margin-bottom:14px}
   .bestand-grid{display:grid;grid-template-columns:1fr;gap:12px}
-  .matrix-grid{display:flex;flex-direction:column;gap:14px}
-  .mx-row{display:flex;flex-direction:column;gap:8px}
-  .mx-rowlbl{font:600 12px/1 Inter;letter-spacing:.08em;text-transform:uppercase;color:#9B8573}
-  .mx-cell{display:block;width:100%;text-align:left;border:1px solid #E3D4C8;border-radius:14px;padding:13px 14px;background:#fff;min-height:44px}
-  .mx-cell .mx-col{font:600 11px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:#bca37d}
-  .mx-cell h4{font:600 16px/1.2 Inter;margin:3px 0 2px;color:#1F1C1C}
-  .mx-cell p{font:400 13px/1.35 Inter;color:#6b6460;margin:0}
-  .mx-cell .mx-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
-  .mx-metric{font:700 18px/1 Inter;color:#1F1C1C}
-  .mx-chip{font:600 11px/1 Inter;padding:3px 8px;border-radius:99px}
-  .mx-chip.aktiv{background:#e7f0e7;color:#5d7f60}.mx-chip.aufbau{background:#f6ecd9;color:#b58a3e}.mx-chip.geplant{background:#efedea;color:#8a837d}
+  /* ===== Matrix · 3×2-Schema (groß, mit Symbolen) ===== */
+  .mx{display:flex;flex-direction:column}
+  .mx-head{display:none}
+  .mx-rowgrp{display:flex;flex-direction:column;gap:13px;margin:0 0 26px}
+  .mx-side{display:flex;align-items:baseline;gap:9px;margin:6px 0 2px}
+  .mx-side-t{font:700 15px/1 Inter;letter-spacing:.09em;text-transform:uppercase;color:var(--brass-deep)}
+  .mx-side-tag{font:600 11px/1 Inter;color:var(--faint);letter-spacing:.06em}
+  .mx-cell{display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;background:var(--paper);border:1px solid var(--hair);border-top-width:3px;border-radius:18px;padding:20px 20px 18px;box-shadow:var(--shadow);overflow:hidden;transition:transform .16s ease,box-shadow .16s ease}
+  .mx-cell.B2B{border-top-color:#cdb083}
+  .mx-cell.B2C{border-top-color:var(--sage)}
+  .mx-cell.B2B:hover{border-top-color:#cdb083}
+  .mx-cell.B2C:hover{border-top-color:var(--sage)}
+  .mx-cell-top{display:flex;align-items:center;gap:12px;margin-bottom:5px}
+  .mx-ico{flex:0 0 auto;width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+  .mx-ico svg{width:27px;height:27px}
+  .mx-cell.B2B .mx-ico{background:var(--brass-soft);color:var(--brass-deep)}
+  .mx-cell.B2C .mx-ico{background:var(--sage-soft);color:var(--sage-deep)}
+  .mx-cell-phase{font:600 12px/1 Inter;letter-spacing:.07em;text-transform:uppercase;color:#bca37d}
+  .mx-cell-t{font:700 20px/1.2 Inter;color:var(--ink);overflow-wrap:break-word;hyphens:auto}
+  .mx-cell-z{font:400 15px/1.45 Inter;color:var(--muted)}
+  .mx-cell-f{display:flex;align-items:center;justify-content:space-between;margin-top:11px}
+  .mx-chip{font:600 12px/1 Inter;padding:5px 11px;border-radius:99px}
+  .mx-chip.aktiv{background:var(--sage-soft);color:var(--sage-deep)}.mx-chip.aufbau{background:#f6ecd9;color:#b58a3e}.mx-chip.geplant{background:#efedea;color:#8a837d}
+  .mx-open{font:600 13px/1 Inter;color:var(--brass-deep)}
   @media(min-width:900px){
-   .matrix-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-   .mx-row{display:contents}
-   .mx-rowlbl{grid-column:1/-1;margin-top:6px}
+   .mx{display:grid;grid-template-columns:140px repeat(3,1fr);gap:16px;align-items:stretch}
+   .mx-head{display:contents}
+   .mx-rowgrp{display:contents}
+   .mx-phase{display:flex;align-items:flex-end;font:700 14px/1.2 Inter;letter-spacing:.09em;text-transform:uppercase;color:#8f7448;padding:0 0 10px 4px}
+   .mx-side{flex-direction:column;justify-content:center;align-items:flex-start;gap:4px;margin:0}
+   .mx-side-t{font-size:16px}
+   .mx-cell-phase{display:none}
+   .mx-cell{height:100%;padding:24px 22px 20px}
+   .mx-cell-t{font-size:22px}
+   .mx-cell-z{font-size:15.5px}
   }
   .patient-card{background:var(--paper);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow-soft);padding:16px;display:flex;flex-direction:column}
   .patient-card.hot{border-color:var(--brass-line);background:linear-gradient(180deg,var(--paper),#fdf6e8)}
@@ -711,6 +731,23 @@
   .radar-prog .rk,.radar-when .rk{display:block;font:700 10px/1 Inter;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:3px}
   .radar-when b{font-weight:700;color:var(--ink)}
   @media(min-width:900px){.radar-grid{grid-template-columns:1fr 1fr}}
+  /* ===== Zuweiser-Einblick / Abschlusspaket ===== */
+  .ref-lead{font:400 14px/1.5 Inter;color:#6b6460;margin:0 0 14px;max-width:60ch}
+  .ref-cardhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .ref-cardhead h3{font:600 15px/1.25 Inter;margin:0}
+  .ref-tag{font:600 11px/1 Inter;color:#9B8573;background:#f3ece0;border-radius:99px;padding:5px 10px;white-space:nowrap}
+  .ref-tag.ok{background:#e7f0e7;color:#5d7f60}
+  .ref-kurz{font:400 13.5px/1.5 Inter;color:#3c3737;margin:10px 0 12px}
+  .ref-meta{font:400 12.5px/1.3 Inter;color:#9B8573;margin:2px 0 12px}
+  .lab-grid{display:flex;flex-wrap:wrap;gap:8px}
+  .lab{display:flex;flex-direction:column;gap:1px;background:#f7f3ec;border:1px solid #ece3d3;border-radius:10px;padding:8px 12px;min-width:82px}
+  .lab-k{font:600 10px/1.1 Inter;letter-spacing:.04em;text-transform:uppercase;color:#9B8573}
+  .lab-v{font:700 15px/1.1 Inter;color:#1F1C1C}
+  .ab-docs{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 6px}
+  .ab-doc{font:600 12.5px/1 Inter;color:#6e5d4e;background:#f3ece0;border:1px solid #e6d8b8;border-radius:9px;padding:9px 12px}
+  .ab-sec{border-top:1px solid #f0e9e2;padding-top:11px;margin-top:11px}
+  .ab-sec h4{font:600 12px/1 Inter;letter-spacing:.04em;text-transform:uppercase;color:#9B8573;margin:0 0 6px}
+  .ab-sec p{font:400 13.5px/1.45 Inter;color:#3c3737;margin:0}
 .koop-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .koop-grid .kl{display:block;font:600 10px/1.1 Inter;letter-spacing:.06em;text-transform:uppercase;color:#9B8573;margin-bottom:2px}
 .koop-grid b{font:600 13.5px/1.3 Inter;color:#1F1C1C}
@@ -1435,8 +1472,8 @@ label{font-size:12px;letter-spacing:.08em}
     <header class="vhead"><div class="kicker">Die ganze Maschine</div><h1>Matrix</h1>
       <p class="lblline">B2B · B2C  ×  vor · in · nach der Reha. Jede Zelle ist ein Bereich der Software.</p>
     </header>
-    <div id="matrixGrid" class="matrix-grid"></div>
-    <div class="legal" style="margin-top:14px"><b>Lesart:</b> ✓ aktiv · ⚙ im Aufbau · ○ geplant. Tippen öffnet den jeweiligen Bereich. Synthetische Demo-Daten.</div>
+    <div id="matrixGrid"></div>
+    <p class="db-foot">Tippen öffnet den jeweiligen Bereich · aktiv · im Aufbau · geplant · synthetische Demo-Daten.</p>
   </section>
 
   <!-- ============ SYSTEM ============ -->
@@ -1792,12 +1829,12 @@ let zuweiser=[
 
 /* ----- Matrix-Konfiguration (2×3) ----- */
 const MATRIX=[
- {row:"B2B",col:"vor",titel:"Zuweiser-Portal",zweck:"Anmeldung, Auslastung, Datei-Upload",metricId:"mxBBvor",status:"aufbau",route:["ref","portal"]},
- {row:"B2B",col:"in", titel:"Behandlungs-Einblick",zweck:"Tagesberichte für Zuweiser",metricId:"mxBBin", status:"geplant",route:["ref","dashboard"]},
- {row:"B2B",col:"nach",titel:"Abschluss-Paket",zweck:"Briefe, Empfehlungen, Rücksprache",metricId:"mxBBnach",status:"geplant",route:["ref","dashboard"]},
- {row:"B2C",col:"vor",titel:"Intake & Qualifizierung",zweck:"Anfragen → Fälle-Board · passive Leads → Datenbank",metricId:"mxBCvor",status:"aktiv",route:["faelle","board"]},
- {row:"B2C",col:"in", titel:"Behandlung & Reha-KPIs",zweck:"Verweildauer, Barthel, FIM, Ziel-Fortschritt",metricId:"mxBCin", status:"aktiv",route:["faelle","inreha"]},
- {row:"B2C",col:"nach",titel:"Nachsorge & Reaktivierung",zweck:"Wiedervorlagen, Datenbank-Pflege",metricId:"mxBCnach",status:"aufbau",route:["netzwerk","bestand"]}
+ {row:"B2B",col:"vor",titel:"Zuweiser-Portal",zweck:"Anmeldung, freie Plätze, Upload",metricId:"mxBBvor",status:"aufbau",route:["ref","portal"]},
+ {row:"B2B",col:"in", titel:"Behandlungs-Einblick",zweck:"Kurzbericht, Laborwerte, Kontakt",metricId:"mxBBin", status:"aufbau",route:["ref","einblick"]},
+ {row:"B2B",col:"nach",titel:"Abschlusspaket",zweck:"Arztbrief, Empfehlungen, Rücksprache",metricId:"mxBBnach",status:"aufbau",route:["ref","abschluss"]},
+ {row:"B2C",col:"vor",titel:"Anfrage & Aufnahme",zweck:"Eingang aller Kanäle → Fall-Board",metricId:"mxBCvor",status:"aktiv",route:["faelle","board"]},
+ {row:"B2C",col:"in", titel:"Reha-Steuerung",zweck:"Verweildauer, Barthel, FIM, Ziel",metricId:"mxBCin", status:"aktiv",route:["faelle","inreha"]},
+ {row:"B2C",col:"nach",titel:"Nachsorge & Radar",zweck:"Wiedervorlagen, Datenbank-Pflege",metricId:"mxBCnach",status:"aufbau",route:["netzwerk","bestand"]}
 ];
 /* ----- Belegung je Achse × Woche (freie Plätze) — für Portal ----- */
 let belegung=[
@@ -1808,19 +1845,28 @@ let belegung=[
 ];
 
 /* ----- Demo-Entlassdokument (nach der Reha) — für Dashboard ----- */
-const entlassDoc={pat:"Werner Adler",achse:"Geriatrie",entlassen:dstr(-3),
- brief:"Entlassbericht: geriatrische Komplexreha abgeschlossen, Gangbild stabilisiert, Hilfsmittel angepasst.",
+const entlassDoc={pat:"Werner Adler",achse:"Geriatrie",entlassen:dstr(-3),aufenthalt:"21 Tage",
+ diagnose:"Z. n. Sturz mit Beckenfraktur · geriatrische Komplexreha",
+ kurz:"Reha-Ziel erreicht: Gangbild stabil, Transfers selbstständig, Hilfsmittel angepasst. Entlassung nach Hause mit ambulanter Anschlussversorgung.",
+ brief:"Entlassbericht: geriatrische Komplexreha abgeschlossen, Gangbild stabilisiert, Hilfsmittel angepasst, Barthel-Index 45 → 85.",
  empfehlungen:["Ambulante Physiotherapie 2×/Woche, 6 Wochen","Sturzprophylaxe-Training","Wiedervorstellung Hausarzt in 2 Wochen"],
+ medikation:"Medikationsplan beigefügt · 3 Dauermedikamente, 1 neu angesetzt",
  ruecksprache:"0971 0000-100 (Recovery-Line, Mo–Fr 8–16 Uhr)"};
 
 const TEAM=["S. Koordination","M. Belegung","T. Abrechnung","Recovery Manager"];
 /* ----- Patienten aktuell in der Reha (in-treatment) — Reha-KPIs ----- */
 let inReha=[
  {name:"Dieter Franke",alter:66,achse:"Orthopädie",owner:"M. Belegung",icd:"M17.1 — Gonarthrose (sekundär)",aufnahme:dstr(-6),verweildauer:{ist:6,plan:21},barthel:{auf:45,akt:75},fim:{auf:78,akt:101},ziel:60,
+   kurzbericht:"Postoperativ reizlos, Mobilisation an Unterarmgehstützen, 30 m Gehstrecke; Schmerz unter Belastung NRS 3.",
+   labor:[{k:"CRP",v:"6 mg/l"},{k:"Hb",v:"13,1 g/dl"},{k:"Wunde",v:"reizlos"}],
    eintraege:[{d:dstr(-1),txt:"Mobilisation an Unterarmgehstützen, 30 m Gehstrecke erreicht."},{d:dstr(-2),txt:"Schmerz unter Belastung NRS 3, Lymphdrainage begonnen."}]},
  {name:"Elke Sauer",alter:59,achse:"SalutoCare",owner:"Recovery Manager",icd:"I69.4 — Folgen Schlaganfall",aufnahme:dstr(-4),verweildauer:{ist:4,plan:28},barthel:{auf:30,akt:50},fim:{auf:62,akt:84},ziel:35,
+   kurzbericht:"Atemtherapie planmäßig, kreislaufstabil; beginnende Eigenmobilität, Schlucken sicher.",
+   labor:[{k:"CRP",v:"4 mg/l"},{k:"O₂-Sätt.",v:"96 %"},{k:"Hb",v:"12,4 g/dl"}],
    eintraege:[{d:dstr(-1),txt:"SalutoCare-Suite, Atemtherapie planmäßig, Werte stabil."},{d:dstr(-2),txt:"Erstgespräch Recovery Manager, Zielplan abgestimmt."}]},
  {name:"Lydia Sommer",alter:77,achse:"Neurologie",owner:"M. Belegung",icd:"I63.9 — Hirninfarkt",aufnahme:dstr(-2),verweildauer:{ist:2,plan:25},barthel:{auf:25,akt:35},fim:{auf:55,akt:63},ziel:18,
+   kurzbericht:"Neurologisches Assessment abgeschlossen, Therapieplan steht; leichte Hemiparese links, rückläufig.",
+   labor:[{k:"INR",v:"2,3"},{k:"CRP",v:"3 mg/l"},{k:"RR",v:"135/82"}],
    eintraege:[{d:dstr(-1),txt:"Aufnahme abgeschlossen, neurologisches Assessment, Therapieplan erstellt."}]}
 ];
 
@@ -2258,22 +2304,35 @@ function mxMetric(id){
   case"mxBCnach":return radar.length+" Wiedervorlagen";
  } return"";
 }
+const MX_ICONS={
+ "B2Bvor":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M14 3h5a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-5'/><path d='M3 12h11'/><path d='m10 8 4 4-4 4'/></svg>",
+ "B2Bin":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z'/><circle cx='12' cy='12' r='3'/></svg>",
+ "B2Bnach":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M6 2h8l4 4v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z'/><path d='M14 2v4h4'/><path d='M9 13h6M9 17h4'/></svg>",
+ "B2Cvor":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M4 5h16l1 9v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5z'/><path d='M3 14h5l2 3h4l2-3h5'/></svg>",
+ "B2Cin":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M3 12h3l2.5-7 4 14 2.5-7H21'/></svg>",
+ "B2Cnach":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><circle cx='12' cy='12' r='3.5'/><path d='M12 12 19 5'/></svg>"
+};
 function renderMatrix(){
- const cols={vor:"vor der Reha",in:"in der Reha",nach:"nach der Reha"};
- const rows=[["B2B","Zuweiser (B2B)"],["B2C","Patient direkt (B2C)"]];
- const chip={aktiv:"✓ aktiv",aufbau:"⚙ im Aufbau",geplant:"○ geplant"};
- const colhead=`<div class="mx-colhead">`+["vor","in","nach"].map(ck=>`<span class="mx-ch" data-phase="${ck}">${cols[ck]}</span>`).join("")+`</div>`;
- document.getElementById("matrixGrid").innerHTML=colhead+rows.map(([rk,rlbl])=>{
-  const cells=["vor","in","nach"].map(ck=>{
+ const cols=[["vor","Vor der Reha"],["in","In der Reha"],["nach","Nach der Reha"]];
+ const rows=[["B2B","Zuweiser","B2B"],["B2C","Patient","B2C"]];
+ const chip={aktiv:"aktiv",aufbau:"im Aufbau",geplant:"geplant"};
+ let h="<div class='mx'>";
+ h+="<div class='mx-head'><div class='mx-corner'></div>"+cols.map(([,cl])=>`<div class='mx-phase'>${cl}</div>`).join("")+"</div>";
+ rows.forEach(([rk,rlbl,rtag])=>{
+  h+=`<div class='mx-rowgrp'><div class='mx-side'><span class='mx-side-t'>${rlbl}</span><span class='mx-side-tag'>${rtag}</span></div>`;
+  cols.forEach(([ck,cl])=>{
    const c=MATRIX.find(m=>m.row===rk&&m.col===ck);
-   return `<button class="mx-cell" data-phase="${ck}" onclick="mxGo('${c.route[0]}','${c.route[1]||""}')">
-     <span class="mx-col">${cols[ck]}</span>
-     <h4>${c.titel}</h4><p>${c.zweck}</p>
-     <span class="mx-foot"><span class="mx-metric">${mxMetric(c.metricId)}</span>
-     <span class="mx-chip ${c.status}">${chip[c.status]}</span></span></button>`;
-  }).join("");
-  return `<div class="mx-row"><div class="mx-rowlbl">${rlbl}</div>${cells}</div>`;
- }).join("");
+   h+=`<button class='mx-cell ${rk}' onclick="mxGo('${c.route[0]}','${c.route[1]||""}')">
+     <span class='mx-cell-top'><span class='mx-ico'>${MX_ICONS[rk+ck]||""}</span><span class='mx-cell-phase'>${cl}</span></span>
+     <span class='mx-cell-t'>${c.titel}</span>
+     <span class='mx-cell-z'>${c.zweck}</span>
+     <span class='mx-cell-f'><span class='mx-chip ${c.status}'>${chip[c.status]}</span><span class='mx-open'>öffnen ›</span></span>
+   </button>`;
+  });
+  h+="</div>";
+ });
+ h+="</div>";
+ document.getElementById("matrixGrid").innerHTML=h;
 }
 function mxGo(a,b){ if(a==="ref"){ if(typeof openReferrer==="function") openReferrer(b,"Leopoldina-Krankenhaus"); return; } go(a,b); }
 function stepper(schritte){
@@ -2285,8 +2344,9 @@ function stepper(schritte){
 }
 function openReferrer(screen,zName){
  const ov=document.getElementById("refOverlay");
- document.getElementById("refWho").textContent="Ansicht: Zuweiser-"+(screen==="portal"?"Portal":"Dashboard")+" · "+zName;
- const body=screen==="portal"?renderPortal(zName):(typeof renderDashboard==="function"?renderDashboard(zName):"<div class='ref-card'>Dashboard folgt in Kürze.</div>");
+ const titles={portal:"Zuweiser-Portal",einblick:"Behandlungs-Einblick",abschluss:"Abschlusspaket"};
+ document.getElementById("refWho").textContent="Zuweiser-Ansicht · "+(titles[screen]||"Portal")+" · "+zName;
+ const body=screen==="portal"?renderPortal(zName):screen==="abschluss"?renderAbschluss(zName):renderEinblick(zName);
  document.getElementById("refBody").innerHTML=body;
  ov.classList.add("open");ov.setAttribute("aria-hidden","false");document.body.classList.add("locked");
 }
@@ -2316,27 +2376,33 @@ function renderPortal(zName){
   <div class="ref-card"><h3>Meine angemeldeten Fälle</h3>
    <p style="font:400 13px/1.4 Inter;color:#6b6460">Heinz Vogel · SalutoCare · in Klärung &nbsp;·&nbsp; Karl Beispiel · Orthopädie · Aufnahme geplant</p></div>`
  +`<div class="ref-card"><h3>Meine Patienten — Live-Status</h3>`
- +inReha.slice(0,2).map(p=>`<div class="mp-row"><div><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.achse)} · in Reha, Tag ${p.verweildauer.ist}/${p.verweildauer.plan}</small></div><button class="mp-link" onclick="openReferrer('dashboard','${escapeHtml(zName)}')">KPIs ›</button></div>`).join("")
- +`<div class="mp-row"><div><b>${escapeHtml(entlassDoc.pat)}</b><small>${escapeHtml(entlassDoc.achse)} · entlassen ${escapeHtml(entlassDoc.entlassen)}</small></div><button class="mp-link" onclick="refTab='fertig';openReferrer('dashboard','${escapeHtml(zName)}')">Abschlusspaket ›</button></div></div>`;
+ +inReha.slice(0,2).map(p=>`<div class="mp-row"><div><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.achse)} · in Reha, Tag ${p.verweildauer.ist}/${p.verweildauer.plan}</small></div><button class="mp-link" onclick="openReferrer('einblick','${escapeHtml(zName)}')">Einblick ›</button></div>`).join("")
+ +`<div class="mp-row"><div><b>${escapeHtml(entlassDoc.pat)}</b><small>${escapeHtml(entlassDoc.achse)} · entlassen ${escapeHtml(entlassDoc.entlassen)}</small></div><button class="mp-link" onclick="openReferrer('abschluss','${escapeHtml(zName)}')">Abschlusspaket ›</button></div></div>`;
 }
 function refToast(){alert("Demo — in diesem Prototyp nicht aktiv abgesendet.");}
-let refTab="laufend";
-function renderDashboard(zName){
+function renderEinblick(zName){
  return `<h2>Behandlungs-Einblick</h2>
-  <div class="ref-tabs"><button class="${refTab==="laufend"?"on":""}" onclick="refTab='laufend';document.getElementById('refBody').innerHTML=renderDashboard('${zName}')">Laufend</button>
-   <button class="${refTab==="fertig"?"on":""}" onclick="refTab='fertig';document.getElementById('refBody').innerHTML=renderDashboard('${zName}')">Abgeschlossen</button></div>`+
-  (refTab==="laufend"
-   ? inReha.map(t=>{const rest=Math.max(0,t.verweildauer.plan-t.verweildauer.ist);
-       return `<div class="ref-card"><h3>${escapeHtml(t.name)} · ${escapeHtml(t.achse)}</h3>
-       <p style="font:600 12px/1 Inter;color:#b58a3e;margin:0 0 10px">Reha-Tag ${t.verweildauer.ist} von ${t.verweildauer.plan} · noch ${rest} T</p>
-       <div class="ir-rings">${kpiRing(t.barthel.akt,100,"Barthel","▲ "+(t.barthel.akt-t.barthel.auf))}${kpiRing(t.fim.akt,126,"FIM","▲ "+(t.fim.akt-t.fim.auf))}${kpiRing(t.ziel,100,"Ziel",t.ziel+" %")}</div>`+
-       t.eintraege.map(e=>`<div class="tb-entry"><small>${escapeHtml(e.d)}</small><p>${escapeHtml(e.txt)}</p></div>`).join("")+`</div>`}).join("")
-   : `<div class="ref-card"><h3>${escapeHtml(entlassDoc.pat)} · ${escapeHtml(entlassDoc.achse)}</h3>
-       <p style="font:600 12px/1 Inter;color:#6f8f72;margin:0 0 8px">entlassen ${escapeHtml(entlassDoc.entlassen)}</p>
-       <p style="font:400 13.5px/1.4 Inter">${escapeHtml(entlassDoc.brief)}</p>
-       <b style="font:600 13px/1 Inter;display:block;margin-top:8px">Empfehlungen</b>
-       <ul class="rec-list">${entlassDoc.empfehlungen.map(r=>`<li>${escapeHtml(r)}</li>`).join("")}</ul>
-       <a class="rec-call" href="#" onclick="refToast();return false">☎ Rücksprache: ${escapeHtml(entlassDoc.ruecksprache)}</a></div>`);
+  <p class="ref-lead">Kurzbericht und aktuelle Werte zu Ihren Patienten — die ärztliche Sicht, ohne interne Steuerungs-KPIs.</p>`
+  +inReha.map(p=>`<div class="ref-card">
+    <div class="ref-cardhead"><h3>${escapeHtml(p.name)} · ${escapeHtml(p.achse)}</h3><span class="ref-tag">Reha-Tag ${p.verweildauer.ist}/${p.verweildauer.plan}</span></div>
+    <p class="ref-kurz">${escapeHtml(p.kurzbericht)}</p>
+    <div class="lab-grid">${p.labor.map(l=>`<div class="lab"><span class="lab-k">${escapeHtml(l.k)}</span><span class="lab-v">${escapeHtml(l.v)}</span></div>`).join("")}</div>
+    <a class="rec-call" href="#" onclick="refToast();return false">☎ Rücksprache mit dem Behandlungsteam</a>
+   </div>`).join("");
+}
+function renderAbschluss(zName){
+ const d=entlassDoc;
+ return `<h2>Abschlusspaket</h2>
+  <p class="ref-lead">Was Sie als zuweisende Praxis zum Reha-Abschluss erhalten — kompakt und vollständig.</p>
+  <div class="ref-card">
+    <div class="ref-cardhead"><h3>${escapeHtml(d.pat)} · ${escapeHtml(d.achse)}</h3><span class="ref-tag ok">entlassen ${escapeHtml(d.entlassen)}</span></div>
+    <div class="ref-meta">${escapeHtml(d.diagnose)} · Aufenthalt ${escapeHtml(d.aufenthalt)}</div>
+    <div class="ab-docs"><span class="ab-doc">📄 Arztbrief</span><span class="ab-doc">📄 Kurzbericht</span><span class="ab-doc">📄 Medikationsplan</span></div>
+    <div class="ab-sec"><h4>Kurzbericht</h4><p>${escapeHtml(d.kurz)}</p></div>
+    <div class="ab-sec"><h4>Empfehlungen</h4><ul class="rec-list">${d.empfehlungen.map(r=>`<li>${escapeHtml(r)}</li>`).join("")}</ul></div>
+    <div class="ab-sec"><h4>Medikation</h4><p>${escapeHtml(d.medikation)}</p></div>
+    <a class="rec-call" href="#" onclick="refToast();return false">☎ Rücksprache: ${escapeHtml(d.ruecksprache)}</a>
+  </div>`;
 }
 function kpiRing(val,max,label,sub){
  const r=22,c=2*Math.PI*r,pct=Math.max(0,Math.min(1,val/max)),off=c*(1-pct);
