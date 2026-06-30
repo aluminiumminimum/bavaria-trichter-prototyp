@@ -767,6 +767,20 @@
   .sheet-body{max-width:680px;margin:0 auto;width:100%}
   .ref-body{max-width:980px}
 }
+/* ===== Heute-Trichter — Funnel über Hub-Stack, größere Labels, schickere Animation ===== */
+@keyframes fnFlow{to{stroke-dashoffset:-14}}
+@media(min-width:900px){
+  #view-heute>.chap:nth-of-type(1){display:flex;flex-direction:column}
+  #view-heute>.chap:nth-of-type(1)>.hub-stack{order:1;margin-top:10px}
+  #view-heute>.chap:nth-of-type(1)>.strom{margin-top:6px}
+  .strom-d .fn-cap{font-size:15.5px}
+  .strom-d .fn-lab{font-size:19px}
+  .strom-d .fn-stage{font-size:16.5px}
+  .strom-d .fn-tiny{font-size:15px}
+  .strom-d .fn-note{font-size:14.5px}
+  .strom-d .fn-link{stroke-width:1.7;opacity:.95;stroke-dasharray:5 9;animation:fnFlow 1.3s linear infinite}
+  .strom-d .fn-dot{fill:#c79a52;opacity:.95;filter:drop-shadow(0 0 3px rgba(201,163,95,.85))}
+}
 </style>
 </head>
 <body>
