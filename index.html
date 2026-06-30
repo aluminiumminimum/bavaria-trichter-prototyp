@@ -897,6 +897,28 @@ label{font-size:12px;letter-spacing:.08em}
 .view.active .mx-colhead{animation:dv2Up .45s cubic-bezier(.4,0,.2,1) both}
 .view.active #matrixGrid>.mx-row:nth-child(2){animation-delay:.07s}
 .view.active #matrixGrid>.mx-row:nth-child(3){animation-delay:.13s}
+/* ===== DESIGN-V2 B-Matrix v4 — vertikale Spalten-Trennlinien + Draw-in (Desktop) ===== */
+@keyframes mxRule{from{transform:translateX(-50%) scaleY(0)}to{transform:translateX(-50%) scaleY(1)}}
+@keyframes mxUnder{from{transform:translateX(-50%) scaleX(.18);opacity:0}to{transform:translateX(-50%) scaleX(1);opacity:1}}
+@media(min-width:900px){
+  .matrix-grid{position:relative}
+  /* zwei gefederte Messing-Hairlines in den Spalten-Gutters (vor|in, in|nach) */
+  .matrix-grid::before,.matrix-grid::after{
+    content:"";position:absolute;top:6px;bottom:4px;width:1px;pointer-events:none;
+    transform:translateX(-50%);transform-origin:top center;
+    background:linear-gradient(180deg,transparent,var(--brass-line) 9%,#cdb083 50%,var(--brass-line) 91%,transparent);
+    opacity:.65}
+  .matrix-grid::before{left:calc(33.333% - 2px)}
+  .matrix-grid::after{left:calc(66.666% + 2px)}
+  /* Draw-in beim Aufruf: Linien wachsen von oben, Spaltenkopf-Unterstriche wachsen mit */
+  .view.active .matrix-grid::before,.view.active .matrix-grid::after{
+    animation:mxRule .7s cubic-bezier(.33,0,.2,1) both;animation-delay:.12s}
+  .view.active .matrix-grid::after{animation-delay:.2s}
+  .mx-ch::after{transform:translateX(-50%);transform-origin:bottom center}
+  .view.active .mx-ch::after{animation:mxUnder .55s cubic-bezier(.33,0,.2,1) both;animation-delay:.3s}
+  .view.active .mx-ch[data-phase=in]::after{animation-delay:.38s}
+  .view.active .mx-ch[data-phase=nach]::after{animation-delay:.46s}
+}
 </style>
 </head>
 <body>
