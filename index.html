@@ -672,6 +672,45 @@
 /* --- iter2 gaps: age-aware automation + portal cooperation --- */
 .db-auto{font:400 11px/1.3 Inter;color:#6f8f72;margin:6px 0 2px}
 .db-auto.blocked{color:#a8543f}
+  /* ===== Datenbank · Grading (ruhig, Apple-clean) ===== */
+  .db-lead{font:400 14.5px/1.55 Inter;color:var(--ink-soft);max-width:54ch;margin:0 0 18px}
+  .db-foot{font:400 12px/1.4 Inter;color:var(--faint);margin:18px 2px 0}
+  .tier-chips{display:flex;gap:7px;flex-wrap:wrap;margin:2px 0 20px}
+  .tchip{font:600 13px/1 Inter;padding:9px 14px;border-radius:99px;border:1px solid var(--hair);background:var(--paper);color:var(--ink-soft);min-height:38px;display:inline-flex;align-items:center;gap:7px;transition:background .15s ease,color .15s ease}
+  .tchip .num{color:var(--brass-deep)}
+  .tchip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tchip.on .num{color:#d3b78a}
+  .db-group{margin:0 0 26px}
+  .db-group-h{display:flex;align-items:center;gap:12px;margin:0 0 2px}
+  .tbadge{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font:700 14px/1 Inter}
+  .tbadge.tA{background:#e7f0e7;color:#5d7f60}.tbadge.tB{background:#f6ecd9;color:#b58a3e}.tbadge.tC{background:#eef0ee;color:#7d8a7e}.tbadge.gesperrt{background:#eeeae0;color:#8a8076}
+  .db-group-t{font:600 16px/1.2 Inter;color:var(--ink);display:flex;align-items:baseline;gap:8px}
+  .db-group-n{font-weight:700;color:var(--faint);font-size:14px}
+  .db-group-note{font:400 12.5px/1.3 Inter;color:var(--muted)}
+  .db-group-auto{font:600 12.5px/1 Inter;color:var(--sage-deep);margin:7px 0 11px 42px}
+  .db-group.is-locked .db-group-auto{color:var(--faint)}
+  .db-list{background:var(--paper);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow-soft);overflow:hidden}
+  .db-group.is-locked .db-list{opacity:.62}
+  .db-c{display:flex;align-items:center;gap:12px;padding:13px 15px;border-top:1px solid var(--hair2)}
+  .db-c:first-child{border-top:none}
+  .db-c-main{flex:1;min-width:0}
+  .db-c-name{font:600 15px/1.2 Inter;color:var(--ink)}
+  .db-c-meta{font:400 12.5px/1.3 Inter;color:var(--muted);margin-top:1px}
+  /* ===== Altpatienten-Radar ===== */
+  .radar-grid{display:grid;grid-template-columns:1fr;gap:12px}
+  .radar-card{background:var(--paper);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow-soft);padding:16px;display:flex;flex-direction:column}
+  .radar-card.hot{border-color:var(--brass-line);background:linear-gradient(180deg,var(--paper),#fdf6e8)}
+  .radar-card.locked{opacity:.72;background:repeating-linear-gradient(135deg,#f5f1ea,#f5f1ea 9px,#efe9e0 9px,#efe9e0 18px)}
+  .radar-card h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:23px;line-height:1.05;margin:8px 0 0;font-weight:700}
+  .radar-due{font:700 11px/1 Inter;letter-spacing:.04em;text-transform:uppercase;border-radius:99px;padding:5px 10px;margin-left:auto;white-space:nowrap}
+  .radar-due.jetzt{background:var(--terra-soft);color:var(--terra)}
+  .radar-due.bald{background:#f6ecd9;color:#b58a3e}
+  .radar-due.beob{background:#eef0ee;color:#6f8f72}
+  .radar-due.lock{background:#eeeae0;color:#8a8076}
+  .radar-prog,.radar-when{font:400 13.5px/1.45 Inter;color:var(--ink-soft);margin-top:11px}
+  .radar-prog .rk,.radar-when .rk{display:block;font:700 10px/1 Inter;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:3px}
+  .radar-when b{font-weight:700;color:var(--ink)}
+  @media(min-width:900px){.radar-grid{grid-template-columns:1fr 1fr}}
 .koop-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .koop-grid .kl{display:block;font:600 10px/1.1 Inter;letter-spacing:.06em;text-transform:uppercase;color:#9B8573;margin-bottom:2px}
 .koop-grid b{font:600 13.5px/1.3 Inter;color:#1F1C1C}
@@ -1381,18 +1420,13 @@ label{font-size:12px;letter-spacing:.08em}
       <div class="zgrid" id="zgrid"></div>
     </div>
     <div class="sub" id="sub-netzwerk-bestand">
-        <div class="db-toggle"><button id="dbListe" class="on" onclick="setDbView('liste')">Liste</button><button id="dbBoard" onclick="setDbView('board')">Board</button></div>
-      <div class="kicker">Altpatienten · Beziehungsgedächtnis</div>
-      <h2 class="hero-h2">Aus Entlassungen werden warme Beziehungen.</h2>
-      <p class="chap-intro dcap">Altpatienten sind kein Archiv, sondern ein steuerbarer Bestand: Wer darf kontaktiert werden, wer braucht Wiedervorlage, wo entsteht SalutoCare-Potenzial?</p>
-      <div class="bestand-stats" id="bestandStats"></div>
-      <div class="legal"><b>Kontaktfreigabe &amp; Datenschutz:</b> Aktive Ansprache erst nach dokumentierter Freigabe (Einwilligungen, Datenschutz; prüfpflichtig). Der Prototyp zeigt die Logik: Wer eine Einwilligung hat, bekommt Nachsorge-Angebote und Wiedervorlagen. Wer keine hat, bleibt gesperrt.</div>
-        <div class="tier-legend"><b>Lead-Stufen:</b>
-          <span class="tier-pill s5">5 angefragt</span><span class="tier-pill s4">4 lose</span>
-          <span class="tier-pill s3">3 Anlass</span><span class="tier-pill s2">2 Broschüre</span>
-          <span class="tier-pill s1">1 nur Mail</span></div>
-        <div class="tier-filter" id="stufeFilter"></div>
-      <div class="bestand-grid" id="btable"></div>
+      <div class="db-toggle"><button id="dbKontakte" class="on" onclick="setDbView('kontakte')">Kontakte</button><button id="dbRadar" onclick="setDbView('radar')">Radar</button></div>
+      <div class="kicker">Datenbank</div>
+      <h2 class="hero-h2">Kontakte vor dem Fall.</h2>
+      <p class="db-lead">Jeder Kontakt ist eingestuft und läuft automatisch in seiner Strecke. Wird er konkret, wird er zum Fall.</p>
+      <div id="tierFilter"></div>
+      <div id="btable"></div>
+      <p class="db-foot">Aktive Ansprache nur mit dokumentierter Einwilligung.</p>
     </div>
   </section>
 
@@ -1718,17 +1752,28 @@ let eingang=[
 ];
 
 let bestand=[
- {name:"Margarete Wirth",alter:73,achse:"Orthopädie",entl:"vor 11 Monaten",consent:"ja",anlass:"Jahres-Check nach Knie-TEP steht an",wv:true, stufe:3,quelle:"Altpatient",auto:"Check-in-Mail alle 3 Monate", board:"ansprache",owner:"S. Koordination"},
- {name:"Otto Brenner",alter:68,achse:"Neurologie",entl:"vor 14 Monaten",consent:"ja",anlass:"Nachsorge-Angebot Schlaganfall-Prävention",wv:false, stufe:3,quelle:"Altpatient",auto:"Halbjahres-Nachsorge-Mail", board:"ansprache",owner:"M. Belegung"},
- {name:"Use Hartmann",alter:61,achse:"Innere",entl:"vor 8 Monaten",consent:"ja",anlass:"Einladung Gesundheitswoche möglich",wv:false, stufe:3,quelle:"Altpatient",auto:"Event-Einladung bei Belegungslücke", board:"ansprache",owner:"T. Abrechnung"},
- {name:"Friedrich Lang",alter:77,achse:"Geriatrie",entl:"vor 6 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache", board:"ruhend",owner:"Recovery Manager"},
- {name:"Hannelore Beck",alter:70,achse:"Orthopädie",entl:"vor 19 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache", board:"ruhend",owner:"S. Koordination"},
- {name:"Georg Steiner",alter:65,achse:"Neurologie",entl:"vor 9 Monaten",consent:"widerruf",anlass:"Widerruf am 03.05. dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — Widerruf", board:"ruhend",owner:"M. Belegung"},
- {name:"Christa Mohr",alter:58,achse:"SalutoCare",entl:"vor 5 Monaten",consent:"ja",anlass:"Premium-Nachsorge, Recovery Manager kennt Fall",wv:true, stufe:4,quelle:"Altpatient",auto:"persönlicher Recovery-Manager-Kontakt", board:"reagiert",owner:"T. Abrechnung"},
- {name:"Walter Simon",alter:80,achse:"Innere",entl:"vor 23 Monaten",consent:"nein",anlass:"keine Einwilligung dokumentiert",wv:false, stufe:1,quelle:"Altpatient",auto:"gesperrt — keine Ansprache", board:"ruhend",owner:"Recovery Manager"},
- {name:"Sabine Vogt",alter:54,achse:"Orthopädie",entl:"—",consent:"ja",anlass:"Reha-Broschüre geladen, Kontaktfreigabe erteilt, kein Anliegen",wv:false, stufe:2,quelle:"Broschüre-Download",auto:"1 Info-Mail nach 7 Tagen, dann ruhend", board:"neu",owner:"S. Koordination"},
- {name:"Markus Pfeiffer",alter:60,achse:"SalutoCare",entl:"—",consent:"ja",anlass:"Premium-Broschüre geladen, Freigabe erteilt",wv:true, stufe:2,quelle:"Broschüre-Download",auto:"Premium-Nurture-Strecke (freigegeben)", board:"neu",owner:"M. Belegung"},
- {name:"Unbekannt (Website)",alter:null,achse:"—",entl:"—",consent:"nein",anlass:"nur E-Mail hinterlegt, keine Freigabe angeklickt",wv:false, stufe:1,quelle:"Website-Mail",auto:"keine Ansprache erlaubt", board:"ruhend",owner:"T. Abrechnung"}
+ /* A · Warm — aktives Interesse, noch kein Termin */
+ {name:"Sabine Vogt",alter:54,achse:"Orthopädie",consent:"ja",tier:"A",quelle:"Erstkontakt Telefon",kontext:"Erstgespräch geführt, Komfort-Reha gewünscht"},
+ {name:"Bernd Kohl",alter:59,achse:"Neurologie",consent:"ja",tier:"A",quelle:"Telefon",kontext:"Interesse an Neuro-Reha, noch kein Termin"},
+ {name:"Markus Pfeiffer",alter:60,achse:"SalutoCare",consent:"ja",tier:"A",quelle:"entlassener Patient",kontext:"Kontaktwunsch nach Entlassung, Premium-Nachsorge"},
+ /* B · Interessiert — Einwilligung + Signal (Broschüre/Newsletter) */
+ {name:"Petra Lindner",alter:57,achse:"Orthopädie",consent:"ja",tier:"B",quelle:"Broschüre-Download",kontext:"Reha-Broschüre geladen, Newsletter abonniert"},
+ {name:"Klaus Reuter",alter:62,achse:"SalutoCare",consent:"ja",tier:"B",quelle:"Broschüre-Download",kontext:"Premium-Broschüre, E-Mail-Einwilligung"},
+ {name:"Ilse Hartmann",alter:61,achse:"Innere",consent:"ja",tier:"B",quelle:"Newsletter",kontext:"liest Newsletter, noch keine Anfrage"},
+ /* C · Potenziell — Einwilligung, aktuell ruhend */
+ {name:"Gerda Sommer",alter:69,achse:"Orthopädie",consent:"ja",tier:"C",quelle:"Altpatient",kontext:"frühere Reha, aktuell kein Anlass"},
+ {name:"Norbert Frey",alter:64,achse:"Innere",consent:"ja",tier:"C",quelle:"Gesundheitsmesse",kontext:"Messe-Kontakt, ruht"},
+ /* Gesperrt — keine Einwilligung */
+ {name:"Hannelore Beck",alter:70,achse:"Orthopädie",consent:"nein",tier:"A",quelle:"Website-Mail",kontext:"nur E-Mail, keine Freigabe angeklickt"},
+ {name:"Unbekannt (Website)",alter:null,achse:"—",consent:"nein",tier:"C",quelle:"Website-Mail",kontext:"anonyme Frage, keine Freigabe"}
+];
+/* Altpatienten-Radar — ehemalige Patienten mit Einwilligung und absehbarem Wiederbedarf (proaktiv, ausgehend) */
+let radar=[
+ {name:"Margarete Wirth",alter:73,achse:"Orthopädie",consent:"ja",letzte:"Knie-TEP links · Reha vor 11 Monaten",prognose:"Gegenseite (Knie-TEP rechts) absehbar — zweite Seite meist nach ~12 Monaten fällig",faelligInTagen:30,owner:"S. Koordination"},
+ {name:"Christa Mohr",alter:58,achse:"SalutoCare",consent:"ja",letzte:"Premium-Reha · vor 5 Monaten",prognose:"Halbjährliche Premium-Nachsorge · Recovery Manager kennt den Fall",faelligInTagen:25,owner:"Recovery Manager"},
+ {name:"Otto Brenner",alter:68,achse:"Neurologie",consent:"ja",letzte:"Schlaganfall-Reha · entlassen vor 14 Monaten",prognose:"Jährliche Sekundärprävention / Nachsorge-Reha empfohlen",faelligInTagen:95,owner:"M. Belegung"},
+ {name:"Friedrich Berg",alter:71,achse:"Orthopädie",consent:"ja",letzte:"Hüft-TEP links · Reha vor 8 Monaten",prognose:"Hüft-TEP rechts mittelfristig wahrscheinlich (Gegenseite)",faelligInTagen:240,owner:"M. Belegung"},
+ {name:"Walter Simon",alter:80,achse:"Innere",consent:"nein",letzte:"Kardio-Reha · vor 23 Monaten",prognose:"Intervall-Nachsorge sinnvoll — aber keine Kontakteinwilligung",faelligInTagen:60,owner:"—"}
 ];
 
 let zuweiser=[
@@ -1904,58 +1949,62 @@ function renderBoard(){
 }
 
 /* ---------- Render: Altpatienten (Bestand) ---------- */
-let dbView="liste";
-function setDbView(v){dbView=v;document.getElementById("dbListe").classList.toggle("on",v==="liste");document.getElementById("dbBoard").classList.toggle("on",v==="board");renderBestand();}
-const DB_COLS=[["neu","Neu erfasst"],["ansprache","In Ansprache"],["reagiert","Reagiert"],["uebergabe","Übergabe an Fälle"],["ruhend","Ruhend"]];
-function dbAssign(i,who){bestand[i].owner=who;}
-let stufeFilter=0; // 0 = alle
-const STUFE_LBL={5:"angefragt / kurz vor Aufnahme",4:"lose angefragt",3:"Altpatient mit Anlass",2:"Broschüre + Freigabe",1:"nur E-Mail / keine Freigabe"};
+let dbView="kontakte";
+function setDbView(v){dbView=v;
+  document.getElementById("dbKontakte").classList.toggle("on",v==="kontakte");
+  document.getElementById("dbRadar").classList.toggle("on",v==="radar");
+  renderBestand();}
+const TIERS={
+  A:{label:"Warm",note:"konkretes Interesse, noch kein Termin",auto:"Persönlicher Rückruf + Wiedervorlage"},
+  B:{label:"Interessiert",note:"Einwilligung + Signal (Broschüre/Newsletter)",auto:"Automatische Info-/Newsletter-Strecke"},
+  C:{label:"Potenziell",note:"Einwilligung, aktuell ruhend",auto:"Ruhende Pflege · Radar beobachtet Wiederbedarf"}
+};
+const TIER_ORDER=["A","B","C"];
+let tierFilter="alle";
+function bucketOf(p){return p.consent!=="ja"?"gesperrt":p.tier;}
 function renderBestand(){
-  const kontakt=bestand.filter(p=>p.consent==="ja").length;
-  const wv=bestand.filter(p=>p.wv).length;
-  const gesperrt=bestand.filter(p=>p.consent!=="ja").length;
-  const saluto=bestand.filter(p=>p.achse==="SalutoCare").length;
-  document.getElementById("bestandStats").innerHTML=[
-    ["Kontaktfähig",kontakt+" / 412","mit dokumentierter Freigabe"],
-    ["Wiedervorlage",wv,"konkret vorgemerkt"],
-    ["Gesperrt",gesperrt,"keine aktive Ansprache"],
-    ["SalutoCare",saluto,"Premium-Nachsorge"]
-  ].map(x=>"<div class='bestand-stat'><div class='sl'>"+x[0]+"</div><div class='sv num'>"+x[1]+"</div><div class='sn'>"+x[2]+"</div></div>").join("");
-  if(dbView==="board"){
-   const fil=document.getElementById("stufeFilter"); if(fil) fil.innerHTML="";
-   document.getElementById("btable").innerHTML="<div class='db-board'>"+DB_COLS.map(([k,lbl])=>{
-     const rows=bestand.map((p,i)=>[p,i]).filter(pi=>(pi[0].board||"neu")===k);
-     return "<div class='db-col'><h4>"+lbl+"<span>"+rows.length+"</span></h4>"+rows.map(pi=>{const p=pi[0],i=pi[1];
-       return "<div class='db-lead'><b class='db-openable' onclick='openDbDetail("+i+")'>"+escapeHtml(p.name)+(p.alter?" · "+p.alter+" J.":"")+"</b><small>"+escapeHtml(p.achse)+" · Stufe "+p.stufe+" · "+escapeHtml(p.quelle)+"</small>"
-        +"<div class='db-auto"+(p.consent!=="ja"?" blocked":"")+"'>⟳ "+escapeHtml(autoFor(p))+"</div>"
-        +"<select onchange='dbAssign("+i+",this.value)'>"+TEAM.map(t=>"<option"+(t===p.owner?" selected":"")+">"+t+"</option>").join("")+"</select></div>";
-     }).join("")+"</div>";
-   }).join("")+"</div>";
-   return;
- }
-  const fil=document.getElementById("stufeFilter");
-  if(fil)fil.innerHTML=[0,5,4,3,2,1].map(s=>"<button class='"+(stufeFilter===s?"on":"")+"' onclick='stufeFilter="+s+";renderBestand()'>"+(s===0?"Alle":"Stufe "+s)+"</button>").join("");
-  const shown=[5,4,3,2,1].filter(s=>stufeFilter===0||stufeFilter===s);
-  document.getElementById("btable").innerHTML=shown.map(s=>{
-    const rows=bestand.map((p,i)=>[p,i]).filter(pi=>(pi[0].stufe||1)===s);
+  const fil=document.getElementById("tierFilter");
+  if(dbView==="radar"){ if(fil)fil.innerHTML=""; renderRadar(); return; }
+  const count=b=>bestand.filter(p=>bucketOf(p)===b).length;
+  const chip=(key,lbl)=>"<button class='tchip"+(tierFilter===key?" on":"")+"' onclick='tierFilter=\""+key+"\";renderBestand()'>"+lbl+" <b class='num'>"+(key==="alle"?bestand.length:count(key))+"</b></button>";
+  if(fil)fil.innerHTML="<div class='tier-chips'>"+chip("alle","Alle")+TIER_ORDER.map(k=>chip(k,k)).join("")+chip("gesperrt","Gesperrt")+"</div>";
+  const groups=tierFilter==="alle"?[...TIER_ORDER,"gesperrt"]:[tierFilter];
+  const row=p=>"<div class='db-c'><span class='ava'>"+initialen(p.name)+"</span>"
+    +"<div class='db-c-main'><div class='db-c-name'>"+escapeHtml(p.name)+(p.alter?" <span class='alter'>"+p.alter+"</span>":"")+"</div>"
+    +"<div class='db-c-meta'>"+escapeHtml(p.achse)+" · "+escapeHtml(p.quelle)+"</div></div></div>";
+  document.getElementById("btable").innerHTML=groups.map(g=>{
+    const rows=bestand.filter(p=>bucketOf(p)===g);
     if(!rows.length)return"";
-    return "<div class='tier-group'><h4>Stufe "+s+" · "+rows.length+"<span>"+escapeHtml(STUFE_LBL[s]||"")+"</span></h4>"+rows.map(pi=>{
-      const p=pi[0],i=pi[1];
-      const c=p.consent==="ja"?"<span class='status-pill ok'>freigegeben</span>":p.consent==="widerruf"?"<span class='status-pill bad'>Widerruf</span>":"<span class='status-pill lock'>gesperrt</span>";
-      const action=p.consent==="ja"
-        ?(p.wv?"<span class='wv'>Wiedervorlage gesetzt</span>":"<button class='btn-ghost btn-sm' onclick='wiedervorlage("+i+")'>Nachsorge vormerken</button>")
-        :"<button class='btn-brass btn-sm' disabled>Kontaktfreigabe fehlt</button>";
-      const blocked=p.consent!=="ja";
-      return "<div class='patient-card"+(p.achse==="SalutoCare"||p.wv?" hot":"")+"'>"
-        +"<div class='patient-top'><span class='ava'>"+initialen(p.name)+"</span><span class='stufe-badge s"+s+"'>★ "+s+"</span>"+c+"</div>"
-        +"<h3 class='db-openable' onclick='openDbDetail("+i+")'>"+escapeHtml(p.name)+(p.alter?" <span class='alter'>("+p.alter+")</span>":"")+"</h3>"
-        +"<div class='patient-meta'>"+escapeHtml(p.achse)+" · "+escapeHtml(p.quelle||"Altpatient")+(p.entl&&p.entl!=="—"?" · entlassen "+escapeHtml(p.entl):"")+"</div>"
-        +"<div class='patient-reason'>"+escapeHtml(p.anlass)+"</div>"
-        +"<div class='tr-auto"+(blocked?" blocked":"")+"'>⟳ "+escapeHtml(autoFor(p))+"</div>"
-        +"<div class='patient-actions'>"+action+"</div></div>";
-    }).join("")+"</div>";
-  }).join("")||"<p class='empty'>Keine Kontakte in dieser Stufe.</p>";
+    const gesperrt=g==="gesperrt";
+    const badge="<span class='tbadge "+(gesperrt?"gesperrt":"t"+g)+"'>"+(gesperrt?"✕":g)+"</span>";
+    const title=gesperrt?"Gesperrt":g+" · "+TIERS[g].label;
+    const note=gesperrt?"keine Einwilligung":TIERS[g].note;
+    const auto=gesperrt?"Keine Ansprache (Compliance)":TIERS[g].auto;
+    return "<section class='db-group"+(gesperrt?" is-locked":"")+"'>"
+      +"<header class='db-group-h'>"+badge+"<div><div class='db-group-t'>"+title+"<span class='db-group-n num'>"+rows.length+"</span></div><div class='db-group-note'>"+escapeHtml(note)+"</div></div></header>"
+      +"<div class='db-group-auto'>⟳ "+escapeHtml(auto)+"</div>"
+      +"<div class='db-list'>"+rows.map(row).join("")+"</div></section>";
+  }).join("")||"<p class='empty'>Keine Kontakte.</p>";
 }
+function renderRadar(){
+  const fmt=d=>new Date(dstr(d)).toLocaleDateString("de-DE",{month:"long",year:"numeric"});
+  const urg=d=>d<=45?["jetzt","Wiedervorlage jetzt"]:d<=120?["bald","bald fällig"]:["beob","beobachten"];
+  const sorted=radar.map((r,i)=>[r,i]).sort((a,b)=>a[0].faelligInTagen-b[0].faelligInTagen);
+  document.getElementById("btable").innerHTML=
+    "<p class='db-lead'>Ehemalige Patienten mit Einwilligung, bei denen ein erneuter Reha-Bedarf absehbar ist — das System meldet sich rechtzeitig, nur bei gültiger Freigabe.</p>"
+   +"<div class='radar-grid'>"+sorted.map(([r,i])=>{
+      const u=urg(r.faelligInTagen),ok=r.consent==="ja";
+      return "<div class='radar-card"+(ok?"":" locked")+(r.achse==="SalutoCare"?" hot":"")+"'>"
+        +"<div class='patient-top'><span class='ava'>"+initialen(r.name)+"</span><span class='radar-due "+(ok?u[0]:"lock")+"'>"+(ok?u[1]:"gesperrt")+"</span></div>"
+        +"<h3>"+escapeHtml(r.name)+" <span class='alter'>("+r.alter+")</span></h3>"
+        +"<div class='patient-meta'>"+escapeHtml(r.achse)+" · "+escapeHtml(r.letzte)+"</div>"
+        +"<div class='radar-prog'><span class='rk'>Prognose</span>"+escapeHtml(r.prognose)+"</div>"
+        +"<div class='radar-when'><span class='rk'>Voraussichtlich fällig</span><b>"+(ok?fmt(r.faelligInTagen):"—")+"</b></div>"
+        +"<div class='patient-actions'>"+(ok?"<button class='btn-ghost btn-sm' onclick='radarPlan("+i+")'>Wiedervorlage planen</button>":"<button class='btn-brass btn-sm' disabled>Kontaktfreigabe fehlt</button>")+"</div>"
+        +"</div>";
+    }).join("")+"</div>";
+}
+function radarPlan(i){alert("Wiedervorlage vorgemerkt (Demo): "+radar[i].name+" — "+new Date(dstr(radar[i].faelligInTagen)).toLocaleDateString("de-DE"));}
 function wiedervorlage(i){bestand[i].wv=true;renderBestand();renderHeute();}
 function openDbDetail(i){
   if(!matchMedia("(min-width:1024px)").matches)return;
@@ -1992,17 +2041,8 @@ function closeDbDetail(){
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&document.getElementById("dbDetail").classList.contains("open"))closeDbDetail();});
 /* Automatisierungs-Vorschlag — abgeleitet aus Alter, Quelle & Einwilligung (gemäß Michaels Memo) */
 function autoFor(b){
- if(b.consent!=="ja") return "Gesperrt — keine aktive Ansprache erlaubt";
- const a=b.alter||0;
- if(b.achse==="SalutoCare") return "Premium-Nurture-Strecke · persönlicher Recovery-Manager-Kontakt";
- if(b.quelle==="Broschüre-Download"){
-   if(a>=70) return a+" J. → Senioren-Reha-Ratgeber per Post + Rückruf-Angebot";
-   if(a>=60) return a+" J. → Info-Mail Komfort-Reha nach 7 Tagen";
-   return (a?a+" J. → ":"")+"Info-Mail nach 7 Tagen, dann Nurture-Strecke";
- }
- if(a>=75) return a+" J. → jährlicher Gesundheits-Check-Anruf";
- if(a>=65) return a+" J. → Halbjahres-Nachsorge-Mail + Event-Einladung";
- return (a?a+" J. → ":"")+"Check-in-Mail alle 3 Monate";
+ if(b.consent!=="ja") return "Keine Ansprache — Einwilligung fehlt";
+ return (TIERS[b.tier]&&TIERS[b.tier].auto)||"Ruhende Pflege";
 }
 
 /* ---------- Render: Zuweiser ---------- */
@@ -2215,7 +2255,7 @@ function mxMetric(id){
   case"mxBBnach":return "1 Abschluss";
   case"mxBCvor":return bestand.length+" Kontakte";
   case"mxBCin":return inReha.length+" in Reha";
-  case"mxBCnach":return bestand.filter(b=>b.wv).length+" Wiedervorlagen";
+  case"mxBCnach":return radar.length+" Wiedervorlagen";
  } return"";
 }
 function renderMatrix(){
