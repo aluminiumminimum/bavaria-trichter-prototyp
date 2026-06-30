@@ -675,9 +675,61 @@
 @media(hover:hover){.mx-cell:hover,.ir-card:hover,.zcard:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(31,28,28,.08)}}
 .num,.rv,.mx-metric,.tr-stufe,.ir-stay .lbl,.db-col h4 span{font-variant-numeric:tabular-nums}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+/* ===== DESKTOP TASK 1 — App-Shell (Sidebar + Topbar + Layout) ===== */
+.dsidebar,.dtopbar{display:none}
+@media(min-width:1024px){
+  .dsidebar{display:flex;flex-direction:column;gap:4px;position:fixed;left:0;top:0;bottom:0;width:248px;z-index:75;
+    background:linear-gradient(180deg,#272320,#1f1c1c);color:#e9e1d3;
+    padding:22px 16px calc(18px + env(safe-area-inset-bottom));border-right:1px solid #322c28}
+  .ds-brand{display:flex;align-items:center;gap:11px;padding:2px 6px 16px;margin-bottom:8px;border-bottom:1px solid rgba(188,163,125,.18)}
+  .ds-mono{width:40px;height:40px;flex-shrink:0;border-radius:11px;background:radial-gradient(circle at 35% 30%,#3a332e,#262220);
+    border:1px solid #8f7448;color:#d3b78a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;letter-spacing:.05em}
+  .ds-brandtxt{display:flex;flex-direction:column;line-height:1.2}
+  .ds-brandtxt b{font-size:18px;color:#f4eee3;font-weight:700}
+  .ds-brandtxt small{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#b29a76}
+  .ds-nav{display:flex;flex-direction:column;gap:3px;margin-top:2px}
+  .ds-nav button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 12px;border-radius:11px;
+    color:#cbbfae;font-size:14.5px;font-weight:600;letter-spacing:.02em;position:relative;
+    transition:background .16s ease,color .16s ease,transform .16s ease}
+  .ds-nav button svg{width:22px;height:22px;stroke-width:1.9;opacity:.82;flex-shrink:0}
+  .ds-nav button:hover{background:rgba(188,163,125,.10);color:#f1e7d6;transform:translateX(2px)}
+  .ds-nav button.active{background:linear-gradient(90deg,rgba(188,163,125,.22),rgba(188,163,125,.05));color:#f6edda}
+  .ds-nav button.active svg{opacity:1;color:#d3b78a}
+  .ds-nav button.active::before{content:"";position:absolute;left:-16px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--brass-grad)}
+  .ds-cta{margin-top:auto;width:100%}
+  .dtopbar{display:flex;align-items:center;justify-content:space-between;gap:16px;position:fixed;top:0;left:248px;right:0;height:64px;z-index:70;
+    background:rgba(251,250,248,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--hair);padding:0 30px;transition:right .28s cubic-bezier(.4,0,.2,1)}
+  .dt-titles{display:flex;flex-direction:column;line-height:1.15}
+  .dt-titles h2{margin:0;font-size:23px;font-weight:700;color:var(--ink)}
+  .dt-titles span{font-size:12px;letter-spacing:.04em;color:var(--muted)}
+  .dt-actions{display:flex;align-items:center;gap:16px}
+  .dt-date{font-size:13px;color:var(--muted);letter-spacing:.03em;text-transform:capitalize}
+  .dt-ava{width:38px;height:38px;flex-shrink:0;border-radius:50%;background:var(--espresso-grad);color:#d3b78a;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;border:1px solid #8f7448}
+  .app{max-width:none;margin-left:248px}
+  .content{max-width:1240px;margin:0 auto;padding:calc(64px + 26px) 40px 64px}
+  .tabbar{display:none}
+}
 </style>
 </head>
 <body>
+<!-- ============ DESKTOP SHELL (≥1024px) ============ -->
+<aside class="dsidebar" aria-label="Desktop-Navigation">
+  <div class="ds-brand"><span class="ds-mono serif">KB</span><span class="ds-brandtxt"><b class="serif">Klinik Bavaria</b><small>Concierge OS</small></span></div>
+  <nav class="ds-nav">
+    <button data-nav="heute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.2 12 4l9 7.2"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M10 20v-5h4v5"/></svg><span>Heute</span></button>
+    <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg><span>Fälle</span></button>
+    <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg><span>Netzwerk</span></button>
+    <button data-nav="matrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 12h17M9.5 4v16M15.5 4v16"/></svg><span>Matrix</span></button>
+    <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg><span>System</span></button>
+  </nav>
+  <button class="ds-cta btn-brass" onclick="openSheetNeu()">＋ Neue Anfrage</button>
+</aside>
+<header class="dtopbar">
+  <div class="dt-titles"><h2 id="dtopTitle" class="serif">Heute</h2><span id="dtopSub"></span></div>
+  <div class="dt-actions"><span id="dtopDate" class="dt-date num"></span><button class="btn-brass btn-sm" onclick="openSheetNeu()">Neue Anfrage</button><span class="dt-ava serif">KB</span></div>
+</header>
 <div class="app">
 <main class="content">
 
@@ -2135,7 +2187,11 @@ function go(dest,seg){
   navState.dest=dest;
   if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
   document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
-  document.querySelectorAll(".tabbar [data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
+  document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
+  const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · In Reha"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],system:["System","Idee · Auswertung · SOPs"],matrix:["Matrix","Patienten-Reise B2B / B2C"]};
+  const _t=TITLES[dest]||TITLES.heute;
+  const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
+  const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
   if(SEGS[dest]){
     const cur=navState.segs[dest];
     document.querySelectorAll("#view-"+dest+" .seg").forEach(b=>b.classList.toggle("active",b.dataset.seg===cur));
@@ -2154,7 +2210,7 @@ function switchTab(t){
   const m=map[t]||["heute"];
   go(m[0],m[1]);
 }
-document.querySelectorAll(".tabbar [data-nav]").forEach(b=>b.addEventListener("click",()=>{
+document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{
   if(b.dataset.nav==="faelle"&&boardStageFilter!==null){boardStageFilter=null;renderBoard();}
   go(b.dataset.nav);
 }));
@@ -2176,6 +2232,7 @@ function applyHash(){
 document.getElementById("fFrist").value=dstr(1);
 renderAll();
 applyHash();
+(function(){const el=document.getElementById("dtopDate");if(el)el.textContent=heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});})();
 </script>
 </body>
 </html>
