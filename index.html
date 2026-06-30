@@ -711,6 +711,19 @@
   .content{max-width:1240px;margin:0 auto;padding:calc(64px + 26px) 40px 64px}
   .tabbar{display:none}
 }
+/* ===== DESKTOP TASK 2 — Fälle Master-Detail (angedockte Schiene) ===== */
+@media(min-width:1024px){
+  #ovDetail{align-items:stretch;justify-content:flex-end;background:transparent;pointer-events:none}
+  #ovDetail.open{pointer-events:none}
+  #ovDetail .modal{width:460px;max-width:460px;height:100dvh;max-height:100dvh;border-radius:0;
+    border-left:1px solid var(--hair);box-shadow:-12px 0 44px rgba(31,28,28,.16);transform:translateX(28px)}
+  #ovDetail.open .modal{transform:none;pointer-events:auto}
+  #ovDetail .mbody.two-track{display:block}
+  #ovDetail .mbody.two-track .d-track-wrap{margin-top:18px}
+  .app{transition:margin-right .28s cubic-bezier(.4,0,.2,1)}
+  body.detail-open .app{margin-right:460px}
+  body.detail-open .dtopbar{right:460px}
+}
 </style>
 </head>
 <body>
@@ -2113,12 +2126,14 @@ function openDetail(id){
   document.getElementById("dWerdegang").innerHTML="<div class='kicker'>Werdegang</div>"+stepper(f.schritte||deriveSchritte(f));
   document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
   toggleVerlust();
+  const _db=document.getElementById("dbDetail");if(_db)_db.classList.remove("open");
   document.getElementById("ovDetail").classList.add("open");
-  document.body.classList.add("locked");
+  document.body.classList.add("detail-open");
+  if(!matchMedia("(min-width:1024px)").matches)document.body.classList.add("locked");
 }
 function closeDetail(){
   document.getElementById("ovDetail").classList.remove("open");
-  document.body.classList.remove("locked");
+  document.body.classList.remove("locked","detail-open");
 }
 function updateDocCnt(){const n=["u1","u2","u3","u4"].filter(u=>document.getElementById(u).checked).length;
   document.getElementById("docCnt").textContent="("+n+" / 4)";}
