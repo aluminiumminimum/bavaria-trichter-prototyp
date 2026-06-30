@@ -742,6 +742,14 @@
   .di-row:first-child{border-top:0}
   .di-k{color:var(--muted);font-weight:600}
 }
+/* ===== DESKTOP TASK 4 — Heute-Dashboard (Multi-Column) ===== */
+@media(min-width:1024px){
+  #view-heute.view.active{display:grid;grid-template-columns:1fr 1fr;gap:26px 30px;align-items:start}
+  #view-heute>.greet{grid-column:1/-1;margin:0}
+  #view-heute>.chap:nth-of-type(1){grid-column:1/-1}
+  #view-heute>.chap:last-of-type{grid-column:1/-1}
+  #view-heute>.chap{margin-top:0}
+}
 </style>
 </head>
 <body>
