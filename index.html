@@ -825,6 +825,19 @@ label{font-size:12px;letter-spacing:.08em}
 .stock-chip{font-size:13px}
 .zw-portal{font-size:13px}
 .tier-filter button{font-size:12.5px}
+/* ===== DESIGN-V2 B-Matrix — premium + lesbar ===== */
+.mx-rowlbl{font-size:16px;letter-spacing:.06em;color:#7e6a55;font-weight:700;
+  display:flex;align-items:center;gap:12px;padding-bottom:9px;margin:2px 0 6px}
+.mx-rowlbl::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--brass-line),transparent)}
+.mx-cell{padding:16px 16px;position:relative;overflow:hidden}
+.mx-cell::before{content:"";position:absolute;top:0;left:14px;right:14px;height:2px;border-radius:0 0 3px 3px;
+  background:linear-gradient(90deg,transparent,#cdb083 30%,#cdb083 70%,transparent);opacity:.5}
+.mx-cell .mx-col{font-size:13px;letter-spacing:.06em;color:#b08f5f}
+.mx-cell h4{font-size:17.5px;margin:5px 0 3px}
+.mx-cell p{font-size:14px;line-height:1.42}
+.mx-metric{font-size:19px}
+.mx-chip{font-size:11.5px;padding:4px 9px}
+@media(hover:hover){.mx-cell:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(31,28,28,.10);border-color:var(--brass-line)}}
 </style>
 </head>
 <body>
