@@ -860,6 +860,43 @@ label{font-size:12px;letter-spacing:.08em}
   .patient-card,.zcard,.db-lead,.template-card{transition:transform .18s ease,box-shadow .18s ease}
   .patient-card:hover,.zcard:hover,.template-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(31,28,28,.10)}
 }
+/* ===== DESIGN-V2 B-Matrix v3 — Spaltenköpfe, zentrierte Zeilen-Titel, Phasen-Farbakzente ===== */
+:root{--mx-vor:#6f8f72;--mx-in:#bd9a4e;--mx-nach:#9B8573}
+/* Zeilen-Titel (Zuweiser / Patient direkt): zentriert + größer, Hairline beidseitig */
+.mx-rowlbl{justify-content:center;text-align:center;font-size:17px;letter-spacing:.09em;
+  color:#6f5b46;gap:14px;padding-bottom:0;margin:12px 0 12px}
+.mx-rowlbl::after{flex:1;max-width:120px}
+.mx-rowlbl::before{content:"";flex:1;max-width:120px;height:1px;
+  background:linear-gradient(270deg,transparent,var(--brass-line))}
+/* Zellen-Top-Akzent je Reha-Phase (überschreibt einheitliches Gold) */
+.mx-cell[data-phase=vor]::before{background:linear-gradient(90deg,transparent,var(--mx-vor) 30%,var(--mx-vor) 70%,transparent)}
+.mx-cell[data-phase=in]::before{background:linear-gradient(90deg,transparent,var(--mx-in) 30%,var(--mx-in) 70%,transparent)}
+.mx-cell[data-phase=nach]::before{background:linear-gradient(90deg,transparent,var(--mx-nach) 30%,var(--mx-nach) 70%,transparent)}
+/* per-cell Phasen-Label (nur mobil sichtbar) farblich an Phase koppeln */
+.mx-cell[data-phase=vor] .mx-col{color:var(--mx-vor)}
+.mx-cell[data-phase=in] .mx-col{color:var(--mx-in)}
+.mx-cell[data-phase=nach] .mx-col{color:var(--mx-nach)}
+/* Spaltenkopf-Zeile: mobil aus (per-cell Labels reichen), Desktop an */
+.mx-colhead{display:none}
+@media(min-width:900px){
+  .mx-colhead{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;grid-column:1/-1;margin:2px 0 -2px}
+  .mx-ch{position:relative;text-align:center;font:700 14.5px/1.2 Inter;letter-spacing:.08em;
+    text-transform:uppercase;color:#6f5b46;padding:8px 6px 12px}
+  .mx-ch::after{content:"";position:absolute;left:50%;bottom:2px;transform:translateX(-50%);
+    width:40px;height:3px;border-radius:99px}
+  .mx-ch[data-phase=vor]::after{background:var(--mx-vor)}
+  .mx-ch[data-phase=in]::after{background:var(--mx-in)}
+  .mx-ch[data-phase=nach]::after{background:var(--mx-nach)}
+  .mx-rowlbl{font-size:19px}
+  .mx-rowlbl::before,.mx-rowlbl::after{max-width:200px}
+  /* Spaltenkopf übernimmt die Phasen-Beschriftung → per-cell Label aus */
+  .mx-cell .mx-col{display:none}
+  .mx-cell h4{margin-top:2px}
+}
+/* Entrance-Stagger an neue Reihenfolge (Spaltenkopf zuerst) anpassen */
+.view.active .mx-colhead{animation:dv2Up .45s cubic-bezier(.4,0,.2,1) both}
+.view.active #matrixGrid>.mx-row:nth-child(2){animation-delay:.07s}
+.view.active #matrixGrid>.mx-row:nth-child(3){animation-delay:.13s}
 </style>
 </head>
 <body>
@@ -2158,10 +2195,11 @@ function renderMatrix(){
  const cols={vor:"vor der Reha",in:"in der Reha",nach:"nach der Reha"};
  const rows=[["B2B","Zuweiser (B2B)"],["B2C","Patient direkt (B2C)"]];
  const chip={aktiv:"✓ aktiv",aufbau:"⚙ im Aufbau",geplant:"○ geplant"};
- document.getElementById("matrixGrid").innerHTML=rows.map(([rk,rlbl])=>{
+ const colhead=`<div class="mx-colhead">`+["vor","in","nach"].map(ck=>`<span class="mx-ch" data-phase="${ck}">${cols[ck]}</span>`).join("")+`</div>`;
+ document.getElementById("matrixGrid").innerHTML=colhead+rows.map(([rk,rlbl])=>{
   const cells=["vor","in","nach"].map(ck=>{
    const c=MATRIX.find(m=>m.row===rk&&m.col===ck);
-   return `<button class="mx-cell" onclick="mxGo('${c.route[0]}','${c.route[1]||""}')">
+   return `<button class="mx-cell" data-phase="${ck}" onclick="mxGo('${c.route[0]}','${c.route[1]||""}')">
      <span class="mx-col">${cols[ck]}</span>
      <h4>${c.titel}</h4><p>${c.zweck}</p>
      <span class="mx-foot"><span class="mx-metric">${mxMetric(c.metricId)}</span>
