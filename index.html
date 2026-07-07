@@ -1804,7 +1804,7 @@ label{font-size:12px;letter-spacing:.08em}
 
 <!-- ============ REFERRER OVERLAY ============ -->
 <div class="ref-overlay" id="refOverlay" role="dialog" aria-modal="true" aria-hidden="true">
-  <div class="ref-banner"><span id="refWho"></span><button class="ref-back" onclick="closeReferrer()">‹ Zurück zur Klinik-Ansicht</button></div>
+  <div class="ref-banner"><div class="rp-bbrand"><span class="rp-bmono">KB</span><span id="refWho"></span></div><button class="ref-back" onclick="closeReferrer()">‹ Zurück zur Klinik-Ansicht</button></div>
   <div class="ref-body" id="refBody"></div>
 </div>
 
@@ -2591,7 +2591,7 @@ function rpTab(screen,zName){
 }
 function openReferrer(screen,zName){
  const ov=document.getElementById("refOverlay");
- document.getElementById("refWho").textContent="Zuweiser-Ansicht · "+zName;
+ document.getElementById("refWho").textContent="Zuweiser-Portal · "+zName;
  document.getElementById("refBody").innerHTML=renderSuite(screen||"portal",zName);
  rpAnimate();
  ov.classList.add("open");ov.setAttribute("aria-hidden","false");document.body.classList.add("locked");
