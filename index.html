@@ -2601,12 +2601,14 @@ function closeReferrer(){const ov=document.getElementById("refOverlay");ov.class
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&document.getElementById("refOverlay").classList.contains("open"))closeReferrer();});
 function renderPortal(zName){
  const wk=["KW 1","KW 2","KW 3","KW 4"];
+ const stats=`<div class="rp-card rp-statsband"><h3>Ihre Zusammenarbeit mit Klinik Bavaria</h3><div class="rp-stats">`
+  +portalStats.map(s=>`<div class="rp-stat">${s.to!=null?`<b data-to="${s.to}" data-suf="${s.suf||""}">0${s.suf||""}</b>`:`<b>${s.txt}</b>`}<span>${s.lbl}</span></div>`).join("")+`</div></div>`;
  const news=`<div class="rp-card rp-news"><h3>Aktuelles von Klinik Bavaria</h3>`
   +portalNews.map(n=>`<div class="rp-newsrow"><span class="rp-date">${n.d}</span><div><b>${escapeHtml(n.t)}</b><small>${escapeHtml(n.s)}</small></div></div>`).join("")+`</div>`;
  const cls=n=>n===0?"none":n<=1?"tight":"free";
  const bel=`<div class="rp-card"><h3>Freie Plätze</h3><p class="rp-hint">Tippen Sie auf eine freie Woche — die Anmeldung wird vorausgefüllt.</p>
   <div class="rp-belgrid"><span class="hd">Achse</span>${wk.map(w=>`<span class="hd c">${w}</span>`).join("")}
-  ${belegung.map(b=>`<span class="rp-achse">${escapeHtml(b.achse)}</span>`+b.frei.map((n,i)=>n>0?`<button class="rp-bel ${cls(n)}" onclick="rpPrefill('${escapeHtml(b.achse)}','KW ${i+1}')">${n}</button>`:`<span class="rp-bel none">0</span>`).join("")).join("")}</div>
+  ${belegung.map(b=>`<span class="rp-achse">${escapeHtml(b.achse)}</span>`+b.frei.map((n,i)=>n>0?`<button class="rp-bel ${cls(n)}" onclick="rpPrefill('${escapeHtml(b.achse)}','KW ${i+1}')">${n}</button>`:`<span class="rp-bel none">–</span>`).join("")).join("")}</div>
   <div class="rp-legend"><span class="free">frei</span><span class="tight">knapp</span><span class="none">belegt</span></div></div>`;
  const team=`<div class="rp-card"><h3>Ihre Ansprechpartner</h3><span class="rp-badge">Rückmeldung &lt; 24 h</span><div class="rp-team">`
   +portalTeam.map(t=>`<div class="rp-person"><span class="rp-ava">${initialen(t.name)}</span><div><b>${escapeHtml(t.name)}</b><small>${escapeHtml(t.rolle)}</small><small>${escapeHtml(t.tel)} · ${escapeHtml(t.mail)}</small></div></div>`).join("")+`</div></div>`;
@@ -2618,12 +2620,11 @@ function renderPortal(zName){
    <div class="rp-field"><label>Kostenträger</label><select><option>PKV</option><option>GKV + Komfort</option><option>Beihilfe</option><option>Selbstzahler</option></select></div>
   </div>
   <label class="rp-check"><input type="checkbox" checked> Dieser Patient kommt direkt von mir</label>
-  <div class="rp-upload">📎 Unterlagen hierher ziehen oder tippen (Demo)</div>
-  <button class="rp-cta" onclick="refToast()">Patient anmelden</button></div>`;
- const faelleRows=`<div class="rp-card"><h3>Meine angemeldeten Fälle</h3>`
-  +portalFaelle.map(f=>`<div class="rp-fall"><span class="rp-ava s">${initialen(f.name)}</span><div><b>${escapeHtml(f.name)}</b><small>${escapeHtml(f.achse)} · seit ${f.d}</small></div><span class="rp-pill ${f.phase}">${escapeHtml(f.status)}</span></div>`).join("")+`</div>`;
- const kontakt=`<div class="rp-card rp-kontakt"><h3>Kontakt</h3><p>Direktdurchwahl 0971 0000-180<br>zuweiser@demo-bavaria.local</p><button class="rp-cta ghost" onclick="refToast()">Wir rufen Sie zurück</button></div>`;
- return news+`<div class="rp-two">${bel}${team}</div>`+form+`<div class="rp-two">${faelleRows}${kontakt}</div>`;
+  <div class="rp-upload" onclick="rpUpload(this)">📎 Unterlagen hierher ziehen oder tippen (Demo)</div>
+  <button class="rp-cta" onclick="rpSubmit('${escapeHtml(zName)}')">Patient anmelden</button></div>`;
+ const faelleRows=`<div class="rp-card"><h3>Meine angemeldeten Fälle</h3><div id="rpFaelleList">${rpFallRows()}</div></div>`;
+ const kontakt=`<div class="rp-card rp-kontakt"><h3>Kontakt</h3><p>Direktdurchwahl 0971 0000-180<br>zuweiser@demo-bavaria.local</p><button class="rp-cta ghost" onclick="rpToast('Rückruf angefragt — wir melden uns innerhalb von 24 h')">Wir rufen Sie zurück</button></div>`;
+ return stats+news+`<div class="rp-two">${bel}${team}</div>`+form+`<div class="rp-two">${faelleRows}${kontakt}</div>`;
 }
 function rpPrefill(achse,kw){
  const f=document.getElementById("rpFach"),t=document.getElementById("rpTermin"),card=document.getElementById("rpAnmeldung");
