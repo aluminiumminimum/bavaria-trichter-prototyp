@@ -2448,13 +2448,29 @@ function stepper(schritte){
   return `<div class="stp ${s.done?"done":""}"><span class="dot"></span><span><b>${escapeHtml(s.label)}</b><small>${escapeHtml(meta)}${dur}</small></span></div>`;
  }).join("")+`</div>`;
 }
+function renderSuite(screen,zName){
+ const p=rpPersona(zName);
+ const greet=p.name?"Herzlich willkommen, "+escapeHtml(p.name):"Herzlich willkommen";
+ const tabs=[["portal","vor der Reha","Portal"],["einblick","in der Reha","Behandlungs-Einblick"],["abschluss","nach der Reha","Abschlusspaket"]];
+ const body=screen==="einblick"?renderEinblick(zName):screen==="abschluss"?renderAbschluss(zName):renderPortal(zName);
+ return `<section class="rp-hero">
+   <div class="rp-mark">Klinik Bavaria · Zuweiser-Portal</div>
+   <h1 class="rp-greet">${greet}</h1>
+   <p class="rp-sub">${escapeHtml(p.inst)} · Schön, dass Sie bei uns sind.</p>
+   <nav class="rp-tabs">${tabs.map(([k,ph,t])=>`<button class="rp-tab${k===screen?" on":""}" onclick="rpTab('${k}','${escapeHtml(zName)}')"><small>${ph}</small><span>${t}</span></button>`).join("")}</nav>
+  </section>
+  <div class="rp-body">${body}</div>`;
+}
+function rpTab(screen,zName){
+ document.getElementById("refBody").innerHTML=renderSuite(screen,zName);
+ document.getElementById("refOverlay").scrollTop=0;
+}
 function openReferrer(screen,zName){
  const ov=document.getElementById("refOverlay");
- const titles={portal:"Zuweiser-Portal",einblick:"Behandlungs-Einblick",abschluss:"Abschlusspaket"};
- document.getElementById("refWho").textContent="Zuweiser-Ansicht · "+(titles[screen]||"Portal")+" · "+zName;
- const body=screen==="portal"?renderPortal(zName):screen==="abschluss"?renderAbschluss(zName):renderEinblick(zName);
- document.getElementById("refBody").innerHTML=body;
+ document.getElementById("refWho").textContent="Zuweiser-Ansicht · "+zName;
+ document.getElementById("refBody").innerHTML=renderSuite(screen||"portal",zName);
  ov.classList.add("open");ov.setAttribute("aria-hidden","false");document.body.classList.add("locked");
+ ov.scrollTop=0;
 }
 function closeReferrer(){const ov=document.getElementById("refOverlay");ov.classList.remove("open");ov.setAttribute("aria-hidden","true");document.body.classList.remove("locked");}
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&document.getElementById("refOverlay").classList.contains("open"))closeReferrer();});
