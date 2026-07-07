@@ -794,6 +794,11 @@
   .ds-nav button.active{background:linear-gradient(90deg,rgba(188,163,125,.22),rgba(188,163,125,.05));color:#f6edda}
   .ds-nav button.active svg{opacity:1;color:#d3b78a}
   .ds-nav button.active::before{content:"";position:absolute;left:-16px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--brass-grad)}
+  .ds-sep{height:1px;margin:9px 6px;background:linear-gradient(90deg,rgba(188,163,125,.28),transparent)}
+  .ds-nav button.ds-gold{color:#d3b78a}
+  .ds-nav button.ds-gold svg{color:#cdb083;opacity:.95}
+  .ds-nav button.ds-gold:hover{background:rgba(205,176,131,.14);color:#ecdcbc}
+  .ds-ext{margin-left:auto;font-size:13px;opacity:.55}
   .ds-cta{margin-top:auto;width:100%}
   .dtopbar{display:flex;align-items:center;justify-content:space-between;gap:16px;position:fixed;top:0;left:248px;right:0;height:64px;z-index:70;
     background:rgba(251,250,248,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
@@ -1161,6 +1166,8 @@ label{font-size:12px;letter-spacing:.08em}
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg><span>Netzwerk</span></button>
     <button data-nav="matrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 12h17M9.5 4v16M15.5 4v16"/></svg><span>Matrix</span></button>
     <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg><span>System</span></button>
+    <div class="ds-sep"></div>
+    <button class="ds-gold" onclick="openReferrer('portal','Leopoldina-Krankenhaus')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h5.5v16H14"/><path d="M3.5 12h10.5M10.5 8l3.5 4-3.5 4"/></svg><span>Zuweiserportal</span><span class="ds-ext">↗</span></button>
   </nav>
   <button class="ds-cta btn-brass" onclick="openSheetNeu()">＋ Neue Anfrage</button>
 </aside>
