@@ -1790,6 +1790,7 @@ let belegung=[
 
 /* ----- Demo-Entlassdokument (nach der Reha) — für Dashboard ----- */
 const entlassDoc={pat:"Werner Adler",achse:"Geriatrie",entlassen:dstr(-3),aufenthalt:"21 Tage",
+ barthel:{auf:45,ent:85},
  diagnose:"Z. n. Sturz mit Beckenfraktur · geriatrische Komplexreha",
  kurz:"Reha-Ziel erreicht: Gangbild stabil, Transfers selbstständig, Hilfsmittel angepasst. Entlassung nach Hause mit ambulanter Anschlussversorgung.",
  brief:"Entlassbericht: geriatrische Komplexreha abgeschlossen, Gangbild stabilisiert, Hilfsmittel angepasst, Barthel-Index 45 → 85.",
@@ -1798,6 +1799,28 @@ const entlassDoc={pat:"Werner Adler",achse:"Geriatrie",entlassen:dstr(-3),aufent
  ruecksprache:"0971 0000-100 (Recovery-Line, Mo–Fr 8–16 Uhr)"};
 
 const TEAM=["S. Koordination","M. Belegung","T. Abrechnung","Recovery Manager"];
+/* ----- Zuweiser-Premium-Suite: Demo-Daten (synthetisch) ----- */
+const portalNews=[
+ {d:"07.07.",t:"+4 SalutoCare-Suiten ab September",s:"Erweiterung der Privatstation · jetzt für Ihre Patienten vormerkbar"},
+ {d:"01.07.",t:"AHB-Fast-Lane: Rückmeldung < 24 h",s:"Verbindliche Reaktionszusage für Partnerhäuser"},
+ {d:"24.06.",t:"Neues EPZ-Kooperationsmodul Orthopädie",s:"Direktübernahme nach Endoprothetik, verkürzte Wege"}
+];
+const portalTeam=[
+ {name:"Dr. Miriam Bergmann",rolle:"Ärztliche Koordination",tel:"0971 0000-181",mail:"bergmann@demo-bavaria.local"},
+ {name:"Tobias Klein",rolle:"Belegungsmanagement",tel:"0971 0000-182",mail:"klein@demo-bavaria.local"}
+];
+const portalFaelle=[
+ {name:"Karl Beispiel",achse:"Orthopädie",status:"Aufnahme geplant",phase:"vor",d:dstr(-2)},
+ {name:"Heinz Vogel",achse:"SalutoCare",status:"in Klärung",phase:"vor",d:dstr(-4)},
+ {name:"Dieter Franke",achse:"Orthopädie",status:"in Reha · Tag 6",phase:"in",d:dstr(-6)}
+];
+function rpPersona(zName){
+ const z=zuweiser.find(x=>x.name===zName);
+ let ap=z&&z.ap?z.ap.replace(/\s*\(.*\)$/,"").trim():"";
+ if(!/^(Hr\.|Fr\.|Dr\.|Prof\.)/.test(ap)) ap="";
+ ap=ap.replace(/^Hr\.\s*/,"Herr ").replace(/^Fr\.\s*/,"Frau ");
+ return {name:ap,inst:zName,typ:z?z.typ:""};
+}
 /* ----- Patienten aktuell in der Reha (in-treatment) — Reha-KPIs ----- */
 let inReha=[
  {name:"Dieter Franke",alter:66,achse:"Orthopädie",owner:"M. Belegung",icd:"M17.1 — Gonarthrose (sekundär)",aufnahme:dstr(-6),verweildauer:{ist:6,plan:21},barthel:{auf:45,akt:75},fim:{auf:78,akt:101},ziel:60,
