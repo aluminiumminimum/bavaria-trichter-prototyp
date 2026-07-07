@@ -2507,14 +2507,20 @@ function rpPrefill(achse,kw){
 }
 function refToast(){alert("Demo — in diesem Prototyp nicht aktiv abgesendet.");}
 function renderEinblick(zName){
- return `<h2>Behandlungs-Einblick</h2>
-  <p class="ref-lead">Kurzbericht und aktuelle Werte zu Ihren Patienten — die ärztliche Sicht, ohne interne Steuerungs-KPIs.</p>`
-  +inReha.map(p=>`<div class="ref-card">
-    <div class="ref-cardhead"><h3>${escapeHtml(p.name)} · ${escapeHtml(p.achse)}</h3><span class="ref-tag">Reha-Tag ${p.verweildauer.ist}/${p.verweildauer.plan}</span></div>
-    <p class="ref-kurz">${escapeHtml(p.kurzbericht)}</p>
-    <div class="lab-grid">${p.labor.map(l=>`<div class="lab"><span class="lab-k">${escapeHtml(l.k)}</span><span class="lab-v">${escapeHtml(l.v)}</span></div>`).join("")}</div>
-    <a class="rec-call" href="#" onclick="refToast();return false">☎ Rücksprache mit dem Behandlungsteam</a>
-   </div>`).join("");
+ return `<p class="rp-lead">Die ärztliche Sicht auf Ihre Patienten — Kurzbericht, Verlauf und aktuelle Werte, ohne interne Steuerungs-KPIs.</p>`
+ +inReha.map(p=>{
+  const stayPct=Math.min(100,p.verweildauer.ist/p.verweildauer.plan*100);
+  return `<div class="rp-card rp-pat">
+   <div class="rp-patmain">
+    <div class="rp-pathead"><span class="rp-ava">${initialen(p.name)}</span><div><b>${escapeHtml(p.name)} (${p.alter})</b><small>${escapeHtml(p.achse)} · ${escapeHtml(p.icd)}</small></div><span class="rp-tag">Reha-Tag ${p.verweildauer.ist}/${p.verweildauer.plan}</span></div>
+    <div class="rp-stay"><div class="fill" style="width:${stayPct}%"></div></div>
+    <p class="rp-kurz">${escapeHtml(p.kurzbericht)}</p>
+    <div class="rp-labs">${p.labor.map(l=>`<div class="rp-lab"><span>${escapeHtml(l.k)}</span><b>${escapeHtml(l.v)}</b></div>`).join("")}</div>
+    <div class="rp-verlauf">${p.eintraege.map(e=>`<div class="rp-tl"><small>${escapeHtml(e.d)}</small><p>${escapeHtml(e.txt)}</p></div>`).join("")}</div>
+    <a class="rp-call" href="#" onclick="refToast();return false">☎ Rücksprache mit dem Behandlungsteam</a>
+   </div>
+   <div class="rp-patrings">${kpiRing(p.barthel.akt,100,"Barthel","▲ "+(p.barthel.akt-p.barthel.auf))}${kpiRing(p.fim.akt,126,"FIM","▲ "+(p.fim.akt-p.fim.auf))}</div>
+  </div>`;}).join("");
 }
 function renderAbschluss(zName){
  const d=entlassDoc;
