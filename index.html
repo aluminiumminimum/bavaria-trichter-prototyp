@@ -1017,6 +1017,49 @@ label{font-size:12px;letter-spacing:.08em}
   .view.active .mx-ch[data-phase=in]::after{animation-delay:.38s}
   .view.active .mx-ch[data-phase=nach]::after{animation-delay:.46s}
 }
+  /* ===== WS2 · Datenbank Premium — Cockpit, Kontaktkarten, Inspektor, Radar ===== */
+  .db-cockpit{display:flex;align-items:center;gap:20px;background:var(--paper);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow-soft);padding:15px 20px;margin:0 0 16px;position:relative;overflow:hidden}
+  .db-cockpit::before{content:"";position:absolute;left:0;top:0;height:100%;width:3px;background:linear-gradient(180deg,var(--brass),var(--brass-deep))}
+  .dbc-stat{display:flex;flex-direction:column;gap:1px;min-width:58px}
+  .dbc-num{font:700 27px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
+  .dbc-stat.hot .dbc-num{color:var(--brass-deep)}
+  .dbc-lbl{font:600 11px/1.15 Inter;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .dbc-div{width:1px;align-self:stretch;background:var(--hair);margin:2px 0}
+  .dbc-barwrap{flex:1;min-width:160px}
+  .dbc-bartitle{font:600 11px/1 Inter;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+  .dbc-bar{display:flex;height:11px;border-radius:99px;overflow:hidden;background:#efe9e0;gap:2px}
+  .dbc-seg{height:100%;border-radius:2px}
+  .dbc-seg.sA{background:#5d7f60}.dbc-seg.sB{background:#b58a3e}.dbc-seg.sC{background:#a9b3a9}.dbc-seg.sG{background:#cfc8bc}
+  .dbc-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:9px;font:500 11.5px/1 Inter;color:var(--ink-soft)}
+  .dbc-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  /* Kontaktkarten (klickbar) */
+  .db-c{width:100%;text-align:left;background:transparent;cursor:pointer;position:relative;align-items:flex-start}
+  .db-c::after{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--acol,var(--unklar));opacity:0;transition:opacity .16s ease}
+  .db-c:hover{background:var(--paper2)}
+  @media(hover:hover){.db-c:hover::after{opacity:.9}}
+  .db-c .ava{margin-top:1px}
+  .db-c-top{display:flex;align-items:center;gap:8px}
+  .db-c-name .alter{color:var(--faint);font-weight:500}
+  .db-pill{font:700 10px/1 Inter;letter-spacing:.03em;text-transform:uppercase;padding:3px 8px;border-radius:99px;margin-left:auto;white-space:nowrap}
+  .db-pill.ok{background:var(--sage-soft);color:var(--sage-deep)}
+  .db-pill.lock{background:#eeeae0;color:#8a8076}
+  .ach-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--acol,var(--unklar));margin-right:6px;flex:0 0 auto}
+  .db-c-meta{display:flex;align-items:center}
+  .db-c-ctx{font:400 12.5px/1.42 Inter;color:var(--ink-soft);margin-top:5px;max-width:60ch}
+  .db-c-chev{margin-left:10px;color:var(--brass);font-size:22px;line-height:1;font-weight:400;align-self:center;opacity:.45;transition:transform .16s ease,opacity .16s ease}
+  @media(hover:hover){.db-c:hover .db-c-chev{opacity:1;transform:translateX(3px)}}
+  /* Inspektor premium */
+  .di-ctx{font:400 14px/1.5 Inter;color:var(--ink-soft);background:var(--paper2);border-left:3px solid var(--acol,var(--brass-line));border-radius:0 10px 10px 0;padding:11px 14px;margin:0 0 4px}
+  .di-axis{display:inline-flex;align-items:center;gap:2px}
+  /* Radar */
+  .radar-head{display:flex;gap:10px;margin:0 0 14px}
+  .radar-kpi{flex:1;background:var(--paper);border:1px solid var(--hair);border-radius:13px;box-shadow:var(--shadow-soft);padding:11px 15px;position:relative;overflow:hidden}
+  .radar-kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .radar-kpi.jetzt::before{background:var(--terra)}.radar-kpi.bald::before{background:#b58a3e}.radar-kpi.beob::before{background:var(--sage)}
+  .radar-kpi .rk-n{font:700 23px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
+  .radar-kpi.jetzt .rk-n{color:var(--terra)}.radar-kpi.bald .rk-n{color:var(--brass-deep)}.radar-kpi.beob .rk-n{color:var(--sage-deep)}
+  .radar-kpi .rk-l{font:600 11px/1.1 Inter;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .radar-card{border-left:3px solid var(--acol,var(--brass-line))}
 </style>
 </head>
 <body>
@@ -2025,16 +2068,43 @@ const TIERS={
 const TIER_ORDER=["A","B","C"];
 let tierFilter="alle";
 function bucketOf(p){return p.consent!=="ja"?"gesperrt":p.tier;}
+function dbCockpit(){
+  const c=b=>bestand.filter(p=>bucketOf(p)===b).length;
+  const nA=c("A"),nB=c("B"),nC=c("C"),nG=c("gesperrt");
+  const nHot=bestand.filter(p=>p.consent==="ja"&&p.tier==="A").length;
+  const nOk=bestand.filter(p=>p.consent==="ja").length;
+  const seg=(n,cls)=>n?"<span class='dbc-seg "+cls+"' style='flex:"+n+"'></span>":"";
+  return "<div class='db-cockpit'>"
+    +"<div class='dbc-stat'><div class='dbc-num num'>"+bestand.length+"</div><div class='dbc-lbl'>Kontakte</div></div>"
+    +"<div class='dbc-div'></div>"
+    +"<div class='dbc-barwrap'><div class='dbc-bartitle'>Verteilung nach Einstufung</div>"
+      +"<div class='dbc-bar'>"+seg(nA,"sA")+seg(nB,"sB")+seg(nC,"sC")+seg(nG,"sG")+"</div>"
+      +"<div class='dbc-legend'><span><i style='background:#5d7f60'></i>A · Warm "+nA+"</span><span><i style='background:#b58a3e'></i>B · Interessiert "+nB+"</span><span><i style='background:#a9b3a9'></i>C · Potenziell "+nC+"</span><span><i style='background:#cfc8bc'></i>Gesperrt "+nG+"</span></div>"
+    +"</div>"
+    +"<div class='dbc-div'></div>"
+    +"<div class='dbc-stat hot'><div class='dbc-num num'>"+nHot+"</div><div class='dbc-lbl'>Handlungsbedarf</div></div>"
+    +"<div class='dbc-stat'><div class='dbc-num num'>"+nOk+"</div><div class='dbc-lbl'>kontaktfähig</div></div>"
+  +"</div>";
+}
 function renderBestand(){
   const fil=document.getElementById("tierFilter");
   if(dbView==="radar"){ if(fil)fil.innerHTML=""; renderRadar(); return; }
   const count=b=>bestand.filter(p=>bucketOf(p)===b).length;
   const chip=(key,lbl)=>"<button class='tchip"+(tierFilter===key?" on":"")+"' onclick='tierFilter=\""+key+"\";renderBestand()'>"+lbl+" <b class='num'>"+(key==="alle"?bestand.length:count(key))+"</b></button>";
-  if(fil)fil.innerHTML="<div class='tier-chips'>"+chip("alle","Alle")+TIER_ORDER.map(k=>chip(k,k)).join("")+chip("gesperrt","Gesperrt")+"</div>";
+  const chips="<div class='tier-chips'>"+chip("alle","Alle")+TIER_ORDER.map(k=>chip(k,k)).join("")+chip("gesperrt","Gesperrt")+"</div>";
+  if(fil)fil.innerHTML=dbCockpit()+chips;
   const groups=tierFilter==="alle"?[...TIER_ORDER,"gesperrt"]:[tierFilter];
-  const row=p=>"<div class='db-c'><span class='ava'>"+initialen(p.name)+"</span>"
-    +"<div class='db-c-main'><div class='db-c-name'>"+escapeHtml(p.name)+(p.alter?" <span class='alter'>"+p.alter+"</span>":"")+"</div>"
-    +"<div class='db-c-meta'>"+escapeHtml(p.achse)+" · "+escapeHtml(p.quelle)+"</div></div></div>";
+  const row=(p,idx)=>{
+    const col=ACHSE_COL[p.achse]||"var(--unklar)";
+    const cons=p.consent==="ja"?"<span class='db-pill ok'>freigegeben</span>":"<span class='db-pill lock'>gesperrt</span>";
+    return "<button class='db-c' style='--acol:"+col+"' onclick='openDbDetail("+idx+")'>"
+      +"<span class='ava'>"+initialen(p.name)+"</span>"
+      +"<div class='db-c-main'>"
+        +"<div class='db-c-top'><span class='db-c-name'>"+escapeHtml(p.name)+(p.alter?" <span class='alter'>"+p.alter+"</span>":"")+"</span>"+cons+"</div>"
+        +"<div class='db-c-meta'><span class='ach-dot'></span>"+escapeHtml(p.achse)+" · "+escapeHtml(p.quelle)+"</div>"
+        +(p.kontext?"<div class='db-c-ctx'>"+escapeHtml(p.kontext)+"</div>":"")
+      +"</div><span class='db-c-chev'>›</span></button>";
+  };
   const ICO={
     A:"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2'/></svg>",
     B:"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>",
@@ -2042,7 +2112,8 @@ function renderBestand(){
     gesperrt:"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><rect x='5' y='11' width='14' height='9' rx='2'/><path d='M8 11V8a4 4 0 0 1 8 0v3'/></svg>"
   };
   document.getElementById("btable").innerHTML=groups.map(g=>{
-    const rows=bestand.filter(p=>bucketOf(p)===g);
+    const entries=bestand.map((p,i)=>[p,i]).filter(e=>bucketOf(e[0])===g);
+    const rows=entries.map(e=>e[0]);
     if(!rows.length)return"";
     const gesperrt=g==="gesperrt";
     const ico="<span class='db-ico "+(gesperrt?"gesperrt":"t"+g)+"'>"+(gesperrt?ICO.gesperrt:ICO[g])+"</span>";
@@ -2052,18 +2123,26 @@ function renderBestand(){
     return "<section class='db-group"+(gesperrt?" is-locked":"")+"'>"
       +"<header class='db-group-h'>"+ico+"<div class='db-group-txt'><div class='db-group-t'>"+title+"<span class='db-group-n num'>"+rows.length+"</span></div><div class='db-group-note'>"+escapeHtml(note)+"</div></div></header>"
       +"<div class='db-group-auto'>⟳ "+escapeHtml(auto)+"</div>"
-      +"<div class='db-list'>"+rows.map(row).join("")+"</div></section>";
+      +"<div class='db-list'>"+entries.map(e=>row(e[0],e[1])).join("")+"</div></section>";
   }).join("")||"<p class='empty'>Keine Kontakte.</p>";
 }
 function renderRadar(){
   const fmt=d=>new Date(dstr(d)).toLocaleDateString("de-DE",{month:"long",year:"numeric"});
   const urg=d=>d<=45?["jetzt","Wiedervorlage jetzt"]:d<=120?["bald","bald fällig"]:["beob","beobachten"];
   const sorted=radar.map((r,i)=>[r,i]).sort((a,b)=>a[0].faelligInTagen-b[0].faelligInTagen);
+  const act=radar.filter(r=>r.consent==="ja");
+  const cJ=act.filter(r=>r.faelligInTagen<=45).length,cB=act.filter(r=>r.faelligInTagen>45&&r.faelligInTagen<=120).length,cO=act.filter(r=>r.faelligInTagen>120).length;
+  const rhead="<div class='radar-head'>"
+    +"<div class='radar-kpi jetzt'><div class='rk-n num'>"+cJ+"</div><div class='rk-l'>Jetzt fällig</div></div>"
+    +"<div class='radar-kpi bald'><div class='rk-n num'>"+cB+"</div><div class='rk-l'>Bald fällig</div></div>"
+    +"<div class='radar-kpi beob'><div class='rk-n num'>"+cO+"</div><div class='rk-l'>Beobachten</div></div>"
+  +"</div>";
   document.getElementById("btable").innerHTML=
     "<p class='db-intro'>Ehemalige Patienten mit Einwilligung, bei denen ein erneuter Reha-Bedarf absehbar ist — das System meldet sich rechtzeitig, nur bei gültiger Freigabe.</p>"
+   +rhead
    +"<div class='radar-grid'>"+sorted.map(([r,i])=>{
-      const u=urg(r.faelligInTagen),ok=r.consent==="ja";
-      return "<div class='radar-card"+(ok?"":" locked")+(r.achse==="SalutoCare"?" hot":"")+"'>"
+      const u=urg(r.faelligInTagen),ok=r.consent==="ja",col=ACHSE_COL[r.achse]||"var(--unklar)";
+      return "<div class='radar-card"+(ok?"":" locked")+(r.achse==="SalutoCare"?" hot":"")+"' style='--acol:"+col+"'>"
         +"<div class='patient-top'><span class='ava'>"+initialen(r.name)+"</span><span class='radar-due "+(ok?u[0]:"lock")+"'>"+(ok?u[1]:"gesperrt")+"</span></div>"
         +"<h3>"+escapeHtml(r.name)+" <span class='alter'>("+r.alter+")</span></h3>"
         +"<div class='patient-meta'>"+escapeHtml(r.achse)+" · "+escapeHtml(r.letzte)+"</div>"
@@ -2081,23 +2160,21 @@ function openDbDetail(i){
   const ov=document.getElementById("ovDetail");if(ov)ov.classList.remove("open");
   document.getElementById("dbAva").textContent=initialen(p.name);
   document.getElementById("dbName").textContent=p.name+(p.alter?" ("+p.alter+")":"");
-  document.getElementById("dbSub").textContent=p.achse+" · Stufe "+(p.stufe||1)+(p.quelle?" · "+p.quelle:"");
+  document.getElementById("dbSub").textContent=p.achse+(p.quelle?" · "+p.quelle:"");
   const cons=p.consent==="ja"?"<span class='status-pill ok'>freigegeben</span>":p.consent==="widerruf"?"<span class='status-pill bad'>Widerruf</span>":"<span class='status-pill lock'>gesperrt</span>";
   const action=p.consent==="ja"
     ?(p.wv?"<span class='wv'>Wiedervorlage gesetzt</span>":"<button class='btn-ghost btn-sm' onclick='wiedervorlage("+i+");openDbDetail("+i+")'>Nachsorge vormerken</button>")
     :"<button class='btn-brass btn-sm' disabled>Kontaktfreigabe fehlt</button>";
   document.getElementById("dbBody").innerHTML=
-     "<div class='db-insp'>"
+     "<div class='db-insp' style='--acol:"+(ACHSE_COL[p.achse]||"var(--unklar)")+"'>"
     +"<div class='di-auto"+(p.consent!=="ja"?" blocked":"")+"'>⟳ "+escapeHtml(autoFor(p))+"</div>"
+    +(p.kontext?"<div class='di-ctx'>"+escapeHtml(p.kontext)+"</div>":"")
     +"<div class='di-rows'>"
     +"<div class='di-row'><span class='di-k'>Einwilligung</span><span>"+cons+"</span></div>"
-    +"<div class='di-row'><span class='di-k'>Achse</span><span>"+escapeHtml(p.achse)+"</span></div>"
-    +"<div class='di-row'><span class='di-k'>Lead-Stufe</span><span>"+(p.stufe||1)+" · "+escapeHtml((typeof STUFE_LBL!=='undefined'&&STUFE_LBL[p.stufe])||"")+"</span></div>"
-    +"<div class='di-row'><span class='di-k'>Quelle</span><span>"+escapeHtml(p.quelle||"Altpatient")+"</span></div>"
-    +(p.entl&&p.entl!=="—"?"<div class='di-row'><span class='di-k'>Entlassen</span><span>"+escapeHtml(p.entl)+"</span></div>":"")
-    +"<div class='di-row'><span class='di-k'>Verantwortlich</span><span>"+escapeHtml(p.owner||"—")+"</span></div>"
+    +"<div class='di-row'><span class='di-k'>Achse</span><span class='di-axis'><span class='ach-dot'></span>"+escapeHtml(p.achse)+"</span></div>"
+    +"<div class='di-row'><span class='di-k'>Einstufung</span><span>"+(p.tier||"—")+(TIERS[p.tier]?" · "+TIERS[p.tier].label:"")+"</span></div>"
+    +"<div class='di-row'><span class='di-k'>Quelle</span><span>"+escapeHtml(p.quelle||"—")+"</span></div>"
     +"</div>"
-    +(p.anlass?"<div class='patient-reason'>"+escapeHtml(p.anlass)+"</div>":"")
     +"<div class='patient-actions'>"+action+"</div>"
     +"</div>";
   document.getElementById("dbDetail").classList.add("open");
