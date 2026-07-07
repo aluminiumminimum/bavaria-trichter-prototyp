@@ -1129,6 +1129,22 @@ label{font-size:12px;letter-spacing:.08em}
   .rs-k{color:var(--muted);font-weight:600}
   .rs-empf ul{margin:0;padding-left:18px}
   .rs-empf li{font:400 13px/1.55 Inter;color:var(--ink-soft)}
+  /* ===== WS4 · Automatisierung — Anfrage -> Fall (Toast + Eingang-Highlight) ===== */
+  .mail.neu{border-color:var(--brass-line);box-shadow:0 0 0 2px var(--brass-soft);position:relative;animation:mailIn .5s ease both}
+  .mail.neu::after{content:"NEU";position:absolute;top:10px;right:12px;font:700 9px/1 Inter;letter-spacing:.08em;color:#fff;background:var(--brass-deep);border-radius:99px;padding:3px 7px}
+  @keyframes mailIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .sim-cta{margin-top:8px;width:100%;color:var(--brass-deep);border:1px dashed var(--brass-line);background:transparent;border-radius:99px;padding:9px 14px;font:600 12.5px/1 Inter}
+  @media(hover:hover){.sim-cta:hover{background:var(--brass-soft)}}
+  .inb-toast{position:fixed;right:24px;bottom:24px;z-index:200;display:none;align-items:center;gap:13px;max-width:400px;background:#1f1c1c;color:#faf7f1;border-radius:14px;box-shadow:0 16px 44px rgba(31,28,28,.34);padding:14px 16px}
+  .inb-toast.show{display:flex;animation:toastIn .34s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .inb-toast .inb-ic{width:30px;height:30px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(255,255,255,.1);color:#e6d3ac}
+  .inb-toast.done .inb-ic{background:var(--sage-deep);color:#fff}
+  .inb-tx{flex:1;min-width:0}
+  .inb-t{font:600 13.5px/1.25 Inter}
+  .inb-s{font:400 12px/1.3 Inter;color:#c3b596;margin-top:2px}
+  .inb-open{flex:0 0 auto;font:600 12px/1 Inter;color:#1f1c1c;background:var(--brass-soft);border-radius:99px;padding:8px 12px;white-space:nowrap}
+  .inb-x{flex:0 0 auto;color:#c3b596;font-size:18px;line-height:1;padding:0 2px}
 </style>
 </head>
 <body>
@@ -1553,6 +1569,7 @@ label{font-size:12px;letter-spacing:.08em}
         <button class="seg" data-seg="inreha" role="tab">In Reha</button>
       </div>
       <button class="btn btn-sm neu-cta" onclick="openSheetNeu()">＋ Neue Anfrage aufnehmen</button>
+      <button class="sim-cta" onclick="simulateInbound()">⚡ Anfrage simulieren (Demo)</button>
     </header>
     <div class="sub active" id="sub-faelle-anfragen">
       <p class="lblline">Ein Eingang für alle Kanäle · Telefon, E-Mail, Website, Zuweiser, Recare, Premium.</p>
@@ -2042,9 +2059,45 @@ const W_ICON={
 };
 
 /* ---------- Render: Anfragen (Eingang) ---------- */
+/* WS4 · Automatisierung: eingehende Anfrage -> automatisch Fall (Demo) */
+let _inbId=201,_inbN=0,_inbToastTimer=null;
+const INBOUND_POOL=[
+ {kanal:"Website",name:"Familie Hoffmann",alter:74,rolle:"Angehörige",achse:"Neurologie",kt:"Privat",quelle:"wechselreha.de",tit:"Website-Formular: Angehörige fragt für Vater (74) nach Wechsel-Reha",txt:"Vater liegt in anderer Reha, unzufrieden — Wechsel in Premium-Neuro-Reha gewünscht."},
+ {kanal:"E-Mail",name:"Herr Reinhardt",alter:61,rolle:"Patient",achse:"SalutoCare",kt:"Selbstzahler",quelle:"klinik-bavaria.com",tit:"E-Mail: Selbstzahler (61) fragt Premium-Suite an",txt:"Komfort-Reha nach OP, Suite, möglichst zeitnaher Start."},
+ {kanal:"Website",name:"Frau Dr. Kessler",alter:58,rolle:"Zuweiser",achse:"Orthopädie",kt:"Privat",quelle:"Privatpraxis",tit:"Website-Formular: Privatärztin meldet Patientin (58) nach Hüft-TEP",txt:"AHB nach Hüft-TEP, Privatpatientin, kurzfristige Aufnahme erbeten."}
+];
+function inbToast(state,title,sub,fid){
+ let el=document.getElementById("inbToast");
+ if(!el){el=document.createElement("div");el.id="inbToast";document.body.appendChild(el);}
+ el.className="inb-toast "+state+" show";
+ el.innerHTML="<span class='inb-ic'>"+(state==="done"?"✓":"✉")+"</span>"
+   +"<div class='inb-tx'><div class='inb-t'>"+title+"</div>"+(sub?"<div class='inb-s'>"+sub+"</div>":"")+"</div>"
+   +(fid!=null?"<button class='inb-open' onclick='hideInbToast();go(\"faelle\",\"board\");openDetail("+fid+")'>Fall öffnen ›</button>":"")
+   +"<button class='inb-x' onclick='hideInbToast()' aria-label='Schließen'>×</button>";
+ clearTimeout(_inbToastTimer);
+ if(state==="done")_inbToastTimer=setTimeout(hideInbToast,9000);
+}
+function hideInbToast(){const el=document.getElementById("inbToast");if(el)el.classList.remove("show");}
+function simulateInbound(){
+ const t=INBOUND_POOL[_inbN%INBOUND_POOL.length];_inbN++;
+ const mid=_inbId++;
+ eingang.unshift({id:mid,kanal:t.kanal,tit:t.tit,txt:t.txt,zeit:"gerade eben",achse:t.achse,done:false,typ:"qualifiziert",_neu:true});
+ renderEingang();
+ inbToast("in","<b>Neue Anfrage</b> über "+escapeHtml(t.kanal),"landet im Eingang — wird automatisch verarbeitet …",null);
+ setTimeout(()=>{
+  const m=eingang.find(x=>x.id===mid); if(m){m.done=true;m._neu=false;}
+  const fid=Math.max(0,...faelle.map(x=>x.id))+1;
+  faelle.push({id:fid,name:t.name,alter:t.alter,rolle:t.rolle,kanal:t.kanal,quelle:t.quelle,achse:t.achse,kt:t.kt,
+    status:"Neu",owner:"S. Koordination",aufgabe:"Erstreaktion",frist:dstr(0),saluto:t.achse==="SalutoCare",
+    docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
+    log:[[dstr(0),"Automatisch als Fall angelegt aus "+t.kanal+": "+t.txt]]});
+  renderAll();
+  inbToast("done","<b>Automatisch als Fall angelegt</b>",escapeHtml(t.name)+" · "+escapeHtml(t.achse)+" · "+escapeHtml(t.kanal),fid);
+ },1600);
+}
 function renderEingang(){
   document.getElementById("inbox").innerHTML=eingang.map(m=>
-   "<article class='mail"+(m.done?" done":"")+"'>"
+   "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"
    +"<span class='chico'>"+(CHAN_ICON[m.kanal]||CHAN_ICON["E-Mail"])+"</span>"
    +"<div class='mwrap'><div class='mtit'>"+escapeHtml(m.tit)+"</div><div class='mtxt'>"+escapeHtml(m.txt)+"</div>"
    +"<div class='mmeta'><span class='chtag'>"+escapeHtml(m.kanal)+"</span><span class='mtime'>"+escapeHtml(m.zeit)+"</span>"+"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span></div>"
@@ -2843,6 +2896,7 @@ document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&_detailOpe
 document.getElementById("fFrist").value=dstr(1);
 renderAll();
 applyHash();
+setTimeout(simulateInbound,3200);
 (function(){const el=document.getElementById("dtopDate");if(el)el.textContent=heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});})();
 </script>
 </body>
