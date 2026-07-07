@@ -2476,30 +2476,34 @@ function closeReferrer(){const ov=document.getElementById("refOverlay");ov.class
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&document.getElementById("refOverlay").classList.contains("open"))closeReferrer();});
 function renderPortal(zName){
  const wk=["KW 1","KW 2","KW 3","KW 4"];
+ const news=`<div class="rp-card rp-news"><h3>Aktuelles von Klinik Bavaria</h3>`
+  +portalNews.map(n=>`<div class="rp-newsrow"><span class="rp-date">${n.d}</span><div><b>${escapeHtml(n.t)}</b><small>${escapeHtml(n.s)}</small></div></div>`).join("")+`</div>`;
  const cls=n=>n===0?"none":n<=1?"tight":"free";
- const bel=`<div class="bel-grid"><span class="hd">Achse</span>${wk.map(w=>`<span class="hd bel-cell">${w}</span>`).join("")}`+
-  belegung.map(b=>`<span>${escapeHtml(b.achse)}</span>${b.frei.map(n=>`<span class="bel-cell ${cls(n)}">${n}</span>`).join("")}`).join("")+`</div>`;
- return `<h2>Willkommen, ${escapeHtml(zName)}</h2>
-  <div class="ref-card"><h3>Freie Plätze (Auslastung)</h3>${bel}</div>
-  <div class="ref-card"><h3>Unsere Kooperation</h3>
-   <div class="koop-grid">
-     <div><span class="kl">Ihr Ansprechpartner</span><b>S. Koordination · Belegungsteam</b></div>
-     <div><span class="kl">Direktdurchwahl</span><b>0971 0000-180</b></div>
-     <div><span class="kl">Reaktionszusage</span><b>Rückmeldung binnen 24 h</b></div>
-     <div><span class="kl">Status</span><b>Aktiver Partner · AHB-Fast-Lane</b></div>
-   </div></div>
-  <div class="ref-card"><h3>Patient anmelden</h3>
-   <div class="ref-field"><label>Name des Patienten</label><input placeholder="z. B. Max Mustermann"></div>
-   <div class="ref-field"><label>Fachbereich</label><select><option>Orthopädie</option><option>Neurologie</option><option>Geriatrie</option><option>SalutoCare</option></select></div>
-   <div class="ref-field"><label>Wunschtermin</label><input placeholder="KW / Datum"></div>
-   <label class="ref-field"><input type="checkbox" style="width:auto;min-height:0" checked> Dieser Patient kommt direkt von mir</label>
-   <div class="ref-upload">📎 Unterlagen hierher ziehen oder tippen (Demo)</div>
-   <button class="ref-btn" onclick="refToast()">Anmeldung absenden</button></div>
-  <div class="ref-card"><h3>Meine angemeldeten Fälle</h3>
-   <p style="font:400 13px/1.4 Inter;color:#6b6460">Heinz Vogel · SalutoCare · in Klärung &nbsp;·&nbsp; Karl Beispiel · Orthopädie · Aufnahme geplant</p></div>`
- +`<div class="ref-card"><h3>Meine Patienten — Live-Status</h3>`
- +inReha.slice(0,2).map(p=>`<div class="mp-row"><div><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.achse)} · in Reha, Tag ${p.verweildauer.ist}/${p.verweildauer.plan}</small></div><button class="mp-link" onclick="openReferrer('einblick','${escapeHtml(zName)}')">Einblick ›</button></div>`).join("")
- +`<div class="mp-row"><div><b>${escapeHtml(entlassDoc.pat)}</b><small>${escapeHtml(entlassDoc.achse)} · entlassen ${escapeHtml(entlassDoc.entlassen)}</small></div><button class="mp-link" onclick="openReferrer('abschluss','${escapeHtml(zName)}')">Abschlusspaket ›</button></div></div>`;
+ const bel=`<div class="rp-card"><h3>Freie Plätze</h3><p class="rp-hint">Tippen Sie auf eine freie Woche — die Anmeldung wird vorausgefüllt.</p>
+  <div class="rp-belgrid"><span class="hd">Achse</span>${wk.map(w=>`<span class="hd c">${w}</span>`).join("")}
+  ${belegung.map(b=>`<span class="rp-achse">${escapeHtml(b.achse)}</span>`+b.frei.map((n,i)=>n>0?`<button class="rp-bel ${cls(n)}" onclick="rpPrefill('${escapeHtml(b.achse)}','KW ${i+1}')">${n}</button>`:`<span class="rp-bel none">0</span>`).join("")).join("")}</div>
+  <div class="rp-legend"><span class="free">frei</span><span class="tight">knapp</span><span class="none">belegt</span></div></div>`;
+ const team=`<div class="rp-card"><h3>Ihre Ansprechpartner</h3><span class="rp-badge">Rückmeldung &lt; 24 h</span><div class="rp-team">`
+  +portalTeam.map(t=>`<div class="rp-person"><span class="rp-ava">${initialen(t.name)}</span><div><b>${escapeHtml(t.name)}</b><small>${escapeHtml(t.rolle)}</small><small>${escapeHtml(t.tel)} · ${escapeHtml(t.mail)}</small></div></div>`).join("")+`</div></div>`;
+ const form=`<div class="rp-card" id="rpAnmeldung"><h3>Patient anmelden</h3>
+  <div class="rp-form">
+   <div class="rp-field"><label>Name des Patienten</label><input id="rpName" placeholder="z. B. Max Mustermann"></div>
+   <div class="rp-field"><label>Fachbereich</label><select id="rpFach"><option>Orthopädie</option><option>Neurologie</option><option>Geriatrie</option><option>SalutoCare</option></select></div>
+   <div class="rp-field"><label>Wunschtermin</label><input id="rpTermin" placeholder="KW / Datum"></div>
+   <div class="rp-field"><label>Kostenträger</label><select><option>PKV</option><option>GKV + Komfort</option><option>Beihilfe</option><option>Selbstzahler</option></select></div>
+  </div>
+  <label class="rp-check"><input type="checkbox" checked> Dieser Patient kommt direkt von mir</label>
+  <div class="rp-upload">📎 Unterlagen hierher ziehen oder tippen (Demo)</div>
+  <button class="rp-cta" onclick="refToast()">Patient anmelden</button></div>`;
+ const faelleRows=`<div class="rp-card"><h3>Meine angemeldeten Fälle</h3>`
+  +portalFaelle.map(f=>`<div class="rp-fall"><span class="rp-ava s">${initialen(f.name)}</span><div><b>${escapeHtml(f.name)}</b><small>${escapeHtml(f.achse)} · seit ${f.d}</small></div><span class="rp-pill ${f.phase}">${escapeHtml(f.status)}</span></div>`).join("")+`</div>`;
+ const kontakt=`<div class="rp-card rp-kontakt"><h3>Kontakt</h3><p>Direktdurchwahl 0971 0000-180<br>zuweiser@demo-bavaria.local</p><button class="rp-cta ghost" onclick="refToast()">Wir rufen Sie zurück</button></div>`;
+ return news+`<div class="rp-two">${bel}${team}</div>`+form+`<div class="rp-two">${faelleRows}${kontakt}</div>`;
+}
+function rpPrefill(achse,kw){
+ const f=document.getElementById("rpFach"),t=document.getElementById("rpTermin"),card=document.getElementById("rpAnmeldung");
+ if(f)f.value=achse; if(t)t.value=kw;
+ if(card){card.scrollIntoView({behavior:"smooth",block:"center"});card.classList.remove("flash");void card.offsetWidth;card.classList.add("flash");}
 }
 function refToast(){alert("Demo — in diesem Prototyp nicht aktiv abgesendet.");}
 function renderEinblick(zName){
