@@ -1745,7 +1745,7 @@ label{font-size:12px;letter-spacing:.08em}
       </div>
     </div>
     <div class="mfoot">
-      <button class="btn-ghost" id="dAbbruch">Schließen</button>
+      <button class="btn-ghost" id="dAbbruch">‹ Zurück</button>
       <button class="btn-brass" id="dSpeichern">Speichern</button>
     </div>
   </div>
@@ -1755,7 +1755,7 @@ label{font-size:12px;letter-spacing:.08em}
   <div class="modal">
     <div class="mhead"><div class="ava" id="dbAva"></div><div><h2 id="dbName"></h2><div class="msub2" id="dbSub"></div></div></div>
     <div class="mbody" id="dbBody"></div>
-    <div class="mfoot"><button class="btn-ghost" onclick="closeDbDetail()">Schließen</button></div>
+    <div class="mfoot"><button class="btn-ghost" onclick="dismissDetail()">‹ Zurück</button></div>
   </div>
 </div>
 <script>
@@ -2102,12 +2102,13 @@ function openDbDetail(i){
     +"</div>";
   document.getElementById("dbDetail").classList.add("open");
   document.body.classList.add("detail-open");
+  pushDetailState();
 }
 function closeDbDetail(){
   document.getElementById("dbDetail").classList.remove("open");
   document.body.classList.remove("detail-open");
 }
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&document.getElementById("dbDetail").classList.contains("open"))closeDbDetail();});
+/* Escape wird zentral in WS1 (dismissDetail) behandelt */
 /* Automatisierungs-Vorschlag — abgeleitet aus Alter, Quelle & Einwilligung (gemäß Michaels Memo) */
 function autoFor(b){
  if(b.consent!=="ja") return "Keine Ansprache — Einwilligung fehlt";
@@ -2501,6 +2502,7 @@ function openDetail(id){
   document.getElementById("ovDetail").classList.add("open");
   document.body.classList.add("detail-open");
   if(!matchMedia("(min-width:1024px)").matches)document.body.classList.add("locked");
+  pushDetailState();
 }
 function closeDetail(){
   document.getElementById("ovDetail").classList.remove("open");
@@ -2511,8 +2513,8 @@ function updateDocCnt(){const n=["u1","u2","u3","u4"].filter(u=>document.getElem
 ["u1","u2","u3","u4"].forEach(u=>document.getElementById(u).addEventListener("change",updateDocCnt));
 function toggleVerlust(){document.getElementById("rowVerlust").classList.toggle("show",document.getElementById("dStatus").value==="Verloren");}
 document.getElementById("dStatus").addEventListener("change",toggleVerlust);
-document.getElementById("dAbbruch").onclick=closeDetail;
-document.getElementById("ovDetail").addEventListener("click",e=>{if(e.target===document.getElementById("ovDetail"))closeDetail();});
+document.getElementById("dAbbruch").onclick=dismissDetail;
+document.getElementById("ovDetail").addEventListener("click",e=>{if(e.target===document.getElementById("ovDetail"))dismissDetail();});
 document.getElementById("dSpeichern").onclick=()=>{
   const f=aktuellerFall;if(!f)return;
   const alt=f.status;
@@ -2530,8 +2532,8 @@ document.getElementById("dSpeichern").onclick=()=>{
   f.verlust=document.getElementById("dVerlust").value;
   const n=document.getElementById("dNotiz").value.trim();
   if(n)f.log.push([dstr(0),n]);
-  closeDetail();
   renderAll();
+  dismissDetail();
   if(ns==="Aufnahme geplant"&&alt!=="Aufnahme geplant")celebratePlanned();
 };
 
@@ -2613,6 +2615,27 @@ function applyHash(){
   if(parts.length===1&&oldNames[parts[0]]&&!document.getElementById("view-"+parts[0])){switchTab(parts[0]);return;}
   go(parts[0],parts[1]);
 }
+
+/* ===== WS1 · Zurück-Navigation: Detail-Overlays in den Browser-Verlauf einhängen ===== */
+/* ovDetail (Fall) und dbDetail (Datenbank) sind gegenseitig exklusiv -> ein Flag genuegt.
+   Oeffnen: pushDetailState(); Zurueck via Button/Esc/Backdrop/Browser-Zurueck: dismissDetail(). */
+let _detailPushed=false;
+function _detailOpen(){
+  const a=document.getElementById("ovDetail"),b=document.getElementById("dbDetail");
+  return !!((a&&a.classList.contains("open"))||(b&&b.classList.contains("open")));
+}
+function pushDetailState(){ if(!_detailPushed){ _detailPushed=true; history.pushState({detail:1},""); } }
+function _rawCloseDetails(){
+  const a=document.getElementById("ovDetail"); if(a)a.classList.remove("open");
+  const b=document.getElementById("dbDetail"); if(b)b.classList.remove("open");
+  document.body.classList.remove("locked","detail-open");
+}
+function dismissDetail(){ if(_detailPushed){ history.back(); } else { _rawCloseDetails(); } }
+window.addEventListener("popstate",function(){
+  if(_detailPushed){ _detailPushed=false; _rawCloseDetails(); }
+  else { applyHash(); }
+});
+document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&_detailOpen()) dismissDetail(); });
 
 /* ---------- Start ---------- */
 document.getElementById("fFrist").value=dstr(1);
