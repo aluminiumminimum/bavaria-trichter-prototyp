@@ -2524,17 +2524,19 @@ function renderEinblick(zName){
 }
 function renderAbschluss(zName){
  const d=entlassDoc;
- return `<h2>Abschlusspaket</h2>
-  <p class="ref-lead">Was Sie als zuweisende Praxis zum Reha-Abschluss erhalten — kompakt und vollständig.</p>
-  <div class="ref-card">
-    <div class="ref-cardhead"><h3>${escapeHtml(d.pat)} · ${escapeHtml(d.achse)}</h3><span class="ref-tag ok">entlassen ${escapeHtml(d.entlassen)}</span></div>
-    <div class="ref-meta">${escapeHtml(d.diagnose)} · Aufenthalt ${escapeHtml(d.aufenthalt)}</div>
-    <div class="ab-docs"><span class="ab-doc">📄 Arztbrief</span><span class="ab-doc">📄 Kurzbericht</span><span class="ab-doc">📄 Medikationsplan</span></div>
-    <div class="ab-sec"><h4>Kurzbericht</h4><p>${escapeHtml(d.kurz)}</p></div>
-    <div class="ab-sec"><h4>Empfehlungen</h4><ul class="rec-list">${d.empfehlungen.map(r=>`<li>${escapeHtml(r)}</li>`).join("")}</ul></div>
-    <div class="ab-sec"><h4>Medikation</h4><p>${escapeHtml(d.medikation)}</p></div>
-    <a class="rec-call" href="#" onclick="refToast();return false">☎ Rücksprache: ${escapeHtml(d.ruecksprache)}</a>
-  </div>`;
+ return `<p class="rp-lead">Was Sie als zuweisendes Haus zum Reha-Abschluss erhalten — kompakt, vollständig, ohne Nachtelefonieren.</p>
+ <div class="rp-card">
+  <div class="rp-pathead"><span class="rp-ava">${initialen(d.pat)}</span><div><b>${escapeHtml(d.pat)}</b><small>${escapeHtml(d.achse)} · ${escapeHtml(d.diagnose)} · Aufenthalt ${escapeHtml(d.aufenthalt)}</small></div><span class="rp-tag ok">entlassen ${escapeHtml(d.entlassen)}</span></div>
+  <div class="rp-outcome"><span class="k">Barthel-Index</span><span class="v">${d.barthel.auf} <i>→</i> ${d.barthel.ent}</span><span class="s">Reha-Ziel erreicht · Entlassung nach Hause mit ambulanter Anschlussversorgung</span></div>
+  <div class="rp-docs">
+   <button class="rp-doc" onclick="refToast()"><span>📄</span><b>Arztbrief</b><small>PDF · Demo</small></button>
+   <button class="rp-doc" onclick="refToast()"><span>📄</span><b>Kurzbericht</b><small>PDF · Demo</small></button>
+   <button class="rp-doc" onclick="refToast()"><span>📄</span><b>Medikationsplan</b><small>PDF · Demo</small></button>
+  </div>
+  <div class="rp-recs"><h4>Empfehlungen</h4>${d.empfehlungen.map(r=>`<div class="rp-rec">✓ ${escapeHtml(r)}</div>`).join("")}</div>
+  <div class="rp-med"><h4>Medikation</h4><p>${escapeHtml(d.medikation)}</p></div>
+  <a class="rp-call" href="#" onclick="refToast();return false">☎ Rücksprache: ${escapeHtml(d.ruecksprache)}</a>
+ </div>`;
 }
 function kpiRing(val,max,label,sub){
  const r=22,c=2*Math.PI*r,pct=Math.max(0,Math.min(1,val/max)),off=c*(1-pct);
