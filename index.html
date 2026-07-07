@@ -1060,6 +1060,75 @@ label{font-size:12px;letter-spacing:.08em}
   .radar-kpi.jetzt .rk-n{color:var(--terra)}.radar-kpi.bald .rk-n{color:var(--brass-deep)}.radar-kpi.beob .rk-n{color:var(--sage-deep)}
   .radar-kpi .rk-l{font:600 11px/1.1 Inter;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:3px}
   .radar-card{border-left:3px solid var(--acol,var(--brass-line))}
+  /* ===== WS3 · Reha-Steuerung — Cockpit-Karteikarten + Detail (Erfolge | Wirtschaftlichkeit) ===== */
+  #inrehaGrid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:900px){#inrehaGrid{grid-template-columns:1fr 1fr}}
+  @media(min-width:1320px){#inrehaGrid{grid-template-columns:1fr 1fr 1fr}}
+  .ir-card{display:block;width:100%;text-align:left;cursor:pointer;background:var(--paper);border:1px solid var(--hair);border-left:3px solid var(--acol,var(--brass-line));border-radius:16px;box-shadow:var(--shadow-soft);padding:16px 18px;transition:transform .16s ease,box-shadow .16s ease}
+  @media(hover:hover){.ir-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}}
+  .ir-card.hot{background:linear-gradient(180deg,var(--paper),#fdf6e8)}
+  .ir-head{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+  .ir-head .ava{width:40px;height:40px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font:600 14px/1 Inter}
+  .ir-htxt{flex:1;min-width:0}
+  .ir-htxt h3{font:700 17px/1.15 "Cormorant Garamond",Georgia,serif;margin:0;color:var(--ink)}
+  .ir-age{color:var(--faint);font-weight:400;font-size:14px}
+  .ir-icd{font:400 12px/1.3 Inter;color:var(--muted);margin-top:2px;display:flex;align-items:center}
+  .ir-chev{color:var(--brass);font-size:22px;line-height:1;opacity:.5;transition:transform .16s ease,opacity .16s ease}
+  @media(hover:hover){.ir-card:hover .ir-chev{opacity:1;transform:translateX(3px)}}
+  .ir-metrics{display:flex;gap:10px;margin-bottom:14px}
+  .ir-m{flex:1;background:var(--paper2);border-radius:11px;padding:9px 6px;text-align:center}
+  .ir-mv{font:700 20px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink);display:flex;align-items:baseline;justify-content:center;gap:4px}
+  .ir-delta{font:700 10.5px/1 Inter;color:var(--sage-deep)}
+  .ir-ml{font:600 10.5px/1 Inter;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+  .ir-stay .lbl{display:flex;justify-content:space-between;font:600 11px/1 Inter;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .ir-stay .track{height:7px;border-radius:99px;background:#efe9e0;overflow:hidden}
+  .ir-stay .track .fill{height:100%;background:linear-gradient(90deg,var(--brass),var(--brass-deep));border-radius:99px}
+  /* rsDetail — zentriertes Modal, zwei Spalten */
+  .rs-overlay{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:32px;background:rgba(31,28,28,.34);backdrop-filter:blur(2px)}
+  .rs-overlay.open{display:flex}
+  .rs-modal{background:var(--cream);border-radius:20px;box-shadow:0 24px 70px rgba(31,28,28,.28);width:min(880px,94vw);max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+  .rs-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--hair);background:var(--paper)}
+  .rs-head .ava{width:44px;height:44px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font:600 15px/1 Inter}
+  .rs-head h2{font:700 20px/1.1 "Cormorant Garamond",Georgia,serif;margin:0}
+  .rs-sub{font:400 12.5px/1.3 Inter;color:var(--muted);margin-top:2px}
+  .rs-close{margin-left:auto;font:600 13px/1 Inter;color:var(--brass-deep);border:1px solid var(--brass-line);border-radius:99px;padding:9px 15px;background:var(--paper);white-space:nowrap}
+  @media(hover:hover){.rs-close:hover{background:var(--brass-soft)}}
+  .rs-body{display:grid;grid-template-columns:1fr 1fr;gap:0;overflow-y:auto}
+  @media(max-width:720px){.rs-body{grid-template-columns:1fr}}
+  .rs-col{padding:20px 22px}
+  .rs-col+.rs-col{border-left:1px solid var(--hair)}
+  @media(max-width:720px){.rs-col+.rs-col{border-left:none;border-top:1px solid var(--hair)}}
+  .rs-ctitle{font:600 12px/1 Inter;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-deep);margin:0 0 15px}
+  .rs-rings{display:flex;gap:8px;margin-bottom:16px}
+  .rs-dev{display:flex;flex-direction:column;gap:11px;margin-bottom:16px}
+  .rs-devbar .dv-lbl{display:flex;justify-content:space-between;font:600 12px/1.2 Inter;color:var(--ink-soft);margin-bottom:5px}
+  .rs-devbar .dv-lbl .num{color:var(--sage-deep);font-weight:700}
+  .rs-devbar .dv-track{position:relative;height:8px;border-radius:99px;background:#efe9e0;overflow:hidden}
+  .rs-devbar .dv-base{position:absolute;left:0;top:0;height:100%;background:#d9cdb4}
+  .rs-devbar .dv-gain{position:absolute;top:0;height:100%;background:linear-gradient(90deg,var(--sage),var(--sage-deep))}
+  .rs-report{font:400 13.5px/1.5 Inter;color:var(--ink-soft);margin-bottom:14px}
+  .rs-report .rk,.rs-empf .rk{display:block;font:700 10.5px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:5px}
+  .rs-labor{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+  .rs-lab{font:400 12px/1.2 Inter;color:var(--ink-soft);background:var(--paper2);border:1px solid var(--hair);border-radius:9px;padding:6px 10px}
+  .rs-lab b{display:block;font:600 9.5px/1.2 Inter;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .rs-timeline{display:flex;flex-direction:column;gap:9px}
+  .rs-te{border-left:2px solid var(--hair);padding-left:11px}
+  .rs-te small{font:600 10.5px/1 Inter;color:var(--faint)}
+  .rs-te p{font:400 13px/1.4 Inter;color:var(--ink-soft);margin:3px 0 0}
+  .rs-stay{margin-bottom:16px}
+  .rs-stay .lbl{display:flex;justify-content:space-between;align-items:center;font:600 12px/1 Inter;color:var(--ink);margin-bottom:7px}
+  .rs-track{height:9px;border-radius:99px;background:#efe9e0;overflow:hidden}
+  .rs-fill{height:100%;background:linear-gradient(90deg,var(--brass),var(--brass-deep));border-radius:99px}
+  .rs-stay-meta{font:400 12px/1.3 Inter;color:var(--muted);margin-top:6px}
+  .rs-pill{font:700 10.5px/1 Inter;letter-spacing:.03em;text-transform:uppercase;padding:3px 9px;border-radius:99px}
+  .rs-pill.ok{background:var(--sage-soft);color:var(--sage-deep)}
+  .rs-pill.warn{background:var(--terra-soft);color:var(--terra)}
+  .rs-rows{margin-bottom:14px}
+  .rs-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--hair2);font:400 13.5px/1.3 Inter;color:var(--ink)}
+  .rs-row:last-child{border-bottom:none}
+  .rs-k{color:var(--muted);font-weight:600}
+  .rs-empf ul{margin:0;padding-left:18px}
+  .rs-empf li{font:400 13px/1.55 Inter;color:var(--ink-soft)}
 </style>
 </head>
 <body>
@@ -1801,6 +1870,14 @@ label{font-size:12px;letter-spacing:.08em}
     <div class="mfoot"><button class="btn-ghost" onclick="dismissDetail()">‹ Zurück</button></div>
   </div>
 </div>
+
+<!-- ============ REHA-STEUERUNG-DETAIL (WS3) ============ -->
+<div class="rs-overlay" id="rsDetail" role="dialog" aria-modal="true" aria-label="Reha-Steuerung Detail">
+  <div class="rs-modal">
+    <div class="rs-head"><div class="ava" id="rsAva"></div><div style="flex:1;min-width:0"><h2 id="rsName"></h2><div class="rs-sub" id="rsSub"></div></div><button class="rs-close" onclick="dismissDetail()">‹ Zurück</button></div>
+    <div class="rs-body"><div class="rs-col" id="rsErfolg"></div><div class="rs-col" id="rsWirt"></div></div>
+  </div>
+</div>
 <script>
 const STATUS=["Neu","Kontaktiert","Qualifizierung","Unterlagen","Aufnahme geplant","Aufgenommen","Verloren"];
 const STATUS_COL={"Neu":"#9b8573","Kontaktiert":"#6e7f8d","Qualifizierung":"#b58a3e","Unterlagen":"#97896f","Aufnahme geplant":"#6f8f72","Aufgenommen":"#5d7f60","Verloren":"#a8543f"};
@@ -2514,23 +2591,72 @@ function kpiRing(val,max,label,sub){
    <text x="28" y="32" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="17" font-weight="600" fill="#1F1C1C">${val}</text></svg>
    <span class="rl">${escapeHtml(label)}</span>${sub?`<span class="rd">${escapeHtml(sub)}</span>`:""}</div>`;
 }
+/* WS3 · Abrechnungs-/Empfehlungs-Demodaten (eigene Ergänzung, greift nicht in geteilte inReha-Felder ein) */
+const RS_BILLING={
+ "Dieter Franke":{tagessatz:890,empf:["Röntgen-Verlaufskontrolle Knie in 5 Tagen","Belastungsaufbau Richtung Vollbelastung","Lymphdrainage 2×/Woche fortführen"]},
+ "Elke Sauer":{tagessatz:1250,empf:["Schluckdiagnostik (FEES) Verlaufskontrolle","Logopädie intensivieren (täglich)","Kardiologisches Monitoring fortführen"]},
+ "Lydia Sommer":{tagessatz:980,empf:["Karotis-Doppler zur Sekundärprävention","Ergotherapie Feinmotorik links ausbauen","Neuropsychologisches Assessment"]}
+};
+function devBar(label,auf,akt,max){
+ const pAuf=Math.round(auf/max*100),pAkt=Math.round(akt/max*100);
+ return "<div class='rs-devbar'><div class='dv-lbl'><span>"+label+"</span><span class='num'>"+auf+" → "+akt+"</span></div>"
+  +"<div class='dv-track'><div class='dv-base' style='width:"+pAuf+"%'></div><div class='dv-gain' style='width:"+Math.max(0,pAkt-pAuf)+"%;left:"+pAuf+"%'></div></div></div>";
+}
+function openRsDetail(i){
+ const p=inReha[i]; if(!p) return;
+ ["ovDetail","dbDetail"].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove("open");});
+ document.getElementById("rsAva").textContent=initialen(p.name);
+ document.getElementById("rsName").textContent=p.name+" ("+p.alter+")";
+ document.getElementById("rsSub").textContent=p.achse+" · "+p.icd+" · "+p.owner;
+ const bill=RS_BILLING[p.name]||{tagessatz:0,empf:[]};
+ const dB=p.barthel.akt-p.barthel.auf,dF=p.fim.akt-p.fim.auf;
+ const rest=Math.max(0,p.verweildauer.plan-p.verweildauer.ist);
+ const stayPct=Math.min(100,Math.round(p.verweildauer.ist/p.verweildauer.plan*100));
+ const kosten=bill.tagessatz*p.verweildauer.plan;
+ document.getElementById("rsErfolg").innerHTML=
+   "<div class='rs-ctitle'>Erfolge & Verlauf</div>"
+  +"<div class='rs-rings'>"+kpiRing(p.barthel.akt,100,"Barthel","▲ "+dB)+kpiRing(p.fim.akt,126,"FIM","▲ "+dF)+kpiRing(p.ziel,100,"Reha-Ziel",p.ziel+" %")+"</div>"
+  +"<div class='rs-dev'>"+devBar("Barthel-Index (0–100)",p.barthel.auf,p.barthel.akt,100)+devBar("FIM (18–126)",p.fim.auf,p.fim.akt,126)+"</div>"
+  +"<div class='rs-report'><span class='rk'>Aktueller Kurzbericht</span>"+escapeHtml(p.kurzbericht)+"</div>"
+  +(p.labor?"<div class='rs-labor'>"+p.labor.map(l=>"<span class='rs-lab'><b>"+escapeHtml(l.k)+"</b>"+escapeHtml(l.v)+"</span>").join("")+"</div>":"")
+  +"<div class='rs-timeline'>"+p.eintraege.map(e=>"<div class='rs-te'><small>"+escapeHtml(e.d)+"</small><p>"+escapeHtml(e.txt)+"</p></div>").join("")+"</div>";
+ const stayState=p.verweildauer.ist<=p.verweildauer.plan?"<span class='rs-pill ok'>im Plan</span>":"<span class='rs-pill warn'>über Plan</span>";
+ document.getElementById("rsWirt").innerHTML=
+   "<div class='rs-ctitle'>Wirtschaftlichkeit & Abrechnung</div>"
+  +"<div class='rs-stay'><div class='lbl'><span>Verweildauer</span>"+stayState+"</div>"
+    +"<div class='rs-track'><div class='rs-fill' style='width:"+stayPct+"%'></div></div>"
+    +"<div class='rs-stay-meta'>Tag "+p.verweildauer.ist+" / "+p.verweildauer.plan+" geplant · noch "+rest+" Tage</div></div>"
+  +"<div class='rs-rows'>"
+    +"<div class='rs-row'><span class='rs-k'>Diagnose (ICD)</span><span>"+escapeHtml(p.icd)+"</span></div>"
+    +"<div class='rs-row'><span class='rs-k'>Aufnahme</span><span>"+escapeHtml(p.aufnahme)+"</span></div>"
+    +(bill.tagessatz?"<div class='rs-row'><span class='rs-k'>Tagessatz</span><span>"+bill.tagessatz.toLocaleString('de-DE')+" €</span></div>":"")
+    +(bill.tagessatz?"<div class='rs-row'><span class='rs-k'>Kalk. Gesamt (Plan)</span><span>"+kosten.toLocaleString('de-DE')+" €</span></div>":"")
+  +"</div>"
+  +(bill.empf&&bill.empf.length?"<div class='rs-empf'><span class='rk'>Sinnvolle nächste Diagnostik & Therapie</span><ul>"+bill.empf.map(x=>"<li>"+escapeHtml(x)+"</li>").join("")+"</ul></div>":"");
+ document.getElementById("rsDetail").classList.add("open");
+ document.body.classList.add("detail-open");
+ pushDetailState();
+}
 function renderInReha(){
  const el=document.getElementById("inrehaGrid");if(!el)return;
- el.innerHTML=inReha.map(p=>{
+ el.innerHTML=inReha.map((p,i)=>{
   const rest=Math.max(0,p.verweildauer.plan-p.verweildauer.ist);
-  const stayPct=Math.min(100,p.verweildauer.ist/p.verweildauer.plan*100);
-  return `<div class="ir-card${p.achse==="SalutoCare"?" hot":""}">
-    <div class="ir-head"><div><h3>${escapeHtml(p.name)} <span style="color:#9B8573;font-weight:400">(${p.alter})</span></h3>
-      <div class="ir-icd">${escapeHtml(p.achse)} · ${escapeHtml(p.icd)} · ${escapeHtml(p.owner)}</div></div></div>
-    <div class="ir-rings">
-      ${kpiRing(p.barthel.akt,100,"Barthel","▲ "+(p.barthel.akt-p.barthel.auf))}
-      ${kpiRing(p.fim.akt,126,"FIM","▲ "+(p.fim.akt-p.fim.auf))}
-      ${kpiRing(p.ziel,100,"Reha-Ziel",p.ziel+" %")}
+  const stayPct=Math.min(100,Math.round(p.verweildauer.ist/p.verweildauer.plan*100));
+  const col=ACHSE_COL[p.achse]||"var(--unklar)";
+  const dB=p.barthel.akt-p.barthel.auf,dF=p.fim.akt-p.fim.auf;
+  return `<button class="ir-card${p.achse==="SalutoCare"?" hot":""}" style="--acol:${col}" onclick="openRsDetail(${i})">
+    <div class="ir-head"><span class="ava">${initialen(p.name)}</span>
+      <div class="ir-htxt"><h3>${escapeHtml(p.name)} <span class="ir-age">(${p.alter})</span></h3>
+      <div class="ir-icd"><span class="ach-dot"></span>${escapeHtml(p.achse)} · ${escapeHtml(p.icd)}</div></div>
+      <span class="ir-chev">›</span></div>
+    <div class="ir-metrics">
+      <div class="ir-m"><div class="ir-mv num">${p.barthel.akt}<span class="ir-delta">▲${dB}</span></div><div class="ir-ml">Barthel</div></div>
+      <div class="ir-m"><div class="ir-mv num">${p.fim.akt}<span class="ir-delta">▲${dF}</span></div><div class="ir-ml">FIM</div></div>
+      <div class="ir-m"><div class="ir-mv num">${p.ziel}%</div><div class="ir-ml">Reha-Ziel</div></div>
     </div>
     <div class="ir-stay"><div class="lbl"><span>Verweildauer</span><span>Tag ${p.verweildauer.ist} / ${p.verweildauer.plan} · noch ${rest} T</span></div>
-      <div class="track"><div class="fill" style="width:${stayPct}%"></div><div class="plan" style="left:100%"></div></div></div>
-    ${p.eintraege.map(e=>`<div class="ir-rep"><small>${escapeHtml(e.d)}</small><p>${escapeHtml(e.txt)}</p></div>`).join("")}
-   </div>`;
+      <div class="track"><div class="fill" style="width:${stayPct}%"></div></div></div>
+   </button>`;
  }).join("")||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
 }
 function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();renderInReha();}
@@ -2697,14 +2823,13 @@ function applyHash(){
 /* ovDetail (Fall) und dbDetail (Datenbank) sind gegenseitig exklusiv -> ein Flag genuegt.
    Oeffnen: pushDetailState(); Zurueck via Button/Esc/Backdrop/Browser-Zurueck: dismissDetail(). */
 let _detailPushed=false;
+const _DETAIL_IDS=["ovDetail","dbDetail","rsDetail"];
 function _detailOpen(){
-  const a=document.getElementById("ovDetail"),b=document.getElementById("dbDetail");
-  return !!((a&&a.classList.contains("open"))||(b&&b.classList.contains("open")));
+  return _DETAIL_IDS.some(id=>{const e=document.getElementById(id);return e&&e.classList.contains("open");});
 }
 function pushDetailState(){ if(!_detailPushed){ _detailPushed=true; history.pushState({detail:1},""); } }
 function _rawCloseDetails(){
-  const a=document.getElementById("ovDetail"); if(a)a.classList.remove("open");
-  const b=document.getElementById("dbDetail"); if(b)b.classList.remove("open");
+  _DETAIL_IDS.forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove("open");});
   document.body.classList.remove("locked","detail-open");
 }
 function dismissDetail(){ if(_detailPushed){ history.back(); } else { _rawCloseDetails(); } }
