@@ -1954,6 +1954,57 @@ function rpPersona(zName){
  ap=ap.replace(/^Hr\.\s*/,"Herr ").replace(/^Fr\.\s*/,"Frau ");
  return {name:ap,inst:zName,typ:z?z.typ:""};
 }
+const portalStats=[
+ {to:14,lbl:"Fälle 2026"},
+ {to:11,suf:" h",lbl:"Ø Rückmeldung"},
+ {to:96,suf:" %",lbl:"Aufnahmequote"},
+ {txt:"seit 2023",lbl:"Partner"}
+];
+function rpDate(iso){const m=/^\d{4}-(\d{2})-(\d{2})$/.exec(iso||"");return m?m[2]+"."+m[1]+".":iso;}
+function rpToast(msg){
+ let t=document.getElementById("rpToast");
+ if(!t){t=document.createElement("div");t.id="rpToast";document.body.appendChild(t);}
+ t.innerHTML=`<span class="tick">✓</span>${msg}`;
+ t.classList.remove("show");void t.offsetWidth;t.classList.add("show");
+ clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2500);
+}
+function rpCount(el,to,dur,suffix){
+ if(!el)return;const suf=suffix||"";
+ if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches){el.textContent=to+suf;return;}
+ const t0=performance.now();
+ (function step(t){const p=Math.min(1,((t||performance.now())-t0)/dur),e=1-Math.pow(1-p,3);
+  el.textContent=Math.round(to*e)+suf;
+  if(p<1)requestAnimationFrame(step);})(t0);
+}
+function rpAnimate(){
+ document.querySelectorAll(".rp-stat b[data-to]").forEach((el,i)=>rpCount(el,+el.dataset.to,900+i*120,el.dataset.suf||""));
+ document.querySelectorAll(".rp-outcome .v b[data-to]").forEach((el,i)=>rpCount(el,+el.dataset.to,1000+i*150));
+ document.querySelectorAll(".rp-patrings svg text").forEach((el,i)=>{const v=parseInt(el.textContent,10);if(v)rpCount(el,v,900+i*150);});
+}
+function rpUpload(zone){
+ const n=zone.querySelectorAll(".up-file").length;
+ if(n>=2){rpToast("Demo-Limit erreicht — 2 Dateien angehängt");return;}
+ zone.classList.add("has");
+ zone.insertAdjacentHTML("beforeend",`<span class="up-file">✓ ${n===0?"Arztbrief_Demo.pdf":"Befund_Demo.pdf"} hinzugefügt</span>`);
+}
+function rpFallRows(){
+ return portalFaelle.map(f=>`<div class="rp-fall"><span class="rp-ava s">${initialen(f.name)}</span><div><b>${escapeHtml(f.name)}</b><small>${escapeHtml(f.achse)} · seit ${rpDate(f.d)}</small></div><span class="rp-pill ${f.phase}">${escapeHtml(f.status)}</span></div>`).join("");
+}
+function rpSubmit(zName){
+ const nameEl=document.getElementById("rpName"),fachEl=document.getElementById("rpFach");
+ const name=(nameEl&&nameEl.value.trim())||"Max Mustermann";
+ const fach=(fachEl&&fachEl.value)||"Orthopädie";
+ portalFaelle.unshift({name:name,achse:fach,status:"Neu · eben eingegangen",phase:"neu",d:dstr(0)});
+ if(portalFaelle.length>4)portalFaelle.pop();
+ const card=document.getElementById("rpAnmeldung");
+ if(card)card.innerHTML=`<div class="rp-success">
+   <svg viewBox="0 0 64 64" class="rp-tick"><circle cx="32" cy="32" r="29" fill="none" stroke="#cdb083" stroke-width="2.5"/><path d="M20 33 L29 42 L45 24" fill="none" stroke="#cdb083" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+   <h3>Anmeldung eingegangen</h3>
+   <p>Wir melden uns verbindlich innerhalb von 24 Stunden bei Ihnen.</p>
+   <button class="rp-cta ghost" onclick="rpTab('portal','${escapeHtml(zName)}')">Weitere Anmeldung</button></div>`;
+ const list=document.getElementById("rpFaelleList");
+ if(list){list.innerHTML=rpFallRows();const first=list.querySelector(".rp-fall");if(first)first.classList.add("just-in");}
+}
 /* ----- Patienten aktuell in der Reha (in-treatment) — Reha-KPIs ----- */
 let inReha=[
  {name:"Dieter Franke",alter:66,achse:"Orthopädie",owner:"M. Belegung",icd:"M17.1 — Gonarthrose (sekundär)",aufnahme:dstr(-6),verweildauer:{ist:6,plan:21},barthel:{auf:45,akt:75},fim:{auf:78,akt:101},ziel:60,
@@ -2463,12 +2514,14 @@ function renderSuite(screen,zName){
 }
 function rpTab(screen,zName){
  document.getElementById("refBody").innerHTML=renderSuite(screen,zName);
+ rpAnimate();
  document.getElementById("refOverlay").scrollTop=0;
 }
 function openReferrer(screen,zName){
  const ov=document.getElementById("refOverlay");
  document.getElementById("refWho").textContent="Zuweiser-Ansicht · "+zName;
  document.getElementById("refBody").innerHTML=renderSuite(screen||"portal",zName);
+ rpAnimate();
  ov.classList.add("open");ov.setAttribute("aria-hidden","false");document.body.classList.add("locked");
  ov.scrollTop=0;
 }
