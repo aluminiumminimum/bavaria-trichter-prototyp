@@ -923,19 +923,6 @@ label{font-size:12px;letter-spacing:.08em}
 .stock-chip{font-size:13px}
 .zw-portal{font-size:13px}
 .tier-filter button{font-size:12.5px}
-/* ===== DESIGN-V2 B-Matrix — premium + lesbar ===== */
-.mx-rowlbl{font-size:16px;letter-spacing:.06em;color:#7e6a55;font-weight:700;
-  display:flex;align-items:center;gap:12px;padding-bottom:9px;margin:2px 0 6px}
-.mx-rowlbl::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--brass-line),transparent)}
-.mx-cell{padding:16px 16px;position:relative;overflow:hidden}
-.mx-cell::before{content:"";position:absolute;top:0;left:14px;right:14px;height:2px;border-radius:0 0 3px 3px;
-  background:linear-gradient(90deg,transparent,#cdb083 30%,#cdb083 70%,transparent);opacity:.5}
-.mx-cell .mx-col{font-size:13px;letter-spacing:.06em;color:#b08f5f}
-.mx-cell h4{font-size:17.5px;margin:5px 0 3px}
-.mx-cell p{font-size:14px;line-height:1.42}
-.mx-metric{font-size:19px}
-.mx-chip{font-size:11.5px;padding:4px 9px}
-@media(hover:hover){.mx-cell:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(31,28,28,.10);border-color:var(--brass-line)}}
 /* ===== DESIGN-V2 C-Surfaces — Gold-Hairlines + Trennlinien ===== */
 .hairline{border-top-color:var(--brass-line);opacity:.8}
 .patient-card,.zcard{position:relative}
@@ -946,76 +933,16 @@ label{font-size:12px;letter-spacing:.08em}
 .card{box-shadow:0 1px 2px rgba(40,35,30,.05),0 12px 30px rgba(40,35,30,.06)}
 /* ===== DESIGN-V2 D-Motion — Entrance-Stagger + Hover-Lift ===== */
 @keyframes dv2Up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.view.active .chap,.view.active .mx-row,.view.active .bestand-grid>*,.view.active .zgrid>*{animation:dv2Up .45s cubic-bezier(.4,0,.2,1) both}
+.view.active .chap,.view.active .bestand-grid>*,.view.active .zgrid>*{animation:dv2Up .45s cubic-bezier(.4,0,.2,1) both}
 .view.active .chap:nth-child(2){animation-delay:.04s}
 .view.active .chap:nth-child(3){animation-delay:.09s}
 .view.active .chap:nth-child(4){animation-delay:.14s}
-.view.active .mx-row:nth-child(2){animation-delay:.08s}
 .view.active .zgrid>*:nth-child(2),.view.active .bestand-grid>*:nth-child(2){animation-delay:.05s}
 .view.active .zgrid>*:nth-child(3),.view.active .bestand-grid>*:nth-child(3){animation-delay:.1s}
 .view.active .zgrid>*:nth-child(n+4),.view.active .bestand-grid>*:nth-child(n+4){animation-delay:.14s}
 @media(hover:hover){
   .patient-card,.zcard,.db-lead,.template-card{transition:transform .18s ease,box-shadow .18s ease}
   .patient-card:hover,.zcard:hover,.template-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(31,28,28,.10)}
-}
-/* ===== DESIGN-V2 B-Matrix v3 — Spaltenköpfe, zentrierte Zeilen-Titel, Phasen-Farbakzente ===== */
-:root{--mx-vor:#6f8f72;--mx-in:#bd9a4e;--mx-nach:#9B8573}
-/* Zeilen-Titel (Zuweiser / Patient direkt): zentriert + größer, Hairline beidseitig */
-.mx-rowlbl{justify-content:center;text-align:center;font-size:17px;letter-spacing:.09em;
-  color:#6f5b46;gap:14px;padding-bottom:0;margin:12px 0 12px}
-.mx-rowlbl::after{flex:1;max-width:120px}
-.mx-rowlbl::before{content:"";flex:1;max-width:120px;height:1px;
-  background:linear-gradient(270deg,transparent,var(--brass-line))}
-/* Zellen-Top-Akzent je Reha-Phase (überschreibt einheitliches Gold) */
-.mx-cell[data-phase=vor]::before{background:linear-gradient(90deg,transparent,var(--mx-vor) 30%,var(--mx-vor) 70%,transparent)}
-.mx-cell[data-phase=in]::before{background:linear-gradient(90deg,transparent,var(--mx-in) 30%,var(--mx-in) 70%,transparent)}
-.mx-cell[data-phase=nach]::before{background:linear-gradient(90deg,transparent,var(--mx-nach) 30%,var(--mx-nach) 70%,transparent)}
-/* per-cell Phasen-Label (nur mobil sichtbar) farblich an Phase koppeln */
-.mx-cell[data-phase=vor] .mx-col{color:var(--mx-vor)}
-.mx-cell[data-phase=in] .mx-col{color:var(--mx-in)}
-.mx-cell[data-phase=nach] .mx-col{color:var(--mx-nach)}
-/* Spaltenkopf-Zeile: mobil aus (per-cell Labels reichen), Desktop an */
-.mx-colhead{display:none}
-@media(min-width:900px){
-  .mx-colhead{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;grid-column:1/-1;margin:2px 0 -2px}
-  .mx-ch{position:relative;text-align:center;font:700 14.5px/1.2 Inter;letter-spacing:.08em;
-    text-transform:uppercase;color:#6f5b46;padding:8px 6px 12px}
-  .mx-ch::after{content:"";position:absolute;left:50%;bottom:2px;transform:translateX(-50%);
-    width:40px;height:3px;border-radius:99px}
-  .mx-ch[data-phase=vor]::after{background:var(--mx-vor)}
-  .mx-ch[data-phase=in]::after{background:var(--mx-in)}
-  .mx-ch[data-phase=nach]::after{background:var(--mx-nach)}
-  .mx-rowlbl{font-size:19px}
-  .mx-rowlbl::before,.mx-rowlbl::after{max-width:200px}
-  /* Spaltenkopf übernimmt die Phasen-Beschriftung → per-cell Label aus */
-  .mx-cell .mx-col{display:none}
-  .mx-cell h4{margin-top:2px}
-}
-/* Entrance-Stagger an neue Reihenfolge (Spaltenkopf zuerst) anpassen */
-.view.active .mx-colhead{animation:dv2Up .45s cubic-bezier(.4,0,.2,1) both}
-.view.active #matrixGrid>.mx-row:nth-child(2){animation-delay:.07s}
-.view.active #matrixGrid>.mx-row:nth-child(3){animation-delay:.13s}
-/* ===== DESIGN-V2 B-Matrix v4 — vertikale Spalten-Trennlinien + Draw-in (Desktop) ===== */
-@keyframes mxRule{from{transform:translateX(-50%) scaleY(0)}to{transform:translateX(-50%) scaleY(1)}}
-@keyframes mxUnder{from{transform:translateX(-50%) scaleX(.18);opacity:0}to{transform:translateX(-50%) scaleX(1);opacity:1}}
-@media(min-width:900px){
-  .matrix-grid{position:relative}
-  /* zwei gefederte Messing-Hairlines in den Spalten-Gutters (vor|in, in|nach) */
-  .matrix-grid::before,.matrix-grid::after{
-    content:"";position:absolute;top:6px;bottom:4px;width:1px;pointer-events:none;
-    transform:translateX(-50%);transform-origin:top center;
-    background:linear-gradient(180deg,transparent,var(--brass-line) 9%,#cdb083 50%,var(--brass-line) 91%,transparent);
-    opacity:.65}
-  .matrix-grid::before{left:calc(33.333% - 2px)}
-  .matrix-grid::after{left:calc(66.666% + 2px)}
-  /* Draw-in beim Aufruf: Linien wachsen von oben, Spaltenkopf-Unterstriche wachsen mit */
-  .view.active .matrix-grid::before,.view.active .matrix-grid::after{
-    animation:mxRule .7s cubic-bezier(.33,0,.2,1) both;animation-delay:.12s}
-  .view.active .matrix-grid::after{animation-delay:.2s}
-  .mx-ch::after{transform:translateX(-50%);transform-origin:bottom center}
-  .view.active .mx-ch::after{animation:mxUnder .55s cubic-bezier(.33,0,.2,1) both;animation-delay:.3s}
-  .view.active .mx-ch[data-phase=in]::after{animation-delay:.38s}
-  .view.active .mx-ch[data-phase=nach]::after{animation-delay:.46s}
 }
 </style>
 </head>
