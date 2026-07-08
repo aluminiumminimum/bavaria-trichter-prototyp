@@ -1152,6 +1152,14 @@ label{font-size:12px;letter-spacing:.08em}
   .rs-kpi{flex:1;background:var(--paper2);border-radius:11px;padding:10px 8px;text-align:center}
   .rs-kpi .rk-n{font:700 17px/1.05 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
   .rs-kpi .rk-l{font:600 9.5px/1.15 Inter;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+  /* ===== WS6 · Kommunikation & Zuordnung ===== */
+  .komm-block textarea{width:100%;font-family:inherit;font-size:13.5px;line-height:1.45;color:var(--ink);border:1px solid var(--hair);border-radius:10px;padding:9px 11px;resize:vertical;background:var(--paper);margin-top:6px}
+  .komm-row{display:flex;gap:8px;align-items:center}
+  .komm-row select{flex:0 0 auto;width:auto;min-height:38px;border:1px solid var(--hair);border-radius:8px;padding:0 9px}
+  .komm-row .btn-brass{margin-left:auto}
+  .timeline .log-out{border-left:2px solid var(--sage);background:var(--sage-soft);border-radius:0 8px 8px 0;padding:4px 0 4px 9px}
+  .timeline .log-in{border-left:2px solid var(--hair);padding-left:9px}
+  .eingang-done{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -1879,6 +1887,10 @@ label{font-size:12px;letter-spacing:.08em}
         </div>
         <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
         <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
+        <div class="full komm-block"><label>Antwort senden</label>
+          <div class="komm-row"><select id="dReplyKanal"><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select><button class="btn-brass btn-sm" type="button" onclick="sendReply()">✉ Antwort senden</button></div>
+          <textarea id="dReply" rows="2" placeholder="Antwort an die anfragende Person verfassen … (Demo)"></textarea>
+        </div>
       </div>
     </div>
     <div class="mfoot">
@@ -2099,6 +2111,7 @@ function simulateInbound(){
     status:"Neu",owner:"S. Koordination",aufgabe:"Erstreaktion",frist:dstr(0),saluto:t.achse==="SalutoCare",
     docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
     log:[[dstr(0),"Automatisch als Fall angelegt aus "+t.kanal+": "+t.txt]]});
+  if(m)m.fallId=fid;
   renderAll();
   inbToast("done","<b>Automatisch als Fall angelegt</b>",escapeHtml(t.name)+" · "+escapeHtml(t.achse)+" · "+escapeHtml(t.kanal),fid);
  },1600);
@@ -2109,10 +2122,10 @@ function renderEingang(){
    +"<span class='chico'>"+(CHAN_ICON[m.kanal]||CHAN_ICON["E-Mail"])+"</span>"
    +"<div class='mwrap'><div class='mtit'>"+escapeHtml(m.tit)+"</div><div class='mtxt'>"+escapeHtml(m.txt)+"</div>"
    +"<div class='mmeta'><span class='chtag'>"+escapeHtml(m.kanal)+"</span><span class='mtime'>"+escapeHtml(m.zeit)+"</span>"+"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span></div>"
-   +(m.done?"<span class='ok-chip'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall übernommen")+"</span>"
+   +(m.done?"<div class='eingang-done'><span class='ok-chip'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall übernommen")+"</span>"+(m.fallId?"<button class='btn-ghost btn-sm' onclick='openDetail("+m.fallId+")'>→ Fall öffnen</button>":"")+"</div>"
      :m.typ==="passiv"
        ?"<button class='btn-ghost btn-sm' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>"
-       :"<div class='eingang-act'><select class='eingang-owner' id='eo-"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select><button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Als Fall übernehmen</button></div>")
+       :"<div class='eingang-act'><select class='eingang-owner' id='eo-"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select><button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Zuordnen &amp; als Fall</button><button class='btn-ghost btn-sm' onclick='antwortenEingang("+m.id+")'>✉ Antworten</button></div>")
    +"</div></article>").join("");
 }
 function uebernehmen(id){
@@ -2124,7 +2137,22 @@ function uebernehmen(id){
     achse:m.achse,kt:"Unklar",status:"Neu",owner:owner,aufgabe:"Erstreaktion + Daten vervollständigen",frist:dstr(0),
     saluto:m.achse==="SalutoCare",docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
     log:[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit+" — zugewiesen an "+owner]]});
+  m.fallId=fid;
   renderAll();go("faelle","board");
+}
+function antwortenEingang(id){
+  const m=eingang.find(x=>x.id===id); if(!m)return;
+  if(!m.done) uebernehmen(id);
+  if(m.fallId){ openDetail(m.fallId); setTimeout(function(){const r=document.getElementById("dReply");if(r)r.focus();},80); }
+}
+function sendReply(){
+  const f=aktuellerFall; if(!f)return;
+  const r=document.getElementById("dReply"); const txt=(r?r.value:"").trim(); if(!txt){alert("Bitte eine Antwort verfassen.");return;}
+  const kanal=document.getElementById("dReplyKanal").value;
+  f.log.push([dstr(0),"↦ Antwort per "+kanal+" an "+f.name+": "+txt]);
+  if(r)r.value="";
+  document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
+  if(typeof inbToast==="function") inbToast("done","<b>Antwort gesendet</b> (Demo)","per "+kanal+" an "+escapeHtml(f.name),null);
 }
 function inDatenbank(id){
  const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
@@ -2783,7 +2811,8 @@ function openDetail(id){
   document.getElementById("dSaluto").checked=f.saluto;
   document.getElementById("dVerlust").value=f.verlust||"";
   document.getElementById("dNotiz").value="";
-  document.getElementById("dLog").innerHTML=f.log.map(l=>"<div><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>").join("");
+  var _dr=document.getElementById("dReply");if(_dr)_dr.value="";
+  document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
   document.getElementById("dWerdegang").innerHTML="<div class='kicker'>Werdegang</div>"+stepper(f.schritte||deriveSchritte(f));
   document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
   toggleVerlust();
