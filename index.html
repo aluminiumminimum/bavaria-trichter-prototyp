@@ -3146,6 +3146,7 @@ function openRsDetail(i){
    "<div class='rs-ctitle'>Erfolge & Verlauf</div>"
   +"<div class='rs-rings'>"+kpiRing(p.barthel.akt,100,"Barthel","▲ "+dB)+kpiRing(p.fim.akt,126,"FIM","▲ "+dF)+kpiRing(p.ziel,100,"Reha-Ziel",p.ziel+" %")+"</div>"
   +"<div class='rs-dev'>"+devBar("Barthel-Index (0–100)",p.barthel.auf,p.barthel.akt,100)+devBar("FIM (18–126)",p.fim.auf,p.fim.akt,126)+"</div>"
+  +rsChart(p)
   +"<div class='rs-report'><span class='rk'>Aktueller Kurzbericht</span>"+escapeHtml(p.kurzbericht)+"</div>"
   +(p.labor?"<div class='rs-labor'>"+p.labor.map(l=>"<span class='rs-lab'><b>"+escapeHtml(l.k)+"</b>"+escapeHtml(l.v)+"</span>").join("")+"</div>":"")
   +"<div class='rs-timeline'>"+p.eintraege.map(e=>"<div class='rs-te'><small>"+escapeHtml(e.d)+"</small><p>"+escapeHtml(e.txt)+"</p></div>").join("")+"</div>";
@@ -3187,6 +3188,47 @@ function rsCockpit(){
    +"<div class='dbc-stat"+(offen?" hot":"")+"'><div class='dbc-num num'>"+offen+"</div><div class='dbc-lbl'>offene Kostenzusagen</div></div>"
  +"</div>";
 }
+function rsSeries(from,to,n){
+ const pts=[];
+ for(let i=0;i<n;i++){const t=n===1?1:i/(n-1);const e=1-Math.pow(1-t,2.2);
+  let v=from+(to-from)*e+Math.sin(i*2.1)*(to-from)*0.03;
+  v=Math.max(Math.min(from,to),Math.min(Math.max(from,to),v));
+  pts.push(v);}
+ pts[0]=from;pts[n-1]=to;return pts;
+}
+function rsPath(pts,w,h,max){
+ const n=pts.length;
+ return pts.map((v,i)=>`${i?"L":"M"}${(i/(n-1)*w).toFixed(1)} ${(h-v/max*h).toFixed(1)}`).join(" ");
+}
+function rsSpark(p){
+ const n=Math.max(3,Math.min(12,p.verweildauer.ist+1));
+ const pts=rsSeries(p.barthel.auf,p.barthel.akt,n);
+ const w=200,h=38,line=rsPath(pts,w,h,100);
+ const lastY=(h-pts[n-1]/100*h).toFixed(1);
+ return `<div class="rsp-spark"><svg viewBox="0 0 ${w} 44" preserveAspectRatio="none">
+   <defs><linearGradient id="rspg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bca37d"/><stop offset="1" stop-color="#bca37d" stop-opacity="0"/></linearGradient></defs>
+   <path d="${line} L${w} 44 L0 44 Z" fill="url(#rspg)" opacity=".18" stroke="none"/>
+   <path d="${line}" fill="none" stroke="#bca37d" stroke-width="2"/>
+   <circle cx="${w-1}" cy="${lastY}" r="3" fill="#8f7448"/></svg>
+  <div class="rsp-cap">Barthel-Verlauf seit Aufnahme</div></div>`;
+}
+function rsChart(p){
+ const n=Math.max(3,Math.min(12,p.verweildauer.ist+1));
+ const w=460,h=104,cw=w-46;
+ const b=rsSeries(p.barthel.auf,p.barthel.akt,n),f=rsSeries(p.fim.auf,p.fim.akt,n);
+ const pb=rsPath(b,cw,h,100),pf=rsPath(f,cw,h,126);
+ const grid=[0.25,0.5,0.75].map(g=>`<line x1="0" y1="${(h*g).toFixed(1)}" x2="${cw}" y2="${(h*g).toFixed(1)}" stroke="#eee8de" stroke-width="1"/>`).join("");
+ const eyB=(h-b[n-1]/100*h+4).toFixed(1),eyF=(h-f[n-1]/126*h+4).toFixed(1);
+ return `<div class="rsp-chart"><svg viewBox="0 0 ${w} 130">
+   ${grid}
+   <path class="line" pathLength="1" d="${pb}" fill="none" stroke="#bca37d" stroke-width="2.5" stroke-linecap="round"/>
+   <path class="line f" pathLength="1" d="${pf}" fill="none" stroke="#9B8573" stroke-width="2.5" stroke-linecap="round"/>
+   <text x="${cw+4}" y="${eyB}" font-family="Inter" font-size="12" font-weight="700" fill="#8f7448">${p.barthel.akt}</text>
+   <text x="${cw+4}" y="${eyF}" font-family="Inter" font-size="12" font-weight="700" fill="#9B8573">${p.fim.akt}</text>
+   <text x="0" y="122" font-family="Inter" font-size="10" fill="#948c80">Aufnahme</text>
+   <text x="${cw}" y="122" text-anchor="end" font-family="Inter" font-size="10" fill="#948c80">Tag ${p.verweildauer.ist}</text>
+  </svg><div class="rsp-legend"><span class="b"><i></i>Barthel</span><span class="f"><i></i>FIM</span></div></div>`;
+}
 function renderInReha(){
  const el=document.getElementById("inrehaGrid");if(!el)return;
  const _ck=document.getElementById("rsCockpit");if(_ck)_ck.innerHTML=rsCockpit();
@@ -3205,6 +3247,7 @@ function renderInReha(){
       <div class="ir-m"><div class="ir-mv num">${p.fim.akt}<span class="ir-delta">▲${dF}</span></div><div class="ir-ml">FIM</div></div>
       <div class="ir-m"><div class="ir-mv num">${p.ziel}%</div><div class="ir-ml">Reha-Ziel</div></div>
     </div>
+    ${rsSpark(p)}
     <div class="ir-stay"><div class="lbl"><span>Verweildauer</span><span>Tag ${p.verweildauer.ist} / ${p.verweildauer.plan} · noch ${rest} T</span></div>
       <div class="track"><div class="fill" style="width:${stayPct}%"></div></div></div>
    </button>`;
