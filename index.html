@@ -1188,6 +1188,17 @@ label{font-size:12px;letter-spacing:.08em}
   .tm-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px;font:400 11px/1.2 Inter;color:var(--muted);flex:0 0 auto;text-align:right}
   .tm-owner{color:var(--brass-deep);font-weight:600}
   .tm-status{font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+  /* Team · Kanal-Bündelung */
+  .tm-bundle{display:flex;align-items:stretch;flex-wrap:wrap;gap:6px;background:var(--paper);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow-soft);padding:16px 16px;margin:0 0 18px}
+  .tmb-src{display:flex;flex-direction:column;gap:5px;justify-content:center}
+  .tmb-ch{font:600 11.5px/1 Inter;color:var(--ink-soft);background:var(--paper2);border:1px solid var(--hair);border-radius:99px;padding:5px 11px;white-space:nowrap;text-align:center}
+  .tmb-arrow{align-self:center;color:var(--brass);font-size:19px;padding:0 10px;font-weight:700}
+  .tmb-hub{align-self:center;text-align:center;background:#1f1c1c;color:#faf7f1;border-radius:12px;padding:13px 18px;min-width:118px}
+  .tmb-hub b{display:block;font:700 16px/1.05 "Cormorant Garamond",Georgia,serif}
+  .tmb-hub span{font:400 10.5px/1.2 Inter;color:#c3b596;margin-top:2px;display:block}
+  .tmb-step{align-self:center;text-align:center;padding:8px 14px}
+  .tmb-step b{display:block;font:600 13.5px/1.1 Inter;color:var(--ink)}
+  .tmb-step span{font:400 10.5px/1.25 Inter;color:var(--muted);margin-top:2px;display:block}
 </style>
 </head>
 <body>
@@ -1197,6 +1208,7 @@ label{font-size:12px;letter-spacing:.08em}
   <nav class="ds-nav">
     <button data-nav="heute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.2 12 4l9 7.2"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M10 20v-5h4v5"/></svg><span>Heute</span></button>
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg><span>Fälle</span></button>
+    <button data-nav="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6l2-8z"/></svg><span>Team</span></button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg><span>Netzwerk</span></button>
     <button data-nav="matrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 12h17M9.5 4v16M15.5 4v16"/></svg><span>Matrix</span></button>
     <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg><span>System</span></button>
@@ -1631,6 +1643,23 @@ label{font-size:12px;letter-spacing:.08em}
   </section>
 
   <!-- ============ NETZWERK ============ -->
+  <!-- ============ TEAM · Mitarbeitercockpit ============ -->
+  <section id="view-team" class="view">
+    <header class="vhead"><div class="kicker">Zentrale Steuerung</div><h1>Team</h1>
+      <p class="lblline">Alle Anfragen aus allen Kanälen — an einem Ort gebündelt, klar zugeteilt, zügig beantwortet.</p>
+    </header>
+    <div class="tm-bundle">
+      <div class="tmb-src"><span class="tmb-ch">E-Mail</span><span class="tmb-ch">Website</span><span class="tmb-ch">Fax</span><span class="tmb-ch">Telefon</span><span class="tmb-ch">Portale</span></div>
+      <div class="tmb-arrow">›</div>
+      <div class="tmb-hub"><b>Ein Eingang</b><span>alle Kanäle gebündelt</span></div>
+      <div class="tmb-arrow">›</div>
+      <div class="tmb-step"><b>Zuteilen</b><span>an die richtige Person</span></div>
+      <div class="tmb-arrow">›</div>
+      <div class="tmb-step"><b>Beantworten</b><span>mit Aufgabe &amp; Frist</span></div>
+    </div>
+    <div id="teamGrid"></div>
+  </section>
+
   <section id="view-netzwerk" class="view">
     <header class="vhead">
       <div class="kicker">Beziehungen</div>
@@ -1673,18 +1702,11 @@ label{font-size:12px;letter-spacing:.08em}
       <h1>System</h1>
       <div class="segments" role="tablist" aria-label="System-Bereiche">
         <button class="seg active" data-seg="idee" role="tab">Idee</button>
-        <button class="seg" data-seg="team" role="tab">Team</button>
         <button class="seg" data-seg="auswertung" role="tab">Auswertung</button>
         <button class="seg" data-seg="sops" role="tab">SOPs</button>
       </div>
     </header>
 
-    <div class="sub" id="sub-system-team">
-      <div class="kicker">Mitarbeitercockpit</div>
-      <h2 class="idea-h2">Ein Eingang. Klar zugeteilt. Zügig beantwortet.</h2>
-      <p class="chap-intro dcap">Alle Kanäle laufen zentral ein, werden einer verantwortlichen Person zugeordnet und dort mit Aufgabe und Frist bearbeitet.</p>
-      <div id="teamGrid"></div>
-    </div>
     <div class="sub active" id="sub-system-idee">
       <div class="kicker">Die Logik der Software</div>
       <h2 class="idea-h2">Eine Drehscheibe für Privatpatienten.</h2>
@@ -1844,6 +1866,7 @@ label{font-size:12px;letter-spacing:.08em}
   <div class="tabbar-inner">
     <button data-nav="heute" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.2 12 4l9 7.2"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M10 20v-5h4v5"/></svg>Heute</button>
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg>Fälle<span class="nbadge num" id="navBadgeFaelle"></span></button>
+    <button data-nav="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6l2-8z"/></svg>Team</button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg>Netzwerk</button>
     <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg>System</button>
     <button data-nav="matrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 12h17M9.5 4v16M15.5 4v16"/></svg>Matrix</button>
@@ -2951,7 +2974,7 @@ document.getElementById("formNeu").addEventListener("submit",e=>{
 });
 
 /* ---------- Navigation ---------- */
-const SEGS={faelle:["anfragen","board","inreha"],netzwerk:["zuweiser","bestand"],system:["idee","team","auswertung","sops"]};
+const SEGS={faelle:["anfragen","board","inreha"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
 let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",system:"idee"}};
 function go(dest,seg){
   if(!document.getElementById("view-"+dest))dest="heute";
@@ -2959,7 +2982,7 @@ function go(dest,seg){
   if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
   document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
   document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
-  const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · In Reha"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],system:["System","Idee · Auswertung · SOPs"],matrix:["Matrix","Patienten-Reise B2B / B2C"]};
+  const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · In Reha"],team:["Team","Zentraler Eingang · Zuordnung · Aufgaben"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],system:["System","Idee · Auswertung · SOPs"],matrix:["Matrix","Patienten-Reise B2B / B2C"]};
   const _t=TITLES[dest]||TITLES.heute;
   const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
   const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
