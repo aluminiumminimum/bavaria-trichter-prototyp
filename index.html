@@ -3218,7 +3218,9 @@ function rsChart(p){
  const b=rsSeries(p.barthel.auf,p.barthel.akt,n),f=rsSeries(p.fim.auf,p.fim.akt,n);
  const pb=rsPath(b,cw,h,100),pf=rsPath(f,cw,h,126);
  const grid=[0.25,0.5,0.75].map(g=>`<line x1="0" y1="${(h*g).toFixed(1)}" x2="${cw}" y2="${(h*g).toFixed(1)}" stroke="#eee8de" stroke-width="1"/>`).join("");
- const eyB=(h-b[n-1]/100*h+4).toFixed(1),eyF=(h-f[n-1]/126*h+4).toFixed(1);
+ let _eyB=h-b[n-1]/100*h+4,_eyF=h-f[n-1]/126*h+4;
+ if(Math.abs(_eyB-_eyF)<14){const mid=(_eyB+_eyF)/2;if(_eyB<=_eyF){_eyB=mid-7;_eyF=mid+7;}else{_eyB=mid+7;_eyF=mid-7;}}
+ const eyB=_eyB.toFixed(1),eyF=_eyF.toFixed(1);
  return `<div class="rsp-chart"><svg viewBox="0 0 ${w} 130">
    ${grid}
    <path class="line" pathLength="1" d="${pb}" fill="none" stroke="#bca37d" stroke-width="2.5" stroke-linecap="round"/>
