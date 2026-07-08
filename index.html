@@ -2996,7 +2996,10 @@ function openReferrer(screen,zName){
  ov.scrollTop=0;
 }
 function closeReferrer(){const ov=document.getElementById("refOverlay");ov.classList.remove("open");ov.setAttribute("aria-hidden","true");document.body.classList.remove("locked");}
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&document.getElementById("refOverlay").classList.contains("open"))closeReferrer();});
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;
+ const dv=document.getElementById("rpDocView");
+ if(dv&&dv.classList.contains("open")){rpDocClose();return;}
+ if(document.getElementById("refOverlay").classList.contains("open"))closeReferrer();});
 function renderPortal(zName){
  const wk=["KW 1","KW 2","KW 3","KW 4"];
  const stats=`<div class="rp-card rp-statsband"><h3>Ihre Zusammenarbeit mit Klinik Bavaria</h3><div class="rp-stats">`
@@ -3046,6 +3049,48 @@ function renderEinblick(zName){
    <div class="rp-patrings">${kpiRing(p.barthel.akt,100,"Barthel","▲ "+(p.barthel.akt-p.barthel.auf))}${kpiRing(p.fim.akt,126,"FIM","▲ "+(p.fim.akt-p.fim.auf))}</div>
   </div>`;}).join("");
 }
+function rpDocClose(){const v=document.getElementById("rpDocView");if(v)v.classList.remove("open");}
+function rpDoc(type,zName){
+ let v=document.getElementById("rpDocView");
+ if(!v){v=document.createElement("div");v.id="rpDocView";
+  v.addEventListener("click",e=>{if(e.target===v)rpDocClose();});
+  document.body.appendChild(v);}
+ const d=entlassDoc,p=rpPersona(zName||"");
+ const head=`<div class="rpd-head"><span class="rpd-mono">KB</span><div><b>Klinik Bavaria</b><small>Concierge Rehabilitation · Bad Kissingen</small></div></div>`;
+ const meta=`<div class="rpd-meta"><span>Patient: <b>${escapeHtml(d.pat)}</b> · ${escapeHtml(d.achse)}</span><span>Aufenthalt ${escapeHtml(d.aufenthalt)} · entlassen ${escapeHtml(d.entlassen)}</span></div>`;
+ const sig=`<div class="rpd-sig"><span class="s">Dr. med. M. Bergmann<small>Ärztliche Koordination · Klinik Bavaria</small></span><span class="rpd-demo">Synthetisches Demo-Dokument · kein echter Patient</span></div>`;
+ let body="";
+ if(type==="arztbrief"){
+  const anrede=p.name?(p.name.indexOf("Frau")===0?`Sehr geehrte Frau Kollegin ${escapeHtml(p.name.replace(/^Frau\s*/,""))},`:`Sehr geehrter Herr Kollege ${escapeHtml(p.name.replace(/^(Herr|Dr\.|Prof\.)\s*/,""))},`):"Sehr geehrte Kolleginnen und Kollegen,";
+  body=`<div class="rpd-title">Ärztlicher Entlassbrief</div><div class="rpd-sub">${escapeHtml(p.inst||"")}</div>${meta}
+   <p class="rpd-p" style="margin-top:10px">${anrede}</p>
+   <p class="rpd-p">wir berichten über den o. g. Patienten, der sich für ${escapeHtml(d.aufenthalt)} bis zum ${escapeHtml(d.entlassen)} in unserer stationären Behandlung befand.</p>
+   <div class="rpd-h">Diagnose</div><p class="rpd-p">${escapeHtml(d.diagnose)}</p>
+   <div class="rpd-h">Epikrise</div><p class="rpd-p">${escapeHtml(d.epikrise)}</p>
+   <div class="rpd-h">Durchgeführte Therapie</div>${d.prozeduren.map(x=>`<div class="rpd-li">${escapeHtml(x)}</div>`).join("")}
+   <div class="rpd-h">Empfehlungen</div>${d.empfehlungen.map(x=>`<div class="rpd-li">${escapeHtml(x)}</div>`).join("")}
+   <p class="rpd-p" style="margin-top:14px">Mit freundlichen kollegialen Grüßen</p>${sig}`;
+ } else if(type==="kurzbericht"){
+  body=`<div class="rpd-title">Reha-Kurzbericht</div>${meta}
+   <div class="rpd-h">Ergebnis</div>
+   <table class="rpd-table"><tr><th>Parameter</th><th>Aufnahme</th><th>Entlassung</th><th>Δ</th></tr>
+    <tr><td>Barthel-Index</td><td class="c">${d.barthel.auf}</td><td class="c">${d.barthel.ent}</td><td class="c">+${d.barthel.ent-d.barthel.auf}</td></tr>
+    <tr><td>FIM</td><td class="c">${d.fim.auf}</td><td class="c">${d.fim.ent}</td><td class="c">+${d.fim.ent-d.fim.auf}</td></tr>
+    <tr><td>Verweildauer</td><td class="c" colspan="3">${escapeHtml(d.aufenthalt)} · im Plan</td></tr></table>
+   <div class="rpd-h">Kurzbeurteilung</div><p class="rpd-p">${escapeHtml(d.kurz)}</p>
+   <div class="rpd-h">Empfehlungen</div>${d.empfehlungen.map(x=>`<div class="rpd-li">${escapeHtml(x)}</div>`).join("")}${sig}`;
+ } else {
+  body=`<div class="rpd-title">Medikationsplan</div>
+   <div class="rpd-qr">${RP_QR}</div>
+   <p class="rpd-sub">Stand: ${escapeHtml(d.entlassen)} · QR-Code scannen für die digitale Ansicht</p>${meta}
+   <table class="rpd-table"><tr><th>Wirkstoff</th><th>Stärke</th><th>Dosierung</th><th>Hinweis</th></tr>
+   ${d.medis.map(x=>`<tr><td><b>${escapeHtml(x.m)}</b></td><td class="c">${escapeHtml(x.st)}</td><td class="c">${escapeHtml(x.d)}</td><td>${escapeHtml(x.h)}</td></tr>`).join("")}</table>
+   <div class="rpd-h">Hinweis</div><p class="rpd-p">${escapeHtml(d.medikation)}</p>${sig}`;
+ }
+ v.innerHTML=`<div class="rpd-paper"><button class="rpd-close" onclick="rpDocClose()" aria-label="Schließen">×</button><div class="rpd-water">MUSTER</div>${head}${body}</div>`;
+ v.classList.add("open");v.scrollTop=0;
+ const c=v.querySelector(".rpd-close");if(c)c.focus();
+}
 function renderAbschluss(zName){
  const d=entlassDoc;
  return `<p class="rp-lead">Was Sie als zuweisendes Haus zum Reha-Abschluss erhalten — kompakt, vollständig, ohne Nachtelefonieren.</p>
@@ -3053,12 +3098,13 @@ function renderAbschluss(zName){
   <div class="rp-pathead"><span class="rp-ava">${initialen(d.pat)}</span><div><b>${escapeHtml(d.pat)}</b><small>${escapeHtml(d.achse)} · ${escapeHtml(d.diagnose)} · Aufenthalt ${escapeHtml(d.aufenthalt)}</small></div><span class="rp-tag ok">entlassen ${escapeHtml(d.entlassen)}</span></div>
   <div class="rp-outcome"><span class="k">Barthel-Index</span><span class="v"><b data-to="${d.barthel.auf}">0</b> <i>→</i> <b data-to="${d.barthel.ent}">0</b></span><span class="s">Reha-Ziel erreicht · Entlassung nach Hause mit ambulanter Anschlussversorgung</span></div>
   <div class="rp-docs">
-   <button class="rp-doc" onclick="rpToast('Arztbrief geöffnet — Demo-Dokument')"><span>📄</span><b>Arztbrief</b><small>PDF · Demo</small></button>
-   <button class="rp-doc" onclick="rpToast('Kurzbericht geöffnet — Demo-Dokument')"><span>📄</span><b>Kurzbericht</b><small>PDF · Demo</small></button>
-   <button class="rp-doc" onclick="rpToast('Medikationsplan geöffnet — Demo-Dokument')"><span>📄</span><b>Medikationsplan</b><small>PDF · Demo</small></button>
+   <button class="rp-doc" onclick="rpDoc('arztbrief','${escapeHtml(zName)}')"><span>📄</span><b>Arztbrief</b><small>Ansehen · Demo</small></button>
+   <button class="rp-doc" onclick="rpDoc('kurzbericht','${escapeHtml(zName)}')"><span>📄</span><b>Kurzbericht</b><small>Ansehen · Demo</small></button>
+   <button class="rp-doc" onclick="rpDoc('mediplan','${escapeHtml(zName)}')"><span>📄</span><b>Medikationsplan</b><small>Ansehen · Demo</small></button>
   </div>
   <div class="rp-recs"><h4>Empfehlungen</h4>${d.empfehlungen.map(r=>`<div class="rp-rec">✓ ${escapeHtml(r)}</div>`).join("")}</div>
   <div class="rp-med"><h4>Medikation</h4><p>${escapeHtml(d.medikation)}</p></div>
+  <div class="rp-qrrow"><span class="q">${RP_QR}</span><div><b>Medikationsplan aufs Handy</b><small>QR-Code mit der Kamera scannen — öffnet die digitale Ansicht (Demo: Prototyp-Link).</small></div></div>
   <a class="rp-call" href="#" onclick="rpToast('Rückruf angefragt — Recovery-Line meldet sich');return false">☎ Rücksprache: ${escapeHtml(d.ruecksprache)}</a>
  </div>`;
 }
