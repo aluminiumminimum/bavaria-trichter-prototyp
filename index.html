@@ -1336,6 +1336,54 @@ label{font-size:12px;letter-spacing:.08em}
   .tmb-step{align-self:center;text-align:center;padding:8px 14px}
   .tmb-step b{display:block;font:600 13.5px/1.1 Inter;color:var(--ink)}
   .tmb-step span{font:400 10.5px/1.25 Inter;color:var(--muted);margin-top:2px;display:block}
+/* ===== ABSCHLUSS-DOKUMENTE + QR + REHA-CHARTS ===== */
+#rpDocView{position:fixed;inset:0;z-index:110;display:none;align-items:flex-start;justify-content:center;background:rgba(31,28,28,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);overflow-y:auto;padding:4vh 14px}
+#rpDocView.open{display:flex}
+.rpd-paper{position:relative;background:#fff;width:100%;max-width:660px;border-radius:6px;box-shadow:0 30px 80px rgba(20,16,12,.45);padding:34px 38px 30px;margin:auto 0;animation:rpUp .4s cubic-bezier(.4,0,.2,1) both;overflow:hidden}
+.rpd-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--hair);background:#fff;font:400 18px/1 Inter;color:#6b6460;cursor:pointer;z-index:2}
+.rpd-close:hover{background:#f4f0e9}
+.rpd-water{position:absolute;top:38%;left:-8%;right:-8%;text-align:center;font:700 92px/1 Inter;letter-spacing:.18em;color:#1F1C1C;opacity:.05;transform:rotate(-28deg);pointer-events:none;user-select:none}
+.rpd-head{display:flex;align-items:center;gap:13px;padding-bottom:14px;border-bottom:2px solid #cdb083;margin-bottom:6px}
+.rpd-mono{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1.5px solid #cdb083;color:#8f7448;display:flex;align-items:center;justify-content:center;font:600 17px/1 'Cormorant Garamond',serif}
+.rpd-head b{display:block;font:700 21px/1.1 'Cormorant Garamond',serif;color:#1F1C1C}
+.rpd-head small{font:500 11px/1.4 Inter;letter-spacing:.12em;text-transform:uppercase;color:#9B8573}
+.rpd-meta{display:flex;justify-content:space-between;gap:10px;font:400 12.5px/1.5 Inter;color:#766f64;margin:12px 0 4px;flex-wrap:wrap}
+.rpd-title{font:700 17px/1.25 Inter;margin:14px 0 4px}
+.rpd-sub{font:400 13px/1.5 Inter;color:#766f64;margin:0 0 12px}
+.rpd-p{font:400 14px/1.65 Inter;color:#2e2a28;margin:0 0 12px}
+.rpd-h{font:700 11.5px/1 Inter;letter-spacing:.12em;text-transform:uppercase;color:#8f7448;margin:16px 0 7px}
+.rpd-li{font:400 13.5px/1.55 Inter;color:#2e2a28;padding:5px 0 5px 2px;border-bottom:1px solid #f0ebe3}
+.rpd-li:last-child{border-bottom:none}
+.rpd-table{width:100%;border-collapse:collapse;font:400 13px/1.45 Inter;margin:6px 0 4px}
+.rpd-table th{font:700 10.5px/1.2 Inter;letter-spacing:.09em;text-transform:uppercase;color:#8f7448;text-align:left;padding:7px 8px;border-bottom:2px solid #cdb083}
+.rpd-table td{padding:8px;border-bottom:1px solid #f0ebe3;vertical-align:top}
+.rpd-table td.c{white-space:nowrap;font-variant-numeric:tabular-nums}
+.rpd-sig{margin-top:22px;padding-top:14px;border-top:1px solid #e6ded2;display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.rpd-sig .s{font:600 16px/1.2 'Cormorant Garamond',serif;font-style:italic}
+.rpd-sig small{display:block;font:400 11.5px/1.5 Inter;color:#766f64;font-style:normal}
+.rpd-demo{font:500 10.5px/1.4 Inter;letter-spacing:.06em;color:#b0a89c}
+.rpd-qr{float:right;width:112px;margin:0 0 10px 14px;border:1px solid #cdb083;border-radius:8px;padding:6px;background:#fff}
+.rpd-qr svg{display:block;width:100%;height:auto}
+/* QR-Zeile in der Abschluss-Karte */
+.rp-qrrow{display:flex;gap:16px;align-items:center;background:#fdf8ee;border:1px solid var(--brass-line);border-radius:14px;padding:14px 16px;margin:0 0 16px}
+.rp-qrrow .q{flex:0 0 auto;width:104px;border:1px solid var(--brass-line);border-radius:9px;padding:5px;background:#fff}
+.rp-qrrow .q svg{display:block;width:100%;height:auto}
+.rp-qrrow b{display:block;font:600 15px/1.3 Inter;margin-bottom:3px}
+.rp-qrrow small{font:400 13px/1.5 Inter;color:var(--muted)}
+/* Reha-Verlaufsgrafiken */
+.rsp-spark{margin:2px 0 12px}
+.rsp-spark svg{display:block;width:100%;height:44px}
+.rsp-cap{font:600 10px/1 Inter;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin-top:3px}
+.rsp-chart{margin:14px 0 6px}
+.rsp-chart svg{display:block;width:100%;height:130px}
+.rsp-legend{display:flex;gap:14px;margin-top:6px;font:600 11px/1 Inter}
+.rsp-legend span{display:inline-flex;align-items:center;gap:5px;color:var(--muted)}
+.rsp-legend i{width:14px;height:3px;border-radius:2px}
+.rsp-legend .b i{background:#bca37d}.rsp-legend .f i{background:#9B8573}
+@keyframes rspDraw{from{stroke-dashoffset:1}}
+.rsp-chart path.line{stroke-dasharray:1;animation:rspDraw 1.1s ease-out both}
+.rsp-chart path.line.f{animation-delay:.15s}
+@media(min-width:900px){.rpd-paper{padding:44px 52px 36px}}
 </style>
 </head>
 <body>
