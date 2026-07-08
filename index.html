@@ -1145,6 +1145,13 @@ label{font-size:12px;letter-spacing:.08em}
   .inb-s{font:400 12px/1.3 Inter;color:#c3b596;margin-top:2px}
   .inb-open{flex:0 0 auto;font:600 12px/1 Inter;color:#1f1c1c;background:var(--brass-soft);border-radius:99px;padding:8px 12px;white-space:nowrap}
   .inb-x{flex:0 0 auto;color:#c3b596;font-size:18px;line-height:1;padding:0 2px}
+  /* ===== WS5 · Reha-Steuerung — betriebswirtschaftliches Panel ===== */
+  .rs-cockpit{margin-bottom:16px}
+  .rs-cockpit .dbc-stat{flex:1;min-width:0}
+  .rs-kpis{display:flex;gap:8px;margin-bottom:16px}
+  .rs-kpi{flex:1;background:var(--paper2);border-radius:11px;padding:10px 8px;text-align:center}
+  .rs-kpi .rk-n{font:700 17px/1.05 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
+  .rs-kpi .rk-l{font:600 9.5px/1.15 Inter;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin-top:4px}
 </style>
 </head>
 <body>
@@ -1581,7 +1588,8 @@ label{font-size:12px;letter-spacing:.08em}
       <div class="board" id="board"></div>
     </div>
       <div class="sub" id="sub-faelle-inreha">
-        <p class="lblline">Patienten aktuell in Behandlung — Live-KPIs.</p>
+        <p class="lblline">Patienten aktuell in Behandlung — Erfolg &amp; Wirtschaftlichkeit auf einen Blick.</p>
+        <div id="rsCockpit"></div>
         <div id="inrehaGrid"></div>
       </div>
   </section>
@@ -2646,9 +2654,9 @@ function kpiRing(val,max,label,sub){
 }
 /* WS3 · Abrechnungs-/Empfehlungs-Demodaten (eigene Ergänzung, greift nicht in geteilte inReha-Felder ein) */
 const RS_BILLING={
- "Dieter Franke":{tagessatz:890,empf:["Röntgen-Verlaufskontrolle Knie in 5 Tagen","Belastungsaufbau Richtung Vollbelastung","Lymphdrainage 2×/Woche fortführen"]},
- "Elke Sauer":{tagessatz:1250,empf:["Schluckdiagnostik (FEES) Verlaufskontrolle","Logopädie intensivieren (täglich)","Kardiologisches Monitoring fortführen"]},
- "Lydia Sommer":{tagessatz:980,empf:["Karotis-Doppler zur Sekundärprävention","Ergotherapie Feinmotorik links ausbauen","Neuropsychologisches Assessment"]}
+ "Dieter Franke":{tagessatz:890,kostenTag:520,kostenzusage:"liegt vor",zusatz:[{label:"Einzelzimmer-Zuschlag",eur:65}],empf:["Röntgen-Verlaufskontrolle Knie in 5 Tagen","Belastungsaufbau Richtung Vollbelastung","Lymphdrainage 2×/Woche fortführen"]},
+ "Elke Sauer":{tagessatz:1250,kostenTag:760,kostenzusage:"n.a. (Selbstzahler)",zusatz:[{label:"SalutoCare-Suite",eur:420},{label:"Begleitperson",eur:180}],empf:["Schluckdiagnostik (FEES) Verlaufskontrolle","Logopädie intensivieren (täglich)","Kardiologisches Monitoring fortführen"]},
+ "Lydia Sommer":{tagessatz:980,kostenTag:610,kostenzusage:"offen",zusatz:[{label:"Neuro-Wahlleistung",eur:140}],empf:["Karotis-Doppler zur Sekundärprävention","Ergotherapie Feinmotorik links ausbauen","Neuropsychologisches Assessment"]}
 };
 function devBar(label,auf,akt,max){
  const pAuf=Math.round(auf/max*100),pAkt=Math.round(akt/max*100);
@@ -2665,7 +2673,10 @@ function openRsDetail(i){
  const dB=p.barthel.akt-p.barthel.auf,dF=p.fim.akt-p.fim.auf;
  const rest=Math.max(0,p.verweildauer.plan-p.verweildauer.ist);
  const stayPct=Math.min(100,Math.round(p.verweildauer.ist/p.verweildauer.plan*100));
- const kosten=bill.tagessatz*p.verweildauer.plan;
+ const ts=bill.tagessatz||0,kt=bill.kostenTag||0;
+ const erlos=ts*p.verweildauer.plan,dbTot=(ts-kt)*p.verweildauer.plan,dbTag=ts-kt;
+ const marge=erlos?Math.round(dbTot/erlos*100):0;
+ const kz=bill.kostenzusage||"—",kzCls=kz==="offen"?"warn":"ok";
  document.getElementById("rsErfolg").innerHTML=
    "<div class='rs-ctitle'>Erfolge & Verlauf</div>"
   +"<div class='rs-rings'>"+kpiRing(p.barthel.akt,100,"Barthel","▲ "+dB)+kpiRing(p.fim.akt,126,"FIM","▲ "+dF)+kpiRing(p.ziel,100,"Reha-Ziel",p.ziel+" %")+"</div>"
@@ -2676,22 +2687,44 @@ function openRsDetail(i){
  const stayState=p.verweildauer.ist<=p.verweildauer.plan?"<span class='rs-pill ok'>im Plan</span>":"<span class='rs-pill warn'>über Plan</span>";
  document.getElementById("rsWirt").innerHTML=
    "<div class='rs-ctitle'>Wirtschaftlichkeit & Abrechnung</div>"
+  +"<div class='rs-kpis'>"
+    +"<div class='rs-kpi'><div class='rk-n num'>"+erlos.toLocaleString('de-DE')+" €</div><div class='rk-l'>Erlös (Plan)</div></div>"
+    +"<div class='rs-kpi'><div class='rk-n num'>"+dbTot.toLocaleString('de-DE')+" €</div><div class='rk-l'>Deckungsbeitrag</div></div>"
+    +"<div class='rs-kpi'><div class='rk-n num'>"+marge+" %</div><div class='rk-l'>DB-Marge</div></div>"
+  +"</div>"
   +"<div class='rs-stay'><div class='lbl'><span>Verweildauer</span>"+stayState+"</div>"
     +"<div class='rs-track'><div class='rs-fill' style='width:"+stayPct+"%'></div></div>"
-    +"<div class='rs-stay-meta'>Tag "+p.verweildauer.ist+" / "+p.verweildauer.plan+" geplant · noch "+rest+" Tage</div></div>"
+    +"<div class='rs-stay-meta'>Tag "+p.verweildauer.ist+" / "+p.verweildauer.plan+" geplant · noch "+rest+" Tage · jeder Tag ≈ "+dbTag.toLocaleString('de-DE')+" € Deckungsbeitrag</div></div>"
   +"<div class='rs-rows'>"
+    +"<div class='rs-row'><span class='rs-k'>Kostenzusage</span><span class='rs-pill "+kzCls+"'>"+escapeHtml(kz)+"</span></div>"
+    +"<div class='rs-row'><span class='rs-k'>Tagessatz / Kosten je Tag</span><span>"+ts.toLocaleString('de-DE')+" € / "+kt.toLocaleString('de-DE')+" €</span></div>"
     +"<div class='rs-row'><span class='rs-k'>Diagnose (ICD)</span><span>"+escapeHtml(p.icd)+"</span></div>"
     +"<div class='rs-row'><span class='rs-k'>Aufnahme</span><span>"+escapeHtml(p.aufnahme)+"</span></div>"
-    +(bill.tagessatz?"<div class='rs-row'><span class='rs-k'>Tagessatz</span><span>"+bill.tagessatz.toLocaleString('de-DE')+" €</span></div>":"")
-    +(bill.tagessatz?"<div class='rs-row'><span class='rs-k'>Kalk. Gesamt (Plan)</span><span>"+kosten.toLocaleString('de-DE')+" €</span></div>":"")
   +"</div>"
+  +((bill.zusatz&&bill.zusatz.length)?"<div class='rs-empf'><span class='rk'>Zusatzerlöse / Wahlleistungen</span><ul>"+bill.zusatz.map(z=>"<li>"+escapeHtml(z.label)+" · +"+z.eur+" €/Tag</li>").join("")+"</ul></div>":"")
   +(bill.empf&&bill.empf.length?"<div class='rs-empf'><span class='rk'>Sinnvolle nächste Diagnostik & Therapie</span><ul>"+bill.empf.map(x=>"<li>"+escapeHtml(x)+"</li>").join("")+"</ul></div>":"");
  document.getElementById("rsDetail").classList.add("open");
  document.body.classList.add("detail-open");
  pushDetailState();
 }
+function rsCockpit(){
+ let erlos=0,db=0,offen=0;
+ inReha.forEach(p=>{const b=RS_BILLING[p.name]||{};const ts=b.tagessatz||0,kt=b.kostenTag||0;
+   erlos+=ts*p.verweildauer.plan;db+=(ts-kt)*p.verweildauer.plan;if(b.kostenzusage==="offen")offen++;});
+ const marge=erlos?Math.round(db/erlos*100):0;
+ return "<div class='db-cockpit rs-cockpit'>"
+   +"<div class='dbc-stat'><div class='dbc-num num'>"+inReha.length+"</div><div class='dbc-lbl'>in Behandlung</div></div>"
+   +"<div class='dbc-div'></div>"
+   +"<div class='dbc-stat'><div class='dbc-num num'>"+Math.round(erlos/1000)+"k €</div><div class='dbc-lbl'>kalk. Erlös</div></div>"
+   +"<div class='dbc-div'></div>"
+   +"<div class='dbc-stat'><div class='dbc-num num'>"+marge+" %</div><div class='dbc-lbl'>Ø DB-Marge</div></div>"
+   +"<div class='dbc-div'></div>"
+   +"<div class='dbc-stat"+(offen?" hot":"")+"'><div class='dbc-num num'>"+offen+"</div><div class='dbc-lbl'>offene Kostenzusagen</div></div>"
+ +"</div>";
+}
 function renderInReha(){
  const el=document.getElementById("inrehaGrid");if(!el)return;
+ const _ck=document.getElementById("rsCockpit");if(_ck)_ck.innerHTML=rsCockpit();
  el.innerHTML=inReha.map((p,i)=>{
   const rest=Math.max(0,p.verweildauer.plan-p.verweildauer.ist);
   const stayPct=Math.min(100,Math.round(p.verweildauer.ist/p.verweildauer.plan*100));
