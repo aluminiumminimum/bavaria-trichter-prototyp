@@ -1433,18 +1433,14 @@ label{font-size:12px;letter-spacing:.08em}
 .cv-stockt circle{fill:#e6794f}
 .cv-stockt text{font:600 11px Inter,sans-serif;fill:#e6794f;letter-spacing:.02em}
 .cv-narrow .cv-stockt text{font-size:10px}
-/* cv: Ausgang → Stepper → Belegung */
+/* cv: Ausgang → Stepper → Fall (Einsammel-Story endet beim Fall) */
 .cv-out-thick{fill:none;stroke:#d3b78a;stroke-width:3.5;stroke-linecap:round}
 .cv-out-line{fill:none;stroke:rgba(188,163,125,.45);stroke-width:1}
 .cv-step-dot{fill:#d3b78a}
 .cv-step-l{font:600 10.5px Inter,sans-serif;letter-spacing:.06em;fill:#b29a76;text-anchor:middle}
-.cv-div{stroke:rgba(188,163,125,.35);stroke-width:1}
-.cv-stat-l{font:600 10.5px Inter,sans-serif;letter-spacing:.06em;fill:#b29a76}
-.cv-stat-n{font:700 30px "Cormorant Garamond",Georgia,serif;fill:#ecdfc8;font-variant-numeric:lining-nums tabular-nums}
-.cv-stat-u{font-size:18px;fill:#bca37d}
-.cv-pill{fill:rgba(255,248,236,.06);stroke:rgba(188,163,125,.38);stroke-width:1}
+.cv-step-end{fill:#ecdfc8;stroke:#8f7448;stroke-width:1}
+.cv-step-l-end{fill:#ecdfc8;font-weight:700}
 .cv-narrow .cv-step-l{font-size:9.5px;text-anchor:start}
-.cv-narrow .cv-stat-n{font-size:19px}
 /* cv: Leitsatz */
 .cv-copy{font:italic 500 16px "Cormorant Garamond",Georgia,serif;fill:rgba(244,238,227,.92);text-anchor:middle}
 .cv-copy-b{fill:#d3b78a}
@@ -1533,7 +1529,7 @@ label{font-size:12px;letter-spacing:.08em}
 <div class="cv">
 
   <!-- ===== cv: Konvergenz-Panel · Desktop / breit (≥760px) — die Daten-IDs leben hier ===== -->
-  <svg class="cv-wide" viewBox="0 0 1100 212" xmlns="http://www.w3.org/2000/svg">
+  <svg class="cv-wide" viewBox="0 0 980 212" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <radialGradient id="cvGoldW" cx="36%" cy="28%" r="85%">
         <stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/>
@@ -1586,23 +1582,20 @@ label{font-size:12px;letter-spacing:.08em}
 
     <!-- Ausgang: ein Fall, ein Weg, planbare Belegung -->
     <path class="cv-out-thick" d="M700,94 H742"/>
-    <path class="cv-out-line" d="M742,94 H998"/>
+    <path class="cv-out-line" d="M742,94 H950"/>
     <circle class="cv-step-dot" cx="764" cy="94" r="4"/>
     <circle class="cv-step-dot" cx="868" cy="94" r="4"/>
-    <circle class="cv-step-dot" cx="950" cy="94" r="4"/>
+    <circle class="cv-step-end" cx="950" cy="94" r="7"/>
     <text class="cv-step-l" x="764" y="118">ZUGETEILT</text>
     <text class="cv-step-l" x="868" y="118">BEANTWORTET</text>
-    <text class="cv-step-l" x="950" y="118">FALL</text>
-    <line class="cv-div" x1="1006" y1="64" x2="1006" y2="124"/>
-    <text class="cv-stat-l" x="1024" y="80">BELEGUNG</text>
-    <text class="cv-stat-n" x="1024" y="114"><tspan id="cvBeleg">78</tspan><tspan class="cv-stat-u"> %</tspan></text>
+    <text class="cv-step-l cv-step-l-end" x="950" y="118">FALL</text>
 
     <!-- Leitsatz -->
     <text class="cv-copy" x="640" y="205">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
   </svg>
 
   <!-- ===== cv: Mobil / schmal (<760px) — Werte gespiegelt über data-sync ===== -->
-  <svg class="cv-narrow" viewBox="0 0 340 452" xmlns="http://www.w3.org/2000/svg">
+  <svg class="cv-narrow" viewBox="0 0 340 416" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <radialGradient id="cvGoldN" cx="36%" cy="28%" r="85%">
         <stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/>
@@ -1653,19 +1646,16 @@ label{font-size:12px;letter-spacing:.08em}
 
     <!-- Ausgang -->
     <path class="cv-out-thick" d="M170,254 V290"/>
-    <path class="cv-out-line" d="M170,290 V384"/>
+    <path class="cv-out-line" d="M170,290 V368"/>
     <circle class="cv-step-dot" cx="170" cy="304" r="4"/>
     <circle class="cv-step-dot" cx="170" cy="336" r="4"/>
-    <circle class="cv-step-dot" cx="170" cy="368" r="4"/>
+    <circle class="cv-step-end" cx="170" cy="368" r="7"/>
     <text class="cv-step-l" x="186" y="308">ZUGETEILT</text>
     <text class="cv-step-l" x="186" y="340">BEANTWORTET</text>
-    <text class="cv-step-l" x="186" y="372">FALL</text>
-    <rect class="cv-pill" x="95" y="386" width="150" height="36" rx="18"/>
-    <text class="cv-stat-l" x="112" y="409" style="font-size:8.5px">BELEGUNG</text>
-    <text class="cv-stat-n" x="228" y="411" text-anchor="end"><tspan data-sync="cvBeleg">78</tspan><tspan class="cv-stat-u" style="font-size:12px"> %</tspan></text>
+    <text class="cv-step-l cv-step-l-end" x="186" y="372">FALL</text>
 
     <!-- Leitsatz -->
-    <text class="cv-copy" x="170" y="444">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
+    <text class="cv-copy" x="170" y="404">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
   </svg>
 
 </div>
@@ -2065,7 +2055,7 @@ label{font-size:12px;letter-spacing:.08em}
       <p class="lblline">Alle Anfragen aus allen Kanälen — an einem Ort gebündelt, klar zugeteilt, zügig beantwortet.</p>
     </header>
     <div class="cv tm-cv">
-      <svg class="cv-wide" viewBox="0 0 1100 212" xmlns="http://www.w3.org/2000/svg">
+      <svg class="cv-wide" viewBox="0 0 980 212" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="cvGoldT" cx="36%" cy="28%" r="85%"><stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/></radialGradient>
           <radialGradient id="cvGlowT"><stop offset="0" stop-color="#d3b78a" stop-opacity=".2"/><stop offset="1" stop-color="#d3b78a" stop-opacity="0"/></radialGradient>
@@ -2090,14 +2080,12 @@ label{font-size:12px;letter-spacing:.08em}
           <text class="cv-total" x="640" y="90" data-sync="cvTotal">5</text><text class="cv-node-l" x="640" y="110">EIN EINGANG</text><text class="cv-node-s" x="640" y="126">heute</text>
         </g>
         <g class="cv-stockt" data-sync-wrap="cvStockWrap"><line x1="682" y1="52" x2="699" y2="39"/><circle cx="705" cy="34" r="3"/><text x="713" y="38"><tspan data-sync="cvStock">1</tspan> stockt</text></g>
-        <path class="cv-out-thick" d="M700,94 H742"/><path class="cv-out-line" d="M742,94 H998"/>
-        <circle class="cv-step-dot" cx="764" cy="94" r="4"/><circle class="cv-step-dot" cx="868" cy="94" r="4"/><circle class="cv-step-dot" cx="950" cy="94" r="4"/>
-        <text class="cv-step-l" x="764" y="118">ZUGETEILT</text><text class="cv-step-l" x="868" y="118">BEANTWORTET</text><text class="cv-step-l" x="950" y="118">FALL</text>
-        <line class="cv-div" x1="1006" y1="64" x2="1006" y2="124"/><text class="cv-stat-l" x="1024" y="80">BELEGUNG</text>
-        <text class="cv-stat-n" x="1024" y="114"><tspan data-sync="cvBeleg">78</tspan><tspan class="cv-stat-u"> %</tspan></text>
+        <path class="cv-out-thick" d="M700,94 H742"/><path class="cv-out-line" d="M742,94 H950"/>
+        <circle class="cv-step-dot" cx="764" cy="94" r="4"/><circle class="cv-step-dot" cx="868" cy="94" r="4"/><circle class="cv-step-end" cx="950" cy="94" r="7"/>
+        <text class="cv-step-l" x="764" y="118">ZUGETEILT</text><text class="cv-step-l" x="868" y="118">BEANTWORTET</text><text class="cv-step-l cv-step-l-end" x="950" y="118">FALL</text>
         <text class="cv-copy" x="640" y="205">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
       </svg>
-      <svg class="cv-narrow" viewBox="0 0 340 452" xmlns="http://www.w3.org/2000/svg">
+      <svg class="cv-narrow" viewBox="0 0 340 416" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="cvGoldTN" cx="36%" cy="28%" r="85%"><stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/></radialGradient>
           <radialGradient id="cvGlowTN"><stop offset="0" stop-color="#d3b78a" stop-opacity=".2"/><stop offset="1" stop-color="#d3b78a" stop-opacity="0"/></radialGradient>
@@ -2121,12 +2109,10 @@ label{font-size:12px;letter-spacing:.08em}
           <text class="cv-total" x="170" y="196" data-sync="cvTotal">5</text><text class="cv-node-l" x="170" y="214">EIN EINGANG</text><text class="cv-node-s" x="170" y="228">heute</text>
         </g>
         <g class="cv-stockt" data-sync-wrap="cvStockWrap"><line x1="210" y1="238" x2="230" y2="246"/><circle cx="236" cy="248" r="2.5"/><text x="243" y="252"><tspan data-sync="cvStock">1</tspan> stockt</text></g>
-        <path class="cv-out-thick" d="M170,254 V290"/><path class="cv-out-line" d="M170,290 V384"/>
-        <circle class="cv-step-dot" cx="170" cy="304" r="4"/><circle class="cv-step-dot" cx="170" cy="336" r="4"/><circle class="cv-step-dot" cx="170" cy="368" r="4"/>
-        <text class="cv-step-l" x="186" y="308">ZUGETEILT</text><text class="cv-step-l" x="186" y="340">BEANTWORTET</text><text class="cv-step-l" x="186" y="372">FALL</text>
-        <rect class="cv-pill" x="95" y="386" width="150" height="36" rx="18"/><text class="cv-stat-l" x="112" y="409" style="font-size:8.5px">BELEGUNG</text>
-        <text class="cv-stat-n" x="228" y="411" text-anchor="end"><tspan data-sync="cvBeleg">78</tspan><tspan class="cv-stat-u" style="font-size:12px"> %</tspan></text>
-        <text class="cv-copy" x="170" y="444">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
+        <path class="cv-out-thick" d="M170,254 V290"/><path class="cv-out-line" d="M170,290 V368"/>
+        <circle class="cv-step-dot" cx="170" cy="304" r="4"/><circle class="cv-step-dot" cx="170" cy="336" r="4"/><circle class="cv-step-end" cx="170" cy="368" r="7"/>
+        <text class="cv-step-l" x="186" y="308">ZUGETEILT</text><text class="cv-step-l" x="186" y="340">BEANTWORTET</text><text class="cv-step-l cv-step-l-end" x="186" y="372">FALL</text>
+        <text class="cv-copy" x="170" y="404">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
       </svg>
     </div>
     <div id="teamGrid"></div>
@@ -3136,7 +3122,7 @@ function renderHeute(){
   set("cvEmail",cv.email);set("cvTelefon",cv.telefon);set("cvFax",cv.fax);
   set("cvWebsite",cv.website);set("cvZuweiser",cv.zuweiser);set("cvPortale",cv.portale);
   set("cvTotal",cv.email+cv.telefon+cv.fax+cv.website+cv.zuweiser+cv.portale);
-  set("cvBeleg",78);set("cvStock",k.stock.length);
+  set("cvStock",k.stock.length);
   document.querySelectorAll('#cvStockWrap,[data-sync-wrap="cvStockWrap"]').forEach(n=>{n.style.display=k.stock.length?"":"none";});
   // Nordstern-Metriken
   set("nsVorlauf",horizont);
