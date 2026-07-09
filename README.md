@@ -12,10 +12,11 @@ für **Patienten direkt (B2C)** und **Zuweiser (B2B)**.
 
 ## Was die Software zeigt
 
-Fünf Bereiche, erreichbar über die Navigation (Sidebar auf Desktop, Tab-Leiste mobil):
+Sechs Bereiche, erreichbar über die Navigation (Sidebar auf Desktop, Tab-Leiste mobil):
 
 - **Heute** — Cockpit: Trichter von Quelle → Aufnahme, Tageskennzahlen, Auslastung.
-- **Fälle** — Anfragen-Eingang, Fall-Board (Pipeline), „In Reha" mit Barthel/FIM-KPIs.
+- **Fälle** — Anfragen-Eingang, Fall-Board (Pipeline), „In Reha" mit Barthel/FIM-KPIs, Verlaufsgrafiken und Wirtschaftlichkeit.
+- **Team** — zentraler Eingang aller Kanäle, Zuteilung und Beantwortung, Mitarbeiter-Cockpit.
 - **Netzwerk** — Zuweiser-Beziehungen und Patienten-Datenbank (Grading, Wiedervorlagen).
 - **Matrix** — die ganze Maschine als 2×3-Raster: B2B/B2C × vor/in/nach der Reha.
 - **System** — Idee, Auswertung, SOPs.
@@ -27,8 +28,9 @@ Erreichbar über den Sidebar-Punkt **„Zuweiserportal"** oder die Zuweiser-Zeil
 
 - Persönliche Begrüßung, „Ihre Zusammenarbeit"-Kennzahlen, aktuelle Klinik-News
 - Freie-Plätze-Übersicht (Klick füllt die Anmeldung vor)
-- Niedrigschwellige Patienten-Anmeldung mit Live-Bestätigung
-- Behandlungs-Einblick (Reha-Verlauf) und Abschlusspaket (Entlassdokumente)
+- Niedrigschwellige Patienten-Anmeldung mit animierter Live-Bestätigung
+- Behandlungs-Einblick (Reha-Verlauf mit KPI-Ringen)
+- Abschlusspaket mit anklickbaren Mock-Dokumenten (Arztbrief, Kurzbericht, Medikationsplan) und QR-Code
 
 ---
 
