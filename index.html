@@ -267,7 +267,6 @@
 
   /* ===== Bereichsköpfe & Segmente ===== */
   .vhead{margin:6px 0 18px}
-  .neu-cta{margin-top:12px;width:100%}
   .vhead h1{font-family:"Cormorant Garamond",Georgia,serif;font-size:36px;font-weight:700;line-height:1;margin:0}
   .vhead .kicker{margin-bottom:6px}
   .segments{display:flex;gap:6px;margin-top:16px;background:var(--cream2);border:1px solid var(--hair);
@@ -606,10 +605,7 @@
     padding:6px 8px calc(8px + env(safe-area-inset-bottom))}
   .tabbar [data-nav]{flex:1;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;
     gap:4px;color:var(--muted);font-size:12.5px;font-weight:600;letter-spacing:.04em;position:relative;border-radius:12px}
-  .tabbar [data-nav="heute"]{--tabc:#b08a3c;--tabsoft:#f1e5c5}
-  .tabbar [data-nav="faelle"]{--tabc:#3f6c9b;--tabsoft:#dfe9f3}
-  .tabbar [data-nav="netzwerk"]{--tabc:#4e7d54;--tabsoft:#e2eddd}
-  .tabbar [data-nav="system"]{--tabc:#b14e35;--tabsoft:#f5ded4}
+  .tabbar [data-nav]{--tabc:var(--brass-deep);--tabsoft:var(--brass-soft)}
   .tabbar [data-nav] svg{width:30px;height:30px;padding:4px;border-radius:9px;stroke-width:1.9;color:var(--tabc);
     opacity:.82;transition:opacity .15s,background .15s;background:transparent}
   .tabbar [data-nav].active{color:var(--tabc);font-weight:700}
@@ -1326,16 +1322,6 @@ label{font-size:12px;letter-spacing:.08em}
   .tm-owner{color:var(--brass-deep);font-weight:600}
   .tm-status{font-size:10px;text-transform:uppercase;letter-spacing:.04em}
   /* Team · Kanal-Bündelung */
-  .tm-bundle{display:flex;align-items:stretch;flex-wrap:wrap;gap:6px;background:var(--paper);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow-soft);padding:16px 16px;margin:0 0 18px}
-  .tmb-src{display:flex;flex-direction:column;gap:5px;justify-content:center}
-  .tmb-ch{font:600 11.5px/1 Inter;color:var(--ink-soft);background:var(--paper2);border:1px solid var(--hair);border-radius:99px;padding:5px 11px;white-space:nowrap;text-align:center}
-  .tmb-arrow{align-self:center;color:var(--brass);font-size:19px;padding:0 10px;font-weight:700}
-  .tmb-hub{align-self:center;text-align:center;background:#1f1c1c;color:#faf7f1;border-radius:12px;padding:13px 18px;min-width:118px}
-  .tmb-hub b{display:block;font:700 16px/1.05 "Cormorant Garamond",Georgia,serif}
-  .tmb-hub span{font:400 10.5px/1.2 Inter;color:#c3b596;margin-top:2px;display:block}
-  .tmb-step{align-self:center;text-align:center;padding:8px 14px}
-  .tmb-step b{display:block;font:600 13.5px/1.1 Inter;color:var(--ink)}
-  .tmb-step span{font:400 10.5px/1.25 Inter;color:var(--muted);margin-top:2px;display:block}
 /* ===== ABSCHLUSS-DOKUMENTE + QR + REHA-CHARTS ===== */
 #rpDocView{position:fixed;inset:0;z-index:110;display:none;align-items:flex-start;justify-content:center;background:rgba(31,28,28,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);overflow-y:auto;padding:4vh 14px}
 #rpDocView.open{display:flex}
@@ -1384,6 +1370,132 @@ label{font-size:12px;letter-spacing:.08em}
 .rsp-chart path.line{stroke-dasharray:1;animation:rspDraw 1.1s ease-out both}
 .rsp-chart path.line.f{animation-delay:.15s}
 @media(min-width:900px){.rpd-paper{padding:44px 52px 36px}}
+
+/* ============================================================
+   DESIGN-UPGRADE (Fable-Audit) — Klarheit, weniger Überladung
+   Namespaces: .hd-* Heute-Header · .cv-* Konvergenz-Hero
+   Gescopt auf eigene Views; keine .rp-*/.rpd-*/.rsp-*/.mx-* Selektoren.
+   ============================================================ */
+/* --- Phase 1: Heute entrümpelt --- */
+.hd-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+.hd-row .kicker{margin:0}
+.hd-link{background:none;border:0;cursor:pointer;font:600 12.5px/1 Inter;letter-spacing:.02em;color:var(--brass-deep);padding:2px 0;transition:color .18s}
+.hd-link:hover{color:var(--ink)}
+.wrow-all{color:var(--brass-deep)}
+.wrow-all .wtit{font-weight:700}
+.wrow-all{border-top:1px solid var(--hair2)}
+@media(min-width:1024px){
+  /* Nordstern (Spalte 1) und Heute-wichtig (Spalte 2) nebeneinander statt gestapelt */
+  #view-heute>.chap:last-of-type{grid-column:auto}
+  #view-heute>.card.ns-card{grid-column:1}
+}
+/* --- Phase 3: Konvergenz-Panel (ersetzt .g-stats) --- */
+.cv{margin-top:20px;position:relative}
+.cv svg{display:block;width:100%;height:auto}
+.cv .cv-narrow{display:none}
+@media(max-width:759px){
+  .cv .cv-wide{display:none}
+  .cv .cv-narrow{display:block;max-width:420px;margin:0 auto}
+}
+/* cv: Quellen-Chips */
+.cv-chip rect{fill:rgba(255,248,236,.06);stroke:rgba(188,163,125,.38);stroke-width:1}
+.cv-chip .cv-chip-bg{fill:#2b2622;stroke:none}
+.cv-chip-l{font:600 10.5px Inter,sans-serif;letter-spacing:.06em;fill:#b29a76}
+.cv-chip-n{font:700 21px "Cormorant Garamond",Georgia,serif;fill:#ecdfc8;font-variant-numeric:lining-nums tabular-nums}
+.cv-narrow .cv-chip-l{font-size:8.5px;letter-spacing:.05em}
+.cv-narrow .cv-chip-n{font-size:17px}
+/* cv: Ströme + wandernde Punkte (reduced-motion: Ruhezustand = unsichtbar) */
+.cv-path{fill:none;stroke:#b29a76;stroke-opacity:.5;stroke-width:1.1}
+.cv-dot{fill:#ecdfc8;opacity:0;offset-rotate:0deg;filter:drop-shadow(0 0 3px rgba(236,223,200,.9));
+  animation:cv-travel 3s cubic-bezier(.45,.1,.55,.9) infinite}
+.cv-t2{animation-delay:-.5s}.cv-t3{animation-delay:-1s}.cv-t4{animation-delay:-1.5s}
+.cv-t5{animation-delay:-2s}.cv-t6{animation-delay:-2.5s}
+@keyframes cv-travel{
+  from{offset-distance:0%;opacity:0}
+  12%{opacity:.95}
+  80%{opacity:.95}
+  to{offset-distance:100%;opacity:0}
+}
+/* cv: der eine Eingang (Knoten, klickbar) */
+.cv-node{cursor:pointer;outline:none}
+.cv-halo{fill:none;stroke:rgba(211,183,138,.32);stroke-width:1}
+.cv-core{stroke:#8f7448;stroke-width:1}
+.cv-node:hover .cv-core{filter:brightness(1.05)}
+.cv-node:focus-visible .cv-halo{stroke:#ecdfc8;stroke-width:1.5}
+.cv-total{font:700 44px "Cormorant Garamond",Georgia,serif;fill:#1f1c1c;text-anchor:middle;font-variant-numeric:lining-nums tabular-nums}
+.cv-node-l{font:600 10px Inter,sans-serif;letter-spacing:.14em;fill:#1f1c1c;text-anchor:middle}
+.cv-node-s{font:500 9.5px Inter,sans-serif;letter-spacing:.04em;fill:rgba(31,28,28,.6);text-anchor:middle}
+.cv-narrow .cv-total{font-size:34px}
+.cv-narrow .cv-node-l{font-size:9px}
+.cv-narrow .cv-node-s{font-size:8.5px}
+/* cv: stockt-Hinweis */
+.cv-stockt line{stroke:rgba(230,121,79,.5);stroke-width:1}
+.cv-stockt circle{fill:#e6794f}
+.cv-stockt text{font:600 11px Inter,sans-serif;fill:#e6794f;letter-spacing:.02em}
+.cv-narrow .cv-stockt text{font-size:10px}
+/* cv: Ausgang → Stepper → Belegung */
+.cv-out-thick{fill:none;stroke:#d3b78a;stroke-width:3.5;stroke-linecap:round}
+.cv-out-line{fill:none;stroke:rgba(188,163,125,.45);stroke-width:1}
+.cv-step-dot{fill:#d3b78a}
+.cv-step-l{font:600 10.5px Inter,sans-serif;letter-spacing:.06em;fill:#b29a76;text-anchor:middle}
+.cv-div{stroke:rgba(188,163,125,.35);stroke-width:1}
+.cv-stat-l{font:600 10.5px Inter,sans-serif;letter-spacing:.06em;fill:#b29a76}
+.cv-stat-n{font:700 30px "Cormorant Garamond",Georgia,serif;fill:#ecdfc8;font-variant-numeric:lining-nums tabular-nums}
+.cv-stat-u{font-size:18px;fill:#bca37d}
+.cv-pill{fill:rgba(255,248,236,.06);stroke:rgba(188,163,125,.38);stroke-width:1}
+.cv-narrow .cv-step-l{font-size:9.5px;text-anchor:start}
+.cv-narrow .cv-stat-n{font-size:19px}
+/* cv: Leitsatz */
+.cv-copy{font:italic 500 16px "Cormorant Garamond",Georgia,serif;fill:rgba(244,238,227,.92);text-anchor:middle}
+.cv-copy-b{fill:#d3b78a}
+.cv-narrow .cv-copy{font-size:12.5px}
+/* cv: Team-Variante — dunkle Karte (gleiche Konvergenz-Story wie Heute-Hero) */
+.tm-cv{background:linear-gradient(140deg,#332d2a,#1f1c1c 55%,#282320);border-radius:20px;
+  padding:18px 22px 6px;margin:0 0 20px;box-shadow:0 14px 34px rgba(31,28,28,.26),inset 0 1px 0 rgba(255,248,236,.07)}
+.tm-cv.cv{margin-top:0}
+/* --- Phase 4: kompakte Eingangs-Zeilen (aufklappbar) + eine CTA --- */
+#inbox .mail{display:block;padding:0;overflow:hidden}
+.mrow{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:transparent;border:0;
+  cursor:pointer;padding:13px 16px;font:inherit;color:inherit}
+@media(hover:hover){.mrow:hover{background:var(--paper2)}}
+.mhtxt{flex:1;min-width:0}
+.mail:not(.open) .mtit{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.mrow .mmeta{margin-top:4px}
+.mrow .ok-chip.mini{margin-top:0;font-size:12px}
+.mail-chev{flex-shrink:0;color:var(--faint);font-size:19px;line-height:1;transition:transform .2s}
+.mail.open .mail-chev{transform:rotate(90deg)}
+.mmore{display:none;padding:0 16px 14px 71px}
+.mail.open .mmore{display:block}
+.mmore .mtxt{margin-top:0;margin-bottom:12px}
+#inbox .mail.done{opacity:.62}
+#inbox .mail.done.open{opacity:1}
+#view-faelle .sim-cta{width:auto;display:inline-block;margin:8px 0 0}
+/* --- Phase 5: Board-Zonen (3 Trichter-Stufen + Abgeschlossen-Leiste) --- */
+#board.board{gap:20px}
+.zone-group{display:flex;flex-direction:column;flex:0 0 auto}
+.zone-head{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:transparent;
+  border:0;border-bottom:2px solid var(--brass-line);padding:0 4px 7px;margin:0 0 11px;cursor:pointer;font:inherit}
+.zone-head .zone-no{width:20px;height:20px;border-radius:50%;background:var(--brass);color:#fff;
+  font:700 11px/20px Inter;text-align:center;flex-shrink:0}
+.zone-head .zone-t{font:700 11.5px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.zone-head .zone-cnt{margin-left:auto;background:var(--paper);border-radius:9px;padding:1px 8px;font-size:12px;color:var(--muted);font-weight:600}
+@media(hover:hover){.zone-head:not(.static):hover{border-bottom-color:var(--brass)}.zone-head:not(.static):hover .zone-t{color:var(--brass-deep)}}
+.zone-head.static{cursor:default;border-bottom-color:var(--hair)}
+.zone-cols{display:flex;gap:11px}
+.done-rail{opacity:.7;border-left:1px solid var(--hair2);padding-left:16px}
+.done-rail .zone-head .zone-t{color:var(--muted)}
+/* --- Phase 6: Fall-Schublade — Details-Akkordeon (progressive disclosure) --- */
+.d-acc{border:1px solid var(--hair);border-radius:12px;background:var(--paper2);overflow:hidden}
+.d-acc>summary{cursor:pointer;list-style:none;padding:12px 14px;font:700 11.5px/1 Inter;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);display:flex;align-items:center;justify-content:space-between}
+.d-acc>summary::-webkit-details-marker{display:none}
+.d-acc>summary::after{content:"›";font-size:17px;line-height:1;color:var(--faint);transition:transform .2s}
+.d-acc[open]>summary::after{transform:rotate(90deg)}
+.d-acc-body{display:grid;grid-template-columns:1fr;gap:13px;padding:2px 14px 14px}
+/* --- Phase 7: Netzwerk verdichtet — Karte + Zusammenfassung nebeneinander (Desktop) --- */
+@media(min-width:1024px){
+  .zmap{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start}
+}
 </style>
 </head>
 <body>
@@ -1404,7 +1516,7 @@ label{font-size:12px;letter-spacing:.08em}
 </aside>
 <header class="dtopbar">
   <div class="dt-titles"><h2 id="dtopTitle" class="serif">Heute</h2><span id="dtopSub"></span></div>
-  <div class="dt-actions"><span id="dtopDate" class="dt-date num"></span><button class="btn-brass btn-sm" onclick="openSheetNeu()">Neue Anfrage</button><span class="dt-ava serif">KB</span></div>
+  <div class="dt-actions"><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button><span class="dt-ava serif">KB</span></div>
 </header>
 <div class="app">
 <main class="content">
@@ -1418,23 +1530,151 @@ label{font-size:12px;letter-spacing:.08em}
           <div class="g-date" id="greetDate"></div>
         </div>
       </div>
-      <div class="g-stats">
-        <button class="g-stat" onclick="go('faelle','anfragen')"><b class="num" id="gsNeu"></b><span>Neue<br>Anfragen</span></button>
-        <button class="g-stat" onclick="go('faelle','board')"><b class="num" id="gsStock"></b><span>Fälle<br>stocken</span></button>
-        <button class="g-stat" onclick="window.scrollTo({top:document.querySelector('.ns-card').offsetTop-70,behavior:'smooth'})"><b class="num">78&#8239;%</b><span>Belegung</span></button>
-      </div>
+<div class="cv">
+
+  <!-- ===== cv: Konvergenz-Panel · Desktop / breit (≥760px) — die Daten-IDs leben hier ===== -->
+  <svg class="cv-wide" viewBox="0 0 1100 212" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="cvGoldW" cx="36%" cy="28%" r="85%">
+        <stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/>
+      </radialGradient>
+      <radialGradient id="cvGlowW">
+        <stop offset="0" stop-color="#d3b78a" stop-opacity=".2"/><stop offset="1" stop-color="#d3b78a" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Ströme: sechs Kanäle laufen in den einen Eingang -->
+    <path class="cv-path" d="M156,33 C300,33 460,52 586,76"/>
+    <path class="cv-path" d="M314,33 C430,36 500,58 584,83"/>
+    <path class="cv-path" d="M156,89 C320,89 470,89 581,90"/>
+    <path class="cv-path" d="M314,89 C410,90 500,93 581,97"/>
+    <path class="cv-path" d="M156,145 C300,145 460,126 586,112"/>
+    <path class="cv-path" d="M314,145 C430,142 500,120 584,105"/>
+    <circle class="cv-dot"       r="2.6" style="offset-path:path('M156,33 C300,33 460,52 586,76')"/>
+    <circle class="cv-dot cv-t2" r="2.6" style="offset-path:path('M314,33 C430,36 500,58 584,83')"/>
+    <circle class="cv-dot cv-t3" r="2.6" style="offset-path:path('M156,89 C320,89 470,89 581,90')"/>
+    <circle class="cv-dot cv-t4" r="2.6" style="offset-path:path('M314,89 C410,90 500,93 581,97')"/>
+    <circle class="cv-dot cv-t5" r="2.6" style="offset-path:path('M156,145 C300,145 460,126 586,112')"/>
+    <circle class="cv-dot cv-t6" r="2.6" style="offset-path:path('M314,145 C430,142 500,120 584,105')"/>
+
+    <!-- Quellen: 2 Spalten × 3 Reihen -->
+    <g class="cv-chip"><rect class="cv-chip-bg" x="8"   y="10"  width="148" height="46" rx="13"/><rect x="8"   y="10"  width="148" height="46" rx="13"/><text class="cv-chip-l" x="22"  y="37">E-MAIL</text>   <text class="cv-chip-n" x="142" y="40"  text-anchor="end" id="cvEmail">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="166" y="10"  width="148" height="46" rx="13"/><rect x="166" y="10"  width="148" height="46" rx="13"/><text class="cv-chip-l" x="180" y="37">TELEFON</text>  <text class="cv-chip-n" x="300" y="40"  text-anchor="end" id="cvTelefon">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="8"   y="66"  width="148" height="46" rx="13"/><rect x="8"   y="66"  width="148" height="46" rx="13"/><text class="cv-chip-l" x="22"  y="93">FAX</text>      <text class="cv-chip-n" x="142" y="96"  text-anchor="end" id="cvFax">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="166" y="66"  width="148" height="46" rx="13"/><rect x="166" y="66"  width="148" height="46" rx="13"/><text class="cv-chip-l" x="180" y="93">WEBSITE</text>  <text class="cv-chip-n" x="300" y="96"  text-anchor="end" id="cvWebsite">2</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="8"   y="122" width="148" height="46" rx="13"/><rect x="8"   y="122" width="148" height="46" rx="13"/><text class="cv-chip-l" x="22"  y="149">ZUWEISER</text><text class="cv-chip-n" x="142" y="152" text-anchor="end" id="cvZuweiser">0</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="166" y="122" width="148" height="46" rx="13"/><rect x="166" y="122" width="148" height="46" rx="13"/><text class="cv-chip-l" x="180" y="149">PORTALE</text> <text class="cv-chip-n" x="300" y="152" text-anchor="end" id="cvPortale">0</text></g>
+
+    <!-- Der eine Eingang -->
+    <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen"
+       onclick="go('faelle','anfragen')"
+       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
+      <circle cx="640" cy="94" r="94" fill="url(#cvGlowW)"/>
+      <circle class="cv-halo" cx="640" cy="94" r="66"/>
+      <circle class="cv-core" cx="640" cy="94" r="58" fill="url(#cvGoldW)"/>
+      <text class="cv-total" x="640" y="90" id="cvTotal">5</text>
+      <text class="cv-node-l" x="640" y="110">EIN EINGANG</text>
+      <text class="cv-node-s" x="640" y="126">heute</text>
+    </g>
+
+    <!-- stockt-Hinweis -->
+    <g class="cv-stockt" id="cvStockWrap">
+      <line x1="682" y1="52" x2="699" y2="39"/>
+      <circle cx="705" cy="34" r="3"/>
+      <text x="713" y="38"><tspan id="cvStock">1</tspan> stockt</text>
+    </g>
+
+    <!-- Ausgang: ein Fall, ein Weg, planbare Belegung -->
+    <path class="cv-out-thick" d="M700,94 H742"/>
+    <path class="cv-out-line" d="M742,94 H998"/>
+    <circle class="cv-step-dot" cx="764" cy="94" r="4"/>
+    <circle class="cv-step-dot" cx="868" cy="94" r="4"/>
+    <circle class="cv-step-dot" cx="950" cy="94" r="4"/>
+    <text class="cv-step-l" x="764" y="118">ZUGETEILT</text>
+    <text class="cv-step-l" x="868" y="118">BEANTWORTET</text>
+    <text class="cv-step-l" x="950" y="118">FALL</text>
+    <line class="cv-div" x1="1006" y1="64" x2="1006" y2="124"/>
+    <text class="cv-stat-l" x="1024" y="80">BELEGUNG</text>
+    <text class="cv-stat-n" x="1024" y="114"><tspan id="cvBeleg">78</tspan><tspan class="cv-stat-u"> %</tspan></text>
+
+    <!-- Leitsatz -->
+    <text class="cv-copy" x="640" y="205">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
+  </svg>
+
+  <!-- ===== cv: Mobil / schmal (<760px) — Werte gespiegelt über data-sync ===== -->
+  <svg class="cv-narrow" viewBox="0 0 340 452" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="cvGoldN" cx="36%" cy="28%" r="85%">
+        <stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/>
+      </radialGradient>
+      <radialGradient id="cvGlowN">
+        <stop offset="0" stop-color="#d3b78a" stop-opacity=".2"/><stop offset="1" stop-color="#d3b78a" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <path class="cv-path" d="M57,46 C57,108 94,142 133,163"/>
+    <path class="cv-path" d="M170,46 C148,84 140,120 153,153"/>
+    <path class="cv-path" d="M283,46 C283,108 246,142 207,163"/>
+    <path class="cv-path" d="M57,95 C60,130 98,150 139,158"/>
+    <path class="cv-path" d="M170,95 C184,114 190,132 181,151"/>
+    <path class="cv-path" d="M283,95 C280,130 242,150 201,158"/>
+    <circle class="cv-dot"       r="2.4" style="offset-path:path('M57,46 C57,108 94,142 133,163')"/>
+    <circle class="cv-dot cv-t2" r="2.4" style="offset-path:path('M170,46 C148,84 140,120 153,153')"/>
+    <circle class="cv-dot cv-t3" r="2.4" style="offset-path:path('M283,46 C283,108 246,142 207,163')"/>
+    <circle class="cv-dot cv-t4" r="2.4" style="offset-path:path('M57,95 C60,130 98,150 139,158')"/>
+    <circle class="cv-dot cv-t5" r="2.4" style="offset-path:path('M170,95 C184,114 190,132 181,151')"/>
+    <circle class="cv-dot cv-t6" r="2.4" style="offset-path:path('M283,95 C280,130 242,150 201,158')"/>
+
+    <!-- Quellen: 3 Spalten × 2 Reihen -->
+    <g class="cv-chip"><rect class="cv-chip-bg" x="4"   y="4"  width="106" height="42" rx="12"/><rect x="4"   y="4"  width="106" height="42" rx="12"/><text class="cv-chip-l" x="14"  y="28">E-MAIL</text>   <text class="cv-chip-n" x="100" y="31" text-anchor="end" data-sync="cvEmail">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="117" y="4"  width="106" height="42" rx="12"/><rect x="117" y="4"  width="106" height="42" rx="12"/><text class="cv-chip-l" x="127" y="28">TELEFON</text>  <text class="cv-chip-n" x="213" y="31" text-anchor="end" data-sync="cvTelefon">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="230" y="4"  width="106" height="42" rx="12"/><rect x="230" y="4"  width="106" height="42" rx="12"/><text class="cv-chip-l" x="240" y="28">FAX</text>      <text class="cv-chip-n" x="326" y="31" text-anchor="end" data-sync="cvFax">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="4"   y="53" width="106" height="42" rx="12"/><rect x="4"   y="53" width="106" height="42" rx="12"/><text class="cv-chip-l" x="14"  y="77">WEBSITE</text>  <text class="cv-chip-n" x="100" y="80" text-anchor="end" data-sync="cvWebsite">2</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="117" y="53" width="106" height="42" rx="12"/><rect x="117" y="53" width="106" height="42" rx="12"/><text class="cv-chip-l" x="127" y="77">ZUWEISER</text> <text class="cv-chip-n" x="213" y="80" text-anchor="end" data-sync="cvZuweiser">0</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="230" y="53" width="106" height="42" rx="12"/><rect x="230" y="53" width="106" height="42" rx="12"/><text class="cv-chip-l" x="240" y="77">PORTALE</text>  <text class="cv-chip-n" x="326" y="80" text-anchor="end" data-sync="cvPortale">0</text></g>
+
+    <!-- Der eine Eingang -->
+    <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen"
+       onclick="go('faelle','anfragen')"
+       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
+      <circle cx="170" cy="200" r="86" fill="url(#cvGlowN)"/>
+      <circle class="cv-halo" cx="170" cy="200" r="60"/>
+      <circle class="cv-core" cx="170" cy="200" r="52" fill="url(#cvGoldN)"/>
+      <text class="cv-total" x="170" y="196" data-sync="cvTotal">5</text>
+      <text class="cv-node-l" x="170" y="214">EIN EINGANG</text>
+      <text class="cv-node-s" x="170" y="228">heute</text>
+    </g>
+
+    <g class="cv-stockt" data-sync-wrap="cvStockWrap">
+      <line x1="210" y1="238" x2="230" y2="246"/>
+      <circle cx="236" cy="248" r="2.5"/>
+      <text x="243" y="252"><tspan data-sync="cvStock">1</tspan> stockt</text>
+    </g>
+
+    <!-- Ausgang -->
+    <path class="cv-out-thick" d="M170,254 V290"/>
+    <path class="cv-out-line" d="M170,290 V384"/>
+    <circle class="cv-step-dot" cx="170" cy="304" r="4"/>
+    <circle class="cv-step-dot" cx="170" cy="336" r="4"/>
+    <circle class="cv-step-dot" cx="170" cy="368" r="4"/>
+    <text class="cv-step-l" x="186" y="308">ZUGETEILT</text>
+    <text class="cv-step-l" x="186" y="340">BEANTWORTET</text>
+    <text class="cv-step-l" x="186" y="372">FALL</text>
+    <rect class="cv-pill" x="95" y="386" width="150" height="36" rx="18"/>
+    <text class="cv-stat-l" x="112" y="409" style="font-size:8.5px">BELEGUNG</text>
+    <text class="cv-stat-n" x="228" y="411" text-anchor="end"><tspan data-sync="cvBeleg">78</tspan><tspan class="cv-stat-u" style="font-size:12px"> %</tspan></text>
+
+    <!-- Leitsatz -->
+    <text class="cv-copy" x="170" y="444">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
+  </svg>
+
+</div>
     </header>
 
     <div class="chap">
-      <div class="kicker">Die Logik der Software</div>
-      <h2 class="chap-h2">Eine Drehscheibe für Privatpatienten.</h2>
-      <p class="chap-intro">Die Software verbindet Markt, Klinikalltag und Belegung. Sie macht sichtbar, wo Patienten entstehen, wer sie führt und was aus jedem Fall gelernt wird.</p>
-      <div class="hub-stack hub-top" aria-label="Systemlogik">
-        <div class="hub-box"><div class="kicker">Aussen</div><b>Quellen aktivieren</b><span>Zuweiser-Netzwerk · Altpatienten-Bestand · Premium-Kanäle</span></div>
-        <div class="hub-arrow" aria-hidden="true">↓</div>
-        <div class="hub-box hub"><div class="kicker">Die Software</div><b>Der Trichter</b><span>erfassen · führen · lernen</span><small>Aus jedem Signal wird Steuerung.</small></div>
-        <div class="hub-arrow" aria-hidden="true">↓</div>
-        <div class="hub-box"><div class="kicker">Innen</div><b>Klinik steuerbar machen</b><span>Prozesse · Belegung · SalutoCare-Routing</span></div>
+      <div class="hd-row">
+        <div class="kicker">Der Trichter · heute</div>
+        <button class="hd-link" onclick="go('system','idee')">Die ganze Idee ›</button>
       </div>
       <div class="card strom strom-d">
         <svg id="strom" viewBox="0 0 1180 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der Trichter, Ergebnis">
@@ -1654,34 +1894,34 @@ label{font-size:12px;letter-spacing:.08em}
               <text class="badge-t" x="177" y="304.5" data-sync="stock0"></text>
             </g>
 
-            <text class="stage-num" x="138" y="368" text-anchor="end" font-size="44" data-sync="zc2"></text>
-            <text class="stage-lab" x="150" y="364">Aufnahme geplant <tspan class="chev" dy="1">›</tspan></text>
+            <text class="stage-num" x="138" y="368" text-anchor="end" font-size="44" data-sync="zc1"></text>
+            <text class="stage-lab" x="150" y="364">in Klärung <tspan class="chev" dy="1">›</tspan></text>
             <g data-badge>
               <rect x="139" y="373" width="84" height="22" rx="11" fill="rgba(168,84,63,.20)" stroke="rgba(239,166,125,.35)" stroke-width="1"/>
               <circle cx="153" cy="384" r="3" fill="#e6794f"/>
               <circle class="ember" cx="153" cy="384" r="6.5" fill="#e6794f" opacity=".28" filter="url(#seamBlur)"/>
-              <text class="badge-t" x="163" y="388.5" data-sync="stock2"></text>
+              <text class="badge-t" x="163" y="388.5" data-sync="stock1"></text>
             </g>
 
-            <text class="stage-num" x="158" y="438" text-anchor="end" font-size="44" data-sync="zc1"></text>
-            <text class="stage-lab" x="170" y="434">in Klärung <tspan class="chev" dy="1">›</tspan></text>
+            <text class="stage-num" x="158" y="438" text-anchor="end" font-size="44" data-sync="zc2"></text>
+            <text class="stage-lab" x="170" y="434">Aufnahme geplant <tspan class="chev" dy="1">›</tspan></text>
             <g data-badge>
               <rect x="153" y="447" width="84" height="22" rx="11" fill="rgba(168,84,63,.20)" stroke="rgba(239,166,125,.35)" stroke-width="1"/>
               <circle cx="167" cy="458" r="3" fill="#e6794f"/>
               <circle class="ember" cx="167" cy="458" r="6.5" fill="#e6794f" opacity=".28" filter="url(#seamBlur)"/>
-              <text class="badge-t" x="177" y="462.5" data-sync="stock1"></text>
+              <text class="badge-t" x="177" y="462.5" data-sync="stock2"></text>
             </g>
 
             <g class="tap" onclick="openStage(0)">
               <title>Fälle: neu und kontaktiert anzeigen</title>
               <rect class="hit" x="80" y="234" width="230" height="76" rx="12"/>
             </g>
-            <g class="tap" onclick="openStage(2)">
-              <title>Geplante Aufnahmen anzeigen</title>
-              <rect class="hit" x="102" y="314" width="186" height="76" rx="12"/>
-            </g>
             <g class="tap" onclick="openStage(1)">
               <title>Fälle in Klärung anzeigen</title>
+              <rect class="hit" x="102" y="314" width="186" height="76" rx="12"/>
+            </g>
+            <g class="tap" onclick="openStage(2)">
+              <title>Geplante Aufnahmen anzeigen</title>
               <rect class="hit" x="124" y="394" width="142" height="78" rx="12"/>
             </g>
           </g>
@@ -1749,16 +1989,6 @@ label{font-size:12px;letter-spacing:.08em}
       </div>
     </div>
 
-    <div class="chap">
-      <div class="kicker">Die Idee</div>
-      <div class="card idea-mini">
-        <div class="im-row"><b>01</b><div><span>Mehr Fälle</span><small>Alle Quellen laufen in einen gemeinsamen Eingang.</small></div></div>
-        <div class="im-row"><b>02</b><div><span>Verlässlichkeit</span><small>Jeder Fall hat Verantwortliche, nächsten Schritt und Frist.</small></div></div>
-        <div class="im-row"><b>03</b><div><span>Planbarkeit</span><small>Der Belegungsvorlauf wird sichtbar — und steigt.</small></div></div>
-        <button class="im-more" onclick="go('system','idee')">Die ganze Idee ›</button>
-      </div>
-    </div>
-
     <div class="card ns-card">
       <div class="kicker">Nordstern · Privatauslastung</div>
       <svg class="gauge" viewBox="0 0 200 152" role="img" aria-label="Privatauslastung 78 Prozent, Ziel 90 Prozent">
@@ -1810,7 +2040,6 @@ label{font-size:12px;letter-spacing:.08em}
         <button class="seg" data-seg="board" role="tab">Board <b class="segn num" id="segCntBoard"></b></button>
         <button class="seg" data-seg="inreha" role="tab">In Reha</button>
       </div>
-      <button class="btn btn-sm neu-cta" onclick="openSheetNeu()">＋ Neue Anfrage aufnehmen</button>
       <button class="sim-cta" onclick="simulateInbound()">⚡ Anfrage simulieren (Demo)</button>
     </header>
     <div class="sub active" id="sub-faelle-anfragen">
@@ -1835,14 +2064,70 @@ label{font-size:12px;letter-spacing:.08em}
     <header class="vhead"><div class="kicker">Zentrale Steuerung</div><h1>Team</h1>
       <p class="lblline">Alle Anfragen aus allen Kanälen — an einem Ort gebündelt, klar zugeteilt, zügig beantwortet.</p>
     </header>
-    <div class="tm-bundle">
-      <div class="tmb-src"><span class="tmb-ch">E-Mail</span><span class="tmb-ch">Website</span><span class="tmb-ch">Fax</span><span class="tmb-ch">Telefon</span><span class="tmb-ch">Portale</span></div>
-      <div class="tmb-arrow">›</div>
-      <div class="tmb-hub"><b>Ein Eingang</b><span>alle Kanäle gebündelt</span></div>
-      <div class="tmb-arrow">›</div>
-      <div class="tmb-step"><b>Zuteilen</b><span>an die richtige Person</span></div>
-      <div class="tmb-arrow">›</div>
-      <div class="tmb-step"><b>Beantworten</b><span>mit Aufgabe &amp; Frist</span></div>
+    <div class="cv tm-cv">
+      <svg class="cv-wide" viewBox="0 0 1100 212" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="cvGoldT" cx="36%" cy="28%" r="85%"><stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/></radialGradient>
+          <radialGradient id="cvGlowT"><stop offset="0" stop-color="#d3b78a" stop-opacity=".2"/><stop offset="1" stop-color="#d3b78a" stop-opacity="0"/></radialGradient>
+        </defs>
+        <path class="cv-path" d="M156,33 C300,33 460,52 586,76"/><path class="cv-path" d="M314,33 C430,36 500,58 584,83"/>
+        <path class="cv-path" d="M156,89 C320,89 470,89 581,90"/><path class="cv-path" d="M314,89 C410,90 500,93 581,97"/>
+        <path class="cv-path" d="M156,145 C300,145 460,126 586,112"/><path class="cv-path" d="M314,145 C430,142 500,120 584,105"/>
+        <circle class="cv-dot" r="2.6" style="offset-path:path('M156,33 C300,33 460,52 586,76')"/>
+        <circle class="cv-dot cv-t2" r="2.6" style="offset-path:path('M314,33 C430,36 500,58 584,83')"/>
+        <circle class="cv-dot cv-t3" r="2.6" style="offset-path:path('M156,89 C320,89 470,89 581,90')"/>
+        <circle class="cv-dot cv-t4" r="2.6" style="offset-path:path('M314,89 C410,90 500,93 581,97')"/>
+        <circle class="cv-dot cv-t5" r="2.6" style="offset-path:path('M156,145 C300,145 460,126 586,112')"/>
+        <circle class="cv-dot cv-t6" r="2.6" style="offset-path:path('M314,145 C430,142 500,120 584,105')"/>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="10" width="148" height="46" rx="13"/><rect x="8" y="10" width="148" height="46" rx="13"/><text class="cv-chip-l" x="22" y="37">E-MAIL</text><text class="cv-chip-n" x="142" y="40" text-anchor="end" data-sync="cvEmail">1</text></g>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="166" y="10" width="148" height="46" rx="13"/><rect x="166" y="10" width="148" height="46" rx="13"/><text class="cv-chip-l" x="180" y="37">TELEFON</text><text class="cv-chip-n" x="300" y="40" text-anchor="end" data-sync="cvTelefon">1</text></g>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="66" width="148" height="46" rx="13"/><rect x="8" y="66" width="148" height="46" rx="13"/><text class="cv-chip-l" x="22" y="93">FAX</text><text class="cv-chip-n" x="142" y="96" text-anchor="end" data-sync="cvFax">1</text></g>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="166" y="66" width="148" height="46" rx="13"/><rect x="166" y="66" width="148" height="46" rx="13"/><text class="cv-chip-l" x="180" y="93">WEBSITE</text><text class="cv-chip-n" x="300" y="96" text-anchor="end" data-sync="cvWebsite">2</text></g>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="122" width="148" height="46" rx="13"/><rect x="8" y="122" width="148" height="46" rx="13"/><text class="cv-chip-l" x="22" y="149">ZUWEISER</text><text class="cv-chip-n" x="142" y="152" text-anchor="end" data-sync="cvZuweiser">0</text></g>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="166" y="122" width="148" height="46" rx="13"/><rect x="166" y="122" width="148" height="46" rx="13"/><text class="cv-chip-l" x="180" y="149">PORTALE</text><text class="cv-chip-n" x="300" y="152" text-anchor="end" data-sync="cvPortale">0</text></g>
+        <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen" onclick="go('faelle','anfragen')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
+          <circle cx="640" cy="94" r="94" fill="url(#cvGlowT)"/><circle class="cv-halo" cx="640" cy="94" r="66"/><circle class="cv-core" cx="640" cy="94" r="58" fill="url(#cvGoldT)"/>
+          <text class="cv-total" x="640" y="90" data-sync="cvTotal">5</text><text class="cv-node-l" x="640" y="110">EIN EINGANG</text><text class="cv-node-s" x="640" y="126">heute</text>
+        </g>
+        <g class="cv-stockt" data-sync-wrap="cvStockWrap"><line x1="682" y1="52" x2="699" y2="39"/><circle cx="705" cy="34" r="3"/><text x="713" y="38"><tspan data-sync="cvStock">1</tspan> stockt</text></g>
+        <path class="cv-out-thick" d="M700,94 H742"/><path class="cv-out-line" d="M742,94 H998"/>
+        <circle class="cv-step-dot" cx="764" cy="94" r="4"/><circle class="cv-step-dot" cx="868" cy="94" r="4"/><circle class="cv-step-dot" cx="950" cy="94" r="4"/>
+        <text class="cv-step-l" x="764" y="118">ZUGETEILT</text><text class="cv-step-l" x="868" y="118">BEANTWORTET</text><text class="cv-step-l" x="950" y="118">FALL</text>
+        <line class="cv-div" x1="1006" y1="64" x2="1006" y2="124"/><text class="cv-stat-l" x="1024" y="80">BELEGUNG</text>
+        <text class="cv-stat-n" x="1024" y="114"><tspan data-sync="cvBeleg">78</tspan><tspan class="cv-stat-u"> %</tspan></text>
+        <text class="cv-copy" x="640" y="205">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
+      </svg>
+      <svg class="cv-narrow" viewBox="0 0 340 452" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="cvGoldTN" cx="36%" cy="28%" r="85%"><stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/></radialGradient>
+          <radialGradient id="cvGlowTN"><stop offset="0" stop-color="#d3b78a" stop-opacity=".2"/><stop offset="1" stop-color="#d3b78a" stop-opacity="0"/></radialGradient>
+        </defs>
+        <path class="cv-path" d="M57,46 C57,108 94,142 133,163"/><path class="cv-path" d="M170,46 C148,84 140,120 153,153"/><path class="cv-path" d="M283,46 C283,108 246,142 207,163"/>
+        <path class="cv-path" d="M57,95 C60,130 98,150 139,158"/><path class="cv-path" d="M170,95 C184,114 190,132 181,151"/><path class="cv-path" d="M283,95 C280,130 242,150 201,158"/>
+        <circle class="cv-dot" r="2.4" style="offset-path:path('M57,46 C57,108 94,142 133,163')"/>
+        <circle class="cv-dot cv-t2" r="2.4" style="offset-path:path('M170,46 C148,84 140,120 153,153')"/>
+        <circle class="cv-dot cv-t3" r="2.4" style="offset-path:path('M283,46 C283,108 246,142 207,163')"/>
+        <circle class="cv-dot cv-t4" r="2.4" style="offset-path:path('M57,95 C60,130 98,150 139,158')"/>
+        <circle class="cv-dot cv-t5" r="2.4" style="offset-path:path('M170,95 C184,114 190,132 181,151')"/>
+        <circle class="cv-dot cv-t6" r="2.4" style="offset-path:path('M283,95 C280,130 242,150 201,158')"/>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="4" width="106" height="42" rx="12"/><rect x="4" y="4" width="106" height="42" rx="12"/><text class="cv-chip-l" x="14" y="28">E-MAIL</text><text class="cv-chip-n" x="100" y="31" text-anchor="end" data-sync="cvEmail">1</text></g>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="117" y="4" width="106" height="42" rx="12"/><rect x="117" y="4" width="106" height="42" rx="12"/><text class="cv-chip-l" x="127" y="28">TELEFON</text><text class="cv-chip-n" x="213" y="31" text-anchor="end" data-sync="cvTelefon">1</text></g>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="230" y="4" width="106" height="42" rx="12"/><rect x="230" y="4" width="106" height="42" rx="12"/><text class="cv-chip-l" x="240" y="28">FAX</text><text class="cv-chip-n" x="326" y="31" text-anchor="end" data-sync="cvFax">1</text></g>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="53" width="106" height="42" rx="12"/><rect x="4" y="53" width="106" height="42" rx="12"/><text class="cv-chip-l" x="14" y="77">WEBSITE</text><text class="cv-chip-n" x="100" y="80" text-anchor="end" data-sync="cvWebsite">2</text></g>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="117" y="53" width="106" height="42" rx="12"/><rect x="117" y="53" width="106" height="42" rx="12"/><text class="cv-chip-l" x="127" y="77">ZUWEISER</text><text class="cv-chip-n" x="213" y="80" text-anchor="end" data-sync="cvZuweiser">0</text></g>
+        <g class="cv-chip"><rect class="cv-chip-bg" x="230" y="53" width="106" height="42" rx="12"/><rect x="230" y="53" width="106" height="42" rx="12"/><text class="cv-chip-l" x="240" y="77">PORTALE</text><text class="cv-chip-n" x="326" y="80" text-anchor="end" data-sync="cvPortale">0</text></g>
+        <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen" onclick="go('faelle','anfragen')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
+          <circle cx="170" cy="200" r="86" fill="url(#cvGlowTN)"/><circle class="cv-halo" cx="170" cy="200" r="60"/><circle class="cv-core" cx="170" cy="200" r="52" fill="url(#cvGoldTN)"/>
+          <text class="cv-total" x="170" y="196" data-sync="cvTotal">5</text><text class="cv-node-l" x="170" y="214">EIN EINGANG</text><text class="cv-node-s" x="170" y="228">heute</text>
+        </g>
+        <g class="cv-stockt" data-sync-wrap="cvStockWrap"><line x1="210" y1="238" x2="230" y2="246"/><circle cx="236" cy="248" r="2.5"/><text x="243" y="252"><tspan data-sync="cvStock">1</tspan> stockt</text></g>
+        <path class="cv-out-thick" d="M170,254 V290"/><path class="cv-out-line" d="M170,290 V384"/>
+        <circle class="cv-step-dot" cx="170" cy="304" r="4"/><circle class="cv-step-dot" cx="170" cy="336" r="4"/><circle class="cv-step-dot" cx="170" cy="368" r="4"/>
+        <text class="cv-step-l" x="186" y="308">ZUGETEILT</text><text class="cv-step-l" x="186" y="340">BEANTWORTET</text><text class="cv-step-l" x="186" y="372">FALL</text>
+        <rect class="cv-pill" x="95" y="386" width="150" height="36" rx="18"/><text class="cv-stat-l" x="112" y="409" style="font-size:8.5px">BELEGUNG</text>
+        <text class="cv-stat-n" x="228" y="411" text-anchor="end"><tspan data-sync="cvBeleg">78</tspan><tspan class="cv-stat-u" style="font-size:12px"> %</tspan></text>
+        <text class="cv-copy" x="170" y="444">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
+      </svg>
     </div>
     <div id="teamGrid"></div>
   </section>
@@ -2108,34 +2393,39 @@ label{font-size:12px;letter-spacing:.08em}
     </div>
     <div class="mbody two-track">
       <div class="d-track-wrap">
-        <button id="dAdvance" class="btn-brass btn-sm" style="width:100%;margin-bottom:10px" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
-        <div id="dWerdegang" class="d-track"></div>
-      </div>
-      <div class="mgrid">
-        <div><label for="dStatus">Status</label><select id="dStatus"></select></div>
-        <div><label for="dOwner">Verantwortlich</label><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
-        <div><label for="dAufgabe">Nächste Aufgabe</label><input id="dAufgabe"></div>
-        <div><label for="dFrist">Frist</label><input id="dFrist" type="date"></div>
-        <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option></select></div>
-        <div><label for="dConsent">Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
-        <div class="full"><label>Unterlagen <span id="docCnt" style="color:var(--brass-deep)"></span></label>
-          <div class="docs">
-            <label><input type="checkbox" id="u1"> Entlassbrief</label>
-            <label><input type="checkbox" id="u2"> Befunde</label>
-            <label><input type="checkbox" id="u3"> Versicherungsdaten</label>
-            <label><input type="checkbox" id="u4"> Kostenzusage</label>
-          </div>
-        </div>
-        <div class="full"><div class="saluto-toggle"><input type="checkbox" id="dSaluto"><span>★ Für <b>SalutoCare</b> geeignet · Premium-Option aktiv anbieten</span></div></div>
-        <div class="full verlustrow" id="rowVerlust"><label for="dVerlust">Verlustgrund (Pflicht bei „Verloren&#8220;)</label>
-          <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
-        </div>
-        <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
-        <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
-        <div class="full komm-block"><label>Antwort senden</label>
+        <button id="dAdvance" class="btn-brass btn-sm" style="width:100%;margin-bottom:12px" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
+        <div class="komm-block" style="margin-bottom:14px"><label>Antwort senden</label>
           <div class="komm-row"><select id="dReplyKanal"><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select><button class="btn-brass btn-sm" type="button" onclick="sendReply()">✉ Antwort senden</button></div>
           <textarea id="dReply" rows="2" placeholder="Antwort an die anfragende Person verfassen … (Demo)"></textarea>
         </div>
+        <div id="dWerdegang" class="d-track"></div>
+      </div>
+      <div class="mgrid">
+        <div><label for="dOwner">Verantwortlich</label><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
+        <div><label for="dAufgabe">Nächste Aufgabe</label><input id="dAufgabe"></div>
+        <div><label for="dFrist">Frist</label><input id="dFrist" type="date"></div>
+        <details class="d-acc full">
+          <summary>Details &amp; Unterlagen</summary>
+          <div class="d-acc-body">
+            <div><label for="dStatus">Status</label><select id="dStatus"></select></div>
+            <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option></select></div>
+            <div><label for="dConsent">Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
+            <div class="full"><label>Unterlagen <span id="docCnt" style="color:var(--brass-deep)"></span></label>
+              <div class="docs">
+                <label><input type="checkbox" id="u1"> Entlassbrief</label>
+                <label><input type="checkbox" id="u2"> Befunde</label>
+                <label><input type="checkbox" id="u3"> Versicherungsdaten</label>
+                <label><input type="checkbox" id="u4"> Kostenzusage</label>
+              </div>
+            </div>
+            <div class="full"><div class="saluto-toggle"><input type="checkbox" id="dSaluto"><span>★ Für <b>SalutoCare</b> geeignet · Premium-Option aktiv anbieten</span></div></div>
+            <div class="full verlustrow" id="rowVerlust"><label for="dVerlust">Verlustgrund (Pflicht bei „Verloren&#8220;)</label>
+              <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
+            </div>
+          </div>
+        </details>
+        <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
+        <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
       </div>
     </div>
     <div class="mfoot">
@@ -2175,7 +2465,9 @@ let faelle=[
  {id:6,name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(0),saluto:true,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss"],[dstr(-4),"Med. Rückfrage an Oberarzt"]]},
  {id:8,name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage"],[dstr(-4),"Entlassbrief liegt vor"]]},
  {id:9,name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]]},
- {id:12,name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage"],[dstr(-11),"Rückruf erst nach 26 Std."],[dstr(-8),"Familie hat anderes Haus gewählt"]]}
+ {id:12,name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage"],[dstr(-11),"Rückruf erst nach 26 Std."],[dstr(-8),"Familie hat anderes Haus gewählt"]]},
+ {id:10,name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-12),"Anfrage nach Hüft-TEP (Sozialdienst)"],[dstr(-9),"Kostenzusage PKV"],[dstr(-2),"Aufgenommen — Privatzimmer"]]},
+ {id:11,name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:8,log:[[dstr(-15),"Website-Anfrage Neuro-Reha"],[dstr(-10),"Beratung geführt, Zusage erhalten"],[dstr(-3),"Aufgenommen"]]}
 ];
 
 /* Werdegang-Beispielschritte (nur für Demo-Fälle gesetzt; Rest wird generisch abgeleitet) */
@@ -2447,17 +2739,24 @@ function simulateInbound(){
  },1600);
 }
 function renderEingang(){
-  document.getElementById("inbox").innerHTML=eingang.map(m=>
-   "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"
-   +"<span class='chico'>"+(CHAN_ICON[m.kanal]||CHAN_ICON["E-Mail"])+"</span>"
-   +"<div class='mwrap'><div class='mtit'>"+escapeHtml(m.tit)+"</div><div class='mtxt'>"+escapeHtml(m.txt)+"</div>"
-   +"<div class='mmeta'><span class='chtag'>"+escapeHtml(m.kanal)+"</span><span class='mtime'>"+escapeHtml(m.zeit)+"</span>"+"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span></div>"
-   +(m.done?"<div class='eingang-done'><span class='ok-chip'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall übernommen")+"</span>"+(m.fallId?"<button class='btn-ghost btn-sm' onclick='openDetail("+m.fallId+")'>→ Fall öffnen</button>":"")+"</div>"
-     :m.typ==="passiv"
-       ?"<button class='btn-ghost btn-sm' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>"
-       :"<div class='eingang-act'><select class='eingang-owner' id='eo-"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select><button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Zuordnen &amp; als Fall</button><button class='btn-ghost btn-sm' onclick='antwortenEingang("+m.id+")'>✉ Antworten</button></div>")
-   +"</div></article>").join("");
+  document.getElementById("inbox").innerHTML=eingang.map(m=>{
+    const head="<button class='mrow' onclick='toggleMail(this)'>"
+      +"<span class='chico'>"+(CHAN_ICON[m.kanal]||CHAN_ICON["E-Mail"])+"</span>"
+      +"<span class='mhtxt'><span class='mtit'>"+escapeHtml(m.tit)+"</span>"
+      +"<span class='mmeta'><span class='chtag'>"+escapeHtml(m.kanal)+"</span><span class='mtime'>"+escapeHtml(m.zeit)+"</span>"
+      +"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span>"
+      +(m.done?"<span class='ok-chip mini'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall")+"</span>":"")+"</span></span>"
+      +"<span class='mail-chev'>›</span></button>";
+    const act=m.done
+      ?(m.fallId?"<button class='btn-ghost btn-sm' onclick='openDetail("+m.fallId+")'>→ Fall öffnen</button>":"")
+      :m.typ==="passiv"
+        ?"<button class='btn-ghost btn-sm' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>"
+        :"<div class='eingang-act'><select class='eingang-owner' id='eo-"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select><button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Zuordnen &amp; als Fall</button><button class='btn-ghost btn-sm' onclick='antwortenEingang("+m.id+")'>✉ Antworten</button></div>";
+    return "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"+head
+      +"<div class='mmore'><div class='mtxt'>"+escapeHtml(m.txt)+"</div>"+act+"</div></article>";
+  }).join("");
 }
+function toggleMail(btn){const a=btn.closest(".mail");if(a)a.classList.toggle("open");}
 function uebernehmen(id){
   const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
   const sel=document.getElementById("eo-"+id); const owner=sel?sel.value:TEAM[0];
@@ -2508,46 +2807,56 @@ function setBoardStage(z){boardStageFilter=z;renderBoard();}
 function renderBoardFocus(){
   const el=document.getElementById("boardFocus");if(!el)return;
   const offen=offeneFaelle().length;
-  const chips=act=>{
-    const items=[["Alle Fälle",null,offen],["Neu & kontaktiert",0,stageCases(0).length],["In Klärung",1,stageCases(1).length],["Aufnahme geplant",2,stageCases(2).length]];
-    return "<div class='bf-chips'>"+items.map(it=>
-      "<button class='bf-chip"+(act===it[1]?" active":"")+"' onclick='setBoardStage("+(it[1]===null?"null":it[1])+")'>"+it[0]+" · "+it[2]+"</button>"
-    ).join("")+"</div>";
-  };
   if(boardStageFilter===null){
     el.innerHTML="<div class='bf-line'><span class='bf-title'>Alle Fälle</span><span class='bf-count num'>"+offen+" offen</span></div>"
-      +"<div class='bf-note'>Ein gemeinsames Board für alle Fälle, vom ersten Kontakt bis zur Aufnahme.</div>"
-      +chips(null);
+      +"<div class='bf-note'>Drei Stufen vom ersten Kontakt bis zur Aufnahme — Stufenband antippen filtert, Abgeschlossenes rechts.</div>";
   }else{
     const m=stageMeta(boardStageFilter);
     const n=stageCases(boardStageFilter).length;
-    el.innerHTML="<div class='bf-line'><span class='bf-title'>"+m.title+"</span><span class='bf-count num'>"+n+" "+(n===1?"Fall":"Fälle")+"</span></div>"
-      +"<div class='bf-note'>Aus dem Trichter gefiltert. Alle Karten bleiben im gemeinsamen Fall-Board.</div>"
-      +chips(boardStageFilter);
+    el.innerHTML="<div class='bf-line'><span class='bf-title'>"+(boardStageFilter+1)+" · "+m.title+"</span><span class='bf-count num'>"+n+" "+(n===1?"Fall":"Fälle")+"</span><button class='bf-clear' onclick='setBoardStage(null)'>‹ Alle Fälle</button></div>"
+      +"<div class='bf-note'>Aus dem Trichter gefiltert. Alle Karten bleiben im gemeinsamen Fall-Board.</div>";
   }
+}
+function makeBoardCol(st){
+  const f=faelle.filter(x=>x.status===st);
+  const col=document.createElement("div");col.className="col";
+  col.innerHTML="<h3><span class='cdot' style='background:"+STATUS_COL[st]+"'></span>"+st+"<span class='cnt num'>"+f.length+"</span></h3>";
+  f.forEach(x=>{
+    const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"");
+    const fk=fristKlasse(x.frist);
+    k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter?"("+x.alter+")":"")+"</span></span></div>"
+      +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+escapeHtml(x.achse)+"</span><span class='pill-kt'>"+escapeHtml(x.kt)+"</span></div>"
+      +"<div class='kmeta'>"+escapeHtml(x.quelle)+"<br>"+escapeHtml(x.owner)+(x.aufgabe?" · "+escapeHtml(x.aufgabe):"")+"</div>"
+      +"<div class='stagebar' title='Statusfortschritt'><span style='width:"+statusFortschritt(x.status)+"%'></span></div>"
+      +(x.frist?"<span class='due "+fk+"'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(x.frist)+"</span>":"")
+      +(x.saluto?"<br><span class='star'>★ SalutoCare</span>":"");
+    k.onclick=()=>openDetail(x.id);
+    col.appendChild(k);
+  });
+  return col;
+}
+function boardZoneGroup(z){
+  const m=stageMeta(z);
+  const g=document.createElement("div");g.className="zone-group";
+  const n=stageCases(z).length;
+  g.innerHTML="<button class='zone-head' onclick='setBoardStage("+z+")'><span class='zone-no'>"+(z+1)+"</span><span class='zone-t'>"+m.title+"</span><span class='zone-cnt num'>"+n+"</span></button>";
+  const cols=document.createElement("div");cols.className="zone-cols";
+  m.statuses.forEach(st=>cols.appendChild(makeBoardCol(st)));
+  g.appendChild(cols);return g;
 }
 function renderBoard(){
   const b=document.getElementById("board");b.innerHTML="";
-  const sichtbar=boardStageFilter===null?STATUS:stageMeta(boardStageFilter).statuses;
   renderBoardFocus();
-  sichtbar.forEach(st=>{
-    const f=faelle.filter(x=>x.status===st);
-    const col=document.createElement("div");col.className="col";
-    col.innerHTML="<h3><span class='cdot' style='background:"+STATUS_COL[st]+"'></span>"+st+"<span class='cnt num'>"+f.length+"</span></h3>";
-    f.forEach(x=>{
-      const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"");
-      const fk=fristKlasse(x.frist);
-      k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter?"("+x.alter+")":"")+"</span></span></div>"
-        +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+escapeHtml(x.achse)+"</span><span class='pill-kt'>"+escapeHtml(x.kt)+"</span></div>"
-        +"<div class='kmeta'>"+escapeHtml(x.quelle)+"<br>"+escapeHtml(x.owner)+(x.aufgabe?" · "+escapeHtml(x.aufgabe):"")+"</div>"
-        +"<div class='stagebar' title='Statusfortschritt'><span style='width:"+statusFortschritt(x.status)+"%'></span></div>"
-        +(x.frist?"<span class='due "+fk+"'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(x.frist)+"</span>":"")
-        +(x.saluto?"<br><span class='star'>★ SalutoCare</span>":"");
-      k.onclick=()=>openDetail(x.id);
-      col.appendChild(k);
-    });
-    b.appendChild(col);
-  });
+  if(boardStageFilter!==null){b.appendChild(boardZoneGroup(boardStageFilter));return;}
+  [0,1,2].forEach(z=>b.appendChild(boardZoneGroup(z)));
+  // Abgeschlossen — Aufgenommen + Verloren, rechts, ruhig gesetzt
+  const done=["Aufgenommen","Verloren"];
+  const dn=done.reduce((s,st)=>s+faelle.filter(x=>x.status===st).length,0);
+  const g=document.createElement("div");g.className="zone-group done-rail";
+  g.innerHTML="<div class='zone-head static'><span class='zone-t'>Abgeschlossen</span><span class='zone-cnt num'>"+dn+"</span></div>";
+  const cols=document.createElement("div");cols.className="zone-cols";
+  done.forEach(st=>cols.appendChild(makeBoardCol(st)));
+  g.appendChild(cols);b.appendChild(g);
 }
 
 /* ---------- Render: Altpatienten (Bestand) ---------- */
@@ -2791,13 +3100,30 @@ function renderWichtig(k){
       items.push({p:-40,ico:"coin",cls:"",tit:escapeHtml(f.name)+" — Kostenklärung offen",sub:escapeHtml(f.status)+" · "+escapeHtml(f.aufgabe||"Kostenstatus klären"),click:"openDetail("+f.id+")"});
   });
   items.sort((a,b)=>a.p-b.p);
-  const top=items.slice(0,5);
-  document.getElementById("wichtigList").innerHTML=top.length?top.map(it=>
+  const top=items.slice(0,3);
+  const alle=items.length>3?"<button class='wrow wrow-all' onclick='go(\"team\")'>"
+   +"<span class='wtxt'><span class='wtit' style='display:block'>Alle Aufgaben im Team ›</span><span class='wsub' style='display:block'>"+items.length+" offene Punkte insgesamt</span></span>"
+   +"<span class='chev'>›</span></button>":"";
+  document.getElementById("wichtigList").innerHTML=top.length?(top.map(it=>
     "<button class='wrow' onclick='"+it.click+"'>"
    +"<span class='wico "+it.cls+"'>"+W_ICON[it.ico]+"</span>"
    +"<span class='wtxt'><span class='wtit' style='display:block'>"+it.tit+"</span><span class='wsub' style='display:block'>"+it.sub+"</span></span>"
-   +"<span class='chev'>›</span></button>").join("")
+   +"<span class='chev'>›</span></button>").join("")+alle)
    :"<div class='wrow'><span class='wico calm'>"+W_ICON.leaf+"</span><span class='wtxt'><span class='wtit'>Alles im grünen Bereich</span><span class='wsub' style='display:block'>Keine dringenden Punkte — Zeit für Netzwerkpflege.</span></span></div>";
+}
+function cvCounts(){
+  const c={email:0,telefon:0,fax:0,website:0,zuweiser:0,portale:0};
+  (eingang||[]).forEach(e=>{
+    if(e.done)return;
+    const ka=(e.kanal||"").toLowerCase();
+    if(ka.includes("fax"))c.fax++;
+    else if(ka.includes("anruf")||ka.includes("telefon"))c.telefon++;
+    else if(ka.includes("mail"))c.email++;
+    else if(ka.includes("website")||ka.includes("formular")||ka.includes("broschüre"))c.website++;
+    else if(ka.includes("primo")||ka.includes("portal")||ka.includes("premium"))c.portale++;
+    else c.zuweiser++;
+  });
+  return c;
 }
 function renderHeute(){
   const k=kennzahlen();
@@ -2805,8 +3131,13 @@ function renderHeute(){
   const html=(id,val)=>{const el=document.getElementById(id);if(el)el.innerHTML=val;document.querySelectorAll('[data-sync="'+id+'"]').forEach(n=>n.innerHTML=val);};
   // Status-Satz
   set("greetDate",heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"}));
-  set("gsNeu",k.neu);
-  set("gsStock",k.stock.length);
+  // Konvergenz-Panel (Kanäle -> ein Eingang -> Belegung)
+  const cv=cvCounts();
+  set("cvEmail",cv.email);set("cvTelefon",cv.telefon);set("cvFax",cv.fax);
+  set("cvWebsite",cv.website);set("cvZuweiser",cv.zuweiser);set("cvPortale",cv.portale);
+  set("cvTotal",cv.email+cv.telefon+cv.fax+cv.website+cv.zuweiser+cv.portale);
+  set("cvBeleg",78);set("cvStock",k.stock.length);
+  document.querySelectorAll('#cvStockWrap,[data-sync-wrap="cvStockWrap"]').forEach(n=>{n.style.display=k.stock.length?"":"none";});
   // Nordstern-Metriken
   set("nsVorlauf",horizont);
   html("nsRz","<b>"+k.rzAvg+"</b> <span>Std.</span>");
@@ -2868,7 +3199,7 @@ function renderTeam(){
    return "<button class='tm-card"+(teamFilter===emp?" on":"")+"' onclick='setTeamFilter(\""+emp+"\")'>"
      +"<div class='tm-h'><span class='ava'>"+initialen(emp)+"</span><div class='tm-n'>"+escapeHtml(emp)+"</div></div>"
      +"<div class='tm-kpis'><span><span class='num'>"+mine.length+"</span> Fälle</span><span><span class='num'>"+tasks+"</span> Aufgaben</span></div>"
-     +"<div class='tm-fr'>nächste Frist: "+escapeHtml(fr)+"</div></button>";
+     +"<div class='tm-fr'>Frist: "+(fr==="—"?"—":fristText(fr))+"</div></button>";
  }).join("");
  const list=openCases.filter(f=>teamFilter==="alle"||f.owner===teamFilter)
    .sort((a,b)=>String(a.frist||"").localeCompare(String(b.frist||"")))
@@ -2876,7 +3207,7 @@ function renderTeam(){
      +"<span class='ava sm'>"+initialen(f.name)+"</span>"
      +"<div class='tm-tmain'><div class='tm-tt'>"+escapeHtml(f.name)+" <span class='tm-ach'>· "+escapeHtml(f.achse)+"</span></div>"
      +"<div class='tm-ts'>"+escapeHtml(f.aufgabe||"—")+"</div></div>"
-     +"<div class='tm-meta'><span class='tm-owner'>"+escapeHtml(f.owner||"—")+"</span><span>"+escapeHtml(f.frist||"—")+"</span><span class='tm-status'>"+escapeHtml(f.status)+"</span></div>"
+     +"<div class='tm-meta'><span class='tm-owner'>"+escapeHtml(f.owner||"—")+"</span><span>"+(f.frist?fristText(f.frist):"—")+"</span><span class='tm-status'>"+escapeHtml(f.status)+"</span></div>"
      +"<span class='db-c-chev'>›</span></button>").join("")||"<p class='empty'>Keine offenen Aufgaben.</p>";
  el.innerHTML=
    "<div class='tm-intake'><div><span class='num'>"+eingangOffen+"</span> offene Anfragen im zentralen Eingang · warten auf Zuordnung</div><button class='btn-ghost btn-sm' onclick='go(\"faelle\",\"anfragen\")'>Zum Eingang ›</button></div>"
