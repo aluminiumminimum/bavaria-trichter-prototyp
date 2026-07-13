@@ -2699,6 +2699,23 @@ let zuweiserEvents=[
  {zName:"PRIMO MEDICO",d:dstr(-70),typ:"newsletter",text:"Profil-Update: neue SalutoCare-Suiten eingestellt"},
  {zName:"Uniklinikum Würzburg",d:dstr(-9),typ:"rueckmeldung",text:"Feedback zur Übernahme Ruth Winkler"}
 ];
+let _pidN=0;
+function person(pid){return personen.find(p=>p.pid===pid)||null;}
+function pNew(name,teil){
+ const p=Object.assign({pid:"PR"+(++_pidN),name:name,geb:null,lebenszyklus:"interessent",kt:"Unklar",
+  kontakt:{tel:"",mail:""},angehoerige:[],einwilligung:{status:"offen",form:null,datum:null,zwecke:[]},
+  zuweiserRef:null,historie:[]},teil||{});
+ personen.push(p);return p.pid;
+}
+function pHist(pid,typ,text){const p=person(pid);if(p)p.historie.push({d:dstr(0),typ:typ,text:text});}
+(function paAssert(){
+ const miss=[];
+ [["faelle",faelle],["eingang",eingang],["bestand",bestand],["radar",radar],["inReha",inReha]].forEach(pair=>{
+  pair[1].forEach(x=>{if(x.personId&&!personen.some(p=>p.pid===x.personId))miss.push(pair[0]+": "+(x.name||x.id));});
+ });
+ personen.forEach(p=>{if(!p.geb||!p.kt)miss.push("personen: "+p.pid);});
+ if(miss.length)console.warn("Gedächtnis-Assertion — nicht auflösbar:",miss);
+})();
 
 let aktuellerFall=null;let zFilter="krankenhaus";let boardStageFilter=null;let horizont=9;
 
@@ -2762,8 +2779,10 @@ function simulateInbound(){
  inbToast("in","<b>Neue Anfrage</b> über "+escapeHtml(t.kanal),"landet im Eingang — wird automatisch verarbeitet …",null);
  setTimeout(()=>{
   const m=eingang.find(x=>x.id===mid); if(m){m.done=true;m._neu=false;}
+  let _pid=null;
+  if(t.einzelperson){_pid=pNew(t.name,{kt:t.kt==="Privat"?"PKV":t.kt});pHist(_pid,"anfrage","Anfrage über "+t.kanal+" ("+t.quelle+")");pHist(_pid,"fall","Automatisch als Fall angelegt");}
   const fid=Math.max(0,...faelle.map(x=>x.id))+1;
-  faelle.push({id:fid,name:t.name,alter:t.alter,rolle:t.rolle,kanal:t.kanal,quelle:t.quelle,achse:t.achse,kt:t.kt,
+  faelle.push({id:fid,personId:_pid,name:t.name,alter:t.alter,rolle:t.rolle,kanal:t.kanal,quelle:t.quelle,achse:t.achse,kt:t.kt,
     status:"Neu",owner:"S. Koordination",aufgabe:"Erstreaktion",frist:dstr(0),saluto:t.achse==="SalutoCare",
     docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
     log:[[dstr(0),"Automatisch als Fall angelegt aus "+t.kanal+": "+t.txt]]});
@@ -2820,7 +2839,9 @@ function sendReply(){
 function inDatenbank(id){
  const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
  m.done=true;
- bestand.unshift({name:m.tit.split(":")[1]?m.tit.split(":")[1].trim():"Neuer Kontakt",alter:null,achse:m.achse,entl:"—",
+ let _pid=null;
+ if(m.einzelperson&&m.pName){_pid=pNew(m.pName,{kt:"Unklar"});pHist(_pid,"kontakt","In Datenbank aufgenommen aus "+m.kanal);}
+ bestand.unshift({name:(m.einzelperson&&m.pName)?m.pName:(m.tit.split(":")[1]?m.tit.split(":")[1].trim():"Neuer Kontakt"),personId:_pid,tier:"C",alter:null,achse:m.achse,entl:"—",
    consent:(m.tit+" "+m.txt).toLowerCase().includes("freigabe")?"ja":"nein",
    anlass:"Aus Eingang ("+m.kanal+"): "+m.txt,wv:false,stufe:2,quelle:"Broschüre-Download",
    auto:"1 Info-Mail nach 7 Tagen, dann ruhend",board:"neu",owner:"S. Koordination"});
@@ -3639,6 +3660,7 @@ function deriveSchritte(f){
 function advanceFall(){ const f=aktuellerFall;if(!f)return;
  const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return;
  const ns=STATUS[cur+1]; f.log.push([dstr(0),"Aufgabe erledigt · Status: "+f.status+" → "+ns]);
+ if(f.personId)pHist(f.personId,ns==="Aufgenommen"?"aufnahme":"fall","Status: "+f.status+" → "+ns);
  if(f.schritte&&f.schritte[cur]) f.schritte[cur].done=true;
  f.status=ns; renderAll(); openDetail(f.id);
 }
