@@ -1492,6 +1492,23 @@ label{font-size:12px;letter-spacing:.08em}
 @media(min-width:1024px){
   .zmap{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start}
 }
+/* ---------- Baustein A · Akte (.pa-*) — Spec 2026-07-13-baustein-a-gedaechtnis ---------- */
+.pa-akte{margin-top:18px;padding-top:14px;border-top:1px solid var(--hair)}
+.pa-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.pa-chip{font:600 10.5px/1 Inter,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:4px 8px;border-radius:999px;background:var(--paper2);color:var(--muted);border:1px solid var(--hair)}
+.pa-chip.lz-patient{background:var(--sage-soft);color:var(--sage-deep);border-color:transparent}
+.pa-chip.lz-altpatient{background:var(--brass-soft);color:var(--brass-deep);border-color:transparent}
+.pa-row{display:flex;gap:10px;padding:5px 0;font-size:13px;color:var(--ink-soft);border-bottom:1px dashed var(--hair2)}
+.pa-row .pa-k{flex:0 0 110px;color:var(--faint);font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
+.pa-soon{color:var(--brass-deep);font-weight:600}
+.pa-zw{display:inline-block;font-size:11px;padding:2px 7px;border-radius:999px;background:var(--paper2);border:1px solid var(--hair);color:var(--muted);margin-left:2px}
+.pa-hist{margin-top:10px;display:grid;gap:7px}
+.pa-he{display:grid;grid-template-columns:74px 84px 1fr;gap:8px;font-size:12.5px;align-items:baseline}
+.pa-he small{color:var(--faint);font-variant-numeric:tabular-nums}
+.pa-he .pa-ht{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--brass-deep)}
+.pa-he p{margin:0;color:var(--ink-soft)}
+.pa-hint{font-size:13px;color:var(--muted);font-style:italic}
+@media(max-width:520px){.pa-he{grid-template-columns:64px 1fr}.pa-he p{grid-column:1/-1;margin-top:-2px}}
 </style>
 </head>
 <body>
@@ -2385,6 +2402,7 @@ label{font-size:12px;letter-spacing:.08em}
           <textarea id="dReply" rows="2" placeholder="Antwort an die anfragende Person verfassen … (Demo)"></textarea>
         </div>
         <div id="dWerdegang" class="d-track"></div>
+        <div id="dAkte"></div>
       </div>
       <div class="mgrid">
         <div><label for="dOwner">Verantwortlich</label><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
@@ -2716,6 +2734,35 @@ function pHist(pid,typ,text){const p=person(pid);if(p)p.historie.push({d:dstr(0)
  personen.forEach(p=>{if(!p.geb||!p.kt)miss.push("personen: "+p.pid);});
  if(miss.length)console.warn("Gedächtnis-Assertion — nicht auflösbar:",miss);
 })();
+function paDate(iso){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||"");return m?m[3]+"."+m[2]+"."+m[1]:(iso||"");}
+function paGeb(geb){
+ if(!geb)return null;
+ const mo=+geb.slice(5,7)-1,da=+geb.slice(8,10),j=+geb.slice(0,4);
+ const h0=new Date(heute.getFullYear(),heute.getMonth(),heute.getDate());
+ let n=new Date(heute.getFullYear(),mo,da);
+ if(n<h0)n=new Date(heute.getFullYear()+1,mo,da);
+ return {tage:Math.round((n-h0)/86400000),wird:n.getFullYear()-j,datum:String(da).padStart(2,"0")+"."+String(mo+1).padStart(2,"0")+"."};
+}
+/* Tages-Diff bewusst gegen Mitternacht (h0) statt gegen `heute` (trägt Ladezeit-Uhrzeit) — sonst kippt die Tageszahl je nach Tageszeit um ±1. */
+const PA_TYP={anfrage:"Anfrage",fall:"Fall",aufnahme:"Aufnahme",entlassung:"Entlassung",kontakt:"Kontakt"};
+const PA_ZW={behandlung:"Behandlung",newsletter:"Newsletter",post:"Post/Geschenk"};
+function paAkte(pid){
+ const p=person(pid);if(!p)return"";
+ const g=paGeb(p.geb),ew=p.einwilligung||{zwecke:[]};
+ const ewTxt=ew.status==="erteilt"?("erteilt"+(ew.form?" ("+ew.form+")":"")):ew.status==="widerruf"?"Widerruf":"offen";
+ const hist=(p.historie||[]).slice(-6).reverse().map(h=>"<div class='pa-he'><small>"+escapeHtml(paDate(h.d))+"</small><span class='pa-ht'>"+escapeHtml(PA_TYP[h.typ]||h.typ)+"</span><p>"+escapeHtml(h.text)+"</p></div>").join("");
+ return "<div class='pa-akte'>"
+  +"<div class='pa-head'><span class='kicker'>Akte</span><span class='pa-chip lz-"+p.lebenszyklus+"'>"+escapeHtml(p.lebenszyklus)+"</span><span class='pa-chip'>"+escapeHtml(p.kt)+"</span></div>"
+  +(p.geb?"<div class='pa-row'><span class='pa-k'>Geburtsdatum</span><span>"+escapeHtml(paDate(p.geb))+((g&&g.tage<=30)?" · <b class='pa-soon'>wird "+g.wird+" am "+g.datum+"</b>":"")+"</span></div>":"")
+  +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span>"+escapeHtml(ewTxt)+((ew.zwecke&&ew.zwecke.length)?" · "+ew.zwecke.map(z=>"<span class='pa-zw'>"+escapeHtml(PA_ZW[z]||z)+"</span>").join(" "):"")+"</span></div>"
+  +((p.angehoerige&&p.angehoerige.length)?"<div class='pa-row'><span class='pa-k'>Angehörige</span><span>"+p.angehoerige.map(a=>escapeHtml(a.name)+" ("+escapeHtml(a.bezug)+")").join(", ")+"</span></div>":"")
+  +(p.zuweiserRef?"<div class='pa-row'><span class='pa-k'>Zuweiser</span><span>"+escapeHtml(p.zuweiserRef)+"</span></div>":"")
+  +(hist?"<div class='pa-hist'>"+hist+"</div>":"")
+  +"</div>";
+}
+function paAkteSlot(pid){
+ return pid?paAkte(pid):"<div class='pa-akte'><div class='pa-head'><span class='kicker'>Akte</span></div><div class='pa-hint'>Noch keine Einzelperson qualifiziert — die Akte entsteht bei der Qualifizierung.</div></div>";
+}
 
 let aktuellerFall=null;let zFilter="krankenhaus";let boardStageFilter=null;let horizont=9;
 
@@ -3036,7 +3083,7 @@ function openDbDetail(i){
     +"<div class='di-row'><span class='di-k'>Quelle</span><span>"+escapeHtml(p.quelle||"—")+"</span></div>"
     +"</div>"
     +"<div class='patient-actions'>"+action+"</div>"
-    +"</div>";
+    +"</div>"+paAkte(p.personId);
   document.getElementById("dbDetail").classList.add("open");
   document.body.classList.add("detail-open");
   pushDetailState();
@@ -3554,7 +3601,7 @@ function openRsDetail(i){
     +"<div class='rs-row'><span class='rs-k'>Aufnahme</span><span>"+escapeHtml(p.aufnahme)+"</span></div>"
   +"</div>"
   +((bill.zusatz&&bill.zusatz.length)?"<div class='rs-empf'><span class='rk'>Zusatzerlöse / Wahlleistungen</span><ul>"+bill.zusatz.map(z=>"<li>"+escapeHtml(z.label)+" · +"+z.eur+" €/Tag</li>").join("")+"</ul></div>":"")
-  +(bill.empf&&bill.empf.length?"<div class='rs-empf'><span class='rk'>Sinnvolle nächste Diagnostik & Therapie</span><ul>"+bill.empf.map(x=>"<li>"+escapeHtml(x)+"</li>").join("")+"</ul></div>":"");
+  +(bill.empf&&bill.empf.length?"<div class='rs-empf'><span class='rk'>Sinnvolle nächste Diagnostik & Therapie</span><ul>"+bill.empf.map(x=>"<li>"+escapeHtml(x)+"</li>").join("")+"</ul></div>":"")+paAkte(p.personId);
  document.getElementById("rsDetail").classList.add("open");
  document.body.classList.add("detail-open");
  pushDetailState();
@@ -3683,6 +3730,7 @@ function openDetail(id){
   var _dr=document.getElementById("dReply");if(_dr)_dr.value="";
   document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
   document.getElementById("dWerdegang").innerHTML="<div class='kicker'>Werdegang</div>"+stepper(f.schritte||deriveSchritte(f));
+  document.getElementById("dAkte").innerHTML=paAkteSlot(f.personId);
   document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
   toggleVerlust();
   const _db=document.getElementById("dbDetail");if(_db)_db.classList.remove("open");
