@@ -1824,11 +1824,39 @@ body{accent-color:var(--brass)}
 @media print{ body{background:#fff} .rpd-paper{--paper:#fff} }
 .au-display{font-family:"Fraunces",Georgia,serif;font-weight:340;letter-spacing:-.03em;font-optical-sizing:auto}
 .au-micro{font-family:"Fragment Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* ===== AURORA · Task 6 — Heute-KPI-Band · Kapitel-Katalognummern · Forecast-Balken ===== */
+/* (a) Heute-KPI-Band (Nordstern): dunkle paper2-Kacheln, Fraunces-Glow-Zahlen, Mono-Labels/Einheiten */
+#view-heute .ns-card{background:var(--paper)}
+#view-heute .ns-row{border-top:0;padding-top:6px;gap:10px}
+#view-heute .ns-m{background:var(--paper2);border:1px solid var(--hair);border-radius:18px;
+  padding:12px 8px 11px;box-shadow:inset 0 1px 0 var(--glass-hi)}
+#view-heute .ns-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);font-weight:400}
+#view-heute .ns-v{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--ink);
+  text-shadow:0 0 24px rgba(196,169,125,.28)}
+#view-heute .ns-v small,#view-heute .ns-v span{font-family:"Fragment Mono",ui-monospace,monospace;
+  font-size:12px;font-weight:400;letter-spacing:.06em;color:var(--muted);text-shadow:none}
+/* (c) Kapitel-Katalognummern */
+.au-chapnum{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.15em;color:var(--brass);margin-right:10px}
+/* (d) Forecast-Balken: Champagner/Salbei-Palette · Mono-Labels · Scroll-Reveal */
+.fc-bar{background:var(--hair);transform-origin:bottom}
+.fc-seg-privat{background:linear-gradient(180deg,#D4BC94,#C4A97D)}
+.fc-seg-gesetzlich{background:linear-gradient(180deg,#8FAE95,#7E9B84)}
+.dbc-legend i.fc-lg-gesetzlich{background:var(--sage)}
+.fc-wklabel{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;color:var(--muted);letter-spacing:.1em}
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .fc-bar{animation:auGrow .8s ease-out both;animation-timeline:view();animation-range:entry 0% cover 35%}
+  }
+}
+@keyframes auGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 </style>
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><i class="orb orb--sage"></i><i class="orb orb--champ"></i><i class="orb orb--amber"></i></div>
 <div class="au-noise" aria-hidden="true"></div><div class="au-vignette" aria-hidden="true"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="auroraRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7E9B84"/><stop offset="1" stop-color="#C4A97D"/></linearGradient></defs></svg>
 <!-- ============ DESKTOP SHELL (≥1024px) ============ -->
 <aside class="dsidebar" aria-label="Desktop-Navigation">
   <div class="ds-brand"><img src="assets/kb-logo-weiss.webp" alt="" class="ds-wordmark"><div class="ds-brandtxt"><b>Klinik Bavaria</b><span class="ds-sub">CONCIERGE OS</span></div></div>
@@ -1998,7 +2026,7 @@ body{accent-color:var(--brass)}
 
     <div class="chap">
       <div class="hd-row">
-        <div class="kicker">Der Trichter · heute</div>
+        <div class="kicker"><span class="au-chapnum">01</span>Der Trichter · heute</div>
         <button class="hd-link" onclick="go('system','idee')">Die ganze Idee ›</button>
       </div>
       <div class="card strom strom-d">
@@ -2316,13 +2344,13 @@ body{accent-color:var(--brass)}
     </div>
 
     <div class="chap" id="anlassChap">
-      <div class="kicker">Anlässe · Beziehungen pflegen</div>
+      <div class="kicker"><span class="au-chapnum">02</span>Anlässe · Beziehungen pflegen</div>
       <div class="ar-head"><span class="ar-sum" id="anlassSum"></span><button class="ar-more" onclick="go('netzwerk','bestand');setDbView('radar')">Alle Anlässe ›</button></div>
       <div class="ar-grid" id="anlassList"></div>
     </div>
 
     <div class="chap" id="belegungChap">
-      <div class="kicker">Belegung · 8-Wochen-Forecast</div>
+      <div class="kicker"><span class="au-chapnum">03</span>Belegung · 8-Wochen-Forecast</div>
       <h2 class="chap-h2">Komfort- &amp; Privatbelegung</h2>
       <div class="ar-sum" id="fcSum"></div>
       <div class="radar-head fc-kpis" id="fcKpis"></div>
@@ -3898,6 +3926,18 @@ function renderHeute(){
   set("segCntBoard",k.offen.length);
   set("segCntZuweiser",zuweiser.length);
   set("segCntBestand",bestand.length);
+  kpiCountUp();
+}
+/* Aurora · Heute-KPI-Band: Count-up EINMAL, RM-safe via rpCount, Session-Flag gegen Re-Trigger bei jedem renderAll */
+function kpiCountUp(){
+  if(window._kpiCounted)return;
+  const hv=document.getElementById("view-heute");
+  if(!hv||!hv.classList.contains("active"))return;
+  window._kpiCounted=true;
+  const k=kennzahlen();
+  rpCount(document.getElementById("nsVorlauf"),horizont,900);
+  rpCount(document.querySelector("#nsRz b"),k.rzAvg,1000);
+  rpCount(document.querySelector("#nsConv b"),k.conv,1100);
 }
 
 /* ---------- Render: Auswertung ---------- */
@@ -4158,8 +4198,8 @@ function renderAbschluss(zName){
 function kpiRing(val,max,label,sub){
  const r=22,c=2*Math.PI*r,pct=Math.max(0,Math.min(1,val/max)),off=c*(1-pct);
  return `<div class="ring"><svg width="56" height="56" viewBox="0 0 56 56">
-   <circle cx="28" cy="28" r="${r}" fill="none" stroke="#E3D4C8" stroke-width="5"/>
-   <circle cx="28" cy="28" r="${r}" fill="none" stroke="#bca37d" stroke-width="5" stroke-linecap="round"
+   <circle cx="28" cy="28" r="${r}" fill="none" stroke="rgba(240,235,225,.09)" stroke-width="5"/>
+   <circle cx="28" cy="28" r="${r}" fill="none" stroke="url(#auroraRingGrad)" stroke-width="5" stroke-linecap="round"
      stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 28 28)"/>
    <text x="28" y="32" text-anchor="middle" font-family="'Fraunces',serif" font-size="17" font-weight="600" fill="#F0EBE1">${val}</text></svg>
    <span class="rl">${escapeHtml(label)}</span>${sub?`<span class="rd">${escapeHtml(sub)}</span>`:""}</div>`;
@@ -4749,6 +4789,7 @@ const SEGS={faelle:["anfragen","board","inreha"],netzwerk:["zuweiser","bestand"]
 let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",system:"idee"}};
 function go(dest,seg){
   if(!document.getElementById("view-"+dest))dest="heute";
+  const _prevDest=navState.dest;
   navState.dest=dest;
   if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
   document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
@@ -4765,6 +4806,7 @@ function go(dest,seg){
   const hash="#"+dest+(SEGS[dest]?"/"+navState.segs[dest]:"");
   if(location.hash!==hash)history.replaceState(null,"",hash);
   window.scrollTo(0,0);
+  if(dest==="heute"&&_prevDest!=="heute"){window._kpiCounted=false;kpiCountUp();}
 }
 /* Kompatibilitäts-Brücke zu den alten Bereichsnamen */
 function switchTab(t){
