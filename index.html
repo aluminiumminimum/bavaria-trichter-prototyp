@@ -1622,6 +1622,36 @@ label{font-size:12px;letter-spacing:.08em}
 .kp-mfoot{padding:10px 20px;background:var(--paper2);font:400 10.5px/1.4 Inter;color:var(--faint);border-top:1px solid var(--hair2)}
 .kp-foot{display:flex;gap:10px;padding:14px 22px;border-top:1px solid var(--hair);justify-content:flex-end}
 @media(max-width:520px){.kp-panel{width:100%}}
+/* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
+#belegungChap{grid-column:1/-1}
+.fc-kpis{margin-top:2px}
+.radar-kpi.fc-brass::before{background:var(--brass)}
+.radar-kpi.fc-brass .rk-n{color:var(--brass-deep)}
+.radar-kpi.fc-sage::before{background:var(--sage)}
+.radar-kpi.fc-sage .rk-n{color:var(--sage-deep)}
+.radar-kpi.fc-taupe::before{background:var(--muted)}
+.radar-kpi.fc-taupe .rk-n{color:var(--ink-soft)}
+.fc-body{padding:14px 18px 18px}
+.fc-plot{position:relative;height:150px;margin:2px 0 4px}
+.fc-cap{position:absolute;left:0;right:0;border-top:2px dashed var(--brass-deep);opacity:.55;z-index:2}
+.fc-cols{position:relative;z-index:1;display:flex;align-items:flex-end;height:100%;gap:8px}
+.fc-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
+.fc-bar{width:100%;max-width:36px;height:100%;display:flex;flex-direction:column-reverse;border-radius:5px 5px 2px 2px;overflow:hidden;background:var(--cream2)}
+.fc-bar.fc-over{box-shadow:inset 0 0 0 2px var(--terra)}
+.fc-seg-privat{width:100%;flex-shrink:0;background:var(--brass)}
+.fc-seg-gesetzlich{width:100%;flex-shrink:0;background:var(--brass-soft)}
+.fc-wklabel{display:block;font:700 10px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);text-align:center;margin-top:8px;white-space:nowrap}
+.fc-pill-engpass{display:inline-block;margin-top:4px;font:700 9px/1 Inter;letter-spacing:.03em;color:#faf8f4;background:var(--terra);border-radius:999px;padding:3px 7px;white-space:nowrap}
+.dbc-legend i.fc-lg-privat{background:var(--brass)}
+.dbc-legend i.fc-lg-gesetzlich{background:var(--brass-soft)}
+.dbc-legend i.fc-lg-cap{background:none;border-top:2px dashed var(--brass-deep);height:0;border-radius:0}
+@media(max-width:760px){
+  .fc-kpis{flex-direction:column}
+  .fc-plot{height:120px}
+  .fc-bar{max-width:26px}
+  .fc-cols{gap:5px}
+  .fc-wklabel{font-size:9px}
+}
 </style>
 </head>
 <body>
@@ -2113,6 +2143,20 @@ label{font-size:12px;letter-spacing:.08em}
       <div class="kicker">Anlässe · Beziehungen pflegen</div>
       <div class="ar-head"><span class="ar-sum" id="anlassSum"></span><button class="ar-more" onclick="go('netzwerk','bestand');setDbView('radar')">Alle Anlässe ›</button></div>
       <div class="ar-grid" id="anlassList"></div>
+    </div>
+
+    <div class="chap" id="belegungChap">
+      <div class="kicker">Belegung · 8-Wochen-Forecast</div>
+      <h2 class="chap-h2">Komfort- &amp; Privatbelegung</h2>
+      <div class="ar-sum" id="fcSum"></div>
+      <div class="radar-head fc-kpis" id="fcKpis"></div>
+      <div class="db-group">
+        <header class="stg-h"><div class="stg-row"><span class="stg-t">Wochenverlauf</span></div></header>
+        <div class="fc-body">
+          <div class="fc-plot" id="fcPlot"></div>
+          <div class="dbc-legend" id="fcLegend"></div>
+        </div>
+      </div>
     </div>
 
     <div class="card ns-card">
@@ -3183,6 +3227,94 @@ function renderAnlaesse(){
  if(sum)sum.textContent=[nG?nG+(nG===1?" Geburtstag":" Geburtstage"):null,nJ?nJ+(nJ===1?" Jubiläum":" Jubiläen"):null,nW?nW+"× Wiederbedarf":null,nZ?nZ+(nZ===1?" Zuweiser wartet":" Zuweiser warten"):null].filter(Boolean).join(" · ")||"Keine offenen Anlässe";
  el.innerHTML=list.slice(0,3).map(arCard).join("")||"<p class='empty'>Alles gepflegt — keine offenen Anlässe.</p>";
 }
+/* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
+const FC_BETTEN=7; // Komfort-Kontingent (Privat-/Selbstzahler + Komfort-Aufzahler)
+function fcParseISO(iso){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||"");return m?new Date(+m[1],+m[2]-1,+m[3]):null;}
+function fcKtTyp(kt){return(kt==="PKV"||kt==="Selbstzahler")?"privat":"gesetzlich";}
+/* Belegte Betten aus inReha[] + relevanten faelle[] (Aufnahme geplant / Aufgenommen falls nicht in inReha) */
+function fcBelegte(){
+ const inRehaIds=new Set(inReha.map(p=>p.personId));
+ const list=[];
+ inReha.forEach(p=>{
+  const per=p.personId?person(p.personId):null;
+  const von=fcParseISO(p.aufnahme);if(!von)return;
+  const bis=new Date(von);bis.setDate(bis.getDate()+p.verweildauer.plan);
+  list.push({kt:fcKtTyp(per?per.kt:""),von:von,bis:bis});
+ });
+ faelle.forEach(f=>{
+  if(f.status==="Aufnahme geplant"&&f.frist){
+   const von=fcParseISO(f.frist);if(!von)return;
+   const bis=new Date(von);bis.setDate(bis.getDate()+21); // Verweildauer unbekannt — pauschal 21 Tage
+   list.push({kt:fcKtTyp(f.kt),von:von,bis:bis});
+  }else if(f.status==="Aufgenommen"&&!inRehaIds.has(f.personId)){
+   const letzt=f.log&&f.log.length?f.log[f.log.length-1][0]:dstr(0);
+   const von=fcParseISO(letzt);if(!von)return;
+   const bis=new Date(von);bis.setDate(bis.getDate()+21); // Verweildauer unbekannt — pauschal 21 Tage
+   list.push({kt:fcKtTyp(f.kt),von:von,bis:bis});
+  }
+ });
+ return list;
+}
+function fcIsoWeek(d){
+ const t=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+ const dow=(t.getDay()+6)%7;t.setDate(t.getDate()-dow+3);
+ const firstThu=new Date(t.getFullYear(),0,4);
+ const fdow=(firstThu.getDay()+6)%7;firstThu.setDate(firstThu.getDate()-fdow+3);
+ return 1+Math.round((t-firstThu)/86400000/7);
+}
+/* 8 Kalenderwochen ab heute — Belegung am Mittwoch je Woche, nach Kostenträger-Typ */
+function fcWochen(){
+ const bel=fcBelegte();
+ const h0=new Date(heute.getFullYear(),heute.getMonth(),heute.getDate());
+ const dow=(h0.getDay()+6)%7;
+ const montag=new Date(h0);montag.setDate(montag.getDate()-dow);
+ const out=[];
+ for(let i=0;i<8;i++){
+  const mi=new Date(montag);mi.setDate(mi.getDate()+i*7+2);
+  let privat=0,gesetzlich=0;
+  bel.forEach(b=>{if(b.von<=mi&&mi<b.bis){if(b.kt==="privat")privat++;else gesetzlich++;}});
+  out.push({kw:fcIsoWeek(mi),privat:privat,gesetzlich:gesetzlich,summe:privat+gesetzlich});
+ }
+ return out;
+}
+function renderBelegung(){
+ const kpiEl=document.getElementById("fcKpis"),plotEl=document.getElementById("fcPlot"),legEl=document.getElementById("fcLegend"),sumEl=document.getElementById("fcSum");
+ if(!kpiEl||!plotEl)return;
+ const h0=new Date(heute.getFullYear(),heute.getMonth(),heute.getDate());
+ const bel=fcBelegte();
+ const heuteBel=bel.filter(b=>b.von<=h0&&h0<b.bis);
+ const belegtHeute=heuteBel.length;
+ const privatHeute=heuteBel.filter(b=>b.kt==="privat").length;
+ const privatPct=belegtHeute?Math.round(privatHeute/belegtHeute*100):0;
+ const fensterEnde=new Date(h0);fensterEnde.setDate(fensterEnde.getDate()+56);
+ const geplant=faelle.filter(f=>{if(f.status!=="Aufnahme geplant"||!f.frist)return false;const d=fcParseISO(f.frist);return d&&d>=h0&&d<fensterEnde;}).length;
+
+ if(sumEl)sumEl.textContent=belegtHeute+" von "+FC_BETTEN+" Komfortbetten belegt · "+privatPct+" % Privat/Selbstzahler · "+geplant+" geplante Aufnahme"+(geplant===1?"":"n")+" in den nächsten 8 Wochen";
+
+ kpiEl.innerHTML=
+   "<div class='radar-kpi fc-brass'><div class='rk-n num'>"+belegtHeute+"/"+FC_BETTEN+"</div><div class='rk-l'>Belegt heute</div></div>"
+  +"<div class='radar-kpi fc-sage'><div class='rk-n num'>"+privatPct+" %</div><div class='rk-l'>Privat/Selbstzahler</div></div>"
+  +"<div class='radar-kpi fc-taupe'><div class='rk-n num'>"+geplant+"</div><div class='rk-l'>Aufnahmen geplant</div></div>";
+
+ const wochen=fcWochen();
+ const maxTotal=Math.max(FC_BETTEN,...wochen.map(w=>w.summe));
+ const scale=maxTotal*1.15;
+ const capPct=Math.min(100,FC_BETTEN/scale*100);
+ const cols=wochen.map(w=>{
+  const over=w.summe>FC_BETTEN;
+  return "<div class='fc-col'>"
+   +"<div class='fc-bar"+(over?" fc-over":"")+"'>"
+     +"<div class='fc-seg-privat' style='height:"+(w.privat/scale*100)+"%'></div>"
+     +"<div class='fc-seg-gesetzlich' style='height:"+(w.gesetzlich/scale*100)+"%'></div>"
+   +"</div>"
+   +"<span class='fc-wklabel'>KW "+w.kw+"</span>"
+   +(over?"<span class='fc-pill-engpass'>Engpass</span>":"")
+  +"</div>";
+ }).join("");
+ plotEl.innerHTML="<div class='fc-cap' style='bottom:"+capPct+"%'></div><div class='fc-cols'>"+cols+"</div>";
+
+ if(legEl)legEl.innerHTML="<span><i class='fc-lg-privat'></i>Privat/Selbstzahler</span><span><i class='fc-lg-gesetzlich'></i>Gesetzlich/Sonstige</span><span><i class='fc-lg-cap'></i>Kapazität ("+FC_BETTEN+" Betten)</span>";
+}
 /* ---------- Baustein B · Kampagnen (.kp-*) — Spec 2026-07-14 §4 ---------- */
 let _kp={typ:"zuweiser",kat:"alle",status:"aktiv",betreff:"Neues aus der Klinik Bavaria",bausteine:[true,true,false]};
 function kpEmpfaenger(){
@@ -3947,7 +4079,7 @@ function renderInReha(){
    </button>`;
  }).join("")||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
 }
-function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();}
+function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ---------- */
 function celebratePlanned(){
