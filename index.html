@@ -13,18 +13,21 @@
 <script>(function(){var d=document.documentElement,done=false;function reveal(){if(done)return;done=true;d.classList.remove('fonts-pending')}try{if(document.fonts&&document.fonts.load){var f=["600 1em 'Fraunces'","400 1em 'Inter'","600 1em 'Inter'"];Promise.race([Promise.all(f.map(function(x){return document.fonts.load(x)})).then(function(){return document.fonts.ready}),new Promise(function(r){setTimeout(r,900)})]).then(reveal);setTimeout(reveal,1100)}else{reveal()}}catch(e){reveal()}})()</script>
 <style>
   :root{
-    --cream:#0B0D0C; --cream2:#0F1110; --paper:#141613; --paper2:#1B1E19;
-    --ink:#F0EBE1; --ink-soft:#D9D3C6; --muted:#97917F; --faint:#6E6A5E;
-    --brass:#C4A97D; --brass-deep:#DCC094; --brass-soft:#2B2519; --brass-line:#3B3427;
-    --hair:rgba(240,235,225,.09); --hair2:rgba(240,235,225,.06);
-    --sage:#7E9B84; --sage-deep:#A3C2AA; --sage-soft:#1C231E;
-    --terra:#D9784F; --terra-soft:#2E1E18;
-    --espresso-grad:linear-gradient(140deg,#181A17,#0B0D0C 55%,#12140F);
-    --brass-grad:linear-gradient(120deg,#C4A97D,#D99A5B);
-    --ortho:#C99A54; --neuro:#7E9BB8; --geri:#8FAE95; --innere:#6FA89F; --saluto:#C4A97D; --unklar:#A29B8D;
+    /* AURORA VIVID v2.1 — heller, chromatischer: Gold statt Braun, vivid Salbei, neue Akzente Rosé + Petrol */
+    --cream:#0C0F0D; --cream2:#111512; --paper:#161A17; --paper2:#1E231F;
+    --ink:#F5F2EA; --ink-soft:#DEDACE; --muted:#A49E8F; --faint:#7A776A;
+    --brass:#D6B77E; --brass-deep:#E9CD96; --brass-soft:#322B1B; --brass-line:#4A4028;
+    --hair:rgba(245,242,234,.11); --hair2:rgba(245,242,234,.07);
+    --sage:#8FB996; --sage-deep:#B9DCC0; --sage-soft:#1F2A21;
+    --terra:#E4805A; --terra-soft:#33211A;
+    --espresso-grad:linear-gradient(140deg,#1C201C,#0C0F0D 55%,#151812);
+    --brass-grad:linear-gradient(120deg,#D6B77E,#E8A25C);
+    --ortho:#D8A75C; --neuro:#8AA8C4; --geri:#9CC0A3; --innere:#79B5AB; --saluto:#D6B77E; --unklar:#AFA99A;
     --shadow:0 30px 70px -30px rgba(0,0,0,.7); --shadow-soft:0 16px 40px -20px rgba(0,0,0,.5);
-    --amber:#D99A5B; --alert:#D9784F; --raised:#23261F;
-    --glass:rgba(255,255,255,.05); --glass-border:rgba(255,255,255,.09); --glass-hi:rgba(255,255,255,.06);
+    --amber:#E8A25C; --alert:#E4805A; --raised:#272D28;
+    --rose:#E0917A; --rose-soft:#301F1B; --petrol:#57A08F; --petrol-soft:#16221F;
+    --aurora-grad:linear-gradient(110deg,#8FB996,#D6B77E 42%,#E8A25C 72%,#E0917A);
+    --glass:rgba(255,255,255,.06); --glass-border:rgba(255,255,255,.11); --glass-hi:rgba(255,255,255,.08);
   }
   *{box-sizing:border-box}
   html,body{margin:0}
@@ -340,7 +343,7 @@
   .col h3 .cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
   .col h3 .cnt{margin-left:auto;background:var(--paper);border-radius:9px;padding:0 8px;font-size:11.5px;color:var(--muted);font-weight:600}
   .karte{background:var(--paper);border:1px solid var(--hair);border-radius:13px;padding:12px 13px;margin-bottom:9px;
-    cursor:pointer;box-shadow:var(--shadow-soft);transition:transform .15s}
+    cursor:pointer;box-shadow:var(--shadow-soft);transition:transform .15s,box-shadow .15s ease}
   .karte:active{transform:scale(.985)}
   .karte.saluto{border-left:3px solid var(--brass)}
   .krow{display:flex;align-items:center;gap:9px;margin-bottom:7px}
@@ -738,7 +741,7 @@
   .radar-when b svg{width:15px;height:15px;color:var(--brass)}
   /* ===== Altpatienten-Radar ===== */
   .radar-grid{display:grid;grid-template-columns:1fr;gap:12px}
-  .radar-card{background:var(--paper2);border:1px solid var(--hair);border-radius:18px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi);padding:16px;display:flex;flex-direction:column}
+  .radar-card{background:var(--paper2);border:1px solid var(--hair);border-radius:18px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi);padding:16px;display:flex;flex-direction:column;transition:box-shadow .15s ease}
   .radar-card.hot{border-color:var(--brass-line);background:linear-gradient(180deg,var(--paper2),var(--brass-soft))}
   .radar-card.locked{opacity:.72;background:repeating-linear-gradient(135deg,var(--paper2),var(--paper2) 9px,var(--raised) 9px,var(--raised) 18px)}
   .radar-card h3{font-family:"Fraunces",Georgia,serif;font-size:23px;line-height:1.05;margin:8px 0 0;font-weight:700}
@@ -952,7 +955,7 @@ label{font-size:12px;letter-spacing:.08em}
 .view.active .zgrid>*:nth-child(n+5),.view.active .bestand-grid>*:nth-child(n+5){animation-delay:.24s}
 @media(hover:hover){
   .patient-card,.zcard,.db-lead,.template-card{transition:transform .18s ease,box-shadow .18s ease}
-  .patient-card:hover,.zcard:hover,.template-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(31,28,28,.10)}
+  .patient-card:hover,.zcard:hover,.template-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(31,28,28,.10),0 8px 40px -12px rgba(214,183,126,.25)}
 }
 /* ===== ZUWEISER-PREMIUM-SUITE (.rp-*) — Hero, Tabs, Screens ===== */
 .ref-body{max-width:1100px}
@@ -1172,8 +1175,8 @@ label{font-size:12px;letter-spacing:.08em}
   .dbc-bartitle{font:600 11px/1 Inter;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
   .dbc-bar{display:flex;height:11px;border-radius:99px;overflow:hidden;background:var(--raised);gap:2px}
   .dbc-seg{height:100%;border-radius:2px}
-  .dbc-seg.s5s{background:#C4A97D}.dbc-seg.s4s{background:#B3A17E}.dbc-seg.s3s{background:#9C9880}.dbc-seg.s2s{background:#7E8B7F}.dbc-seg.s1s{background:#5E6B60}.dbc-seg.sGs{background:#3A3D38}
-  .dbc-legend i.l5{background:#C4A97D}.dbc-legend i.l4{background:#B3A17E}.dbc-legend i.l3{background:#9C9880}.dbc-legend i.l2{background:#7E8B7F}.dbc-legend i.l1{background:#5E6B60}.dbc-legend i.lG{background:#3A3D38}
+  .dbc-seg.s5s{background:#D6B77E}.dbc-seg.s4s{background:#B9C08A}.dbc-seg.s3s{background:#9CBD98}.dbc-seg.s2s{background:#79AB9C}.dbc-seg.s1s{background:#57877D}.dbc-seg.sGs{background:#3A423D}
+  .dbc-legend i.l5{background:#D6B77E}.dbc-legend i.l4{background:#B9C08A}.dbc-legend i.l3{background:#9CBD98}.dbc-legend i.l2{background:#79AB9C}.dbc-legend i.l1{background:#57877D}.dbc-legend i.lG{background:#3A423D}
   .dbc-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:9px;font:500 11.5px/1 Inter;color:var(--ink-soft)}
   .dbc-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px}
   /* Kontaktkarten (klickbar) */
@@ -1310,7 +1313,7 @@ label{font-size:12px;letter-spacing:.08em}
   .tm-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
   @media(min-width:1100px){.tm-cards{grid-template-columns:repeat(4,1fr)}}
   .tm-card{text-align:left;background:var(--paper);border:1px solid var(--hair);border-radius:14px;box-shadow:var(--shadow-soft);padding:13px 15px;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
-  @media(hover:hover){.tm-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}}
+  @media(hover:hover){.tm-card:hover{transform:translateY(-2px);box-shadow:var(--shadow),0 8px 40px -12px rgba(214,183,126,.25)}}
   .tm-card.on{border-color:var(--brass);box-shadow:0 0 0 2px var(--brass-soft)}
   .tm-h{display:flex;align-items:center;gap:9px;margin-bottom:10px}
   .tm-h .ava{width:34px;height:34px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font:600 12px/1 Inter}
@@ -1411,7 +1414,7 @@ label{font-size:12px;letter-spacing:.08em}
 }
 /* cv: Quellen-Chips */
 .cv-chip rect{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.09);stroke-width:1}
-.cv-chip .cv-chip-bg{fill:rgba(17,19,17,.88);stroke:rgba(255,255,255,.09);stroke-width:1}
+.cv-chip .cv-chip-bg{fill:rgba(22,26,23,.97);stroke:rgba(255,255,255,.11);stroke-width:1}
 .cv-chip-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;font-weight:500;letter-spacing:.02em;fill:var(--muted)}
 .cv-chip-n{font:700 21px "Fraunces",Georgia,serif;fill:var(--ink);font-variant-numeric:lining-nums tabular-nums}
 .cv-narrow .cv-chip-l{font-size:8.5px;letter-spacing:.05em}
@@ -1763,6 +1766,110 @@ body.ma-mode #view-meintag{display:block}
 .tabbar [data-nav]{--tabc:var(--brass);color:var(--muted)}
 .tabbar [data-nav].active{color:var(--brass)}
 
+/* ===== AURORA · VIVID MOTION =====
+   Premium-Motion-Layer: 4 dezente Dauer-Animationen (Shimmer · Puls · Breathe · Ken-Burns)
+   + Entrance-/Hover-Feinschliff. HARTE REGEL: es wird nur transform/opacity animiert
+   (einzige Ausnahme: background-position am kleinen Shimmer-Text). Kein Blur auf animierten
+   Elementen, kein neuer backdrop-filter. Alle Animationen greift der globale
+   reduced-motion-Kill (Z. 781: animation:none!important) automatisch ab — deshalb sind die
+   Endzustände ohne Animation korrekt und Startzustände stehen NUR im Keyframe-`from`. */
+
+/* (1) SHIMMER — luxuriöser Lichtstreif über den Hero-Claim (.greet h1 em), alle ~7s einmal.
+   background-size/animation werden direkt in der bestehenden @supports-Regel ergänzt (gleiche
+   Regel wie background:, sonst würde das background-Shorthand background-size zurücksetzen). */
+@keyframes auShimmer{0%,72%{background-position:0% 50%}86%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+/* (2) FOKUS-PULS — dezenter Ring, der aus der Trichter-Mittelscheibe atmet. Eigener
+   <circle class="cv-pulse"> je SVG (4×), dupliziert cx/cy/r des cv-core (sacred Elemente
+   unangetastet). Basis opacity:0 = korrekter RM-Endzustand → RM-Nutzer sehen nichts Fremdes. */
+.cv-pulse{fill:none;stroke:#C4A97D;stroke-width:1.2;opacity:0;transform-box:fill-box;transform-origin:center;animation:auPulse 3.2s ease-out infinite}
+@keyframes auPulse{from{transform:scale(1);opacity:.55}to{transform:scale(1.14);opacity:0}}
+
+/* (3) KPI-AKZENT — die Haarlinien der Heute-Kacheln (::before, transform-sicher) wachsen
+   beim Erscheinen aus der Linken, 80ms gestaffelt. Basis = scaleX(1) → RM zeigt volle Linie. */
+#view-heute .ns-m::before{transform-origin:left;animation:auAccent .5s ease-out both}
+#view-heute .ns-m:nth-child(2)::before{animation-delay:.08s}
+#view-heute .ns-m:nth-child(3)::before{animation-delay:.16s}
+@keyframes auAccent{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* (4) CARD-HOVER-GLOW — weicher Champagner-Schein zusätzlich zum bestehenden Lift.
+   .karte/.radar-card hatten keinen Hover-Schatten → hier neu (Basisschatten + Glow);
+   .zcard/.tm-card/.mx-cell bekommen den Glow surgical an ihre bestehende Hover-box-shadow. */
+@media(hover:hover){
+  .karte:hover{box-shadow:var(--shadow-soft),0 8px 40px -12px rgba(214,183,126,.25)}
+  .radar-card:hover{box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi),0 8px 40px -12px rgba(214,183,126,.25)}
+}
+
+/* (6) SIDEBAR-BREATHE — das aktive Nav-Pill atmet einen sehr subtilen Schein (eine Instanz).
+   Basisregel ohne box-shadow = RM-Endzustand (kein Schein, unauffällig). */
+.ds-nav button.active{animation:auBreathe 4s ease-in-out infinite alternate}
+@keyframes auBreathe{from{box-shadow:0 0 20px rgba(214,183,126,.12)}to{box-shadow:0 0 34px rgba(214,183,126,.22)}}
+
+/* (7) KEN-BURNS — langsamer Zoom-Drift, nur auf dem Hero-Bogen-Foto (.au-arch img). */
+.au-arch img{animation:auKen 18s ease-in-out infinite alternate}
+@keyframes auKen{from{transform:scale(1)}to{transform:scale(1.06)}}
+
+/* (5) GHOST-CTA-Pfeil-Slide: bewusst ausgelassen — die „›" sind Inline-Text
+   (z. B. „Die ganze Idee ›"), kein separates Element/Pseudo; sauberer Skip statt Hack. */
+
+/* ===== AURORA · VIVID FOTO =====
+   Geteilte Foto-Komponente + Duotone-Akzente. Rein additiv, keine Animation, kein Blur —
+   die Wäsche kommt aus Gradienten im ::after (dark base + subtiler Farbstich). */
+.au-photo{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--glass-border)}
+.au-photo img{width:100%;height:100%;object-fit:cover;object-position:center 35%;display:block;filter:saturate(.9)}
+.au-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg, rgba(12,15,13,.22) 30%, rgba(12,15,13,.62)),linear-gradient(rgba(12,15,13,.16),rgba(12,15,13,.16));pointer-events:none}
+.au-photo figcaption{position:absolute;left:12px;bottom:10px;z-index:1;font-family:"Fragment Mono",ui-monospace,monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,242,234,.85)}
+.au-photo--sage::after{background:linear-gradient(160deg, rgba(12,15,13,0) 40%, rgba(12,15,13,.55)),linear-gradient(0deg, rgba(143,185,150,.16), rgba(143,185,150,.16))}
+.au-photo--petrol::after{background:linear-gradient(160deg, rgba(12,15,13,0) 40%, rgba(12,15,13,.55)),linear-gradient(0deg, rgba(87,160,143,.16), rgba(87,160,143,.16))}
+.au-photo--rose::after{background:linear-gradient(160deg, rgba(12,15,13,0) 40%, rgba(12,15,13,.55)),linear-gradient(0deg, rgba(224,145,122,.14), rgba(224,145,122,.14))}
+.au-photo--gold::after{background:linear-gradient(160deg, rgba(12,15,13,0) 40%, rgba(12,15,13,.55)),linear-gradient(0deg, rgba(214,183,126,.14), rgba(214,183,126,.14))}
+/* Kontext-Größen (je Platzierung) */
+#view-team>.au-photo{height:140px;margin:0 0 16px}
+#sub-netzwerk-zuweiser>.au-photo{height:120px;margin:12px 0}
+#sub-netzwerk-bestand>.au-photo{width:120px;height:120px;margin:0 0 14px}
+#sub-faelle-inreha>.au-photo{height:130px;margin:0 0 14px}
+#view-meintag>.au-photo{height:110px;margin:0 0 10px}
+.ar-rc>.au-photo{height:64px;border-radius:12px;margin:-16px -16px 12px}
+/* Portal-Hero: bogenmaskiertes Foto rechts, nur auf breitem Desktop */
+.rp-arch{position:absolute;right:26px;top:50%;transform:translateY(-50%);width:150px;height:200px;border-radius:999px 999px 18px 18px;overflow:hidden;border:1px solid var(--glass-border);display:none;z-index:1}
+.rp-arch img{width:100%;height:100%;object-fit:cover;filter:saturate(.85);opacity:.92;display:block}
+@media(min-width:1200px){.rp-arch{display:block} .rp-hero{padding-right:200px}}
+
+/* ===== AURORA · VIVID FARBEN =====
+   Chromatische Akzente semantisch verteilt, damit die App farbig-premium statt
+   monoton-gold liest. Reine CSS-Overrides (kein Markup/JS). Semantik:
+   GOLD=CTAs/aktiv/KPI · SAGE=positiv · PETROL=informativ/struktur · ROSÉ=menschlich · AMBER=Hover. */
+
+/* (1) Gradient-Text-Momente (genau 2) — Hero-Claim-em + Mein-Tag-Gruß. Fallback: Gold/Ink bleibt. */
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .greet h1 em{background:var(--aurora-grad);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:250% 100%;animation:auShimmer 7s ease-in-out infinite}
+  .mt-greet{background:var(--aurora-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+}
+
+/* (2) Heute-KPI-Kacheln: je Kachel eine andere Akzent-Haarlinie oben (statisch). */
+#view-heute .ns-m{position:relative}
+#view-heute .ns-m::before{content:"";position:absolute;top:0;left:16px;right:16px;height:2px;
+  border-radius:0 0 3px 3px;opacity:.85;pointer-events:none}
+#view-heute .ns-m:nth-child(1)::before{background:var(--brass)}
+#view-heute .ns-m:nth-child(2)::before{background:var(--petrol)}
+#view-heute .ns-m:nth-child(3)::before{background:var(--sage)}
+
+/* (3) SAGE = positiv: Chips bekommen einen 1px-Salbei-Rand für mehr Präsenz. */
+.typ-chip.qual{border:1px solid rgba(143,185,150,.35)}
+.zstat.aktiv{border:1px solid rgba(143,185,150,.35)}
+
+/* (4) PETROL = informativ/strukturell. */
+.typ-chip.passiv{background:var(--petrol-soft);color:var(--petrol);border:1px solid rgba(87,160,143,.35)}
+.zstat.ziel{background:var(--petrol-soft);color:var(--petrol)}
+#sub-netzwerk-bestand .kicker{color:var(--petrol)}
+#view-system .kicker{color:var(--petrol)}
+#mtGutChap .kicker{color:var(--petrol)}
+
+/* (5) ROSÉ = menschlich/Beziehung: Akte-Beziehungsverlauf + Geburtstags-Anlass. */
+.pa-histhead{color:var(--rose)}
+.pa-anlass{background:var(--rose-soft);color:var(--rose);border-top:2px solid rgba(224,145,122,.5)}
+.pa-anlass b{color:var(--rose)}
+
 /* ===== AURORA · FEINSCHLIFF ===== */
 .au-plate{margin:26px 0 8px;grid-column:1/-1}
 .au-plate img{width:100%;height:300px;object-fit:cover;border-radius:18px;filter:grayscale(1) contrast(1.05);opacity:.85;display:block}
@@ -1788,10 +1895,10 @@ body.ma-mode #view-meintag{display:block}
 /* (b) Barthel/FIM-Liniendiagramm im Detail (rsChart) */
 .rsp-chart line{stroke:var(--hair)}
 .rsp-chart path[stroke="#bca37d"]{stroke:var(--brass)}
-.rsp-chart path[stroke="#9B8573"]{stroke:var(--sage-deep)}
+.rsp-chart path[stroke="#9B8573"]{stroke:var(--petrol)}
 .rsp-chart text[fill="#948c80"]{fill:var(--muted)}
 .rsp-chart text[fill="#8f7448"]{fill:var(--brass-deep)}
-.rsp-chart text[fill="#9B8573"]{fill:var(--sage-deep)}
+.rsp-chart text[fill="#9B8573"]{fill:var(--petrol)}
 /* (c) Auswertungs-Donut (renderCharts) */
 #donut circle[stroke="#efe8d8"]{stroke:var(--hair)}
 #donut stop[stop-color="#bca37d"]{stop-color:var(--brass)}
@@ -1799,7 +1906,7 @@ body.ma-mode #view-meintag{display:block}
 #donut text{fill:var(--ink)}
 /* (d) Matrix: Mono-Zeilenlabels + Hover-Anhebung mit Messing-Kante */
 .mx-side-t{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--muted)}
-@media(hover:hover){.mx-cell:hover{transform:translateY(-2px);border-color:var(--brass-line);box-shadow:var(--shadow),inset 0 1px 0 var(--glass-hi)}}
+@media(hover:hover){.mx-cell:hover{transform:translateY(-2px);border-color:var(--brass-line);box-shadow:var(--shadow),inset 0 1px 0 var(--glass-hi),0 8px 40px -12px rgba(214,183,126,.25)}}
 
 /* ===== AURORA · NETZWERK & DATENBANK ===== */
 /* Netzwerk-Landkarte: SVG-Präsentationsattribute (in JS hell hardcodiert) auf Dunkel überschreiben.
@@ -1907,21 +2014,26 @@ button,.btn-ghost,.mail,.patient-card,.wg-case,.db-c,[data-nav]{
    Gradient-Falloff selbst — NIE filter:blur auf animierten Layern (live-blurring
    60vw-Elemente pro Frame legt den Compositor lahm). Transform-only Keyframes. */
 .aurora{position:fixed;inset:0;z-index:-3;overflow:hidden;pointer-events:none;display:none}
-.orb{position:absolute;border-radius:50%;opacity:.35;will-change:transform}
+.orb{position:absolute;border-radius:50%;opacity:.5;will-change:transform}
 .orb--sage{
-  width:60vw;height:60vw;left:-12vw;top:-10vh;
-  background:radial-gradient(circle at 50% 50%, rgba(126,155,132,.9) 0%, rgba(126,155,132,.35) 38%, rgba(126,155,132,0) 68%);
+  width:70vw;height:70vw;left:-16vw;top:-14vh;
+  background:radial-gradient(circle at 50% 50%, rgba(143,185,150,.95) 0%, rgba(143,185,150,.4) 38%, rgba(143,185,150,0) 68%);
   animation:auDrift1 52s ease-in-out infinite alternate;
 }
 .orb--champ{
-  width:55vw;height:55vw;right:-14vw;top:10vh;
-  background:radial-gradient(circle at 50% 50%, rgba(196,169,125,.9) 0%, rgba(196,169,125,.35) 38%, rgba(196,169,125,0) 68%);
+  width:62vw;height:62vw;right:-16vw;top:6vh;
+  background:radial-gradient(circle at 50% 50%, rgba(214,183,126,.95) 0%, rgba(214,183,126,.4) 38%, rgba(214,183,126,0) 68%);
   animation:auDrift2 47s ease-in-out infinite alternate;
 }
 .orb--amber{
-  width:50vw;height:50vw;left:22vw;bottom:-24vh;
-  background:radial-gradient(circle at 50% 50%, rgba(217,154,91,.9) 0%, rgba(217,154,91,.35) 38%, rgba(217,154,91,0) 68%);
+  width:56vw;height:56vw;left:20vw;bottom:-26vh;
+  background:radial-gradient(circle at 50% 50%, rgba(232,162,92,.9) 0%, rgba(224,145,122,.4) 40%, rgba(224,145,122,0) 68%);
   animation:auDrift3 58s ease-in-out infinite alternate;
+}
+.orb--petrol{
+  width:48vw;height:48vw;right:8vw;bottom:-18vh;opacity:.4;
+  background:radial-gradient(circle at 50% 50%, rgba(87,160,143,.9) 0%, rgba(87,160,143,.35) 40%, rgba(87,160,143,0) 68%);
+  animation:auDrift1 64s ease-in-out infinite alternate-reverse;
 }
 .au-noise{
   position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.03;
@@ -1941,7 +2053,11 @@ button,.btn-ghost,.mail,.patient-card,.wg-case,.db-c,[data-nav]{
   to{transform:translate3d(4vw,-6vh,0) scale(1.1)}
 }
 /* Mobile-Guard: Orbs nur ab Desktop; darunter statischer Gradient auf body. */
-body{background:radial-gradient(140% 100% at 20% 0%, #12140F, var(--cream) 60%)}
+body{background:
+  radial-gradient(90% 60% at 12% 0%, rgba(143,185,150,.14), transparent 60%),
+  radial-gradient(80% 55% at 95% 12%, rgba(214,183,126,.13), transparent 60%),
+  radial-gradient(90% 60% at 60% 100%, rgba(232,162,92,.10), transparent 65%),
+  var(--cream)}
 @media(min-width:1024px){
   .aurora{display:block}
   body{background:var(--cream)}
@@ -1984,8 +2100,8 @@ body{accent-color:var(--brass)}
 /* (d) Forecast-Balken: Champagner/Salbei-Palette · Mono-Labels · Scroll-Reveal */
 .fc-bar{background:var(--hair);transform-origin:bottom}
 .fc-seg-privat{background:linear-gradient(180deg,#D4BC94,#C4A97D)}
-.fc-seg-gesetzlich{background:linear-gradient(180deg,#8FAE95,#7E9B84)}
-.dbc-legend i.fc-lg-gesetzlich{background:var(--sage)}
+.fc-seg-gesetzlich{background:linear-gradient(180deg,#6FB3A2,#57A08F)}
+.dbc-legend i.fc-lg-gesetzlich{background:var(--petrol)}
 .fc-wklabel{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;color:var(--muted);letter-spacing:.1em}
 @supports (animation-timeline: view()){
   @media (prefers-reduced-motion: no-preference){
@@ -1996,7 +2112,7 @@ body{accent-color:var(--brass)}
 </style>
 </head>
 <body>
-<div class="aurora" aria-hidden="true"><i class="orb orb--sage"></i><i class="orb orb--champ"></i><i class="orb orb--amber"></i></div>
+<div class="aurora" aria-hidden="true"><i class="orb orb--sage"></i><i class="orb orb--champ"></i><i class="orb orb--amber"></i><i class="orb orb--petrol"></i></div>
 <div class="au-noise" aria-hidden="true"></div><div class="au-vignette" aria-hidden="true"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="auroraRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7E9B84"/><stop offset="1" stop-color="#C4A97D"/></linearGradient></defs></svg>
 <!-- ============ DESKTOP SHELL (≥1024px) ============ -->
@@ -2073,6 +2189,7 @@ body{accent-color:var(--brass)}
       <circle cx="640" cy="94" r="94" fill="url(#cvGlowW)"/>
       <circle class="cv-halo" cx="640" cy="94" r="66"/>
       <circle class="cv-core" cx="640" cy="94" r="58" fill="url(#cvGoldW)"/>
+      <circle class="cv-pulse" cx="640" cy="94" r="58"/>
       <text class="cv-total" x="640" y="90" id="cvTotal">5</text>
       <text class="cv-node-l" x="640" y="110">EIN EINGANG</text>
       <text class="cv-node-s" x="640" y="126">heute</text>
@@ -2138,6 +2255,7 @@ body{accent-color:var(--brass)}
       <circle cx="170" cy="200" r="86" fill="url(#cvGlowN)"/>
       <circle class="cv-halo" cx="170" cy="200" r="60"/>
       <circle class="cv-core" cx="170" cy="200" r="52" fill="url(#cvGoldN)"/>
+      <circle class="cv-pulse" cx="170" cy="200" r="52"/>
       <text class="cv-total" x="170" y="196" data-sync="cvTotal">5</text>
       <text class="cv-node-l" x="170" y="214">EIN EINGANG</text>
       <text class="cv-node-s" x="170" y="228">heute</text>
@@ -2569,6 +2687,7 @@ body{accent-color:var(--brass)}
     </div>
       <div class="sub" id="sub-faelle-inreha">
         <p class="lblline">Patienten aktuell in Behandlung — Erfolg &amp; Wirtschaftlichkeit auf einen Blick.</p>
+        <figure class="au-photo au-photo--gold"><img src="assets/kb-suite.webp" alt="" loading="lazy"><figcaption>Komfort · Klinik Bavaria</figcaption></figure>
         <div id="rsCockpit"></div>
         <div id="inrehaGrid"></div>
       </div>
@@ -2602,7 +2721,7 @@ body{accent-color:var(--brass)}
         <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="122" width="148" height="46" rx="13"/><rect x="8" y="122" width="148" height="46" rx="13"/><text class="cv-chip-l" x="22" y="149">ZUWEISER</text><text class="cv-chip-n" x="142" y="152" text-anchor="end" data-sync="cvZuweiser">0</text></g>
         <g class="cv-chip"><rect class="cv-chip-bg" x="166" y="122" width="148" height="46" rx="13"/><rect x="166" y="122" width="148" height="46" rx="13"/><text class="cv-chip-l" x="180" y="149">PORTALE</text><text class="cv-chip-n" x="300" y="152" text-anchor="end" data-sync="cvPortale">0</text></g>
         <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen" onclick="go('faelle','anfragen')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
-          <circle cx="640" cy="94" r="94" fill="url(#cvGlowT)"/><circle class="cv-halo" cx="640" cy="94" r="66"/><circle class="cv-core" cx="640" cy="94" r="58" fill="url(#cvGoldT)"/>
+          <circle cx="640" cy="94" r="94" fill="url(#cvGlowT)"/><circle class="cv-halo" cx="640" cy="94" r="66"/><circle class="cv-core" cx="640" cy="94" r="58" fill="url(#cvGoldT)"/><circle class="cv-pulse" cx="640" cy="94" r="58"/>
           <text class="cv-total" x="640" y="90" data-sync="cvTotal">5</text><text class="cv-node-l" x="640" y="110">EIN EINGANG</text><text class="cv-node-s" x="640" y="126">heute</text>
         </g>
         <g class="cv-stockt" data-sync-wrap="cvStockWrap"><line x1="682" y1="52" x2="699" y2="39"/><circle cx="705" cy="34" r="3"/><text x="713" y="38"><tspan data-sync="cvStock">1</tspan> stockt</text></g>
@@ -2631,7 +2750,7 @@ body{accent-color:var(--brass)}
         <g class="cv-chip"><rect class="cv-chip-bg" x="117" y="53" width="106" height="42" rx="12"/><rect x="117" y="53" width="106" height="42" rx="12"/><text class="cv-chip-l" x="127" y="77">ZUWEISER</text><text class="cv-chip-n" x="213" y="80" text-anchor="end" data-sync="cvZuweiser">0</text></g>
         <g class="cv-chip"><rect class="cv-chip-bg" x="230" y="53" width="106" height="42" rx="12"/><rect x="230" y="53" width="106" height="42" rx="12"/><text class="cv-chip-l" x="240" y="77">PORTALE</text><text class="cv-chip-n" x="326" y="80" text-anchor="end" data-sync="cvPortale">0</text></g>
         <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen" onclick="go('faelle','anfragen')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
-          <circle cx="170" cy="200" r="86" fill="url(#cvGlowTN)"/><circle class="cv-halo" cx="170" cy="200" r="60"/><circle class="cv-core" cx="170" cy="200" r="52" fill="url(#cvGoldTN)"/>
+          <circle cx="170" cy="200" r="86" fill="url(#cvGlowTN)"/><circle class="cv-halo" cx="170" cy="200" r="60"/><circle class="cv-core" cx="170" cy="200" r="52" fill="url(#cvGoldTN)"/><circle class="cv-pulse" cx="170" cy="200" r="52"/>
           <text class="cv-total" x="170" y="196" data-sync="cvTotal">5</text><text class="cv-node-l" x="170" y="214">EIN EINGANG</text><text class="cv-node-s" x="170" y="228">heute</text>
         </g>
         <g class="cv-stockt" data-sync-wrap="cvStockWrap"><line x1="210" y1="238" x2="230" y2="246"/><circle cx="236" cy="248" r="2.5"/><text x="243" y="252"><tspan data-sync="cvStock">1</tspan> stockt</text></g>
@@ -2641,6 +2760,7 @@ body{accent-color:var(--brass)}
         <text class="cv-copy" x="170" y="404">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
       </svg>
     </div>
+    <figure class="au-photo au-photo--sage"><img src="assets/kb-haus.webp" alt="" loading="lazy"><figcaption>Das Team · Klinik Bavaria</figcaption></figure>
     <div id="teamGrid"></div>
   </section>
 
@@ -2658,6 +2778,7 @@ body{accent-color:var(--brass)}
       <button class="kp-cta" onclick="kpOpen()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Newsletter erstellen</button>
       <div class="zcat-strip" id="zcatgrid"></div>
       <div class="zmap" id="zmap"></div>
+      <figure class="au-photo au-photo--petrol"><img src="assets/kb-header.jpg" alt="" loading="lazy"><figcaption>Bad Kissingen · Luftbild</figcaption></figure>
       <div class="zgrid" id="zgrid"></div>
     </div>
     <div class="sub" id="sub-netzwerk-bestand">
@@ -2665,6 +2786,7 @@ body{accent-color:var(--brass)}
       <div class="kicker">Datenbank</div>
       <h2 class="hero-h2">Kontakte vor dem Fall.</h2>
       <p class="db-intro">Jeder Kontakt ist eingestuft und läuft automatisch in seiner Strecke. Wird er konkret, wird er zum Fall.</p>
+      <figure class="au-photo au-photo--gold"><img src="assets/kb-garten.webp" alt="" loading="lazy"><figcaption>Genuss · Klinik Bavaria</figcaption></figure>
       <div id="tierFilter"></div>
       <div id="btable"></div>
       <p class="db-foot">Aktive Ansprache nur mit dokumentierter Einwilligung.</p>
@@ -2856,6 +2978,8 @@ body{accent-color:var(--brass)}
     </header>
 
     <div class="mt-termine" id="mtTermine"></div>
+
+    <figure class="au-photo au-photo--gold"><img src="assets/kb-komfort-wall.webp" alt="" loading="lazy"><figcaption>Komfort · Klinik Bavaria</figcaption></figure>
 
     <div class="chap" id="mtJetztChap">
       <div class="kicker">Jetzt</div>
@@ -3598,12 +3722,15 @@ function arAktion(key){
  if(typeof dbView!=="undefined"&&dbView==="radar")renderBestand();
 }
 const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf",zuweiser:"Zuweiser-Kontakt"};
-function arCard(a){
+const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"],zuweiser:["kb-header.jpg","petrol"]};
+function arCard(a,i){
  const perName=a.pid&&person(a.pid)?person(a.pid).name:a.titel;
  const due=a.typ==="zuweiser"?(a.urg==="jetzt"?"überfällig":"fällig"):"in "+a.tage+" Tagen";
  const dueCls=(a.typ==="zuweiser"&&a.urg==="jetzt")?"jetzt":"bald";
  const gLbl=a.typ==="zuweiser"?"Nächste Aktion":"Empfohlene Geste";
+ const strip=(i===0&&AR_FOTO[a.typ])?"<figure class='au-photo au-photo--"+AR_FOTO[a.typ][1]+"'><img src='assets/"+AR_FOTO[a.typ][0]+"' alt='' loading='lazy'></figure>":"";
  return "<div class='radar-card ar-rc' style='--acol:var(--brass)'>"
+  +strip
   +"<div class='patient-top'><span class='ava'>"+initialen(perName)+"</span><span class='radar-due "+dueCls+"'>"+due+"</span></div>"
   +"<h3>"+escapeHtml(a.titel)+"</h3>"
   +(a.sterne?"<div class='ar-cardstars'>"+sterneHtml(a.sterne)+"</div>":"")
@@ -3620,6 +3747,7 @@ function renderAnlaesse(){
  const sum=document.getElementById("anlassSum");
  if(sum)sum.textContent=[nG?nG+(nG===1?" Geburtstag":" Geburtstage"):null,nJ?nJ+(nJ===1?" Jubiläum":" Jubiläen"):null,nW?nW+"× Wiederbedarf":null,nZ?nZ+(nZ===1?" Zuweiser wartet":" Zuweiser warten"):null].filter(Boolean).join(" · ")||"Keine offenen Anlässe";
  el.innerHTML=list.slice(0,3).map(arCard).join("")||"<p class='empty'>Alles gepflegt — keine offenen Anlässe.</p>";
+ /* arCard erhält von .map(cb,i) automatisch den Index → Foto-Strip nur auf der ersten/dominanten Karte */
 }
 /* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
 const FC_BETTEN=7; // Komfort-Kontingent (Privat-/Selbstzahler + Komfort-Aufzahler)
@@ -4205,6 +4333,7 @@ function renderSuite(screen,zName){
  const tabs=[["portal","vor der Reha","Portal"],["einblick","in der Reha","Behandlungs-Einblick"],["abschluss","nach der Reha","Abschlusspaket"]];
  const body=screen==="einblick"?renderEinblick(zName):screen==="abschluss"?renderAbschluss(zName):renderPortal(zName);
  return `<section class="rp-hero">
+   <div class="rp-arch" aria-hidden="true"><img src="assets/kb-komfortzimmer.webp" alt="" loading="lazy"></div>
    <div class="rp-mark">Klinik Bavaria · Zuweiser-Portal</div>
    <h1 class="rp-greet">${greet}</h1>
    <p class="rp-sub">${escapeHtml(p.inst)} · Schön, dass Sie bei uns sind.</p>
