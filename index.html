@@ -1530,16 +1530,43 @@ label{font-size:12px;letter-spacing:.08em}
 .st-row .st.on{color:var(--brass)}
 .st-lbl{font:600 11px/1.4 Inter;letter-spacing:.04em;color:var(--muted)}
 .db-group-h.st-h .st-row{font-size:15px;margin-top:3px}
-.stg-h{margin:26px 0 12px;padding:13px 16px;background:var(--paper);border:1px solid var(--hair);border-left:3px solid var(--brass);border-radius:12px}
-.db-group.is-locked .stg-h{border-left-color:var(--faint)}
-.stg-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+/* Datenbank als Kartei: Sterne-Gruppe = ein Panel (Kopf + Zeilen), Zeile = Ledger-Grid */
+.db-group{background:var(--paper);border:1px solid var(--hair);border-left:3px solid var(--brass);border-radius:16px;box-shadow:var(--shadow-soft);overflow:hidden;margin:0 0 20px}
+.db-group.is-locked{border-left-color:var(--faint)}
+.stg-h{margin:0;padding:15px 18px 13px;background:var(--paper2);border-bottom:1px solid var(--hair2)}
+.stg-row{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
 .stg-row .st-row{font-size:14px}
 .stg-row .db-ico{width:20px;height:20px;color:var(--muted)}
-.stg-t{font:600 14.5px/1.25 Inter;color:var(--ink)}
+.stg-t{font:600 19px/1.2 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
 .stg-n{font:700 12px/1 Inter;color:var(--brass-deep);background:var(--brass-soft);padding:4px 9px;border-radius:999px}
 .stg-auto{margin-left:auto;font:600 10.5px/1.35 Inter;letter-spacing:.03em;color:var(--brass-deep);background:var(--brass-soft);border-radius:999px;padding:5px 11px}
-.stg-note{font:400 12px/1.5 Inter;color:var(--muted);margin-top:6px}
+.stg-note{font:400 12px/1.5 Inter;color:var(--muted);margin-top:5px}
 @media(max-width:760px){.stg-auto{margin-left:0}}
+.db-list{background:transparent;border:none;border-radius:0;box-shadow:none}
+.db-c .rk{display:block;font:600 10px/1 Inter;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.db-c-name{font:600 17px/1.15 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
+.db-c-name .alter{font:500 12.5px/1 Inter;color:var(--faint)}
+.db-c-lkv b{display:block;font:600 13px/1.3 Inter;color:var(--ink)}
+.db-c-lkv i{font:400 11.5px/1.3 Inter;font-style:normal;color:var(--muted)}
+@media(min-width:1024px){
+ .db-c{display:grid;grid-template-columns:40px minmax(150px,1.1fr) 1.6fr minmax(130px,.8fr) auto 20px;align-items:center;gap:18px;padding:15px 18px}
+ .db-c .ava{margin-top:0}
+ .db-c-ctx{margin-top:0}
+ .db-pill{margin-left:0;justify-self:end}
+ .db-c-chev{margin-left:0}
+}
+@media(max-width:1023px){
+ .db-c{flex-wrap:wrap;row-gap:7px}
+ .db-c-ctxc{order:10;flex:1 1 100%;padding-left:50px}
+ .db-c-ctxc .rk{display:none}
+ .db-c-lk{display:none}
+ .db-c-chev{align-self:flex-start;margin-top:8px}
+}
+@media(max-width:760px){
+ .db-cockpit{flex-wrap:wrap;gap:12px 22px}
+ .db-cockpit .dbc-div{display:none}
+ .dbc-barwrap{flex:1 1 100%;order:9}
+}
 .pa-head .st-row{font-size:12px}
 /* ---------- Baustein B · Anlass-Radar (.ar-*) ---------- */
 #anlassChap{grid-column:1/-1}
@@ -3236,13 +3263,18 @@ function renderBestand(){
   const row=(p,idx)=>{
     const col=ACHSE_COL[p.achse]||"var(--unklar)";
     const cons=p.consent==="ja"?"<span class='db-pill ok'>freigegeben</span>":"<span class='db-pill lock'>gesperrt</span>";
+    const per=p.personId?person(p.personId):null;
+    const h=per&&per.historie&&per.historie.length?per.historie[per.historie.length-1]:null;
+    const lk=h?"<b>"+new Date(h.d).toLocaleDateString("de-DE",{day:"numeric",month:"short",year:"numeric"})+"</b><i>"+escapeHtml(PA_TYP[h.typ]||h.typ)+"</i>":"<b>—</b><i>kein Eintrag</i>";
     return "<button class='db-c' style='--acol:"+col+"' onclick='openDbDetail("+idx+")'>"
-      +"<span class='ava'>"+initialen(p.name)+"</span>"
+      +"<span class='ava'>"+initialen(p.name.replace(/[()\[\]]/g,""))+"</span>"
       +"<div class='db-c-main'>"
-        +"<div class='db-c-top'><span class='db-c-name'>"+escapeHtml(p.name)+(p.alter?" <span class='alter'>"+p.alter+"</span>":"")+"</span>"+cons+"</div>"
+        +"<div class='db-c-name'>"+escapeHtml(p.name)+(p.alter?" <span class='alter'>"+p.alter+"</span>":"")+"</div>"
         +"<div class='db-c-meta'><span class='ach-dot'></span>"+escapeHtml(p.achse)+" · "+escapeHtml(p.quelle)+"</div>"
-        +(p.kontext?"<div class='db-c-ctx'>"+escapeHtml(p.kontext)+"</div>":"")
-      +"</div><span class='db-c-chev'>›</span></button>";
+      +"</div>"
+      +"<div class='db-c-cell db-c-ctxc'><span class='rk'>Kontext</span><div class='db-c-ctx'>"+escapeHtml(p.kontext||"—")+"</div></div>"
+      +"<div class='db-c-cell db-c-lk'><span class='rk'>Letzter Kontakt</span><div class='db-c-lkv'>"+lk+"</div></div>"
+      +cons+"<span class='db-c-chev'>›</span></button>";
   };
   document.getElementById("btable").innerHTML=groups.map(g=>{
     const entries=bestand.map((p,i)=>[p,i]).filter(e=>bucketOf(e[0])===g);
