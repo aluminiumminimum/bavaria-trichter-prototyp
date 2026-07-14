@@ -1660,6 +1660,55 @@ label{font-size:12px;letter-spacing:.08em}
 .kz-actions{display:flex;flex-wrap:wrap;gap:8px}
 .kz-notiz-row{display:flex;gap:8px}
 .kz-notiz-row input{flex:1;min-width:0}
+/* ===== Mitarbeiter-Dashboard "Mein Tag" (.mt-*) — Spec docs/superpowers-optimized/specs/2026-07-14-mitarbeiter-dashboard-design.md
+   Perspektivenwechsel: eigene, ruhige Mitarbeiter-Sicht (S. Koordination) auf denselben Daten.
+   ma-mode blendet die komplette Leitungs-Chrome nur per CSS aus — nichts wird umgebaut, Rückschalten entfernt nur die Klasse. ===== */
+body.ma-mode .dsidebar,body.ma-mode header.dtopbar,body.ma-mode nav.tabbar,body.ma-mode #inbToast,body.ma-mode #rpToast{display:none}
+body.ma-mode .view:not(#view-meintag){display:none}
+body.ma-mode #view-meintag{display:block}
+@media(min-width:1024px){body.ma-mode .app{margin-left:0}}
+.mt-avawrap{position:relative}
+.mt-rollmenu{position:absolute;right:0;top:calc(100% + 10px);min-width:230px;background:var(--paper);border:1px solid var(--hair);
+  border-radius:14px;box-shadow:var(--shadow);padding:6px;display:none;z-index:90}
+.mt-rollmenu.open{display:block}
+.mt-rollitem{display:block;width:100%;text-align:left;padding:11px 12px;border-radius:9px;font:500 14px/1.3 Inter;color:var(--ink-soft)}
+.mt-rollitem:hover{background:var(--brass-soft);color:var(--brass-deep)}
+#view-meintag{max-width:880px;margin:0 auto}
+.mt-head{margin:4px 0 8px}
+.mt-exit{margin-bottom:14px}
+.mt-greet{font-family:"Cormorant Garamond",Georgia,serif;font-size:32px;font-weight:700;color:var(--ink);margin:0}
+.mt-date{font-size:13px;letter-spacing:.03em;color:var(--muted);text-transform:capitalize;margin-top:4px}
+.mt-sum{font-size:15px;color:var(--ink-soft);margin-top:10px}
+.mt-prog{display:flex;align-items:center;gap:12px;margin-top:12px;max-width:420px}
+.mt-progtrack{flex:1;height:6px;border-radius:99px;background:var(--hair);overflow:hidden}
+.mt-progfill{height:100%;width:0;border-radius:99px;background:var(--brass-grad)}
+.mt-prognum{font-size:20px;font-weight:700;color:var(--brass-deep);flex-shrink:0}
+.mt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:2px}
+.mt-grid .radar-card{height:100%;display:flex;flex-direction:column}
+.mt-grid .radar-card .patient-actions{margin-top:auto}
+.radar-card.mt-done{opacity:.55}
+.mt-check{font:600 13.5px/1 Inter;color:var(--sage-deep)}
+.mt-info{font:500 13px/1 Inter;color:var(--muted)}
+@media(max-width:520px){.mt-grid{grid-template-columns:1fr}}
+.mt-sheet{position:fixed;inset:0;z-index:85;display:none}
+.mt-sheet.open{display:block}
+.mt-back{position:absolute;inset:0;background:rgba(31,28,28,.42)}
+.mt-panel{position:absolute;right:0;top:0;bottom:0;width:min(620px,100%);background:var(--paper);display:flex;flex-direction:column;box-shadow:-18px 0 50px rgba(31,28,28,.25)}
+.mt-shead{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--hair)}
+.mt-sheadtxt{display:flex;flex-direction:column;line-height:1.25;margin-right:auto}
+.mt-stitle{font-size:20px;font-weight:700;color:var(--ink)}
+.mt-ssub{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.mt-sx{background:none;border:none;font-size:26px;line-height:1;color:var(--muted);cursor:pointer}
+.mt-sbody{flex:1;overflow:auto;padding:18px 22px;display:grid;gap:4px;align-content:start}
+.mt-ssteps{margin:0;padding-left:20px}
+.mt-ssteps li{margin:0 0 7px;font:400 14px/1.5 Inter;color:var(--ink-soft)}
+.mt-ssteps li::marker{color:var(--brass-deep);font-weight:700}
+.mt-sleitfaden p{margin:0 0 8px;font:400 13.5px/1.5 Inter;color:var(--ink-soft)}
+.mt-sleitfaden p:last-child{margin-bottom:0}
+.mt-sfoot{display:flex;flex-direction:column;gap:10px;padding:14px 22px;border-top:1px solid var(--hair)}
+.mt-sdonemsg{font:600 14px/1.4 Inter;color:var(--sage-deep)}
+.mt-sletzter{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
+@media(max-width:520px){.mt-panel{width:100%}}
 </style>
 </head>
 <body>
@@ -1680,7 +1729,7 @@ label{font-size:12px;letter-spacing:.08em}
 </aside>
 <header class="dtopbar">
   <div class="dt-titles"><h2 id="dtopTitle" class="serif">Heute</h2><span id="dtopSub"></span></div>
-  <div class="dt-actions"><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button><span class="dt-ava serif">KB</span></div>
+  <div class="dt-actions"><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button><div class="mt-avawrap"><button class="dt-ava serif" id="mtAvaBtn" onclick="mtRollToggle()" aria-haspopup="true" aria-expanded="false">KB</button><div class="mt-rollmenu" id="mtRollmenu"><button class="mt-rollitem" onclick="mtEnter()">Ansicht als S. Koordination</button></div></div></div>
 </header>
 <div class="app">
 <main class="content">
@@ -2505,6 +2554,35 @@ label{font-size:12px;letter-spacing:.08em}
       </div>
     </div>
   </section>
+
+  <!-- ============ MEIN TAG (Mitarbeiter-Ansicht S. Koordination — ma-mode; kein Menüpunkt, wird nur über den Rollen-Umschalter erreicht) ============ -->
+  <section id="view-meintag" class="view">
+    <header class="mt-head">
+      <button class="mt-exit btn-ghost btn-sm" onclick="mtExit()">‹ Zurück zur Leitungsansicht</button>
+      <h1 class="mt-greet" id="mtGreet"></h1>
+      <div class="mt-date" id="mtDate"></div>
+      <div class="mt-sum" id="mtSum"></div>
+      <div class="mt-prog"><div class="mt-progtrack"><div class="mt-progfill" id="mtProgFill"></div></div><span class="mt-prognum serif num" id="mtProgNum"></span></div>
+    </header>
+
+    <div class="chap" id="mtJetztChap">
+      <div class="kicker">Jetzt</div>
+      <h2 class="chap-h2">Was jetzt dran ist</h2>
+      <div class="mt-grid" id="mtJetztList"></div>
+    </div>
+
+    <div class="chap" id="mtWocheChap">
+      <div class="kicker">Heute &amp; diese Woche</div>
+      <h2 class="chap-h2">Der Rest der Liste</h2>
+      <div class="mt-grid" id="mtWocheList"></div>
+    </div>
+
+    <div class="chap" id="mtGutChap">
+      <div class="kicker">Gut zu wissen</div>
+      <h2 class="chap-h2">Geplante Aufnahmen dieser Woche</h2>
+      <div class="mt-grid" id="mtGutList"></div>
+    </div>
+  </section>
 </main>
 </div>
 
@@ -2646,7 +2724,9 @@ let faelle=[
  {id:9,personId:"P05",name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]]},
  {id:12,personId:"P06",name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage"],[dstr(-11),"Rückruf erst nach 26 Std."],[dstr(-8),"Familie hat anderes Haus gewählt"]]},
  {id:10,personId:"P07",name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-12),"Anfrage nach Hüft-TEP (Sozialdienst)"],[dstr(-9),"Kostenzusage PKV"],[dstr(-2),"Aufgenommen — Privatzimmer"]]},
- {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:8,log:[[dstr(-15),"Website-Anfrage Neuro-Reha"],[dstr(-10),"Beratung geführt, Zusage erhalten"],[dstr(-3),"Aufgenommen"]]}
+ {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:8,log:[[dstr(-15),"Website-Anfrage Neuro-Reha"],[dstr(-10),"Beratung geführt, Zusage erhalten"],[dstr(-3),"Aufgenommen"]]},
+ /* Seed-Ergänzung Mein Tag (Baustein Mitarbeiter-Dashboard): Kostenklärung ohne eigene Frist, additiv am Muster der Nachbarn */
+ {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:5,log:[[dstr(-4),"Anfrage über Empfehlung (Knie-TEP, AHB gesucht)"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend"]]}
 ];
 
 /* Werdegang-Beispielschritte (nur für Demo-Fälle gesetzt; Rest wird generisch abgeleitet) */
@@ -2877,7 +2957,9 @@ let personen=[
  {pid:"P22",name:"Christa Mohr",geb:gebIn(12,58),lebenszyklus:"altpatient",kt:"Selbstzahler",sterne:5,sterneGrund:"Premium-Wiederkehrerin, aktive Selbstzahlerin",kontakt:{tel:"0971 0000-522",mail:"c.mohr@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-150),zwecke:["behandlung","newsletter","post"]},zuweiserRef:null,historie:[{d:dstr(-150),typ:"entlassung",text:"Premium-Reha abgeschlossen (SalutoCare)"}]},
  {pid:"P23",name:"Otto Brenner",geb:gebIn(-310,68),lebenszyklus:"altpatient",kt:"PKV",sterne:4,sterneGrund:"War da, PKV, regelmäßiger Nachsorge-Bedarf",kontakt:{tel:"0971 0000-523",mail:"o.brenner@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"mündlich",datum:dstr(-425),zwecke:["behandlung","post"]},zuweiserRef:null,historie:[{d:dstr(-425),typ:"entlassung",text:"Schlaganfall-Reha abgeschlossen"}]},
  {pid:"P24",name:"Friedrich Berg",geb:gebIn(170,71),lebenszyklus:"altpatient",kt:"PKV",sterne:4,sterneGrund:"War da, PKV, Gegenseite mittelfristig wahrscheinlich",kontakt:{tel:"0971 0000-524",mail:"f.berg@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-240),zwecke:["behandlung","post"]},zuweiserRef:null,historie:[{d:dstr(-240),typ:"entlassung",text:"Reha nach Hüft-TEP links abgeschlossen"}]},
- {pid:"P25",name:"Walter Simon",geb:gebIn(-45,80),lebenszyklus:"altpatient",kt:"GKV",sterne:1,sterneGrund:"Einwilligung widerrufen, kein Zuzahlungsinteresse",kontakt:{tel:"",mail:""},angehoerige:[],einwilligung:{status:"widerruf",form:null,datum:dstr(-500),zwecke:[]},zuweiserRef:null,historie:[{d:dstr(-690),typ:"entlassung",text:"Kardio-Reha abgeschlossen"},{d:dstr(-500),typ:"kontakt",text:"Kontakteinwilligung widerrufen"}]}
+ {pid:"P25",name:"Walter Simon",geb:gebIn(-45,80),lebenszyklus:"altpatient",kt:"GKV",sterne:1,sterneGrund:"Einwilligung widerrufen, kein Zuzahlungsinteresse",kontakt:{tel:"",mail:""},angehoerige:[],einwilligung:{status:"widerruf",form:null,datum:dstr(-500),zwecke:[]},zuweiserRef:null,historie:[{d:dstr(-690),typ:"entlassung",text:"Kardio-Reha abgeschlossen"},{d:dstr(-500),typ:"kontakt",text:"Kontakteinwilligung widerrufen"}]},
+ /* Seed-Ergänzung Mein Tag: Werner Aumann (Baustein-A-Konvention, additiv) */
+ {pid:"P26",name:"Werner Aumann",geb:gebIn(170,72),lebenszyklus:"interessent",kt:"PKV",sterne:3,sterneGrund:"PKV, konkrete Anfrage, Kostenklärung läuft",kontakt:{tel:"0971 0000-526",mail:"w.aumann@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-4),zwecke:["behandlung"]},zuweiserRef:null,historie:[{d:dstr(-4),typ:"anfrage",text:"Anfrage über Empfehlung (Knie-TEP, AHB gesucht)"}]}
 ];
 let zuweiserEvents=[
  {zName:"Leopoldina-Krankenhaus",d:dstr(-1),typ:"fall",text:"Fall Ludwig Bauer vermittelt (Hüft-TEP)"},
@@ -4260,6 +4342,242 @@ document.getElementById("formNeu").addEventListener("submit",e=>{
   boardStageFilter=null;renderBoard();
   go("faelle","board");
 });
+
+/* ===== Mitarbeiter-Dashboard "Mein Tag" (.mt-*) — Spec docs/superpowers-optimized/specs/2026-07-14-mitarbeiter-dashboard-design.md =====
+   Ableitung ohne neue persistente Arrays (Muster: anlaesse()); einzige Session-Ausnahme ist _mtDone (Muster _arDone).
+   Feldnamen bestehender Arrays sind Vertrag — nur gelesen bzw. additiv mutiert, nie umbenannt. */
+let _mtDone=new Set();
+const MT_TYP_LABEL={rueckruf:"Rückruf",angebot:"Angebot",unterlagen:"Unterlagen",kosten:"Kostenklärung",eingang:"Eingang",allgemein:"Aufgabe"};
+const MT_SCHRITTE={
+ rueckruf:["Fall-Kontext kurz prüfen (Anfrage, letzter Eintrag)","Anrufen und Anliegen bestätigen","Nächsten Schritt gemeinsam festlegen","Ergebnis ins Protokoll schreiben"],
+ angebot:["Wünsche &amp; Kostenträger aus dem Fall prüfen","Passendes Angebot zusammenstellen","Angebot versenden (E-Mail/Post)","Rückmeldefrist vormerken"],
+ unterlagen:["Fehlende Unterlagen aus der Checkliste identifizieren","Patient/Zuweiser kurz kontaktieren","Unterlagen anfordern, Eingang terminieren","Nach Eingang: Checkliste aktualisieren"],
+ kosten:["Kostenträger und bisherigen Stand prüfen","Kostenzusage anfragen bzw. nachfassen","Rückmeldung dokumentieren","Bei Ablehnung: Alternative mit Familie besprechen"],
+ eingang:["Anfrage lesen und Anliegen einordnen","Freundliche Antwort formulieren","Antwort versenden","Anfrage als bearbeitet markieren"],
+ allgemein:["Fall-Kontext kurz prüfen","Nächsten Schritt festlegen","Aktion durchführen","Ergebnis dokumentieren"]
+};
+const MT_LEITFAEDEN={
+ rueckruf:["„Guten Tag, hier ist die Patientenkoordination der Klinik Bavaria — ich rufe zu Ihrer Anfrage zurück.“","Anliegen bestätigen, offene Fragen klären.","Nächsten Schritt und ungefähren Zeitrahmen nennen.","Bei Unsicherheit lieber einmal mehr nachfragen als etwas annehmen."],
+ angebot:["Betreff: Ihr Wunsch-Aufenthalt bei uns.","„Vielen Dank für Ihr Interesse — anbei unser Angebot mit Leistungen und Kosten.“","Für Rückfragen ausdrücklich zur Verfügung stellen.","Gruß: „Herzliche Grüße, Ihr Team der Klinik Bavaria.“"],
+ unterlagen:["Merkliste: Entlassbrief · aktuelle Befunde · Versicherungsdaten · ggf. Kostenzusage.","Freundlich klären, wer liefert — Patient, Angehörige oder Zuweiser.","Bis-wann-Termin vereinbaren und notieren."],
+ kosten:["Kostenträger klären (PKV / Beihilfe / Selbstzahler).","Anfrage mit Diagnose und Aufenthaltsgrund stellen.","Rückmeldung dokumentieren.","Bei Ablehnung: mit der Familie Alternativen besprechen (Selbstzahlung, erneute Anfrage)."],
+ eingang:["„Vielen Dank für Ihre Anfrage bei der Klinik Bavaria.“","„Wir melden uns kurzfristig mit den nächsten Schritten.“","Für Dringendes die Telefon-Erreichbarkeit nennen.","Gruß: „Herzliche Grüße, Ihr Team der Klinik Bavaria.“"],
+ allgemein:["Fall kurz prüfen, offene Punkte klären.","Vereinbarten nächsten Schritt zeitnah umsetzen.","Ergebnis immer im Protokoll festhalten, damit das Team informiert bleibt."]
+};
+/* Fristvergleich mitternachtsnormalisiert (paGeb-Falle: heute trägt Ladezeit-Uhrzeit, frist ist ein reines Datum) */
+function mtDayDiff(fristStr){
+ if(!fristStr)return null;
+ const h0=new Date(heute.getFullYear(),heute.getMonth(),heute.getDate());
+ const fd=new Date(fristStr);
+ const f0=new Date(fd.getFullYear(),fd.getMonth(),fd.getDate());
+ return Math.round((f0-h0)/86400000);
+}
+function mtTyp(aufgabe){
+ if(/rückruf|erstreaktion/i.test(aufgabe))return "rueckruf";
+ if(/angebot/i.test(aufgabe))return "angebot";
+ if(/unterlagen|dokument/i.test(aufgabe))return "unterlagen";
+ return "allgemein";
+}
+/* Fall-Aufgabe: lebt vom aktuellen f.aufgabe; nach Abschluss (aufgabe/frist geleert) bleibt die Karte über den
+   _mtDone-Key (Muster fall:<id>:<typ>) sichtbar — Text kommt dann aus dem letzten Protokoll-Eintrag. */
+function mtFallAufgabeItem(f){
+ if(f.aufgabe){
+  const typ=mtTyp(f.aufgabe);
+  const d=mtDayDiff(f.frist);
+  return {key:"fall:"+f.id+":"+typ,typ:typ,kind:"fall",ref:f,name:f.name,
+   kontext:f.quelle||f.kanal,step:f.aufgabe,
+   block:(d!==null&&d<=0)?"jetzt":"woche",overdue:(d!==null&&d<0)};
+ }
+ const TYPES=["rueckruf","angebot","unterlagen","allgemein"];
+ for(let i=0;i<TYPES.length;i++){
+  const k="fall:"+f.id+":"+TYPES[i];
+  if(_mtDone.has(k)){
+   const letzter=(f.log&&f.log.length)?f.log[f.log.length-1][1]:"Erledigt (Mein Tag)";
+   return {key:k,typ:TYPES[i],kind:"fall",ref:f,name:f.name,
+    kontext:f.quelle||f.kanal,step:letzter,block:"woche",overdue:false};
+  }
+ }
+ return null;
+}
+/* Kostenklärung: eigenes To-Do (kein Ersatz für die Fall-Aufgabe), ohne eigene Frist immer HEUTE/WOCHE. */
+function mtKostenItem(f){
+ const k="fall:"+f.id+":kosten";
+ if(["Unterlagen","Aufnahme geplant"].includes(f.status)&&["offen","abgelehnt"].includes(f.kosten)){
+  return {key:k,typ:"kosten",kind:"fall",ref:f,name:f.name,
+   kontext:"Kostenklärung "+f.kosten+" · "+f.status,step:"Kostenzusage klären ("+f.kt+")",
+   block:"woche",overdue:false};
+ }
+ if(_mtDone.has(k)){
+  const letzter=(f.log&&f.log.length)?f.log[f.log.length-1][1]:"Erledigt (Mein Tag)";
+  return {key:k,typ:"kosten",kind:"fall",ref:f,name:f.name,
+   kontext:"Kostenklärung · "+f.status,step:letzter,block:"woche",overdue:false};
+ }
+ return null;
+}
+function mtEingangItem(m){
+ const k="eingang:"+m.id;
+ const titel=m.pName||(m.tit&&m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.tit);
+ return {key:k,typ:"eingang",kind:"eingang",ref:m,name:titel,
+  kontext:m.kanal+" · "+m.zeit,step:"Antwort senden",block:"woche",overdue:false};
+}
+function mtTodos(){
+ const jetzt=[],woche=[],gut=[];
+ faelle.forEach(f=>{
+  if(f.owner!=="S. Koordination")return;
+  if(["Aufgenommen","Verloren"].includes(f.status))return;
+  const a=mtFallAufgabeItem(f);if(a)(a.block==="jetzt"?jetzt:woche).push(a);
+  const k=mtKostenItem(f);if(k)(k.block==="jetzt"?jetzt:woche).push(k);
+ });
+ eingang.forEach(m=>{
+  if(m.typ!=="qualifiziert")return;
+  const k="eingang:"+m.id;
+  if(!m.done||_mtDone.has(k))woche.push(mtEingangItem(m));
+ });
+ faelle.forEach(f=>{ if(f.status==="Aufnahme geplant")gut.push(f); });
+ return {jetzt,woche,gut};
+}
+function mtFindItem(key){const a=mtTodos();return a.jetzt.concat(a.woche).find(it=>it.key===key)||null;}
+function mtNextOpenKey(excludeKey){
+ const a=mtTodos();const next=a.jetzt.concat(a.woche).find(it=>it.key!==excludeKey&&!_mtDone.has(it.key));
+ return next?next.key:null;
+}
+function mtCard(item){
+ const done=_mtDone.has(item.key);
+ const duePill=item.block==="jetzt"?"<span class='radar-due "+(item.overdue?"jetzt":"bald")+"'>"+(item.overdue?"überfällig":"heute fällig")+"</span>":"";
+ const action=done?"<span class='mt-check'>✓ Erledigt</span>"
+  :"<button class='btn-ghost btn-sm' onclick='mtOpen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Jetzt erledigen ›</button>";
+ return "<div class='radar-card"+(done?" mt-done":"")+"'>"
+  +"<div class='patient-top'><span class='ava'>"+initialen(item.name.replace(/[()\[\]]/g,""))+"</span>"+duePill+"</div>"
+  +"<h3>"+escapeHtml(item.name)+"</h3>"
+  +"<div class='patient-meta'>"+escapeHtml(MT_TYP_LABEL[item.typ]||"Aufgabe")+"</div>"
+  +"<div class='radar-prog'><span class='rk'>Fall</span>"+escapeHtml(item.kontext)+"</div>"
+  +"<div class='radar-prog'><span class='rk'>Nächster Schritt</span>"+escapeHtml(item.step)+"</div>"
+  +"<div class='patient-actions'>"+action+"</div>"
+  +"</div>";
+}
+function mtInfoCard(f){
+ return "<div class='radar-card'>"
+  +"<div class='patient-top'><span class='ava'>"+initialen(f.name)+"</span><span class='radar-due beob'>geplant</span></div>"
+  +"<h3>"+escapeHtml(f.name)+"</h3>"
+  +"<div class='patient-meta'>"+escapeHtml(f.achse)+" · "+escapeHtml(f.owner)+"</div>"
+  +"<div class='radar-prog'><span class='rk'>Aufnahme</span>"+escapeHtml(fristText(f.frist)||"Termin folgt")+"</div>"
+  +"<div class='patient-actions'><span class='mt-info'>Keine Aktion nötig</span></div>"
+  +"</div>";
+}
+function renderMeinTag(){
+ const el=document.getElementById("view-meintag");if(!el)return;
+ const {jetzt,woche,gut}=mtTodos();
+ const all=jetzt.concat(woche);
+ const total=all.length;
+ const doneCount=all.filter(it=>_mtDone.has(it.key)).length;
+ const heuteFaellig=jetzt.filter(it=>!_mtDone.has(it.key)&&!it.overdue).length;
+ const h=heute.getHours();
+ const gruss=h<11?"Guten Morgen":h<18?"Guten Tag":"Guten Abend";
+ const sumTxt=total===0?"Keine offenen Aufgaben.":(doneCount===total?"Alles erledigt für heute!":total+" "+(total===1?"Aufgabe":"Aufgaben")+" · "+heuteFaellig+" heute fällig");
+ document.getElementById("mtGreet").textContent=gruss+", S. Koordination.";
+ document.getElementById("mtDate").textContent=heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});
+ document.getElementById("mtSum").textContent=sumTxt;
+ document.getElementById("mtProgFill").style.width=(total?Math.round(doneCount/total*100):0)+"%";
+ document.getElementById("mtProgNum").textContent=doneCount+"/"+total;
+ document.getElementById("mtJetztList").innerHTML=jetzt.length?jetzt.map(mtCard).join(""):"<p class='empty'>Nichts Dringendes gerade.</p>";
+ document.getElementById("mtWocheList").innerHTML=woche.length?woche.map(mtCard).join(""):"<p class='empty'>Keine weiteren Aufgaben diese Woche.</p>";
+ document.getElementById("mtGutList").innerHTML=gut.length?gut.map(mtInfoCard).join(""):"<p class='empty'>Nichts Besonderes vorgemerkt.</p>";
+}
+/* ---------- Mein Tag: geführte Arbeitskarte (Sheet, Anatomie von kpOpen/kpClose) ---------- */
+let _mtSheetKey=null;
+function mtWarum(item){
+ if(item.kind==="eingang")return escapeHtml(item.ref.kanal+" · "+item.ref.zeit+" — "+(item.ref.tit||""));
+ const f=item.ref;
+ const letzter=(f.log&&f.log.length)?f.log[f.log.length-1][1]:"";
+ return escapeHtml((f.quelle?f.quelle+" · ":"")+item.step)+(letzter?"<span class='mt-sletzter'>Zuletzt: "+escapeHtml(letzter)+"</span>":"");
+}
+function mtOpen(key){
+ _mtSheetKey=key;
+ let s=document.getElementById("mtSheet");
+ if(!s){s=document.createElement("div");s.id="mtSheet";document.body.appendChild(s);}
+ s.className="mt-sheet open";document.body.classList.add("locked");
+ mtSheetRender();
+}
+function mtClose(){
+ const s=document.getElementById("mtSheet");if(s)s.classList.remove("open");
+ document.body.classList.remove("locked");
+ _mtSheetKey=null;
+}
+function mtSheetRender(){
+ const s=document.getElementById("mtSheet");if(!s)return;
+ const item=mtFindItem(_mtSheetKey);
+ if(!item){mtClose();return;}
+ const done=_mtDone.has(item.key);
+ const next=done?mtNextOpenKey(item.key):null;
+ if(done&&!next){mtClose();return;}
+ const duePill=item.block==="jetzt"?"<span class='radar-due "+(item.overdue?"jetzt":"bald")+"'>"+(item.overdue?"überfällig":"heute fällig")+"</span>":"";
+ const schritte=MT_SCHRITTE[item.typ]||MT_SCHRITTE.allgemein;
+ const leitfaden=MT_LEITFAEDEN[item.typ]||MT_LEITFAEDEN.allgemein;
+ const foot=done
+  ?"<div class='mt-sdonemsg'>✓ Erledigt — ins Protokoll übernommen.</div><button class='btn-brass' onclick='mtNext()'>Weiter zur nächsten ›</button>"
+  :"<button class='btn-brass' onclick='mtAbschliessen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Erledigt · ins Protokoll</button>";
+ s.innerHTML="<div class='mt-back' onclick='mtClose()'></div><div class='mt-panel'>"
+  +"<div class='mt-shead'><span class='ava'>"+initialen(item.name.replace(/[()\[\]]/g,""))+"</span>"
+  +"<div class='mt-sheadtxt'><span class='mt-stitle serif'>"+escapeHtml(item.name)+"</span><span class='mt-ssub'>"+escapeHtml(MT_TYP_LABEL[item.typ]||"Aufgabe")+"</span></div>"
+  +duePill+"<button class='mt-sx' onclick='mtClose()' aria-label='Schließen'>×</button></div>"
+  +"<div class='mt-sbody'>"
+  +"<div class='radar-prog'><span class='rk'>Warum jetzt</span><p>"+mtWarum(item)+"</p></div>"
+  +"<div class='radar-prog'><span class='rk'>So gehst du vor</span><ol class='mt-ssteps'>"+schritte.map(x=>"<li>"+escapeHtml(x)+"</li>").join("")+"</ol></div>"
+  +"<div class='radar-prog'><span class='rk'>Leitfaden</span><div class='mt-sleitfaden'>"+leitfaden.map(x=>"<p>"+escapeHtml(x)+"</p>").join("")+"</div></div>"
+  +"</div>"
+  +"<div class='mt-sfoot'>"+foot+"</div>"
+  +"</div>";
+}
+function mtAbschliessen(key){
+ const item=mtFindItem(key);if(!item)return;
+ if(item.kind==="eingang"){
+  item.ref.done=true;
+ }else{
+  const desc=item.typ==="kosten"?"Kostenklärung":(item.ref.aufgabe||MT_TYP_LABEL[item.typ]);
+  item.ref.log.push([dstr(0),desc+" erledigt (Mein Tag)"]);
+  if(item.typ==="kosten"){item.ref.kosten="angefragt";}
+  else{item.ref.aufgabe="";item.ref.frist="";}
+ }
+ _mtDone.add(key);
+ renderAll();
+ renderMeinTag();
+ mtSheetRender();
+}
+function mtNext(){
+ const next=mtNextOpenKey(_mtSheetKey);
+ if(!next){mtClose();return;}
+ _mtSheetKey=next;
+ mtSheetRender();
+}
+/* ---------- Mein Tag: Rollen-Umschalter (Desktop-Avatar) ---------- */
+function mtRollToggle(){
+ const m=document.getElementById("mtRollmenu");if(!m)return;
+ const open=m.classList.toggle("open");
+ const btn=document.getElementById("mtAvaBtn");if(btn)btn.setAttribute("aria-expanded",open?"true":"false");
+}
+document.addEventListener("click",function(e){
+ const wrap=e.target.closest?e.target.closest(".mt-avawrap"):null;
+ if(!wrap){
+  const m=document.getElementById("mtRollmenu");
+  if(m&&m.classList.contains("open")){m.classList.remove("open");const btn=document.getElementById("mtAvaBtn");if(btn)btn.setAttribute("aria-expanded","false");}
+ }
+});
+function mtCloseOverlays(){
+ ["refOverlay","ovDetail","dbDetail","rsDetail","sheetNeu","kpSheet","rpDocView"].forEach(function(id){
+  const e=document.getElementById(id);if(e)e.classList.remove("open");
+ });
+ document.body.classList.remove("locked","detail-open");
+ _detailPushed=false;
+}
+function mtEnter(){
+ mtCloseOverlays();
+ const m=document.getElementById("mtRollmenu");if(m)m.classList.remove("open");
+ document.body.classList.add("ma-mode");
+ renderMeinTag();
+}
+function mtExit(){
+ document.body.classList.remove("ma-mode");
+}
 
 /* ---------- Navigation ---------- */
 const SEGS={faelle:["anfragen","board","inreha"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
