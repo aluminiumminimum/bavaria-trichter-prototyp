@@ -47,8 +47,8 @@
   .app{position:relative;z-index:1;max-width:720px;margin:0 auto;min-height:100dvh}
   .content{padding:calc(18px + env(safe-area-inset-top)) 20px calc(118px + env(safe-area-inset-bottom))}
   section.view{display:none}
-  section.view.active{display:block;animation:viewIn .28s ease both}
-  @keyframes viewIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  section.view.active{display:block;animation:viewIn .45s cubic-bezier(.22,1,.36,1) both}
+  @keyframes viewIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
   .sub{display:none}
   .sub.active{display:block}
 
@@ -940,14 +940,16 @@ label{font-size:12px;letter-spacing:.08em}
 .db-lead{border:1px solid var(--brass-line)}
 .card{box-shadow:0 1px 2px rgba(40,35,30,.05),0 12px 30px rgba(40,35,30,.06)}
 /* ===== DESIGN-V2 D-Motion — Entrance-Stagger + Hover-Lift ===== */
-@keyframes dv2Up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.view.active .chap,.view.active .bestand-grid>*,.view.active .zgrid>*{animation:dv2Up .45s cubic-bezier(.4,0,.2,1) both}
-.view.active .chap:nth-child(2){animation-delay:.04s}
-.view.active .chap:nth-child(3){animation-delay:.09s}
-.view.active .chap:nth-child(4){animation-delay:.14s}
-.view.active .zgrid>*:nth-child(2),.view.active .bestand-grid>*:nth-child(2){animation-delay:.05s}
-.view.active .zgrid>*:nth-child(3),.view.active .bestand-grid>*:nth-child(3){animation-delay:.1s}
-.view.active .zgrid>*:nth-child(n+4),.view.active .bestand-grid>*:nth-child(n+4){animation-delay:.14s}
+@keyframes dv2Up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.view.active .chap,.view.active .bestand-grid>*,.view.active .zgrid>*{animation:dv2Up .45s cubic-bezier(.22,1,.36,1) both}
+.view.active .chap:nth-child(2){animation-delay:.06s}
+.view.active .chap:nth-child(3){animation-delay:.12s}
+.view.active .chap:nth-child(4){animation-delay:.18s}
+.view.active .chap:nth-child(n+5){animation-delay:.24s}
+.view.active .zgrid>*:nth-child(2),.view.active .bestand-grid>*:nth-child(2){animation-delay:.06s}
+.view.active .zgrid>*:nth-child(3),.view.active .bestand-grid>*:nth-child(3){animation-delay:.12s}
+.view.active .zgrid>*:nth-child(4),.view.active .bestand-grid>*:nth-child(4){animation-delay:.18s}
+.view.active .zgrid>*:nth-child(n+5),.view.active .bestand-grid>*:nth-child(n+5){animation-delay:.24s}
 @media(hover:hover){
   .patient-card,.zcard,.db-lead,.template-card{transition:transform .18s ease,box-shadow .18s ease}
   .patient-card:hover,.zcard:hover,.template-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(31,28,28,.10)}
@@ -1758,6 +1760,19 @@ body.ma-mode #view-meintag{display:block}
 .tabbar [data-nav]{--tabc:var(--brass);color:var(--muted)}
 .tabbar [data-nav].active{color:var(--brass)}
 
+/* ===== AURORA · MOTION ===== */
+/* View-Transitions: root cross-fade beim go()-Wechsel (JS gated auf readyState+RM). */
+::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
+/* Mikro-Interaktionen — nur transform/border/bg/shadow, kein outline (Focus-Ring bleibt).
+   Lift/Press strikt @media(hover:hover); der globale RM-Killswitch deaktiviert alles. */
+button,.btn-ghost,.mail,.patient-card,.wg-case,.db-c,[data-nav]{
+  transition:transform .12s ease,border-color .12s ease,background-color .12s ease,box-shadow .12s ease}
+@media(hover:hover){
+  button:hover,.btn-ghost:hover,[data-nav]:hover{transform:translateY(-1px)}
+  .mail:hover,.patient-card:hover,.wg-case:hover,.db-c:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(31,28,28,.16)}
+  button:active,.btn-ghost:active,[data-nav]:active,
+  .mail:active,.patient-card:active,.wg-case:active,.db-c:active{transform:translateY(0) scale(.99)}
+}
 /* ===== AURORA · CANVAS ===== */
 /* Fixed orb layers + noise + vignette. Perf-Gesetz: weiche Kanten kommen aus dem
    Gradient-Falloff selbst — NIE filter:blur auf animierten Layern (live-blurring
@@ -4788,25 +4803,31 @@ function mtExit(){
 const SEGS={faelle:["anfragen","board","inreha"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
 let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",system:"idee"}};
 function go(dest,seg){
-  if(!document.getElementById("view-"+dest))dest="heute";
-  const _prevDest=navState.dest;
-  navState.dest=dest;
-  if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
-  document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
-  document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
-  const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · In Reha"],team:["Team","Zentraler Eingang · Zuordnung · Aufgaben"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],system:["System","Idee · Auswertung · SOPs"],matrix:["Matrix","Patienten-Reise B2B / B2C"]};
-  const _t=TITLES[dest]||TITLES.heute;
-  const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
-  const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
-  if(SEGS[dest]){
-    const cur=navState.segs[dest];
-    document.querySelectorAll("#view-"+dest+" .seg").forEach(b=>b.classList.toggle("active",b.dataset.seg===cur));
-    SEGS[dest].forEach(s=>{const p=document.getElementById("sub-"+dest+"-"+s);if(p)p.classList.toggle("active",s===cur);});
-  }
-  const hash="#"+dest+(SEGS[dest]?"/"+navState.segs[dest]:"");
-  if(location.hash!==hash)history.replaceState(null,"",hash);
-  window.scrollTo(0,0);
-  if(dest==="heute"&&_prevDest!=="heute"){window._kpiCounted=false;kpiCountUp();}
+  const _run=function(){
+    if(!document.getElementById("view-"+dest))dest="heute";
+    const _prevDest=navState.dest;
+    navState.dest=dest;
+    if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
+    document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
+    document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
+    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · In Reha"],team:["Team","Zentraler Eingang · Zuordnung · Aufgaben"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],system:["System","Idee · Auswertung · SOPs"],matrix:["Matrix","Patienten-Reise B2B / B2C"]};
+    const _t=TITLES[dest]||TITLES.heute;
+    const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
+    const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
+    if(SEGS[dest]){
+      const cur=navState.segs[dest];
+      document.querySelectorAll("#view-"+dest+" .seg").forEach(b=>b.classList.toggle("active",b.dataset.seg===cur));
+      SEGS[dest].forEach(s=>{const p=document.getElementById("sub-"+dest+"-"+s);if(p)p.classList.toggle("active",s===cur);});
+    }
+    const hash="#"+dest+(SEGS[dest]?"/"+navState.segs[dest]:"");
+    if(location.hash!==hash)history.replaceState(null,"",hash);
+    window.scrollTo(0,0);
+    if(dest==="heute"&&_prevDest!=="heute"){window._kpiCounted=false;kpiCountUp();}
+  };
+  /* View-Transition nur nach vollständigem Load (kein Boot-Flash beim initialen applyHash) und nicht bei reduced-motion. */
+  if(document.startViewTransition && document.readyState==="complete" && !(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)){
+    document.startViewTransition(_run);
+  } else { _run(); }
 }
 /* Kompatibilitäts-Brücke zu den alten Bereichsnamen */
 function switchTab(t){
