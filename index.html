@@ -1530,6 +1530,16 @@ label{font-size:12px;letter-spacing:.08em}
 .st-row .st.on{color:var(--brass)}
 .st-lbl{font:600 11px/1.4 Inter;letter-spacing:.04em;color:var(--muted)}
 .db-group-h.st-h .st-row{font-size:15px;margin-top:3px}
+.stg-h{margin:26px 0 12px;padding:13px 16px;background:var(--paper);border:1px solid var(--hair);border-left:3px solid var(--brass);border-radius:12px}
+.db-group.is-locked .stg-h{border-left-color:var(--faint)}
+.stg-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.stg-row .st-row{font-size:14px}
+.stg-row .db-ico{width:20px;height:20px;color:var(--muted)}
+.stg-t{font:600 14.5px/1.25 Inter;color:var(--ink)}
+.stg-n{font:700 12px/1 Inter;color:var(--brass-deep);background:var(--brass-soft);padding:4px 9px;border-radius:999px}
+.stg-auto{margin-left:auto;font:600 10.5px/1.35 Inter;letter-spacing:.03em;color:var(--brass-deep);background:var(--brass-soft);border-radius:999px;padding:5px 11px}
+.stg-note{font:400 12px/1.5 Inter;color:var(--muted);margin-top:6px}
+@media(max-width:760px){.stg-auto{margin-left:0}}
 .pa-head .st-row{font-size:12px}
 /* ---------- Baustein B · Anlass-Radar (.ar-*) ---------- */
 #anlassChap{grid-column:1/-1}
@@ -2772,7 +2782,7 @@ let personen=[
  {pid:"P11",name:"Lydia Sommer",geb:gebIn(-190,77),lebenszyklus:"patient",kt:"PKV",sterne:5,sterneGrund:"Aktive Privatpatientin (Neurologie)",kontakt:{tel:"0971 0000-511",mail:"l.sommer@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"mündlich",datum:dstr(-6),zwecke:["behandlung"]},zuweiserRef:null,historie:[{d:dstr(-6),typ:"anfrage",text:"Anfrage Neuro-Reha nach Hirninfarkt"},{d:dstr(-2),typ:"aufnahme",text:"Aufnahme Neurologie"}]},
  {pid:"P12",name:"Sabine Vogt",geb:gebIn(40,54),lebenszyklus:"interessent",kt:"PKV",sterne:4,sterneGrund:"Konkretes Erstgespräch, Komfort-Reha gewünscht",kontakt:{tel:"0971 0000-512",mail:"s.vogt@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-3),zwecke:["behandlung","newsletter"]},zuweiserRef:null,historie:[{d:dstr(-3),typ:"kontakt",text:"Broschüre geladen, Kontaktfreigabe erteilt"},{d:dstr(-1),typ:"kontakt",text:"Erstgespräch geführt, Komfort-Reha gewünscht"}]},
  {pid:"P13",name:"Bernd Kohl",geb:gebIn(-15,59),lebenszyklus:"interessent",kt:"Unklar",sterne:3,sterneGrund:"Gespräch geführt, Interesse an Neuro-Reha",kontakt:{tel:"0971 0000-513",mail:"b.kohl@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"mündlich",datum:dstr(-7),zwecke:["behandlung"]},zuweiserRef:null,historie:[{d:dstr(-7),typ:"kontakt",text:"Telefonisches Interesse an Neuro-Reha, noch kein Termin"}]},
- {pid:"P14",name:"Markus Pfeiffer",geb:gebIn(200,60),lebenszyklus:"altpatient",kt:"Selbstzahler",sterne:5,sterneGrund:"War in Premium-Reha & begeistert, aktiver Selbstzahler",kontakt:{tel:"0971 0000-514",mail:"m.pfeiffer@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-120),zwecke:["behandlung","newsletter","post"]},zuweiserRef:null,historie:[{d:dstr(-120),typ:"entlassung",text:"Premium-Reha abgeschlossen, Entlassung nach Hause"},{d:dstr(-30),typ:"kontakt",text:"Kontaktwunsch Premium-Nachsorge"}]},
+ {pid:"P14",name:"Markus Pfeiffer",geb:gebIn(200,60),lebenszyklus:"altpatient",kt:"Selbstzahler",sterne:5,sterneGrund:"War in Premium-Reha & begeistert, aktiver Selbstzahler",kontakt:{tel:"0971 0000-514",mail:"m.pfeiffer@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-345),zwecke:["behandlung","newsletter","post"]},zuweiserRef:null,historie:[{d:dstr(-345),typ:"entlassung",text:"Premium-Reha abgeschlossen, Entlassung nach Hause"},{d:dstr(-30),typ:"kontakt",text:"Kontaktwunsch Premium-Nachsorge"}]},
  {pid:"P15",name:"Petra Lindner",geb:gebIn(-58,57),lebenszyklus:"interessent",kt:"Unklar",sterne:2,sterneGrund:"Nur Broschüre geladen",kontakt:{tel:"0971 0000-515",mail:"p.lindner@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-20),zwecke:["newsletter"]},zuweiserRef:null,historie:[{d:dstr(-20),typ:"kontakt",text:"Reha-Broschüre geladen, Newsletter abonniert"}]},
  {pid:"P16",name:"Klaus Reuter",geb:gebIn(133,62),lebenszyklus:"interessent",kt:"Selbstzahler",sterne:2,sterneGrund:"Broschüre-Download ohne konkrete Anfrage",kontakt:{tel:"0971 0000-516",mail:"k.reuter@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-25),zwecke:["newsletter"]},zuweiserRef:null,historie:[{d:dstr(-25),typ:"kontakt",text:"Premium-Broschüre, E-Mail-Einwilligung"}]},
  {pid:"P17",name:"Ilse Hartmann",geb:gebIn(-233,61),lebenszyklus:"interessent",kt:"Unklar",sterne:2,sterneGrund:"Newsletter-Leserin, noch keine Anfrage",kontakt:{tel:"0971 0000-517",mail:"i.hartmann@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-60),zwecke:["newsletter"]},zuweiserRef:null,historie:[{d:dstr(-60),typ:"kontakt",text:"Newsletter-Anmeldung"}]},
@@ -3086,6 +3096,15 @@ function anlaesse(){
   if(_arDone.has("geb:"+p.pid))return;
   out.push({key:"geb:"+p.pid,typ:"geburtstag",urg:g.tage<=7?"jetzt":"bald",tage:g.tage,titel:p.name+" wird "+g.wird,sub:"Geburtstag am "+g.datum+" · in "+g.tage+" Tagen",sterne:p.sterne,geste:geste,pid:p.pid});
  });
+ personen.forEach(p=>{
+  if(!p.sterne||p.sterne<3)return;
+  const ent=(p.historie||[]).filter(h=>h.typ==="entlassung").map(h=>h.d).sort().pop();
+  if(!ent)return;
+  const g=paGeb(ent);if(!g||g.tage>30)return;
+  const geste=arGeste(p);if(!geste)return;
+  const key="jub:"+p.pid;if(_arDone.has(key))return;
+  out.push({key:key,typ:"jubilaeum",urg:g.tage<=7?"jetzt":"bald",tage:g.tage,titel:p.name+" — "+g.wird+". Entlass-Jubiläum",sub:"Reha abgeschlossen am "+paDate(ent)+" · Jahrestag in "+g.tage+" Tagen",sterne:p.sterne,geste:geste,pid:p.pid});
+ });
  radar.forEach(r=>{
   if(r.consent!=="ja")return;
   const key="radar:"+(r.personId||r.name);if(_arDone.has(key))return;
@@ -3111,7 +3130,7 @@ function arAktion(key){
  renderAnlaesse();
  if(typeof dbView!=="undefined"&&dbView==="radar")renderBestand();
 }
-const AR_TYP={geburtstag:"Geburtstag",wiederbedarf:"Wiederbedarf",zuweiser:"Zuweiser-Kontakt"};
+const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf",zuweiser:"Zuweiser-Kontakt"};
 function arCard(a){
  return "<div class='ar-card"+(a.urg==="jetzt"?" jetzt":"")+"'>"
   +"<div class='ar-top'><span class='ar-typ'>"+AR_TYP[a.typ]+"</span>"+(a.sterne?sterneHtml(a.sterne):"")+"</div>"
@@ -3123,9 +3142,9 @@ function arCard(a){
 function renderAnlaesse(){
  const el=document.getElementById("anlassList");if(!el)return;
  const list=anlaesse();
- const nG=list.filter(a=>a.typ==="geburtstag").length,nW=list.filter(a=>a.typ==="wiederbedarf").length,nZ=list.filter(a=>a.typ==="zuweiser").length;
+ const nG=list.filter(a=>a.typ==="geburtstag").length,nJ=list.filter(a=>a.typ==="jubilaeum").length,nW=list.filter(a=>a.typ==="wiederbedarf").length,nZ=list.filter(a=>a.typ==="zuweiser").length;
  const sum=document.getElementById("anlassSum");
- if(sum)sum.textContent=[nG?nG+(nG===1?" Geburtstag":" Geburtstage"):null,nW?nW+"× Wiederbedarf":null,nZ?nZ+(nZ===1?" Zuweiser wartet":" Zuweiser warten"):null].filter(Boolean).join(" · ")||"Keine offenen Anlässe";
+ if(sum)sum.textContent=[nG?nG+(nG===1?" Geburtstag":" Geburtstage"):null,nJ?nJ+(nJ===1?" Jubiläum":" Jubiläen"):null,nW?nW+"× Wiederbedarf":null,nZ?nZ+(nZ===1?" Zuweiser wartet":" Zuweiser warten"):null].filter(Boolean).join(" · ")||"Keine offenen Anlässe";
  el.innerHTML=list.slice(0,3).map(arCard).join("")||"<p class='empty'>Alles gepflegt — keine offenen Anlässe.</p>";
 }
 /* ---------- Baustein B · Kampagnen (.kp-*) — Spec 2026-07-14 §4 ---------- */
@@ -3226,8 +3245,7 @@ function renderBestand(){
     const note=gesperrt?"keine Einwilligung":STERNE[g].note;
     const auto=gesperrt?"Keine Ansprache (Compliance)":STERNE[g].auto;
     return "<section class='db-group"+(gesperrt?" is-locked":"")+"'>"
-      +"<header class='db-group-h st-h'>"+kopf+"<div class='db-group-txt'><div class='db-group-t'>"+title+"<span class='db-group-n num'>"+rows.length+"</span></div><div class='db-group-note'>"+escapeHtml(note)+"</div></div></header>"
-      +"<div class='db-group-auto'>⟳ "+escapeHtml(auto)+"</div>"
+      +"<header class='stg-h'><div class='stg-row'>"+kopf+"<span class='stg-t'>"+title+"</span><span class='stg-n num'>"+rows.length+"</span><span class='stg-auto'>⟳ "+escapeHtml(auto)+"</span></div><div class='stg-note'>"+escapeHtml(note)+"</div></header>"
       +"<div class='db-list'>"+entries.map(e=>row(e[0],e[1])).join("")+"</div></section>";
   }).join("")||"<p class='empty'>Keine Kontakte.</p>";
 }
