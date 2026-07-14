@@ -1683,6 +1683,16 @@ body.ma-mode #view-meintag{display:block}
 .mt-progtrack{flex:1;height:6px;border-radius:99px;background:var(--hair);overflow:hidden}
 .mt-progfill{height:100%;width:0;border-radius:99px;background:var(--brass-grad)}
 .mt-prognum{font-size:20px;font-weight:700;color:var(--brass-deep);flex-shrink:0}
+.mt-termine{background:var(--paper);border:1px solid var(--hair);border-radius:14px;padding:12px 18px;margin:14px 0 18px}
+.mt-termine .rk{display:block;font:700 10px/1 Inter;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:8px}
+.mt-termlist{display:flex;flex-wrap:wrap;gap:5px 16px;align-items:baseline}
+.mt-termitem{display:flex;align-items:baseline;gap:6px;padding-left:16px;border-left:1px solid var(--hair)}
+.mt-termitem:first-child{padding-left:0;border-left:none}
+.mt-termitem.mt-term-past{opacity:.5}
+.mt-termzeit{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;font-size:15px;color:var(--ink)}
+.mt-termtitel{font:500 13.5px/1.3 Inter;color:var(--ink-soft)}
+.mt-termort{font-size:12px;color:var(--muted)}
+@media(max-width:390px){.mt-termlist{flex-direction:column;align-items:stretch;gap:8px}.mt-termitem{padding-left:0;border-left:none;border-top:1px solid var(--hair);padding-top:8px}.mt-termitem:first-child{border-top:none;padding-top:0}}
 .mt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:2px}
 .mt-grid .radar-card{height:100%;display:flex;flex-direction:column}
 .mt-grid .radar-card .patient-actions{margin-top:auto}
@@ -2564,6 +2574,8 @@ body.ma-mode #view-meintag{display:block}
       <div class="mt-sum" id="mtSum"></div>
       <div class="mt-prog"><div class="mt-progtrack"><div class="mt-progfill" id="mtProgFill"></div></div><span class="mt-prognum serif num" id="mtProgNum"></span></div>
     </header>
+
+    <div class="mt-termine" id="mtTermine"></div>
 
     <div class="chap" id="mtJetztChap">
       <div class="kicker">Jetzt</div>
@@ -4347,14 +4359,15 @@ document.getElementById("formNeu").addEventListener("submit",e=>{
    Ableitung ohne neue persistente Arrays (Muster: anlaesse()); einzige Session-Ausnahme ist _mtDone (Muster _arDone).
    Feldnamen bestehender Arrays sind Vertrag — nur gelesen bzw. additiv mutiert, nie umbenannt. */
 let _mtDone=new Set();
-const MT_TYP_LABEL={rueckruf:"Rückruf",angebot:"Angebot",unterlagen:"Unterlagen",kosten:"Kostenklärung",eingang:"Eingang",allgemein:"Aufgabe"};
+const MT_TYP_LABEL={rueckruf:"Rückruf",angebot:"Angebot",unterlagen:"Unterlagen",kosten:"Kostenklärung",eingang:"Eingang",allgemein:"Aufgabe",intern:"Intern"};
 const MT_SCHRITTE={
  rueckruf:["Fall-Kontext kurz prüfen (Anfrage, letzter Eintrag)","Anrufen und Anliegen bestätigen","Nächsten Schritt gemeinsam festlegen","Ergebnis ins Protokoll schreiben"],
  angebot:["Wünsche &amp; Kostenträger aus dem Fall prüfen","Passendes Angebot zusammenstellen","Angebot versenden (E-Mail/Post)","Rückmeldefrist vormerken"],
  unterlagen:["Fehlende Unterlagen aus der Checkliste identifizieren","Patient/Zuweiser kurz kontaktieren","Unterlagen anfordern, Eingang terminieren","Nach Eingang: Checkliste aktualisieren"],
  kosten:["Kostenträger und bisherigen Stand prüfen","Kostenzusage anfragen bzw. nachfassen","Rückmeldung dokumentieren","Bei Ablehnung: Alternative mit Familie besprechen"],
  eingang:["Anfrage lesen und Anliegen einordnen","Freundliche Antwort formulieren","Antwort versenden","Anfrage als bearbeitet markieren"],
- allgemein:["Fall-Kontext kurz prüfen","Nächsten Schritt festlegen","Aktion durchführen","Ergebnis dokumentieren"]
+ allgemein:["Fall-Kontext kurz prüfen","Nächsten Schritt festlegen","Aktion durchführen","Ergebnis dokumentieren"],
+ intern:["Aufgabe kurz prüfen","Erledigen","Ergebnis kurz vermerken"]
 };
 const MT_LEITFAEDEN={
  rueckruf:["„Guten Tag, hier ist die Patientenkoordination der Klinik Bavaria — ich rufe zu Ihrer Anfrage zurück.“","Anliegen bestätigen, offene Fragen klären.","Nächsten Schritt und ungefähren Zeitrahmen nennen.","Bei Unsicherheit lieber einmal mehr nachfragen als etwas annehmen."],
@@ -4362,8 +4375,20 @@ const MT_LEITFAEDEN={
  unterlagen:["Merkliste: Entlassbrief · aktuelle Befunde · Versicherungsdaten · ggf. Kostenzusage.","Freundlich klären, wer liefert — Patient, Angehörige oder Zuweiser.","Bis-wann-Termin vereinbaren und notieren."],
  kosten:["Kostenträger klären (PKV / Beihilfe / Selbstzahler).","Anfrage mit Diagnose und Aufenthaltsgrund stellen.","Rückmeldung dokumentieren.","Bei Ablehnung: mit der Familie Alternativen besprechen (Selbstzahlung, erneute Anfrage)."],
  eingang:["„Vielen Dank für Ihre Anfrage bei der Klinik Bavaria.“","„Wir melden uns kurzfristig mit den nächsten Schritten.“","Für Dringendes die Telefon-Erreichbarkeit nennen.","Gruß: „Herzliche Grüße, Ihr Team der Klinik Bavaria.“"],
- allgemein:["Fall kurz prüfen, offene Punkte klären.","Vereinbarten nächsten Schritt zeitnah umsetzen.","Ergebnis immer im Protokoll festhalten, damit das Team informiert bleibt."]
+ allgemein:["Fall kurz prüfen, offene Punkte klären.","Vereinbarten nächsten Schritt zeitnah umsetzen.","Ergebnis immer im Protokoll festhalten, damit das Team informiert bleibt."],
+ intern:["Nachweise werden im Intranet unter „Meine Unterlagen“ abgelegt.","Bei Fragen helfen Personalabteilung oder Teamleitung weiter."]
 };
+/* Termine heute: reine Zeitanker, keine To-Dos — zählen nicht in den Fortschritt. */
+const MT_TERMINE=[
+ {zeit:"09:00",titel:"Team-Morgenrunde",ort:"Besprechungsraum 1"},
+ {zeit:"11:30",titel:"Übergabe mit M. Belegung",ort:"Büro Belegung"},
+ {zeit:"15:30",titel:"Kurz-Fortbildung: neuer Telefon-Leitfaden",ort:"online"}
+];
+/* Interne Aufgaben: echte To-Dos ohne Fall-Bezug — zählen im Fortschritt. */
+const MT_INTERN=[
+ {key:"intern:fobi-nachweis",titel:"Fortbildungsnachweis Q2 hochladen",sub:"Personalabteilung wartet auf den Nachweis",fristTage:0},
+ {key:"intern:leitfaden-feedback",titel:"Feedback zum neuen Telefon-Leitfaden",sub:"Kurzes Formular, ~5 Minuten",fristTage:3}
+];
 /* Fristvergleich mitternachtsnormalisiert (paGeb-Falle: heute trägt Ladezeit-Uhrzeit, frist ist ein reines Datum) */
 function mtDayDiff(fristStr){
  if(!fristStr)return null;
@@ -4420,6 +4445,12 @@ function mtEingangItem(m){
  return {key:k,typ:"eingang",kind:"eingang",ref:m,name:titel,
   kontext:m.kanal+" · "+m.zeit,step:"Antwort senden",block:"woche",overdue:false};
 }
+/* Interne Aufgabe: kein Fall-Bezug, statisch aus MT_INTERN — braucht keine Done-Rekonstruktion,
+   da kein Feld geleert wird (im Unterschied zu mtFallAufgabeItem). */
+function mtInternItem(x){
+ return {key:x.key,typ:"intern",kind:"intern",ref:x,name:x.titel,ava:"KB",
+  kontext:x.sub,step:"Aufgabe erledigen",block:x.fristTage===0?"jetzt":"woche",overdue:false};
+}
 function mtTodos(){
  const jetzt=[],woche=[],gut=[];
  faelle.forEach(f=>{
@@ -4432,6 +4463,10 @@ function mtTodos(){
   if(m.typ!=="qualifiziert")return;
   const k="eingang:"+m.id;
   if(!m.done||_mtDone.has(k))woche.push(mtEingangItem(m));
+ });
+ MT_INTERN.forEach(x=>{
+  const item=mtInternItem(x);
+  (item.block==="jetzt"?jetzt:woche).push(item);
  });
  faelle.forEach(f=>{ if(f.status==="Aufnahme geplant")gut.push(f); });
  return {jetzt,woche,gut};
@@ -4446,11 +4481,12 @@ function mtCard(item){
  const duePill=item.block==="jetzt"?"<span class='radar-due "+(item.overdue?"jetzt":"bald")+"'>"+(item.overdue?"überfällig":"heute fällig")+"</span>":"";
  const action=done?"<span class='mt-check'>✓ Erledigt</span>"
   :"<button class='btn-ghost btn-sm' onclick='mtOpen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Jetzt erledigen ›</button>";
+ const rkLabel=item.typ==="intern"?"Aufgabe":"Fall";
  return "<div class='radar-card"+(done?" mt-done":"")+"'>"
-  +"<div class='patient-top'><span class='ava'>"+initialen(item.name.replace(/[()\[\]]/g,""))+"</span>"+duePill+"</div>"
+  +"<div class='patient-top'><span class='ava'>"+(item.ava||initialen(item.name.replace(/[()\[\]]/g,"")))+"</span>"+duePill+"</div>"
   +"<h3>"+escapeHtml(item.name)+"</h3>"
   +"<div class='patient-meta'>"+escapeHtml(MT_TYP_LABEL[item.typ]||"Aufgabe")+"</div>"
-  +"<div class='radar-prog'><span class='rk'>Fall</span>"+escapeHtml(item.kontext)+"</div>"
+  +"<div class='radar-prog'><span class='rk'>"+rkLabel+"</span>"+escapeHtml(item.kontext)+"</div>"
   +"<div class='radar-prog'><span class='rk'>Nächster Schritt</span>"+escapeHtml(item.step)+"</div>"
   +"<div class='patient-actions'>"+action+"</div>"
   +"</div>";
@@ -4462,6 +4498,22 @@ function mtInfoCard(f){
   +"<div class='patient-meta'>"+escapeHtml(f.achse)+" · "+escapeHtml(f.owner)+"</div>"
   +"<div class='radar-prog'><span class='rk'>Aufnahme</span>"+escapeHtml(fristText(f.frist)||"Termin folgt")+"</div>"
   +"<div class='patient-actions'><span class='mt-info'>Keine Aktion nötig</span></div>"
+  +"</div>";
+}
+/* Terminleiste: reine Zeitanker (keine To-Dos), vergangene Termine gedimmt mit Häkchen-Präfix. */
+function mtTermineHtml(){
+ const nowMin=heute.getHours()*60+heute.getMinutes();
+ return "<span class='rk'>Termine heute</span><div class='mt-termlist'>"
+  +MT_TERMINE.map(t=>{
+   const [hh,mm]=t.zeit.split(":").map(Number);
+   const past=(hh*60+mm)<nowMin;
+   return "<span class='mt-termitem"+(past?" mt-term-past":"")+"'>"
+    +(past?"✓ ":"")
+    +"<span class='mt-termzeit serif'>"+escapeHtml(t.zeit)+"</span>"
+    +"<span class='mt-termtitel'>"+escapeHtml(t.titel)+"</span>"
+    +"<span class='mt-termort'>· "+escapeHtml(t.ort)+"</span>"
+    +"</span>";
+  }).join("")
   +"</div>";
 }
 function renderMeinTag(){
@@ -4479,6 +4531,7 @@ function renderMeinTag(){
  document.getElementById("mtSum").textContent=sumTxt;
  document.getElementById("mtProgFill").style.width=(total?Math.round(doneCount/total*100):0)+"%";
  document.getElementById("mtProgNum").textContent=doneCount+"/"+total;
+ document.getElementById("mtTermine").innerHTML=mtTermineHtml();
  document.getElementById("mtJetztList").innerHTML=jetzt.length?jetzt.map(mtCard).join(""):"<p class='empty'>Nichts Dringendes gerade.</p>";
  document.getElementById("mtWocheList").innerHTML=woche.length?woche.map(mtCard).join(""):"<p class='empty'>Keine weiteren Aufgaben diese Woche.</p>";
  document.getElementById("mtGutList").innerHTML=gut.length?gut.map(mtInfoCard).join(""):"<p class='empty'>Nichts Besonderes vorgemerkt.</p>";
@@ -4487,6 +4540,7 @@ function renderMeinTag(){
 let _mtSheetKey=null;
 function mtWarum(item){
  if(item.kind==="eingang")return escapeHtml(item.ref.kanal+" · "+item.ref.zeit+" — "+(item.ref.tit||""));
+ if(item.kind==="intern")return escapeHtml(item.ref.sub);
  const f=item.ref;
  const letzter=(f.log&&f.log.length)?f.log[f.log.length-1][1]:"";
  return escapeHtml((f.quelle?f.quelle+" · ":"")+item.step)+(letzter?"<span class='mt-sletzter'>Zuletzt: "+escapeHtml(letzter)+"</span>":"");
@@ -4517,7 +4571,7 @@ function mtSheetRender(){
   ?"<div class='mt-sdonemsg'>✓ Erledigt — ins Protokoll übernommen.</div><button class='btn-brass' onclick='mtNext()'>Weiter zur nächsten ›</button>"
   :"<button class='btn-brass' onclick='mtAbschliessen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Erledigt · ins Protokoll</button>";
  s.innerHTML="<div class='mt-back' onclick='mtClose()'></div><div class='mt-panel'>"
-  +"<div class='mt-shead'><span class='ava'>"+initialen(item.name.replace(/[()\[\]]/g,""))+"</span>"
+  +"<div class='mt-shead'><span class='ava'>"+(item.ava||initialen(item.name.replace(/[()\[\]]/g,"")))+"</span>"
   +"<div class='mt-sheadtxt'><span class='mt-stitle serif'>"+escapeHtml(item.name)+"</span><span class='mt-ssub'>"+escapeHtml(MT_TYP_LABEL[item.typ]||"Aufgabe")+"</span></div>"
   +duePill+"<button class='mt-sx' onclick='mtClose()' aria-label='Schließen'>×</button></div>"
   +"<div class='mt-sbody'>"
@@ -4532,6 +4586,8 @@ function mtAbschliessen(key){
  const item=mtFindItem(key);if(!item)return;
  if(item.kind==="eingang"){
   item.ref.done=true;
+ }else if(item.kind==="intern"){
+  /* kein Fall-Log — interne Aufgabe hat keinen Fall */
  }else{
   const desc=item.typ==="kosten"?"Kostenklärung":(item.ref.aufgabe||MT_TYP_LABEL[item.typ]);
   item.ref.log.push([dstr(0),desc+" erledigt (Mein Tag)"]);
