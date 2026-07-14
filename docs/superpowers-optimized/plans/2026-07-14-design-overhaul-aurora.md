@@ -171,28 +171,28 @@ function go(dest,seg){
 
 ### Task 8: Fälle — Eingang, Board, Fall-Schublade
 **Files:** Modify: `index.html` (`#inbox .mail`/`.mrow`/`.mmore`, `.zone-*`/`.done-rail`/`.col`, `#ovDetail`/`.d-acc`/kz-Kette `.kz-*`/Akte `.pa-*`)
-- [ ] Eingang: Mail-Karten = `--paper`-Flächen, ungelesen-Marker champagner, aufklappen unverändert. Board: 3 Zonen-Bänder als Elevation-Stufen (`--cream2`→`--paper`→`--paper2`) statt Rahmen, Spaltenköpfe Mono, Karten-Sparklines (rsSpark) Stroke champagner. Schublade `#ovDetail`: Glas-Sheet (Budget: EINES der 3 erlaubten Overlays), kz-Kette: Stufen-Pills Mono (offen=`--muted`, angefragt=`--brass`, liegt vor=`--sage`, abgelehnt=`--alert`), Akte `.pa-*`: Historie-Timeline Hairline+champagner Punkte.
-- [ ] Verify inkl.: `advanceFall`-Flow im Board (Karte bewegt sich), `sendReply`-Composer, `openStage`-Panel.
+- [x] Eingang: Mail-Karten = `--paper`-Flächen, ungelesen-Marker champagner, aufklappen unverändert. Board: 3 Zonen-Bänder als Elevation-Stufen (`--cream2`→`--paper`→`--paper2`) statt Rahmen, Spaltenköpfe Mono, Karten-Sparklines (rsSpark) Stroke champagner. Schublade `#ovDetail`: Glas-Sheet (Budget: EINES der 3 erlaubten Overlays), kz-Kette: Stufen-Pills Mono (offen=`--muted`, angefragt=`--brass`, liegt vor=`--sage`, abgelehnt=`--alert`), Akte `.pa-*`: Historie-Timeline Hairline+champagner Punkte.
+- [x] Verify inkl.: `advanceFall`-Flow im Board (Karte bewegt sich), `sendReply`-Composer, `openStage`-Panel.
 
 ### Task 9: Team + Mein Tag
 **Files:** Modify: `index.html` (`.tm-*`, `.mt-*`, Team-`.cv`-Spiegel [nur Container-Politur — SVG kam aus T5])
-- [ ] Team-Cockpit-Karten auf Elevation; Mein Tag: Kopf-Begrüßung Fraunces italic-Moment, Fortschrittsleiste Track `--hair`/Füllung `--brass-grad`, Termin-Leiste + radar-card-Familie auf Aurora-Flächen, `mt-rollmenu` = `--raised`-Pill-Menü. ma-mode-Ausblendung (Z. 1666ff) funktional unverändert.
-- [ ] Verify inkl.: kompletter Mein-Tag-Flow (Rollenwechsel → To-Do öffnen → „Erledigt" → Fortschritt +1 → zurück zur Leitung).
+- [x] Team-Cockpit-Karten auf Elevation; Mein Tag: Kopf-Begrüßung Fraunces italic-Moment, Fortschrittsleiste Track `--hair`/Füllung `--brass-grad`, Termin-Leiste + radar-card-Familie auf Aurora-Flächen, `mt-rollmenu` = `--raised`-Pill-Menü. ma-mode-Ausblendung (Z. 1666ff) funktional unverändert.
+- [x] Verify inkl.: kompletter Mein-Tag-Flow (Rollenwechsel → To-Do öffnen → „Erledigt" → Fortschritt +1 → zurück zur Leitung).
 
 ### Task 10: Netzwerk + Datenbank + Kampagnen
 **Files:** Modify: `index.html` (`.z*`-Zuweiserkarten [enthalten `openReferrer`-Button — Markup-Struktur NICHT ändern, nur CSS], `.db-*`/`.stg-*`-Kartei, `.ar-*`-Anlässe, `.kp-*`-Sheet)
-- [ ] Kartei = Ledger auf einem Glas-freien Panel, Gruppen-Köpfe (`.stg-h`) mit Messing→Champagner-Sternen; Anlass-Karten `.ar-card` nach d-aurora-Anatomie (dominante Karte + kleine, Foto-Slot `assets/green-hills.jpg`-Duotone); kp-Sheet Glas — aber `.kp-mail`-Vorschau bleibt LICHT-INSEL (T2, gegenprüfen!).
-- [ ] Verify inkl.: Kampagnen-Flow Segment→Entwurf→Vorschau(hell!)→Demo-Versand-Toast; Radar-Tab „Radar & Anlässe" Feed.
+- [x] Kartei = Ledger auf einem Glas-freien Panel, Gruppen-Köpfe (`.stg-h`) mit Messing→Champagner-Sternen; Anlass-Karten `.ar-card` nach d-aurora-Anatomie (dominante Karte + kleine, Foto-Slot `assets/green-hills.jpg`-Duotone); kp-Sheet Glas — aber `.kp-mail`-Vorschau bleibt LICHT-INSEL (T2, gegenprüfen!).
+- [x] Verify inkl.: Kampagnen-Flow Segment→Entwurf→Vorschau(hell!)→Demo-Versand-Toast; Radar-Tab „Radar & Anlässe" Feed.
 
 ### Task 11: Reha-Steuerung + System + Matrix
 **Files:** Modify: `index.html` (`.rs-*`/`.ir-*`, `#rsDetail`, `.rsp-*`-Charts, System-View-Charts, `.mx-*`)
-- [ ] rs-Cockpit + BWL-Panel auf Elevation; `rsp`-Charts: Linien champagner/sage mit Glow-Dot am Endwert, Grid `--hair`, Achsen-Labels Mono (rsSeries/rsChart-JS UNANGETASTET, nur Farb-/Stroke-Attribute bzw. CSS); Matrix-Zellen: `--paper`-Flächen, Zellen-Akzent-`::before` champagner, Achsenfarben-Chips (neue Werte aus T2 wirken automatisch); System-Charts analog.
-- [ ] Verify inkl.: `openRsDetail(0)` Chart + Sparkline zeichnen; Matrix 6 Zellen; devBar-Demo-Aktionen.
+- [x] rs-Cockpit + BWL-Panel auf Elevation; `rsp`-Charts: Linien champagner/sage mit Glow-Dot am Endwert, Grid `--hair`, Achsen-Labels Mono (rsSeries/rsChart-JS UNANGETASTET, nur Farb-/Stroke-Attribute bzw. CSS); Matrix-Zellen: `--paper`-Flächen, Zellen-Akzent-`::before` champagner, Achsenfarben-Chips (neue Werte aus T2 wirken automatisch); System-Charts analog.
+- [x] Verify inkl.: `openRsDetail(0)` Chart + Sparkline zeichnen; Matrix 6 Zellen; devBar-Demo-Aktionen.
 
 ### Task 12: Zuweiserportal + Dokument-Viewer
 **Files:** Modify: `index.html` (`.rp-*`-Suite [Espresso-Direkthexes → Tokens], `#refOverlay`, `.rpd-*`-Viewer-CHROME [Backdrop/Close/Nav — `.rpd-paper` selbst bleibt Licht-Insel])
-- [ ] Portal-Hero: Espresso-Hexes auf `--espresso-grad`/Token-Familie; KPI-Ringe erben `auroraRingGrad` (T6); Tabs/CTAs champagner; Submit-Kino + rpToast-Optik T13 vorgreifen NICHT (nur Farben). rpd: Viewer-Backdrop Ink-Glas, Papierbogen + MUSTER-Wasserzeichen + QR unverändert HELL; `@media print` Gegenprobe (T2-Regel greift).
-- [ ] Verify inkl.: `openReferrer` alle 3 Tabs + Formular-Prefill + Submit-Erfolg; Dokument öffnen/Esc-Kaskade; QR-Kontrast (s/w auf Papier).
+- [x] Portal-Hero: Espresso-Hexes auf `--espresso-grad`/Token-Familie; KPI-Ringe erben `auroraRingGrad` (T6); Tabs/CTAs champagner; Submit-Kino + rpToast-Optik T13 vorgreifen NICHT (nur Farben). rpd: Viewer-Backdrop Ink-Glas, Papierbogen + MUSTER-Wasserzeichen + QR unverändert HELL; `@media print` Gegenprobe (T2-Regel greift).
+- [x] Verify inkl.: `openReferrer` alle 3 Tabs + Formular-Prefill + Submit-Erfolg; Dokument öffnen/Esc-Kaskade; QR-Kontrast (s/w auf Papier).
 
 **→ STUFEN-GATE 3:** V1–V6 (alle Views + alle Overlays), push, Pages „built".
 
