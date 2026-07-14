@@ -1090,7 +1090,7 @@ label{font-size:12px;letter-spacing:.08em}
 }
 
 /* ===== ZUWEISER-SUITE WOW — Toast, Success, Stats, Motion ===== */
-#rpToast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);background:var(--raised);color:var(--ink);font:600 14px/1.3 Inter;padding:13px 20px;border-radius:99px;border:1px solid var(--brass-line);box-shadow:var(--shadow);opacity:0;pointer-events:none;z-index:120;transition:opacity .3s ease,transform .3s ease;display:flex;align-items:center;gap:9px}
+#rpToast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);background:var(--raised);color:var(--ink);font:600 14px/1.3 Inter;padding:13px 20px;border-radius:14px;border:1px solid var(--glass-border);box-shadow:var(--shadow-soft);opacity:0;pointer-events:none;z-index:120;transition:opacity .3s ease,transform .3s ease;display:flex;align-items:center;gap:9px}
 #rpToast.show{opacity:1;transform:translate(-50%,0)}
 #rpToast .tick{color:var(--brass);font-weight:700}
 /* Success-Kino */
@@ -1279,16 +1279,16 @@ label{font-size:12px;letter-spacing:.08em}
   @keyframes mailIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
   .sim-cta{margin-top:8px;width:100%;color:var(--brass-deep);border:1px dashed var(--brass-line);background:transparent;border-radius:99px;padding:9px 14px;font:600 12.5px/1 Inter}
   @media(hover:hover){.sim-cta:hover{background:var(--brass-soft)}}
-  .inb-toast{position:fixed;right:24px;bottom:24px;z-index:200;display:none;align-items:center;gap:13px;max-width:400px;background:#1f1c1c;color:#faf7f1;border-radius:14px;box-shadow:0 16px 44px rgba(31,28,28,.34);padding:14px 16px}
+  .inb-toast{position:fixed;right:24px;bottom:24px;z-index:200;display:none;align-items:center;gap:13px;max-width:400px;background:var(--raised);color:var(--ink);border:1px solid var(--glass-border);border-radius:14px;box-shadow:var(--shadow-soft);padding:14px 16px}
   .inb-toast.show{display:flex;animation:toastIn .34s cubic-bezier(.2,.8,.2,1) both}
   @keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-  .inb-toast .inb-ic{width:30px;height:30px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(255,255,255,.1);color:#e6d3ac}
+  .inb-toast .inb-ic{width:30px;height:30px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--brass-soft);color:var(--brass)}
   .inb-toast.done .inb-ic{background:var(--sage-deep);color:#fff}
   .inb-tx{flex:1;min-width:0}
   .inb-t{font:600 13.5px/1.25 Inter}
-  .inb-s{font:400 12px/1.3 Inter;color:#c3b596;margin-top:2px}
+  .inb-s{font:400 12px/1.3 Inter;color:var(--muted);margin-top:2px}
   .inb-open{flex:0 0 auto;font:600 12px/1 Inter;color:var(--brass-deep);background:var(--brass-soft);border:1px solid var(--brass-line);border-radius:99px;padding:8px 12px;white-space:nowrap}
-  .inb-x{flex:0 0 auto;color:#c3b596;font-size:18px;line-height:1;padding:0 2px}
+  .inb-x{flex:0 0 auto;color:var(--muted);font-size:18px;line-height:1;padding:0 2px}
   /* ===== WS5 · Reha-Steuerung — betriebswirtschaftliches Panel ===== */
   .rs-cockpit{margin-bottom:16px}
   .rs-cockpit .dbc-stat{flex:1;min-width:0}
@@ -1762,6 +1762,12 @@ body.ma-mode #view-meintag{display:block}
   border-top:1px solid var(--glass-border)}
 .tabbar [data-nav]{--tabc:var(--brass);color:var(--muted)}
 .tabbar [data-nav].active{color:var(--brass)}
+
+/* ===== AURORA · FEINSCHLIFF ===== */
+.au-plate{margin:26px 0 8px;grid-column:1/-1}
+.au-plate img{width:100%;height:300px;object-fit:cover;border-radius:18px;filter:grayscale(1) contrast(1.05);opacity:.85;display:block}
+.au-plate figcaption{margin-top:10px;font-family:"Fragment Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.18em;color:var(--muted)}
+.empty{color:var(--faint);font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:16px;letter-spacing:.01em}
 
 /* ===== AURORA · PORTAL =====
    Zuweiserportal (.rp-*/.ref-*) ist jetzt durchgängig dunkel; echtes Papier
@@ -2550,7 +2556,7 @@ body{accent-color:var(--brass)}
         <button class="seg" data-seg="board" role="tab">Board <b class="segn num" id="segCntBoard"></b></button>
         <button class="seg" data-seg="inreha" role="tab">In Reha</button>
       </div>
-      <button class="sim-cta" onclick="simulateInbound()">⚡ Anfrage simulieren (Demo)</button>
+      <button class="sim-cta" onclick="simulateInbound()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Anfrage simulieren (Demo)</button>
     </header>
     <div class="sub active" id="sub-faelle-anfragen">
       <p class="lblline">Ein Eingang für alle Kanäle · Telefon, E-Mail, Website, Zuweiser, Recare, Premium.</p>
@@ -2649,7 +2655,7 @@ body{accent-color:var(--brass)}
     </header>
     <div class="sub active" id="sub-netzwerk-zuweiser">
       <p class="lblline">Zuweiser-Netzwerk · zuerst Kategorien, dann Kontakte und nächste Aktion.</p>
-      <button class="kp-cta" onclick="kpOpen()">✉ Newsletter erstellen</button>
+      <button class="kp-cta" onclick="kpOpen()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Newsletter erstellen</button>
       <div class="zcat-strip" id="zcatgrid"></div>
       <div class="zmap" id="zmap"></div>
       <div class="zgrid" id="zgrid"></div>
@@ -2836,6 +2842,7 @@ body{accent-color:var(--brass)}
         <div class="template-card"><div class="role">Altpatient</div><h3>Nachsorge vormerken</h3><p>Nur bei Kontaktfreigabe: freiwillige Wiedervorlage, Jahres-Check oder SalutoCare-Nachsorge.</p><div class="pill-row"><span class="soft-pill ok">Kontaktfreigabe</span><span class="soft-pill">Wiedervorlage</span></div></div>
       </div>
     </div>
+    <figure class="au-plate"><img src="assets/forest-sun.jpg" alt="" loading="lazy"><figcaption>ABB. 01 — REGENERATION. KLINIK BAVARIA, BAD KISSINGEN.</figcaption></figure>
   </section>
 
   <!-- ============ MEIN TAG (Mitarbeiter-Ansicht S. Koordination — ma-mode; kein Menüpunkt, wird nur über den Rollen-Umschalter erreicht) ============ -->
@@ -2933,7 +2940,7 @@ body{accent-color:var(--brass)}
       <div class="d-track-wrap">
         <button id="dAdvance" class="btn-brass btn-sm" style="width:100%;margin-bottom:12px" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
         <div class="komm-block" style="margin-bottom:14px"><label>Antwort senden</label>
-          <div class="komm-row"><select id="dReplyKanal"><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select><button class="btn-brass btn-sm" type="button" onclick="sendReply()">✉ Antwort senden</button></div>
+          <div class="komm-row"><select id="dReplyKanal"><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select><button class="btn-brass btn-sm" type="button" onclick="sendReply()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Antwort senden</button></div>
           <textarea id="dReply" rows="2" placeholder="Antwort an die anfragende Person verfassen … (Demo)"></textarea>
         </div>
         <div id="dWerdegang" class="d-track"></div>
@@ -4255,7 +4262,7 @@ function rpPrefill(achse,kw){
  if(f)f.value=achse; if(t)t.value=kw;
  if(card){card.scrollIntoView({behavior:"smooth",block:"center"});card.classList.remove("flash");void card.offsetWidth;card.classList.add("flash");}
 }
-function refToast(){alert("Demo — in diesem Prototyp nicht aktiv abgesendet.");}
+function refToast(){rpToast("Demo — in diesem Prototyp nicht aktiv abgesendet.");}
 function renderEinblick(zName){
  return `<p class="rp-lead">Die ärztliche Sicht auf Ihre Patienten — Kurzbericht, Verlauf und aktuelle Werte, ohne interne Steuerungs-KPIs.</p>`
  +inReha.map(p=>{
