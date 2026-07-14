@@ -1550,6 +1550,38 @@ label{font-size:12px;letter-spacing:.08em}
 .ar-feedhead{font:600 10.5px/1 Inter;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep);margin:18px 0 10px}
 .ar-cardstars{margin:2px 0 4px}
 @media(max-width:520px){.ar-grid{grid-template-columns:1fr}}
+/* ---------- Baustein B · Kampagnen (.kp-*) ---------- */
+.kp-cta{display:inline-flex;align-items:center;gap:7px;background:var(--paper);border:1px solid var(--brass-line);color:var(--brass-deep);font:600 12.5px/1 Inter;letter-spacing:.03em;padding:10px 16px;border-radius:999px;cursor:pointer;margin:0 0 14px;box-shadow:var(--shadow-soft)}
+.kp-cta:hover{background:var(--brass-soft)}
+.kp-sheet{position:fixed;inset:0;z-index:80;display:none}
+.kp-sheet.open{display:block}
+.kp-back{position:absolute;inset:0;background:rgba(31,28,28,.42)}
+.kp-panel{position:absolute;right:0;top:0;bottom:0;width:min(680px,100%);background:var(--paper);display:flex;flex-direction:column;box-shadow:-18px 0 50px rgba(31,28,28,.25)}
+.kp-head{display:flex;align-items:center;padding:18px 22px;border-bottom:1px solid var(--hair)}
+.kp-title{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:600;font-size:23px;color:var(--ink)}
+.kp-x{margin-left:auto;background:none;border:none;font-size:26px;line-height:1;color:var(--muted);cursor:pointer}
+.kp-body{flex:1;overflow:auto;padding:18px 22px;display:grid;gap:18px}
+.kp-k{font:600 10.5px/1 Inter;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:9px}
+.kp-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.kp-radio,.kp-check{display:flex;align-items:center;gap:7px;font:500 13px/1.3 Inter;color:var(--ink-soft);cursor:pointer}
+.kp-check{padding:4px 0}
+.kp-row select{font:500 13px/1.2 Inter;color:var(--ink-soft);padding:8px 10px;border:1px solid var(--hair);border-radius:9px;background:var(--paper)}
+.kp-count{font:500 12.5px/1 Inter;color:var(--muted);margin-top:4px}
+.kp-count .num{font:700 15px/1 "Cormorant Garamond",Georgia,serif;color:var(--brass-deep)}
+.kp-betreff{width:100%;font:600 14px/1.3 Inter;color:var(--ink);padding:10px 12px;border:1px solid var(--hair);border-radius:9px;background:var(--paper2);margin-bottom:8px}
+.kp-mail{border:1px solid var(--hair);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-soft)}
+.kp-mhead{background:linear-gradient(140deg,#332d2a,#1f1c1c 55%,#282320);padding:18px 20px}
+.kp-marke{font:600 10px/1 Inter;letter-spacing:.14em;color:#b29a76}
+.kp-mtitel{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:600;font-size:22px;color:#f4eee3;margin-top:7px}
+.kp-mbody{padding:16px 20px;background:var(--paper)}
+.kp-anrede{font:500 13.5px/1.5 Inter;color:var(--ink-soft);margin:0 0 12px}
+.kp-block{border-top:1px solid var(--brass-line);padding:11px 0}
+.kp-bt{font:600 13.5px/1.35 Inter;color:var(--ink)}
+.kp-bs{font:400 12.5px/1.5 Inter;color:var(--muted);margin-top:3px}
+.kp-gruss{font:500 13px/1.55 Inter;color:var(--ink-soft);margin:14px 0 0}
+.kp-mfoot{padding:10px 20px;background:var(--paper2);font:400 10.5px/1.4 Inter;color:var(--faint);border-top:1px solid var(--hair2)}
+.kp-foot{display:flex;gap:10px;padding:14px 22px;border-top:1px solid var(--hair);justify-content:flex-end}
+@media(max-width:520px){.kp-panel{width:100%}}
 </style>
 </head>
 <body>
@@ -2193,6 +2225,7 @@ label{font-size:12px;letter-spacing:.08em}
     </header>
     <div class="sub active" id="sub-netzwerk-zuweiser">
       <p class="lblline">Zuweiser-Netzwerk · zuerst Kategorien, dann Kontakte und nächste Aktion.</p>
+      <button class="kp-cta" onclick="kpOpen()">✉ Newsletter erstellen</button>
       <div class="zcat-strip" id="zcatgrid"></div>
       <div class="zmap" id="zmap"></div>
       <div class="zgrid" id="zgrid"></div>
@@ -3093,6 +3126,57 @@ function renderAnlaesse(){
  const sum=document.getElementById("anlassSum");
  if(sum)sum.textContent=[nG?nG+(nG===1?" Geburtstag":" Geburtstage"):null,nW?nW+"× Wiederbedarf":null,nZ?nZ+(nZ===1?" Zuweiser wartet":" Zuweiser warten"):null].filter(Boolean).join(" · ")||"Keine offenen Anlässe";
  el.innerHTML=list.slice(0,3).map(arCard).join("")||"<p class='empty'>Alles gepflegt — keine offenen Anlässe.</p>";
+}
+/* ---------- Baustein B · Kampagnen (.kp-*) — Spec 2026-07-14 §4 ---------- */
+let _kp={typ:"zuweiser",kat:"alle",status:"aktiv",betreff:"Neues aus der Klinik Bavaria",bausteine:[true,true,false]};
+function kpEmpfaenger(){
+ if(_kp.typ==="patienten")return personen.filter(p=>p.sterne>=3&&p.einwilligung&&p.einwilligung.status==="erteilt"&&(p.einwilligung.zwecke||[]).includes("newsletter")).map(p=>({name:p.name,pid:p.pid}));
+ return zuweiser.filter(z=>(_kp.kat==="alle"||zKategorie(z)===_kp.kat)&&(_kp.status==="alle"||z.status===_kp.status)).map(z=>({name:z.name,zName:z.name}));
+}
+function kpOpen(){
+ let s=document.getElementById("kpSheet");
+ if(!s){s=document.createElement("div");s.id="kpSheet";document.body.appendChild(s);}
+ s.className="kp-sheet open";document.body.classList.add("locked");
+ kpRender();
+}
+function kpClose(){const s=document.getElementById("kpSheet");if(s)s.classList.remove("open");document.body.classList.remove("locked");}
+function kpSet(k,v){_kp[k]=v;kpRender();}
+function kpBaustein(i){_kp.bausteine[i]=!_kp.bausteine[i];kpRender();}
+function kpRender(){
+ const s=document.getElementById("kpSheet");if(!s)return;
+ const emp=kpEmpfaenger();
+ const anrede=_kp.typ==="patienten"?(emp[0]?"Liebe/r "+escapeHtml(emp[0].name):"Liebe Patientin, lieber Patient"):(function(){const per=emp[0]?rpPersona(emp[0].name):null;return per&&per.name?"Sehr geehrte/r "+escapeHtml(per.name):"Sehr geehrte Damen und Herren";})();
+ const bausteine=portalNews.map((n,i)=>_kp.bausteine[i]?"<div class='kp-block'><div class='kp-bt'>"+escapeHtml(n.t)+"</div><div class='kp-bs'>"+escapeHtml(n.s)+"</div></div>":"").join("");
+ const kats="<option value='alle'>Alle Kategorien</option>"+Z_CATS.map(c=>"<option value='"+c.id+"'"+(_kp.kat===c.id?" selected":"")+">"+escapeHtml(c.label)+"</option>").join("");
+ s.innerHTML="<div class='kp-back' onclick='kpClose()'></div><div class='kp-panel'>"
+  +"<div class='kp-head'><span class='kp-title'>Newsletter erstellen</span><button class='kp-x' onclick='kpClose()' aria-label='Schließen'>×</button></div>"
+  +"<div class='kp-body'>"
+  +"<div class='kp-sec'><div class='kp-k'>1 · Segment</div>"
+    +"<div class='kp-row'><label class='kp-radio'><input type='radio' name='kpTyp' "+(_kp.typ==="zuweiser"?"checked":"")+" onchange='kpSet(\"typ\",\"zuweiser\")'> Zuweiser</label>"
+    +"<label class='kp-radio'><input type='radio' name='kpTyp' "+(_kp.typ==="patienten"?"checked":"")+" onchange='kpSet(\"typ\",\"patienten\")'> Altpatienten & Kontakte ab 3★</label></div>"
+    +(_kp.typ==="zuweiser"?"<div class='kp-row'><select onchange='kpSet(\"kat\",this.value)'>"+kats+"</select>"
+      +"<select onchange='kpSet(\"status\",this.value)'><option value='aktiv'"+(_kp.status==="aktiv"?" selected":"")+">Status: aktiv</option><option value='aufbau'"+(_kp.status==="aufbau"?" selected":"")+">Status: im Aufbau</option><option value='ziel'"+(_kp.status==="ziel"?" selected":"")+">Status: Ziel</option><option value='alle'"+(_kp.status==="alle"?" selected":"")+">Status: alle</option></select></div>":"")
+    +"<div class='kp-count'><b class='num'>"+emp.length+"</b> Empfänger"+(emp.length?"":" — Segment anpassen")+"</div></div>"
+  +"<div class='kp-sec'><div class='kp-k'>2 · Inhalt</div>"
+    +"<input class='kp-betreff' value='"+escapeHtml(_kp.betreff)+"' onchange='kpSet(\"betreff\",this.value)'>"
+    +portalNews.map((n,i)=>"<label class='kp-check'><input type='checkbox' "+(_kp.bausteine[i]?"checked":"")+" onchange='kpBaustein("+i+")'> "+escapeHtml(n.t)+"</label>").join("")+"</div>"
+  +"<div class='kp-sec'><div class='kp-k'>3 · Vorschau</div>"
+    +"<div class='kp-mail'><div class='kp-mhead'><span class='kp-marke'>KLINIK BAVARIA · CONCIERGE</span><div class='kp-mtitel'>"+escapeHtml(_kp.betreff)+"</div></div>"
+    +"<div class='kp-mbody'><p class='kp-anrede'>"+anrede+",</p>"+(bausteine||"<p class='kp-bs'>— Bausteine wählen —</p>")
+    +"<p class='kp-gruss'>Herzliche Grüße aus Bad Kissingen<br>Ihr Team der Klinik Bavaria</p></div>"
+    +"<div class='kp-mfoot'>Sie erhalten diese Nachricht, weil eine Einwilligung vorliegt · Abmeldung jederzeit möglich (Demo)</div></div></div>"
+  +"</div>"
+  +"<div class='kp-foot'><button class='btn-ghost btn-sm' onclick='kpClose()'>Abbrechen</button><button class='btn-brass' onclick='kpSend()'"+(emp.length?"":" disabled")+">"+emp.length+" Newsletter senden (Demo)</button></div>"
+  +"</div>";
+}
+function kpSend(){
+ const emp=kpEmpfaenger();if(!emp.length)return;
+ emp.forEach(e=>{
+  if(e.zName)zuweiserEvents.push({zName:e.zName,d:dstr(0),typ:"newsletter",text:"Newsletter: "+_kp.betreff});
+  if(e.pid)pHist(e.pid,"kontakt","Newsletter erhalten: "+_kp.betreff);
+ });
+ kpClose();
+ if(typeof inbToast==="function")inbToast("done","<b>"+emp.length+" Newsletter versendet</b> (Demo)",escapeHtml(_kp.betreff),null);
 }
 function dbCockpit(){
   const c=b=>bestand.filter(p=>bucketOf(p)===b).length;
