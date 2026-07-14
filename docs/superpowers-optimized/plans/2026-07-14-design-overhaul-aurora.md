@@ -202,19 +202,19 @@ function go(dest,seg){
 
 ### Task 13: Toasts, Empty-States, Editorial-Moment, Icon-Sweep
 **Files:** Modify: `index.html` (`#rpToast` [JS Z. 2882], `#inbToast` [Z. 3093], `refToast()` Z. 3973, Empty-State-Stellen, System-View)
-- [ ] Toasts: solide `--raised`-Pills (KEIN backdrop-filter — Spec §5.8), Icon champagner, Entrance translateY. `refToast()`-`alert()` durch rpToast-Aufruf ersetzen (einzige zulässige JS-Kleinigkeit — Demo-Feedback-Regel bleibt erfüllt). Editorial-Tafel (aus C): System-View bekommt eine Grayscale-Bildtafel `assets/forest-sun.jpg` (`filter:grayscale(1)`) mit Mono-Caption „ABB. 01 — REGENERATION". Icon-Sweep: verbliebene Emoji/Unicode-Symbole (grep `✉\|↗\|✓\|⚠` + Review) → Inline-SVG 1.5px, `↗` darf als typografisches Zeichen bleiben.
-- [ ] V1+V2+V3, Commit `feat(aurora): Toasts/Empty-States/Editorial-Tafel/Icon-Sweep (Stufe 4)`.
+- [x] Toasts: solide `--raised`-Pills (KEIN backdrop-filter — Spec §5.8), Icon champagner, Entrance translateY. `refToast()`-`alert()` durch rpToast-Aufruf ersetzen (einzige zulässige JS-Kleinigkeit — Demo-Feedback-Regel bleibt erfüllt). Editorial-Tafel (aus C): System-View bekommt eine Grayscale-Bildtafel `assets/forest-sun.jpg` (`filter:grayscale(1)`) mit Mono-Caption „ABB. 01 — REGENERATION". Icon-Sweep: verbliebene Emoji/Unicode-Symbole (grep `✉\|↗\|✓\|⚠` + Review) → Inline-SVG 1.5px, `↗` darf als typografisches Zeichen bleiben.
+- [x] V1+V2+V3, Commit `feat(aurora): Toasts/Empty-States/Editorial-Tafel/Icon-Sweep (Stufe 4)`.
 
 ### Task 14: Anti-Slop-Pass + Design-Review + Kontrast/Perf-Audit
 **Files:** Modify: `index.html` (nur Befund-Fixes)
-- [ ] Kontrast-Stichprobe (V2): Body-Text ≥4.5:1 auf `--cream/--paper/--paper2` (Rechner: WebAIM-Formel via Browser-Eval); Glas-Budget-Audit: `grep -c "backdrop-filter" index.html` — nur Chrome (3) + 3 Overlays + kp/mt-Sheets + Hero ≤ 8 Vorkommen; `grep "filter:blur" index.html` → 0 Treffer auf animierten Selektoren.
-- [ ] Fresh-Context-Review: `design-reviewer`-Agent auf die Live-Preview (Anti-Slop-Rubrik, Motion-Budget, RM, 390/1440, A11y) → Befunde fixen (PASS-Gate).
-- [ ] `verifier`-Agent: Spec §9-Checkliste komplett gegen die App → CONFIRMED-Gate.
-- [ ] Commit `fix(aurora): Review-Befunde — Kontrast/Anti-Slop/Perf (Stufe 4)`.
+- [x] Kontrast-Stichprobe (V2): Body-Text ≥4.5:1 auf `--cream/--paper/--paper2` (Rechner: WebAIM-Formel via Browser-Eval); Glas-Budget-Audit: `grep -c "backdrop-filter" index.html` — nur Chrome (3) + 3 Overlays + kp/mt-Sheets + Hero ≤ 8 Vorkommen; `grep "filter:blur" index.html` → 0 Treffer auf animierten Selektoren.
+- [x] Fresh-Context-Review: `design-reviewer`-Agent auf die Live-Preview (Anti-Slop-Rubrik, Motion-Budget, RM, 390/1440, A11y) → Befunde fixen (PASS-Gate).
+- [x] `verifier`-Agent: Spec §9-Checkliste komplett gegen die App → CONFIRMED-Gate.
+- [x] Commit `fix(aurora): Review-Befunde — Kontrast/Anti-Slop/Perf (Stufe 4)`.
 
 ### Task 15: Doku-Abschluss
 **Files:** Modify: `CLAUDE.md`, `HANDOVER.md`, `state.md`
-- [ ] CLAUDE.md „Identität wahren"-Regel ersetzen: „Identität wahren: Fraunces + Inter + Fragment Mono; Aurora-Palette (Ink `#0B0D0C`/Champagner `#C4A97D`/Amber/Salbei); Licht-Inseln (.rpd-paper, .kp-mail, print) bleiben hell; kein filter:blur auf Animiertem; backdrop-filter nur Chrome/Hero/Sheets." HANDOVER §3-Token-Spiegel aktualisieren. state.md: Overhaul abgeschlossen.
-- [ ] Commit `docs(aurora): CLAUDE.md-Identität + HANDOVER-Token-Spiegel aktualisiert (Stufe 4)` + push + Pages „built" + Live-URL-Stichprobe @1440.
+- [x] CLAUDE.md „Identität wahren"-Regel ersetzen: „Identität wahren: Fraunces + Inter + Fragment Mono; Aurora-Palette (Ink `#0B0D0C`/Champagner `#C4A97D`/Amber/Salbei); Licht-Inseln (.rpd-paper, .kp-mail, print) bleiben hell; kein filter:blur auf Animiertem; backdrop-filter nur Chrome/Hero/Sheets." HANDOVER §3-Token-Spiegel aktualisieren. state.md: Overhaul abgeschlossen.
+- [x] Commit `docs(aurora): CLAUDE.md-Identität + HANDOVER-Token-Spiegel aktualisiert (Stufe 4)` + push + Pages „built" + Live-URL-Stichprobe @1440.
 
 **→ STUFEN-GATE 4 = Programm-Abnahme:** Screenshots aller 6 Views + 3 Overlays gegen `design-lab/d-aurora.html`; User-Sichtung.
