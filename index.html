@@ -1492,23 +1492,37 @@ label{font-size:12px;letter-spacing:.08em}
 @media(min-width:1024px){
   .zmap{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start}
 }
-/* ---------- Baustein A · Akte (.pa-*) — Spec 2026-07-13-baustein-a-gedaechtnis ---------- */
-.pa-akte{margin-top:18px;padding-top:14px;border-top:1px solid var(--hair)}
-.pa-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.pa-chip{font:600 10.5px/1 Inter,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:4px 8px;border-radius:999px;background:var(--paper2);color:var(--muted);border:1px solid var(--hair)}
-.pa-chip.lz-patient{background:var(--sage-soft);color:var(--sage-deep);border-color:transparent}
-.pa-chip.lz-altpatient{background:var(--brass-soft);color:var(--brass-deep);border-color:transparent}
-.pa-row{display:flex;gap:10px;padding:5px 0;font-size:13px;color:var(--ink-soft);border-bottom:1px dashed var(--hair2)}
-.pa-row .pa-k{flex:0 0 110px;color:var(--faint);font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
-.pa-soon{color:var(--brass-deep);font-weight:600}
-.pa-zw{display:inline-block;font-size:11px;padding:2px 7px;border-radius:999px;background:var(--paper2);border:1px solid var(--hair);color:var(--muted);margin-left:2px}
-.pa-hist{margin-top:10px;display:grid;gap:7px}
-.pa-he{display:grid;grid-template-columns:74px 84px 1fr;gap:8px;font-size:12.5px;align-items:baseline}
-.pa-he small{color:var(--faint);font-variant-numeric:tabular-nums}
-.pa-he .pa-ht{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--brass-deep)}
-.pa-he p{margin:0;color:var(--ink-soft)}
-.pa-hint{font-size:13px;color:var(--muted);font-style:italic}
-@media(max-width:520px){.pa-he{grid-template-columns:64px 1fr}.pa-he p{grid-column:1/-1;margin-top:-2px}}
+/* ---------- Baustein A · Akte (.pa-*) v2 — Premium-Pass ---------- */
+.pa-akte{margin-top:20px;background:var(--paper2);border:1px solid var(--hair2);border-top:2px solid var(--brass-line);border-radius:14px;padding:16px 18px 14px}
+.pa-head{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
+.pa-title{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:600;font-size:21px;color:var(--ink);margin-right:auto}
+.pa-lz{display:inline-flex;align-items:center;gap:6px;font:600 10.5px/1 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;padding:5px 10px;border-radius:999px;background:var(--paper);color:var(--muted)}
+.pa-lzdot{width:6px;height:6px;border-radius:50%;background:var(--faint)}
+.pa-lz.lz-patient{background:var(--sage-soft);color:var(--sage-deep)}
+.pa-lz.lz-patient .pa-lzdot{background:var(--sage)}
+.pa-lz.lz-altpatient{background:var(--brass-soft);color:var(--brass-deep)}
+.pa-lz.lz-altpatient .pa-lzdot{background:var(--brass)}
+.pa-ktchip{font:600 11px/1 Inter,sans-serif;letter-spacing:.04em;color:var(--brass-deep);border:1px solid var(--brass-line);padding:5px 9px;border-radius:999px}
+.pa-anlass{background:var(--brass-soft);color:var(--brass-deep);border-radius:10px;padding:9px 12px;font-size:12.5px;line-height:1.45;margin-bottom:12px}
+.pa-anlass b{font-weight:650}
+.pa-meta{display:grid}
+.pa-row{display:flex;gap:12px;padding:6px 0;border-bottom:1px solid var(--hair2);font-size:13px}
+.pa-row:last-child{border-bottom:none}
+.pa-k{flex:0 0 104px;font:600 10.5px/1.6 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding-top:2px}
+.pa-v{color:var(--ink-soft)}
+.pa-zwr{margin-left:8px;display:inline-flex;gap:5px;vertical-align:1px}
+.pa-zw{font:600 10px/1 Inter,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--hair);background:var(--paper);padding:3px 7px;border-radius:999px}
+.pa-histhead{font:600 10.5px/1 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep);margin:14px 0 8px}
+.pa-hist{position:relative;display:grid;gap:10px;padding-left:16px}
+.pa-hist:before{content:"";position:absolute;left:3px;top:6px;bottom:6px;width:1px;background:var(--brass-line)}
+.pa-ev{position:relative}
+.pa-dot{position:absolute;left:-16px;top:4px;width:7px;height:7px;border-radius:50%;background:var(--paper);border:1.5px solid var(--brass)}
+.pa-evm{display:flex;align-items:baseline;gap:8px}
+.pa-evt{font:600 10px/1 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep)}
+.pa-evm small{color:var(--faint);font-size:11px;font-variant-numeric:tabular-nums}
+.pa-ev p{margin:2px 0 0;font-size:12.5px;color:var(--ink-soft);line-height:1.5}
+.pa-hint{font-size:13px;color:var(--muted);font-style:italic;border-left:2px solid var(--brass-line);padding-left:10px}
+@media(max-width:520px){.pa-k{flex-basis:88px}}
 </style>
 </head>
 <body>
@@ -2749,15 +2763,19 @@ const PA_ZW={behandlung:"Behandlung",newsletter:"Newsletter",post:"Post/Geschenk
 function paAkte(pid){
  const p=person(pid);if(!p)return"";
  const g=paGeb(p.geb),ew=p.einwilligung||{zwecke:[]};
- const ewTxt=ew.status==="erteilt"?("erteilt"+(ew.form?" ("+ew.form+")":"")):ew.status==="widerruf"?"Widerruf":"offen";
- const hist=(p.historie||[]).slice(-6).reverse().map(h=>"<div class='pa-he'><small>"+escapeHtml(paDate(h.d))+"</small><span class='pa-ht'>"+escapeHtml(PA_TYP[h.typ]||h.typ)+"</span><p>"+escapeHtml(h.text)+"</p></div>").join("");
+ const LZ={interessent:"Interessent",patient:"Patient",altpatient:"Altpatient"};
+ const ewTxt=ew.status==="erteilt"?("erteilt"+(ew.form?" · "+ew.form:"")):ew.status==="widerruf"?"Widerruf":"offen";
+ const hist=(p.historie||[]).slice(-6).reverse().map(h=>"<div class='pa-ev'><span class='pa-dot'></span><div class='pa-evb'><div class='pa-evm'><span class='pa-evt'>"+escapeHtml(PA_TYP[h.typ]||h.typ)+"</span><small>"+escapeHtml(paDate(h.d))+"</small></div><p>"+escapeHtml(h.text)+"</p></div></div>").join("");
  return "<div class='pa-akte'>"
-  +"<div class='pa-head'><span class='kicker'>Akte</span><span class='pa-chip lz-"+p.lebenszyklus+"'>"+escapeHtml(p.lebenszyklus)+"</span><span class='pa-chip'>"+escapeHtml(p.kt)+"</span></div>"
-  +(p.geb?"<div class='pa-row'><span class='pa-k'>Geburtsdatum</span><span>"+escapeHtml(paDate(p.geb))+((g&&g.tage<=30)?" · <b class='pa-soon'>wird "+g.wird+" am "+g.datum+"</b>":"")+"</span></div>":"")
-  +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span>"+escapeHtml(ewTxt)+((ew.zwecke&&ew.zwecke.length)?" · "+ew.zwecke.map(z=>"<span class='pa-zw'>"+escapeHtml(PA_ZW[z]||z)+"</span>").join(" "):"")+"</span></div>"
-  +((p.angehoerige&&p.angehoerige.length)?"<div class='pa-row'><span class='pa-k'>Angehörige</span><span>"+p.angehoerige.map(a=>escapeHtml(a.name)+" ("+escapeHtml(a.bezug)+")").join(", ")+"</span></div>":"")
-  +(p.zuweiserRef?"<div class='pa-row'><span class='pa-k'>Zuweiser</span><span>"+escapeHtml(p.zuweiserRef)+"</span></div>":"")
-  +(hist?"<div class='pa-hist'>"+hist+"</div>":"")
+  +"<div class='pa-head'><span class='pa-title'>Akte</span><span class='pa-lz lz-"+p.lebenszyklus+"'><span class='pa-lzdot'></span>"+(LZ[p.lebenszyklus]||p.lebenszyklus)+"</span><span class='pa-ktchip'>"+escapeHtml(p.kt)+"</span></div>"
+  +((g&&g.tage<=30)?"<div class='pa-anlass'>✦ <b>Wird "+g.wird+" am "+g.datum+"</b> — Geburtstag in "+g.tage+" Tagen. Anlass für eine persönliche Aufmerksamkeit.</div>":"")
+  +"<div class='pa-meta'>"
+  +(p.geb?"<div class='pa-row'><span class='pa-k'>Geboren</span><span class='pa-v'>"+escapeHtml(paDate(p.geb))+"</span></div>":"")
+  +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(ewTxt)+((ew.zwecke&&ew.zwecke.length)?"<span class='pa-zwr'>"+ew.zwecke.map(z=>"<span class='pa-zw'>"+escapeHtml(PA_ZW[z]||z)+"</span>").join("")+"</span>":"")+"</span></div>"
+  +((p.angehoerige&&p.angehoerige.length)?"<div class='pa-row'><span class='pa-k'>Angehörige</span><span class='pa-v'>"+p.angehoerige.map(a=>escapeHtml(a.name)+" ("+escapeHtml(a.bezug)+")").join(", ")+"</span></div>":"")
+  +(p.zuweiserRef?"<div class='pa-row'><span class='pa-k'>Zuweiser</span><span class='pa-v'>"+escapeHtml(p.zuweiserRef)+"</span></div>":"")
+  +"</div>"
+  +(hist?"<div class='pa-histhead'>Verlauf der Beziehung</div><div class='pa-hist'>"+hist+"</div>":"")
   +"</div>";
 }
 function paAkteSlot(pid){
