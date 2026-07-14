@@ -56,18 +56,22 @@ Interaktiver **Investor-Pitch-Prototyp** einer „Privatpatienten-Maschine" für
 ### Konvergenz-Hero — wichtige Eigenheit
 Das `.cv-*`-Panel existiert **4×**: Heute (breit + schmal) und Team (breit + schmal). **Nur die Heute-Variante trägt `id="cv…"`; Team spiegelt über `data-sync="cv…"`.** `set()` in `renderHeute()` aktualisiert beide. Wer den Hero ändert, muss **alle 4 SVG-Blöcke synchron** halten. Story endet bewusst beim **„Fall"** (nicht „Belegung") — der Trichter darunter ist die einzige „→ Belegung"-Grafik (zwei getrennte Akte, Redundanz war ein Fehler und wurde behoben).
 
-### Design-Tokens (aus `:root` in index.html — hier gespiegelt, damit CSS-Edits autark sind)
+### Design-Tokens (AURORA-Overhaul 07/2026 — Token-NAMEN historisch, WERTE dunkel!)
 ```
---cream:#e9e8e3; --cream2:#e0ded7; --paper:#fbfaf8; --paper2:#f3f0ea;
---ink:#1f1c1c; --ink-soft:#3c3737; --muted:#766f64; --faint:#948c80;
---brass:#9b8573; --brass-deep:#6e5d4e; --brass-soft:#e3d4c8; --brass-line:#d7c8bc;
---hair:#ddd8cf; --hair2:#e6e2da;
---sage:#6f8f72; --sage-deep:#56745a; --sage-soft:#e8efe6;  --terra:#a8543f; --terra-soft:#f5e3dc;
-Achsenfarben: --ortho:#a8742f --neuro:#54718f --geri:#6f8f72 --innere:#48817a --saluto:#9b8573 --unklar:#8d877c
-Schatten: --shadow / --shadow-soft ; Verläufe: --espresso-grad , --brass-grad
+--cream:#0B0D0C (CANVAS!); --cream2:#0F1110; --paper:#141613; --paper2:#1B1E19;
+--ink:#F0EBE1 (TEXT hell!); --ink-soft:#D9D3C6; --muted:#97917F; --faint:#6E6A5E;
+--brass:#C4A97D; --brass-deep:#DCC094 (heller!); --brass-soft:#2B2519; --brass-line:#3B3427;
+--hair:rgba(240,235,225,.09); --hair2:rgba(240,235,225,.06);
+--sage:#7E9B84; --sage-deep:#A3C2AA; --sage-soft:#1C231E; --terra:#D9784F; --terra-soft:#2E1E18;
+NEU: --amber:#D99A5B --alert:#D9784F --raised:#23261F --glass/--glass-border/--glass-hi (rgba-weiß)
+Achsenfarben (dark-lifted): --ortho:#C99A54 --neuro:#7E9BB8 --geri:#8FAE95 --innere:#6FA89F --saluto:#C4A97D --unklar:#A29B8D
+Schatten: --shadow / --shadow-soft ; Verläufe: --espresso-grad (dunkel), --brass-grad (Champagner→Amber)
 ```
-**Dunkler Hero (`.greet`/`.cv-*`) nutzt Direkt-Hex (nicht die Tokens):** Fläche `linear-gradient(140deg,#332d2a,#1f1c1c 55%,#282320)`; Text creme `#f4eee3`, Gold `#d3b78a`, gedämpft `#b29a76`, Kontur `#8f7448`, hell `#ecdfc8`; Alert `#e6794f`.
-Fonts: Display `"Cormorant Garamond",Georgia,serif` (Zahlen 700), Body/Label `Inter` (Micro-Labels uppercase, letter-spacing ~.06em, ~11px, `--muted`).
+**Licht-Inseln** (`/* AURORA · LICHT-INSELN */`-Block): `.rpd-paper` + `.kp-mail` re-pinnen die ALTE helle
+Palette + `color:var(--ink)`-Reset — Papierdokumente/Mailing-Vorschau bleiben hell. `@media print` weiß.
+**Perf-Gesetz:** nie `filter:blur` auf Animiertem; `backdrop-filter` nur Chrome + Overlay-Sheets (Budget ~10).
+Fonts: Display `"Fraunces",Georgia,serif` (opsz, Zahlen 600) · Body `Inter` · Micro/Daten `"Fragment Mono"`
+(uppercase, .12em, 11px, `--muted`; Utilities `.au-display`/`.au-micro`). Referenz: `design-lab/d-aurora.html`.
 
 ---
 

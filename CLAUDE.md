@@ -16,7 +16,12 @@ Interaktiver Produkt-Prototyp („Privatpatienten-Maschine") für einen Investor
 - **Animationen reduced-motion-safe:** Start-Zustand (opacity/transform 0) NUR im Keyframe-`from`,
   nie in der Basisregel — der globale `@media(prefers-reduced-motion)`-Block schaltet Animationen ab
   und der Endzustand muss dann sofort korrekt sein.
-- **Identität wahren:** Cormorant Garamond + Inter; espresso/taupe/sand/messing/salbei-Palette.
+- **Identität wahren (seit Aurora-Overhaul 07/2026):** Fraunces (Display) + Inter (Body) + Fragment Mono
+  (Micro-Labels/Daten); Aurora-Palette — Ink `#0B0D0C` Canvas, Champagner `#C4A97D`, Amber `#D99A5B`,
+  Salbei `#7E9B84`, Alert `#D9784F`. Token-NAMEN sind historisch (`--cream` = Canvas dunkel!), Werte in `:root`.
+  **Licht-Inseln bleiben hell:** `.rpd-paper` (Dokumente), `.kp-mail` (Mailing-Vorschau), `@media print`.
+  **Perf-Gesetz:** NIE `filter:blur` auf Animiertem; `backdrop-filter` NUR Chrome (Sidebar/Topbar/Tabbar)
+  + Overlay-Sheets — nie auf Karten/Zeilen. Referenz-Prototyp: `design-lab/d-aurora.html`.
 
 ## Zusammenarbeit / Git
 - **Mehrere Leute pushen parallel auf `main`.** IMMER `git pull` vor eigenem Push.
