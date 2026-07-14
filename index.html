@@ -1760,6 +1760,46 @@ body.ma-mode #view-meintag{display:block}
 .tabbar [data-nav]{--tabc:var(--brass);color:var(--muted)}
 .tabbar [data-nav].active{color:var(--brass)}
 
+/* ===== AURORA · TEAM & MEIN TAG ===== */
+/* Mitarbeitercockpit (.tm-*) + „Mein Tag"-Dashboard (.mt-*) auf Elevation-Flächen.
+   Fristen/Meta in Fragment Mono, „überfällig"/„heute fällig" strikt in --terra-/--brass-Familie.
+   Source-Order-Overrides: gewinnen über die Basisregeln oben, greifen NUR tm-/mt-Scopes.
+   Zustands-Einfärbung im Team (überfällig/heute fällig je Zeile) hat keinen Markup-Hook
+   und bleibt bewusst ruhig-mono — echte Zustandsfarbe bräuchte JS (außerhalb dieses Scopes). */
+
+/* — Team: Cockpit-Karten als Elevationsflächen, KPI-Ziffern Fraunces 600, Meta in Mono — */
+.tm-card{background:var(--paper2);border-radius:18px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi)}
+.tm-kpis .num{font-weight:600}
+.tm-intake .num{font-family:"Fragment Mono",ui-monospace,monospace}
+.tm-fr{font-family:"Fragment Mono",ui-monospace,monospace}
+.tm-meta{font-family:"Fragment Mono",ui-monospace,monospace}
+
+/* — Mein Tag: Kopf-Meta in Mono, Fortschritt/Termine ruhig — */
+.mt-date{font-family:"Fragment Mono",ui-monospace,monospace}
+.mt-sum{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--muted)}
+.mt-rollmenu{background:var(--raised)}
+.mt-termine .mt-termzeit{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--brass-deep)}
+.mt-term-past{opacity:.55}
+
+/* — Mein Tag: To-do-Karten (radar-Anatomie) als Elevationsflächen, Fristen-Pillen + Kicker in Mono — */
+.mt-grid .radar-card{background:var(--paper2);border-radius:18px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi)}
+.mt-grid .radar-due{font-family:"Fragment Mono",ui-monospace,monospace}
+.mt-grid .radar-due.bald{background:var(--brass-soft);color:var(--brass-deep)}
+.mt-grid .radar-due.jetzt{background:var(--terra-soft);color:var(--alert)}
+.mt-grid .radar-prog .rk{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--muted)}
+.mt-grid .patient-actions .btn-ghost{border-color:var(--brass-line);color:var(--brass-deep)}
+@media(hover:hover){.mt-grid .patient-actions .btn-ghost:hover{background:var(--brass-soft)}}
+
+/* — Mein Tag: geführte Arbeitskarte (einziges erlaubtes neues Glas-Sheet) — */
+.mt-panel{background:rgba(15,17,16,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-left:1px solid var(--glass-border);box-shadow:-18px 0 50px var(--shadow)}
+.mt-panel .radar-due{font-family:"Fragment Mono",ui-monospace,monospace}
+.mt-panel .radar-due.bald{background:var(--brass-soft);color:var(--brass-deep)}
+.mt-panel .radar-due.jetzt{background:var(--terra-soft);color:var(--alert)}
+.mt-panel .radar-prog .rk{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--brass)}
+.mt-sleitfaden{background:var(--raised);border:1px solid var(--hair);border-radius:12px;padding:12px 14px}
+.mt-sfoot .btn-brass{color:#0B0D0C;text-shadow:none}
+
 /* ===== AURORA · FÄLLE ===== */
 /* Eingang · Board · Fall-Schublade — Elevation-Flächen statt Rahmen-auf-Weiß,
    Fristen/Meta in Fragment Mono, Zustände „stockt/überfällig" strikt in der --alert-Familie.
