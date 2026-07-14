@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klinik Bavaria · Concierge OS — Aurora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   AURORA · INK & IRIDESCENCE — Klinik Bavaria Concierge OS
+   Direction D. Green/gold/amber hues ONLY. No blue, no violet.
+   ============================================================ */
+
+:root{
+  --bg:#0B0D0C;
+  --text:#F0EBE1;
+  --muted:#97917F;
+  --hairline:rgba(240,235,225,.09);
+
+  --sage:#7E9B84;
+  --champagne:#C4A97D;
+  --amber:#D99A5B;
+  --jade:#5E8F7B;
+  --alert:#D9784F;
+
+  --glass:rgba(255,255,255,.05);
+  --glass-border:rgba(255,255,255,.09);
+  --glass-inset:rgba(255,255,255,.14);
+
+  --r-container:24px;
+  --r-interactive:10px;
+
+  --sidebar-w:260px;
+
+  accent-color:var(--champagne);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  min-height:100vh;
+  overflow-x:hidden;
+  scrollbar-color:var(--champagne) transparent;
+}
+
+::selection{background:var(--champagne);color:#0B0D0C}
+::-moz-selection{background:var(--champagne);color:#0B0D0C}
+
+:focus-visible{
+  outline:2px solid var(--champagne);
+  outline-offset:2px;
+  border-radius:6px;
+}
+
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(196,169,125,.4);border-radius:10px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:rgba(196,169,125,.65);background-clip:content-box}
+
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
+img{max-width:100%;display:block}
+
+.mono{font-family:'Fragment Mono',ui-monospace,monospace;letter-spacing:.02em}
+.serif{font-family:'Fraunces',Georgia,serif}
+
+/* ============================================================
+   AURORA BACKGROUND — fixed orb layers + noise + light source
+   ============================================================ */
+.aurora{position:fixed;inset:0;z-index:-3;overflow:hidden;pointer-events:none}
+/* Perf note: soft falloff comes from the gradient itself — NO filter:blur on
+   animating layers (live-blurring 60vw elements every frame melts the compositor). */
+.orb{position:absolute;border-radius:50%;opacity:.35;will-change:transform}
+.orb--sage{
+  width:60vw;height:60vw;left:-12vw;top:-10vh;
+  background:radial-gradient(circle at 50% 50%, rgba(126,155,132,.9) 0%, rgba(126,155,132,.35) 38%, rgba(126,155,132,0) 68%);
+  animation:drift1 52s ease-in-out infinite alternate;
+}
+.orb--champ{
+  width:55vw;height:55vw;right:-14vw;top:10vh;
+  background:radial-gradient(circle at 50% 50%, rgba(196,169,125,.9) 0%, rgba(196,169,125,.35) 38%, rgba(196,169,125,0) 68%);
+  animation:drift2 47s ease-in-out infinite alternate;
+}
+.orb--amber{
+  width:50vw;height:50vw;left:22vw;bottom:-24vh;
+  background:radial-gradient(circle at 50% 50%, rgba(217,154,91,.9) 0%, rgba(217,154,91,.35) 38%, rgba(217,154,91,0) 68%);
+  animation:drift3 58s ease-in-out infinite alternate;
+}
+.aurora__light{
+  position:absolute;right:-8vw;top:-12vh;width:46vw;height:46vw;
+  background:radial-gradient(circle at 45% 40%, rgba(217,154,91,.55) 0%, rgba(196,169,125,.22) 45%, rgba(196,169,125,0) 70%);
+  opacity:.5;border-radius:50%;
+  animation:drift2 61s ease-in-out infinite alternate;
+}
+.noise{
+  position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.vignette{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 0%, rgba(11,13,12,0) 40%, rgba(11,13,12,.6) 100%);
+}
+
+@keyframes drift1{
+  from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(6vw,5vh,0) scale(1.12)}
+}
+@keyframes drift2{
+  from{transform:translate3d(0,0,0) scale(1.05)}
+  to{transform:translate3d(-5vw,7vh,0) scale(.95)}
+}
+@keyframes drift3{
+  from{transform:translate3d(0,0,0) scale(.95)}
+  to{transform:translate3d(4vw,-6vh,0) scale(1.1)}
+}
+
+/* ============================================================
+   GLASS PRIMITIVE
+   ============================================================ */
+.glass{
+  background:var(--glass);
+  -webkit-backdrop-filter:blur(24px);
+  backdrop-filter:blur(24px);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r-container);
+  position:relative;
+}
+.glass::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 1px 0 var(--glass-inset);
+}
+
+/* ============================================================
+   LAYOUT — sidebar + main
+   ============================================================ */
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);
+  z-index:40;display:flex;flex-direction:column;
+  padding:22px 16px;gap:6px;
+  background:rgba(255,255,255,.04);
+  -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  border-right:1px solid var(--hairline);
+}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 10px 18px}
+.brand__mark{
+  width:34px;height:34px;border-radius:9px;flex:none;
+  background:linear-gradient(140deg,var(--champagne),var(--amber));
+  display:grid;place-items:center;color:#0B0D0C;font-weight:600;
+  font-family:'Fraunces',serif;font-size:17px;
+  box-shadow:0 4px 18px rgba(196,169,125,.35);
+}
+.brand__txt{line-height:1.2}
+.brand__name{font-family:'Fraunces',serif;font-size:16px;font-weight:600}
+.brand__sub{font-size:10.5px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+
+.nav{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.nav__label{
+  font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);padding:12px 12px 6px;opacity:.7;
+}
+.nav__item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:var(--r-interactive);
+  color:var(--muted);font-size:14px;font-weight:500;
+  transition:background .12s ease,color .12s ease;
+}
+.nav__item svg{width:18px;height:18px;flex:none;stroke-width:1.5;stroke:currentColor;fill:none}
+.nav__item:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav__item--active{
+  color:var(--text);
+  background:linear-gradient(100deg,rgba(196,169,125,.22),rgba(196,169,125,.06));
+  border:1px solid rgba(196,169,125,.35);
+  box-shadow:0 0 22px rgba(196,169,125,.22),inset 0 1px 0 rgba(255,255,255,.12);
+}
+.nav__item--active svg{stroke:var(--champagne)}
+.nav__portal{
+  color:var(--champagne);margin-top:4px;
+  border:1px solid rgba(196,169,125,.28);
+}
+.nav__portal svg{stroke:var(--champagne)}
+.nav__portal:hover{background:rgba(196,169,125,.1);color:var(--champagne)}
+
+.sidebar__spacer{flex:1}
+
+.cta-new{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;padding:13px 16px;border-radius:var(--r-interactive);
+  font-weight:600;font-size:14px;color:#0B0D0C;
+  background:linear-gradient(120deg,var(--champagne),var(--amber));
+  box-shadow:0 8px 26px rgba(196,169,125,.34),inset 0 1px 0 rgba(255,255,255,.35);
+  transition:transform .12s ease,box-shadow .12s ease,filter .12s ease;
+}
+.cta-new svg{width:17px;height:17px;stroke:#0B0D0C;stroke-width:2;fill:none}
+.cta-new:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(196,169,125,.5);filter:brightness(1.04)}
+.cta-new:active{transform:translateY(0)}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;width:calc(100% - var(--sidebar-w))}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 34px;
+  background:rgba(11,13,12,.55);
+  -webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);
+  border-bottom:1px solid var(--hairline);
+}
+.topbar__title{font-family:'Fraunces',serif;font-size:18px;font-weight:500}
+.topbar__title span{color:var(--muted);font-weight:400}
+.topbar__right{display:flex;align-items:center;gap:18px}
+.topbar__date{font-family:'Fragment Mono',monospace;font-size:12px;color:var(--muted)}
+.avatar{
+  width:36px;height:36px;border-radius:50%;flex:none;
+  display:grid;place-items:center;font-size:12px;font-weight:600;letter-spacing:.04em;
+  color:var(--text);
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--glass-border);
+}
+
+.content{padding:38px 34px 90px;max-width:1240px}
+
+/* Section scaffolding */
+.kicker{
+  font-family:'Fragment Mono',monospace;font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--champagne);opacity:.85;margin-bottom:12px;
+}
+.section{margin-top:64px}
+.section__head{margin-bottom:22px}
+.section__title{font-family:'Fraunces',serif;font-size:26px;font-weight:500;letter-spacing:-.01em}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{padding-top:8px}
+.hero__kicker{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.hero h1{
+  font-family:'Fraunces',serif;font-weight:500;
+  font-size:clamp(34px,4.6vw,58px);line-height:1.04;letter-spacing:-.02em;
+  max-width:16ch;margin-bottom:16px;
+  animation:rise .7s cubic-bezier(.2,.7,.2,1) .06s both;
+}
+.hero h1 em{
+  font-style:italic;font-weight:500;
+  background:linear-gradient(100deg,var(--champagne),var(--amber));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+.hero__claim{
+  font-size:17px;color:var(--muted);max-width:44ch;
+  animation:rise .7s cubic-bezier(.2,.7,.2,1) .12s both;
+}
+
+/* Convergence motif */
+.converge{
+  margin-top:34px;padding:30px 30px 26px;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
+  animation:rise .7s cubic-bezier(.2,.7,.2,1) .18s both;
+}
+.chips{display:flex;flex-direction:column;gap:9px}
+.chip{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:9px 14px;border-radius:var(--r-interactive);
+  background:rgba(255,255,255,.04);border:1px solid var(--glass-border);
+  font-size:13px;transition:border-color .12s ease,background .12s ease;
+}
+.chip:hover{border-color:rgba(196,169,125,.4);background:rgba(196,169,125,.06)}
+.chip__label{display:flex;align-items:center;gap:9px;color:var(--text)}
+.chip__label svg{width:15px;height:15px;stroke:var(--muted);stroke-width:1.5;fill:none}
+.chip__n{font-family:'Fragment Mono',monospace;font-size:12px;color:var(--muted)}
+.chip__n[data-zero="1"]{opacity:.4}
+
+.converge__flow{position:relative;width:150px;height:230px}
+.converge__flow svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.flow-path{
+  fill:none;stroke:url(#flowGrad);stroke-width:1.4;
+  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  animation:drawFlow .75s ease .4s forwards;
+}
+.flow-path--dim{opacity:.35}
+
+.disc-wrap{display:flex;flex-direction:column;align-items:center;gap:18px}
+.disc{
+  width:150px;height:150px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;
+  background:radial-gradient(circle at 50% 38%,rgba(196,169,125,.28),rgba(255,255,255,.04));
+  border:1px solid rgba(196,169,125,.4);
+  box-shadow:0 0 46px rgba(196,169,125,.32),inset 0 1px 0 rgba(255,255,255,.2);
+  -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+}
+.disc__n{font-family:'Fraunces',serif;font-size:46px;font-weight:600;line-height:1;color:var(--text)}
+.disc__label{font-family:'Fragment Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:var(--champagne)}
+
+.stepper{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:center}
+.step{
+  font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:.1em;
+  color:var(--muted);padding:5px 10px;border-radius:20px;
+  background:rgba(255,255,255,.04);border:1px solid var(--glass-border);
+}
+.step--done{color:var(--jade);border-color:rgba(94,143,123,.4)}
+.step__arrow{color:var(--muted);opacity:.5}
+.step-alert{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--alert);margin-top:2px;
+}
+.step-alert::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--alert);box-shadow:0 0 10px rgba(217,120,79,.7)}
+
+/* ============================================================
+   KPI BAND
+   ============================================================ */
+.kpi-band{
+  margin-top:44px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+}
+.kpi{padding:20px 22px;display:flex;flex-direction:column;gap:6px;min-height:132px}
+.kpi__label{font-family:'Fragment Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.kpi__val{font-family:'Fraunces',serif;font-size:38px;font-weight:600;line-height:1;letter-spacing:-.01em}
+.kpi__unit{font-size:15px;color:var(--muted);font-family:'Inter',sans-serif;font-weight:400}
+.kpi__foot{font-size:12px;color:var(--muted);margin-top:auto}
+.kpi--gauge{flex-direction:row;align-items:center;gap:18px}
+.gauge{width:76px;height:76px;flex:none}
+.gauge__track{fill:none;stroke:rgba(255,255,255,.08);stroke-width:8}
+.gauge__val{fill:none;stroke:url(#gaugeGrad);stroke-width:8;stroke-linecap:round;
+  stroke-dasharray:201;stroke-dashoffset:66;transform:rotate(-90deg);transform-origin:50% 50%}
+.gauge-num{font-family:'Fraunces',serif;font-size:20px;font-weight:600;fill:var(--text)}
+
+/* ============================================================
+   ANLÄSSE — asymmetric cards
+   ============================================================ */
+.anlaesse{display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:auto auto;gap:16px}
+.acard{
+  padding:24px;display:flex;flex-direction:column;gap:12px;
+  transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;
+}
+.acard:hover{
+  transform:translateY(-4px);
+  border-color:rgba(196,169,125,.45);
+  box-shadow:0 16px 40px rgba(0,0,0,.35),0 0 30px rgba(196,169,125,.16);
+}
+.acard--hero{grid-row:span 2;justify-content:space-between}
+.acard__tag{
+  align-self:flex-start;font-family:'Fragment Mono',monospace;font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--champagne);
+  padding:4px 10px;border-radius:20px;background:rgba(196,169,125,.1);border:1px solid rgba(196,169,125,.28);
+}
+.acard__name{font-family:'Fraunces',serif;font-size:22px;font-weight:500}
+.acard--hero .acard__name{font-size:30px}
+.acard__stars{color:var(--champagne);letter-spacing:2px;font-size:15px}
+.acard__meta{font-size:14px;color:var(--muted)}
+.acard__big{font-family:'Fraunces',serif;font-size:19px;font-weight:400;font-style:italic;color:var(--text)}
+.acard__foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px}
+.acard__portrait{
+  height:150px;border-radius:14px;margin:-6px 0 4px;overflow:hidden;position:relative;
+  border:1px solid var(--hairline);
+}
+.acard__portrait img{width:100%;height:100%;object-fit:cover;opacity:.9}
+.acard__portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,13,12,0) 40%,rgba(11,13,12,.55))}
+
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:9px 15px;border-radius:var(--r-interactive);font-size:13px;font-weight:500;
+  color:var(--text);background:rgba(255,255,255,.05);
+  border:1px solid var(--glass-border);
+  transition:background .12s ease,border-color .12s ease,color .12s ease;
+}
+.btn-ghost svg{width:14px;height:14px;stroke:var(--champagne);stroke-width:1.6;fill:none}
+.btn-ghost:hover{background:rgba(196,169,125,.12);border-color:rgba(196,169,125,.4);color:var(--champagne)}
+.btn-ghost--solid{
+  color:#0B0D0C;background:linear-gradient(120deg,var(--champagne),var(--amber));border:none;font-weight:600;
+  box-shadow:0 6px 20px rgba(196,169,125,.28);
+}
+.btn-ghost--solid svg{stroke:#0B0D0C}
+.btn-ghost--solid:hover{filter:brightness(1.05);color:#0B0D0C}
+
+/* ============================================================
+   KARTEI — ledger rows
+   ============================================================ */
+.ledger{padding:8px}
+.ledger__head,.ledger__row{
+  display:grid;grid-template-columns:1.6fr 1fr 1.1fr .9fr;
+  align-items:center;gap:16px;padding:12px 18px;
+}
+.ledger__head{
+  font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--hairline);
+}
+.ledger__row{
+  border-radius:12px;position:relative;
+  transition:background .12s ease;border-left:2px solid transparent;
+}
+.ledger__row:hover{background:rgba(196,169,125,.07);border-left-color:var(--champagne)}
+.ledger__name{font-weight:500;font-size:15px}
+.ledger__stars{color:var(--champagne);letter-spacing:1.5px;font-size:13px}
+.ledger__kt{color:var(--muted);font-size:13.5px}
+.ledger__date{font-family:'Fragment Mono',monospace;font-size:12.5px;color:var(--muted);text-align:right}
+
+/* ============================================================
+   FORECAST — scroll-driven bars
+   ============================================================ */
+.forecast{padding:30px 30px 26px}
+.forecast__grid{
+  display:grid;grid-template-columns:repeat(8,1fr);gap:18px;
+  height:230px;align-items:end;margin-top:8px;
+}
+.bar{display:flex;flex-direction:column;align-items:center;gap:12px;height:100%;justify-content:flex-end}
+.bar__track{
+  width:100%;max-width:46px;flex:1;border-radius:9px 9px 4px 4px;
+  background:rgba(255,255,255,.03);border:1px solid var(--hairline);
+  display:flex;align-items:flex-end;overflow:hidden;position:relative;
+}
+.bar__fill{
+  width:100%;border-radius:8px 8px 3px 3px;
+  height:var(--h);transform-origin:bottom;
+  background:linear-gradient(180deg,var(--champagne),var(--sage));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25);
+}
+.bar__val{font-family:'Fragment Mono',monospace;font-size:12px;color:var(--text)}
+.bar__kw{font-family:'Fragment Mono',monospace;font-size:10.5px;color:var(--muted)}
+
+/* Scroll-driven reveal — only when supported + motion allowed */
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .bar__fill{
+      animation:barGrow linear both;
+      animation-timeline:view();
+      animation-range:entry 0% cover 40%;
+    }
+  }
+}
+@keyframes barGrow{
+  from{transform:scaleY(0);opacity:.2}
+  to{transform:scaleY(1);opacity:1}
+}
+
+/* ============================================================
+   KEYFRAMES — hero entrance / flow draw
+   ============================================================ */
+@keyframes rise{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes drawFlow{
+  from{stroke-dashoffset:var(--len)}
+  to{stroke-dashoffset:0}
+}
+
+.footer{
+  margin-top:70px;padding-top:24px;border-top:1px solid var(--hairline);
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  font-size:12px;color:var(--muted);
+}
+.footer .mono{font-size:11px;letter-spacing:.1em}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1080px){
+  .kpi-band{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:900px){
+  :root{--sidebar-w:0px}
+  .sidebar{
+    position:static;width:100%;flex-direction:row;flex-wrap:wrap;align-items:center;
+    border-right:none;border-bottom:1px solid var(--hairline);padding:12px 16px;gap:6px;
+  }
+  .brand{padding:0 12px 0 4px}
+  .nav{flex-direction:row;flex-wrap:wrap;margin-top:0;flex:1}
+  .nav__label{display:none}
+  .nav__item{padding:8px 11px}
+  .sidebar__spacer{display:none}
+  .cta-new{width:auto}
+  .main{margin-left:0;width:100%}
+  .content{padding:26px 18px 70px}
+  .topbar{padding:12px 18px}
+}
+@media (max-width:720px){
+  .converge{grid-template-columns:1fr;gap:28px}
+  .converge__flow{display:none}
+  .anlaesse{grid-template-columns:1fr}
+  .acard--hero{grid-row:auto}
+  .forecast__grid{gap:9px}
+  .ledger__head{display:none}
+  .ledger__row{grid-template-columns:1fr auto;grid-auto-rows:auto;row-gap:4px;padding:14px}
+  .ledger__kt,.ledger__date{grid-column:1/-1}
+  .ledger__date{text-align:left}
+}
+@media (max-width:460px){
+  .kpi-band{grid-template-columns:1fr}
+  .forecast__grid{overflow-x:auto}
+  .hero h1{font-size:30px}
+  .topbar__date{display:none}
+}
+
+/* ============================================================
+   REDUCED MOTION — kill switch
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    animation-timeline:auto!important;
+    transition:none!important;
+    scroll-behavior:auto!important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- AURORA BACKGROUND -->
+<div class="aurora" aria-hidden="true">
+  <div class="aurora__light"></div>
+  <div class="orb orb--sage"></div>
+  <div class="orb orb--champ"></div>
+  <div class="orb orb--amber"></div>
+</div>
+<div class="noise" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- SVG gradient defs (shared) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="flowGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7E9B84"/>
+      <stop offset="1" stop-color="#C4A97D"/>
+    </linearGradient>
+    <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7E9B84"/>
+      <stop offset="1" stop-color="#C4A97D"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand__mark serif">B</div>
+      <div class="brand__txt">
+        <div class="brand__name">Klinik Bavaria</div>
+        <div class="brand__sub">Concierge OS</div>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="Hauptnavigation">
+      <div class="nav__label">Navigation</div>
+      <a class="nav__item nav__item--active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>
+        Heute
+      </a>
+      <a class="nav__item" href="#">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
+        Fälle
+      </a>
+      <a class="nav__item" href="#">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0112 0"/><path d="M16 6a3 3 0 010 6M17 20a6 6 0 00-2-4.5"/></svg>
+        Team
+      </a>
+      <a class="nav__item" href="#">
+        <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 11l7.6-4M8.2 13l7.6 4"/></svg>
+        Netzwerk
+      </a>
+      <a class="nav__item" href="#">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
+        Matrix
+      </a>
+      <a class="nav__item" href="#">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+        System
+      </a>
+
+      <a class="nav__item nav__portal" href="#">
+        <svg viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 13v5a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h5"/></svg>
+        Zuweiserportal
+      </a>
+    </nav>
+
+    <div class="sidebar__spacer"></div>
+
+    <button class="cta-new">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Neue Anfrage
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <header class="topbar">
+      <div class="topbar__title serif">Heute <span>· Cockpit</span></div>
+      <div class="topbar__right">
+        <span class="topbar__date">Dienstag, 14. Juli 2026</span>
+        <div class="avatar">KB</div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="kicker hero__kicker">Dienstag, 14. Juli 2026</div>
+        <h1>Aus Quellen wird <em>planbare Belegung.</em></h1>
+        <p class="hero__claim">Jeder Kanal. Ein Eingang. Ein verantwortlicher Mensch.</p>
+
+        <!-- Convergence motif -->
+        <div class="converge glass">
+          <div class="chips">
+            <div class="chip">
+              <span class="chip__label"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg> E-Mail</span>
+              <span class="chip__n">1</span>
+            </div>
+            <div class="chip">
+              <span class="chip__label"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg> Telefon</span>
+              <span class="chip__n">1</span>
+            </div>
+            <div class="chip">
+              <span class="chip__label"><svg viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M8 17v4h8v-4"/></svg> Fax</span>
+              <span class="chip__n">1</span>
+            </div>
+            <div class="chip">
+              <span class="chip__label"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg> Website</span>
+              <span class="chip__n">2</span>
+            </div>
+            <div class="chip">
+              <span class="chip__label"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0112 0"/><path d="M16 6a3 3 0 010 6"/></svg> Zuweiser</span>
+              <span class="chip__n" data-zero="1">0</span>
+            </div>
+            <div class="chip">
+              <span class="chip__label"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg> Portale</span>
+              <span class="chip__n" data-zero="1">0</span>
+            </div>
+          </div>
+
+          <div class="converge__flow" aria-hidden="true">
+            <svg viewBox="0 0 150 230" preserveAspectRatio="none">
+              <path class="flow-path" style="--len:200" d="M0 18 C70 18 78 115 150 115"/>
+              <path class="flow-path" style="--len:190" d="M0 55 C70 55 80 115 150 115"/>
+              <path class="flow-path" style="--len:180" d="M0 92 C74 92 82 115 150 115"/>
+              <path class="flow-path" style="--len:180" d="M0 138 C74 138 82 115 150 115"/>
+              <path class="flow-path flow-path--dim" style="--len:190" d="M0 175 C70 175 80 115 150 115"/>
+              <path class="flow-path flow-path--dim" style="--len:200" d="M0 212 C70 212 78 115 150 115"/>
+            </svg>
+          </div>
+
+          <div class="disc-wrap">
+            <div class="disc">
+              <div class="disc__n serif">5</div>
+              <div class="disc__label">Ein Eingang heute</div>
+            </div>
+            <div class="stepper">
+              <span class="step step--done">Zugeteilt</span>
+              <span class="step__arrow">→</span>
+              <span class="step step--done">Beantwortet</span>
+              <span class="step__arrow">→</span>
+              <span class="step">Fall</span>
+            </div>
+            <div class="step-alert">2 stockt</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI BAND -->
+      <section class="kpi-band" aria-label="Kennzahlen">
+        <div class="kpi glass">
+          <div class="kpi__label">Eingang heute</div>
+          <div class="kpi__val serif">5</div>
+          <div class="kpi__foot">Neue Anfragen über alle Kanäle</div>
+        </div>
+        <div class="kpi glass">
+          <div class="kpi__label">Erstreaktion Ø</div>
+          <div class="kpi__val serif">0:42 <span class="kpi__unit">h</span></div>
+          <div class="kpi__foot">Ziel unter 2:00 h · deutlich schneller</div>
+        </div>
+        <div class="kpi glass kpi--gauge">
+          <svg class="gauge" viewBox="0 0 76 76">
+            <circle class="gauge__track" cx="38" cy="38" r="32"/>
+            <circle class="gauge__val" cx="38" cy="38" r="32"/>
+            <text class="gauge-num" x="38" y="44" text-anchor="middle">67%</text>
+          </svg>
+          <div>
+            <div class="kpi__label">Conversion</div>
+            <div class="kpi__foot" style="margin-top:6px">Anfrage → Fall</div>
+          </div>
+        </div>
+        <div class="kpi glass">
+          <div class="kpi__label">Belegung in 8 Wo.</div>
+          <div class="kpi__val serif">82 <span class="kpi__unit">%</span></div>
+          <div class="kpi__foot">Prognose auf Basis aktueller Pipeline</div>
+        </div>
+      </section>
+
+      <!-- ANLÄSSE -->
+      <section class="section">
+        <div class="section__head">
+          <div class="kicker">Das Haus erinnert sich</div>
+          <h2 class="section__title">Anlässe</h2>
+        </div>
+
+        <div class="anlaesse">
+          <article class="acard acard--hero glass">
+            <div>
+              <span class="acard__tag">Geburtstag in 5 Tagen</span>
+              <div class="acard__portrait">
+                <img src="img/green-hills.jpg" alt="" loading="lazy">
+              </div>
+              <div class="acard__name serif">Margarete Wirth</div>
+              <div class="acard__stars">★★★★★</div>
+              <p class="acard__big">Wird 78 — ein Anlass für eine persönliche Geste.</p>
+            </div>
+            <div class="acard__foot">
+              <span class="acard__meta">19. Juli 2026 · Stammpatientin</span>
+              <button class="btn-ghost btn-ghost--solid">
+                <svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7S9 2 6.5 3.5 8 7 12 7zM12 7s3-5 5.5-3.5S16 7 12 7z"/></svg>
+                Geschenk vormerken
+              </button>
+            </div>
+          </article>
+
+          <article class="acard glass">
+            <span class="acard__tag">Zuweiser</span>
+            <div class="acard__name serif">Leopoldina-Krankenhaus</div>
+            <div class="acard__meta">52 Tage seit letztem Gespräch</div>
+            <div class="acard__foot">
+              <span class="acard__meta">Kooperationspartner</span>
+              <button class="btn-ghost">
+                <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>
+                Kontakt aufnehmen
+              </button>
+            </div>
+          </article>
+
+          <article class="acard glass">
+            <span class="acard__tag">Entlass-Jubiläum</span>
+            <div class="acard__name serif">Dieter Franke</div>
+            <div class="acard__stars">★★★★</div>
+            <div class="acard__meta">21. Juli — ein Jahr nach der Reha</div>
+            <div class="acard__foot">
+              <span class="acard__meta">Selbstzahler</span>
+              <button class="btn-ghost">
+                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg>
+                Karte senden
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- KARTEI -->
+      <section class="section">
+        <div class="section__head">
+          <div class="kicker">Kontakte · nach Sternen</div>
+          <h2 class="section__title">Kartei</h2>
+        </div>
+
+        <div class="ledger glass">
+          <div class="ledger__head">
+            <span>Name</span><span>Bewertung</span><span>Kostenträger</span><span style="text-align:right">Letzter Kontakt</span>
+          </div>
+          <div class="ledger__row">
+            <span class="ledger__name">Margarete Wirth</span>
+            <span class="ledger__stars">★★★★★</span>
+            <span class="ledger__kt">PKV</span>
+            <span class="ledger__date">02.07.</span>
+          </div>
+          <div class="ledger__row">
+            <span class="ledger__name">Hans Grüber</span>
+            <span class="ledger__stars">★★★★</span>
+            <span class="ledger__kt">Selbstzahler</span>
+            <span class="ledger__date">28.06.</span>
+          </div>
+          <div class="ledger__row">
+            <span class="ledger__name">Ilse Brandt</span>
+            <span class="ledger__stars">★★★</span>
+            <span class="ledger__kt">GKV + Komfort</span>
+            <span class="ledger__date">15.06.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- FORECAST -->
+      <section class="section">
+        <div class="section__head">
+          <div class="kicker">Steuern · 8 Wochen</div>
+          <h2 class="section__title">Belegungs-Forecast</h2>
+        </div>
+
+        <div class="forecast glass">
+          <div class="forecast__grid">
+            <div class="bar"><div class="bar__val">82%</div><div class="bar__track"><div class="bar__fill" style="--h:82%"></div></div><div class="bar__kw">KW 29</div></div>
+            <div class="bar"><div class="bar__val">84%</div><div class="bar__track"><div class="bar__fill" style="--h:84%"></div></div><div class="bar__kw">KW 30</div></div>
+            <div class="bar"><div class="bar__val">79%</div><div class="bar__track"><div class="bar__fill" style="--h:79%"></div></div><div class="bar__kw">KW 31</div></div>
+            <div class="bar"><div class="bar__val">88%</div><div class="bar__track"><div class="bar__fill" style="--h:88%"></div></div><div class="bar__kw">KW 32</div></div>
+            <div class="bar"><div class="bar__val">91%</div><div class="bar__track"><div class="bar__fill" style="--h:91%"></div></div><div class="bar__kw">KW 33</div></div>
+            <div class="bar"><div class="bar__val">85%</div><div class="bar__track"><div class="bar__fill" style="--h:85%"></div></div><div class="bar__kw">KW 34</div></div>
+            <div class="bar"><div class="bar__val">80%</div><div class="bar__track"><div class="bar__fill" style="--h:80%"></div></div><div class="bar__kw">KW 35</div></div>
+            <div class="bar"><div class="bar__val">86%</div><div class="bar__track"><div class="bar__fill" style="--h:86%"></div></div><div class="bar__kw">KW 36</div></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span class="mono">KLINIK BAVARIA · CONCIERGE OS</span>
+        <span>Demo-Ansicht · synthetische Daten</span>
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+</body>
+</html>
