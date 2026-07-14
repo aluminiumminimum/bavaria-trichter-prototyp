@@ -303,10 +303,10 @@
   .mtime{font-size:13px;color:var(--faint)}
   .mail .btn-brass{margin-top:11px}
   .eingang-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .eingang-owner{font-size:13px;padding:8px 10px;border:1px solid #E3D4C8;border-radius:9px;min-height:38px;background:#fff;color:#1F1C1C}
+  .eingang-owner{font-size:13px;padding:8px 10px;border:1px solid var(--hair);border-radius:9px;min-height:38px;background:var(--paper2);color:var(--ink)}
   .ok-chip{display:inline-block;margin-top:11px;color:var(--sage-deep);font-weight:600;font-size:14px}
   .typ-chip{font:600 10px/1 Inter;padding:3px 7px;border-radius:99px;margin-left:6px}
-  .typ-chip.qual{background:#e7f0e7;color:#5d7f60}.typ-chip.passiv{background:#efedea;color:#8a837d}
+  .typ-chip.qual{background:var(--sage-soft);color:var(--sage-deep)}.typ-chip.passiv{background:var(--raised);color:var(--muted)}
 
   /* ===== Board ===== */
   .bf{margin-bottom:14px}
@@ -323,18 +323,18 @@
   .board{display:flex;gap:11px;overflow-x:auto;margin:0 -20px;padding:4px 20px 16px;
     -webkit-overflow-scrolling:touch;scrollbar-width:none}
   .board::-webkit-scrollbar{display:none}
-  .wg-case{border:1px solid #E3D4C8;border-radius:14px;padding:14px;margin-bottom:14px;background:#fff}
+  .wg-case{border:1px solid var(--hair);border-radius:14px;padding:14px;margin-bottom:14px;background:var(--paper2)}
   .wg-case h3{font:600 16px/1.2 Inter;margin:0 0 2px}
-  .wg-tag{display:inline-block;font:600 11px/1 Inter;padding:3px 8px;border-radius:99px;background:#f6ecd9;color:#b58a3e;margin-bottom:10px}
-  .wg-tag.passiv{background:#eef0ee;color:#6f8f72}
+  .wg-tag{display:inline-block;font:600 11px/1 Inter;padding:3px 8px;border-radius:99px;background:var(--brass-soft);color:var(--brass-deep);margin-bottom:10px}
+  .wg-tag.passiv{background:var(--sage-soft);color:var(--sage-deep)}
   .stepper{display:flex;flex-direction:column;gap:0}
   .stp{display:grid;grid-template-columns:22px 1fr;gap:10px;position:relative;padding-bottom:14px}
-  .stp:not(:last-child)::before{content:"";position:absolute;left:10px;top:18px;bottom:0;width:2px;background:#E3D4C8}
-  .stp .dot{width:18px;height:18px;border-radius:99px;border:2px solid #bca37d;background:#fff;margin-top:1px}
-  .stp.done .dot{background:#6f8f72;border-color:#6f8f72}
+  .stp:not(:last-child)::before{content:"";position:absolute;left:10px;top:18px;bottom:0;width:2px;background:var(--brass-line)}
+  .stp .dot{width:18px;height:18px;border-radius:99px;border:2px solid var(--brass);background:var(--ink);margin-top:1px}
+  .stp.done .dot{background:var(--sage);border-color:var(--sage)}
   .stp b{font:600 14px/1.2 Inter;color:var(--ink)}
-  .stp small{display:block;font:400 12px/1.3 Inter;color:#8a837d;margin-top:1px}
-  .stp .dur{color:#b58a3e;font-weight:600}
+  .stp small{display:block;font:400 12px/1.3 Inter;color:var(--muted);margin-top:1px}
+  .stp .dur{color:var(--brass-deep);font-weight:600}
   .col{background:var(--cream2);border:1px solid var(--hair2);border-radius:16px;min-width:236px;width:236px;flex-shrink:0;padding:10px}
   .col h3{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;margin:4px 6px 9px;display:flex;align-items:center;gap:7px;color:var(--ink-soft);font-weight:700}
   .col h3 .cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -357,8 +357,8 @@
   .stagebar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#bca37d,var(--brass-deep))}
   .due{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;border-radius:6px;padding:2.5px 8px;margin-top:6px}
   .due.ok{background:var(--sage-soft);color:var(--sage-deep)}
-  .due.warn{background:#f5ecd8;color:#8a6526}
-  .due.bad{background:var(--terra-soft);color:var(--terra)}
+  .due.warn{background:var(--brass-soft);color:var(--brass-deep)}
+  .due.bad{background:var(--terra-soft);color:var(--alert)}
   .star{color:var(--brass-deep);font-size:12px;font-weight:700;margin-top:5px;display:inline-block}
 
   /* ===== Netzwerk: Zuweiser ===== */
@@ -1274,7 +1274,7 @@ label{font-size:12px;letter-spacing:.08em}
   .rs-empf li{font:400 13px/1.55 Inter;color:var(--ink-soft)}
   /* ===== WS4 · Automatisierung — Anfrage -> Fall (Toast + Eingang-Highlight) ===== */
   .mail.neu{border-color:var(--brass-line);box-shadow:0 0 0 2px var(--brass-soft);position:relative;animation:mailIn .5s ease both}
-  .mail.neu::after{content:"NEU";position:absolute;top:10px;right:12px;font:700 9px/1 Inter;letter-spacing:.08em;color:#fff;background:var(--brass-deep);border-radius:99px;padding:3px 7px}
+  .mail.neu::after{content:"NEU";position:absolute;top:10px;right:12px;font:700 9px/1 Inter;letter-spacing:.08em;color:var(--cream);background:var(--brass-deep);border-radius:99px;padding:3px 7px}
   @keyframes mailIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
   .sim-cta{margin-top:8px;width:100%;color:var(--brass-deep);border:1px dashed var(--brass-line);background:transparent;border-radius:99px;padding:9px 14px;font:600 12.5px/1 Inter}
   @media(hover:hover){.sim-cta:hover{background:var(--brass-soft)}}
@@ -1481,7 +1481,7 @@ label{font-size:12px;letter-spacing:.08em}
 .zone-group{display:flex;flex-direction:column;flex:0 0 auto}
 .zone-head{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:transparent;
   border:0;border-bottom:2px solid var(--brass-line);padding:0 4px 7px;margin:0 0 11px;cursor:pointer;font:inherit}
-.zone-head .zone-no{width:20px;height:20px;border-radius:50%;background:var(--brass);color:#fff;
+.zone-head .zone-no{width:20px;height:20px;border-radius:50%;background:var(--brass);color:var(--cream);
   font:700 11px/20px Inter;text-align:center;flex-shrink:0}
 .zone-head .zone-t{font:700 11.5px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
 .zone-head .zone-cnt{margin-left:auto;background:var(--paper);border-radius:9px;padding:1px 8px;font-size:12px;color:var(--muted);font-weight:600}
@@ -1760,6 +1760,46 @@ body.ma-mode #view-meintag{display:block}
 .tabbar [data-nav]{--tabc:var(--brass);color:var(--muted)}
 .tabbar [data-nav].active{color:var(--brass)}
 
+/* ===== AURORA · FÄLLE ===== */
+/* Eingang · Board · Fall-Schublade — Elevation-Flächen statt Rahmen-auf-Weiß,
+   Fristen/Meta in Fragment Mono, Zustände „stockt/überfällig" strikt in der --alert-Familie.
+   Source-Order-Overrides: gewinnen über die Basisregeln oben, greifen NUR Fälle-Scopes. */
+
+/* — Eingang: aufgeklappter Mail-Body als eigene Elevationsstufe, Meta/Zeit in Mono — */
+#inbox .mail.open .mmore{background:var(--paper2)}
+#inbox .mtime,#inbox .mmeta .chtag{font-family:"Fragment Mono",ui-monospace,monospace;letter-spacing:.1em}
+#inbox .mtime{text-transform:uppercase}
+
+/* — Board: Zonenköpfe in Mono, Katalognummern-Kreise & Zähler in Champagner — */
+.zone-head .zone-t{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;letter-spacing:.12em}
+.zone-head .zone-cnt{background:var(--brass-soft);color:var(--brass-deep);
+  font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400}
+
+/* — Board-Karte: paper2-Fläche mit Inset-Highlight, weichere Radius — */
+.karte{background:var(--paper2);border:1px solid var(--hair);border-radius:18px;
+  box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi)}
+.karte.saluto{border-left:3px solid var(--brass)}
+/* Fortschritts-Hairline: Track --hair, Füllung Champagner */
+.stagebar{background:var(--hair)}
+.stagebar span{background:var(--brass)}
+/* SalutoCare-Stern in Champagner */
+.star{color:var(--brass)}
+/* Frist-Pillen in Mono; „in X T" ruhig (paper/muted), „heute fällig"/„überfällig" laut */
+.due{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:500;letter-spacing:.04em}
+.due.ok{background:var(--paper);color:var(--muted);border:1px solid var(--hair)}
+
+/* — Fall-Schublade: Akkordeon-Köpfe & Kostenzusage-Kette — */
+#ovDetail .d-acc>summary{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;letter-spacing:.1em}
+/* KZ-Kette: inaktive/„offen"-Stufen als ruhige raised-Pille */
+#ovDetail .status-pill.lock{background:var(--raised);color:var(--muted)}
+/* Composer-Textarea eine Stufe abgesetzt vom Schubladen-Papier */
+#ovDetail .mbody textarea{background:var(--paper2)}
+#ovDetail .mbody textarea:focus{border-color:var(--brass)}
+
+/* — Akte (.pa-*): Lebenszyklus-Pille & Historien-Datumsangaben in Mono — */
+.pa-lz{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;letter-spacing:.09em}
+.pa-evm small{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--muted)}
+
 /* ===== AURORA · MOTION ===== */
 /* View-Transitions: root cross-fade beim go()-Wechsel (JS gated auf readyState+RM). */
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
@@ -1827,7 +1867,7 @@ body{accent-color:var(--brass)}
    (Selektoren ab .rp-outcome: hardcodiert-helle Portal-Fragmente, INTERIM bis Task 12) */
 .rpd-paper,.kp-mail,
 .rp-outcome,.rp-doc,.rp-person,.rp-lab,.rp-upload,.rp-qrrow,.ab-doc,
-.wg-case,.ir-card,.db-lead,.ref-card,.eingang-owner,.tier-filter button,.ref-tabs button,.rp-field select,.lab{
+.ir-card,.db-lead,.ref-card,.tier-filter button,.ref-tabs button,.rp-field select,.lab{
   color:var(--ink); /* Vererbungs-Reset: außen berechnetes Hell-Ink darf nicht in die Insel einsickern */
   --cream:#e9e8e3; --cream2:#e0ded7; --paper:#fbfaf8; --paper2:#f3f0ea;
   --ink:#1f1c1c; --ink-soft:#3c3737; --muted:#766f64; --faint:#948c80;
