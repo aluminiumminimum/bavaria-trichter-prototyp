@@ -28,23 +28,23 @@
 
 **Files:** Create: `assets/` (aus `design-lab/img/` kuratiert)
 
-- [ ] **Step 1:** Kopieren: `mkdir -p assets && cp design-lab/img/{kb-logo-beige.webp,kb-logo-weiss.webp,kb-suite.webp,kb-komfort-wall.webp,kb-komfortzimmer.webp,kb-header.jpg,green-hills.jpg,fog-mountain.jpg,forest-sun.jpg,alpine-vista.jpg} assets/`
-- [ ] **Step 2:** Höher aufgelöste Suite-Originale versuchen (Cache-Varianten sind ~600px): `curl -sL "https://klinik-bavaria.com/wp-content/uploads/2026/03/walleistung-suite.webp" -o /tmp/suite-hi.webp` — wenn `sips -g pixelWidth /tmp/suite-hi.webp` ≥1200: ersetzen. Sonst Bestand behalten (Bogen-Maske braucht ~700px, reicht).
-- [ ] **Step 3:** Größen-Gate: `du -h assets/* | sort -rh | head -4` — forest-sun.jpg (1.6MB) via `sips -Z 1600 --setProperty formatOptions 70 -s format jpeg` auf ≤400KB drücken; kein Asset >500KB.
-- [ ] **Step 4: Commit** `git add assets && git commit -m "feat(aurora): assets/ — Klinik-Bilder, Wortmarke, Atmosphäre-Motive (Stufe 1)"` → V6.
+- [x] **Step 1:** Kopieren: `mkdir -p assets && cp design-lab/img/{kb-logo-beige.webp,kb-logo-weiss.webp,kb-suite.webp,kb-komfort-wall.webp,kb-komfortzimmer.webp,kb-header.jpg,green-hills.jpg,fog-mountain.jpg,forest-sun.jpg,alpine-vista.jpg} assets/`
+- [x] **Step 2:** Höher aufgelöste Suite-Originale versuchen (Cache-Varianten sind ~600px): `curl -sL "https://klinik-bavaria.com/wp-content/uploads/2026/03/walleistung-suite.webp" -o /tmp/suite-hi.webp` — wenn `sips -g pixelWidth /tmp/suite-hi.webp` ≥1200: ersetzen. Sonst Bestand behalten (Bogen-Maske braucht ~700px, reicht).
+- [x] **Step 3:** Größen-Gate: `du -h assets/* | sort -rh | head -4` — forest-sun.jpg (1.6MB) via `sips -Z 1600 --setProperty formatOptions 70 -s format jpeg` auf ≤400KB drücken; kein Asset >500KB.
+- [x] **Step 4: Commit** `git add assets && git commit -m "feat(aurora): assets/ — Klinik-Bilder, Wortmarke, Atmosphäre-Motive (Stufe 1)"` → V6.
 
 ### Task 2: Fonts + Token-System v2 + Licht-Inseln
 
 **Files:** Modify: `index.html` (Z. 12 Font-Link, Z. 13 Font-Loader, Z. 15 `:root`, neuer Block vor `</style>` Z. 1722)
 **Does NOT cover:** Chrome/Flächen-Feinschliff (T4/T8–T12) — nach diesem Task darf die App „roh dunkel" aussehen, aber NIRGENDS unlesbar.
 
-- [ ] **Step 1:** Font-Link (Z. 12) ersetzen durch:
+- [x] **Step 1:** Font-Link (Z. 12) ersetzen durch:
 ```html
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600;700&family=Fragment+Mono&display=swap" rel="stylesheet">
 ```
-- [ ] **Step 2:** Font-Loader (Z. 13): `"700 1em 'Cormorant Garamond'"` → `"600 1em 'Fraunces'"`.
-- [ ] **Step 3:** Globaler Font-Swap: alle 78 Vorkommen `"Cormorant Garamond"` → `"Fraunces"` (`sed -i '' 's/Cormorant Garamond/Fraunces/g' index.html`), Fallback Georgia bleibt überall stehen.
-- [ ] **Step 4:** `:root` (Z. 15) — Token-WERTE ersetzen (Namen bleiben!), neue Aliase ergänzen:
+- [x] **Step 2:** Font-Loader (Z. 13): `"700 1em 'Cormorant Garamond'"` → `"600 1em 'Fraunces'"`.
+- [x] **Step 3:** Globaler Font-Swap: alle 78 Vorkommen `"Cormorant Garamond"` → `"Fraunces"` (`sed -i '' 's/Cormorant Garamond/Fraunces/g' index.html`), Fallback Georgia bleibt überall stehen.
+- [x] **Step 4:** `:root` (Z. 15) — Token-WERTE ersetzen (Namen bleiben!), neue Aliase ergänzen:
 ```css
 :root{
   --cream:#0B0D0C; --cream2:#0F1110; --paper:#141613; --paper2:#1B1E19;
@@ -63,7 +63,7 @@
 }
 ```
 (Weitere in `:root` vorhandene Tokens, die hier nicht gelistet sind, sinngemäß auf Dark heben — Textwerte heller, Flächenwerte dunkler; im Zweifel V2-Sichtprüfung. `--brass-deep`/`--sage-deep` sind bewusst HELLER als Basis — auf Dunkel invertiert „deep"-Text seine Rolle.)
-- [ ] **Step 5:** Licht-Inseln-Block vor `</style>`:
+- [x] **Step 5:** Licht-Inseln-Block vor `</style>`:
 ```css
 /* ===== AURORA · LICHT-INSELN — Papier bleibt Papier (Spec §2.2) ===== */
 .rpd-paper,.kp-mail{
@@ -76,42 +76,42 @@
 }
 @media print{ body{background:#fff} .rpd-paper{--paper:#fff} }
 ```
-- [ ] **Step 5b:** Typo-Utilities im AURORA-Block (Spec §2.3): `.au-display{font-family:"Fraunces",Georgia,serif;font-weight:340;letter-spacing:-.03em;font-optical-sizing:auto}` · `.au-micro{font-family:"Fragment Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}` — werden in T5–T13 auf Kicker/Labels/KPI-Einheiten angewendet (bestehende Micro-Label-Klassen behalten ihre Namen, erben nur die neue font-family per Override).
-- [ ] **Step 6:** Direkt-Hex-Audit: `grep -noE '#[0-9a-fA-F]{6}\b' index.html | sort -t: -k2 | uniq -c -f1 | sort -rn | head -30` → je Treffer Kontext prüfen. Fix-Regel: dunkle TEXT-Farben (`#1f1c1c`,`#3c3737`-Familie) in Kontexten, deren Hintergrund jetzt dunkel ist → auf `var(--ink)`/`var(--ink-soft)` umstellen. Dunkle Hero-HINTERGRÜNDE (`#332d2a`,`#282320` etc.) und helle Hero-Textfarben (`#f4eee3`,`#d3b78a`,`#ecdfc8`…) bleiben (T5 ersetzt sie gezielt). Buttons mit dunklem Text auf Brass-Fläche bleiben.
-- [ ] **Step 7:** V1 + V2 + V3 (Lesbarkeits-Gate: JEDE View — kein dark-on-dark-Text) + V4 (`.rpd-paper` hell! kp-Vorschau hell!) + V6.
-- [ ] **Step 8: Commit** `git commit -m "feat(aurora): Token-System v2 + Fraunces/Fragment-Mono + Licht-Inseln (Stufe 1)"`.
+- [x] **Step 5b:** Typo-Utilities im AURORA-Block (Spec §2.3): `.au-display{font-family:"Fraunces",Georgia,serif;font-weight:340;letter-spacing:-.03em;font-optical-sizing:auto}` · `.au-micro{font-family:"Fragment Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}` — werden in T5–T13 auf Kicker/Labels/KPI-Einheiten angewendet (bestehende Micro-Label-Klassen behalten ihre Namen, erben nur die neue font-family per Override).
+- [x] **Step 6:** Direkt-Hex-Audit: `grep -noE '#[0-9a-fA-F]{6}\b' index.html | sort -t: -k2 | uniq -c -f1 | sort -rn | head -30` → je Treffer Kontext prüfen. Fix-Regel: dunkle TEXT-Farben (`#1f1c1c`,`#3c3737`-Familie) in Kontexten, deren Hintergrund jetzt dunkel ist → auf `var(--ink)`/`var(--ink-soft)` umstellen. Dunkle Hero-HINTERGRÜNDE (`#332d2a`,`#282320` etc.) und helle Hero-Textfarben (`#f4eee3`,`#d3b78a`,`#ecdfc8`…) bleiben (T5 ersetzt sie gezielt). Buttons mit dunklem Text auf Brass-Fläche bleiben.
+- [x] **Step 7:** V1 + V2 + V3 (Lesbarkeits-Gate: JEDE View — kein dark-on-dark-Text) + V4 (`.rpd-paper` hell! kp-Vorschau hell!) + V6.
+- [x] **Step 8: Commit** `git commit -m "feat(aurora): Token-System v2 + Fraunces/Fragment-Mono + Licht-Inseln (Stufe 1)"`.
 
 ### Task 3: Aurora-Hintergrund + Craft + Reduced-Motion-Härtung
 
 **Files:** Modify: `index.html` (Body-Start nach `<body>`, neuer CSS-Block vor `</style>`, RM-Block Z. 771, `<head>`)
 **Does NOT cover:** mobile <1024px bekommt KEINE Orbs (statischer Gradient) — bewusst, Perf.
 
-- [ ] **Step 1:** Direkt nach `<body>` einfügen:
+- [x] **Step 1:** Direkt nach `<body>` einfügen:
 ```html
 <div class="aurora" aria-hidden="true"><i class="orb orb--sage"></i><i class="orb orb--champ"></i><i class="orb orb--amber"></i></div>
 <div class="au-noise" aria-hidden="true"></div><div class="au-vignette" aria-hidden="true"></div>
 ```
-- [ ] **Step 2:** CSS-Block `/* ===== AURORA · CANVAS ===== */` vor `</style>` — Orbs aus `design-lab/d-aurora.html` Z. 78–112 übernehmen (die GEFIXTE Version: Radial-Gradient-Falloff, **kein `filter:blur`**), plus: Orbs nur `@media(min-width:1024px)` animiert+sichtbar, darunter `body{background:radial-gradient(140% 100% at 20% 0%, #12140F, var(--cream) 60%)}`. `.au-noise` = feTurbulence-Data-URI 3%, `.au-vignette` = Radial-Vignette (beide `position:fixed;pointer-events:none;z-index:-1/-2`).
-- [ ] **Step 3:** Craft-Block:
+- [x] **Step 2:** CSS-Block `/* ===== AURORA · CANVAS ===== */` vor `</style>` — Orbs aus `design-lab/d-aurora.html` Z. 78–112 übernehmen (die GEFIXTE Version: Radial-Gradient-Falloff, **kein `filter:blur`**), plus: Orbs nur `@media(min-width:1024px)` animiert+sichtbar, darunter `body{background:radial-gradient(140% 100% at 20% 0%, #12140F, var(--cream) 60%)}`. `.au-noise` = feTurbulence-Data-URI 3%, `.au-vignette` = Radial-Vignette (beide `position:fixed;pointer-events:none;z-index:-1/-2`).
+- [x] **Step 3:** Craft-Block:
 ```css
 ::selection{background:var(--brass);color:#0B0D0C}
 :focus-visible{outline:2px solid var(--brass);outline-offset:2px;border-radius:4px}
 html{scrollbar-color:var(--brass-line) var(--cream);accent-color:var(--brass)}
 ```
 + in `<head>`: `<meta name="theme-color" content="#0B0D0C">`.
-- [ ] **Step 4:** RM-Block Z. 771 ersetzen durch: `@media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important;animation-timeline:auto!important;scroll-behavior:auto!important}}`
-- [ ] **Step 5:** V1+V2+V3+V5 (Orbs driften @1440, stehen bei RM; @390 statischer Gradient, kein Orb-Layer im DOM-Paint) + V6.
-- [ ] **Step 6: Commit** `git commit -m "feat(aurora): Canvas — Orbs (Gradient-Falloff, blur-frei) + Noise/Vignette + Craft + RM-Härtung (Stufe 1)"`.
+- [x] **Step 4:** RM-Block Z. 771 ersetzen durch: `@media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important;animation-timeline:auto!important;scroll-behavior:auto!important}}`
+- [x] **Step 5:** V1+V2+V3+V5 (Orbs driften @1440, stehen bei RM; @390 statischer Gradient, kein Orb-Layer im DOM-Paint) + V6.
+- [x] **Step 6: Commit** `git commit -m "feat(aurora): Canvas — Orbs (Gradient-Falloff, blur-frei) + Noise/Vignette + Craft + RM-Härtung (Stufe 1)"`.
 
 ### Task 4: Chrome — Sidebar, Topbar, Tabbar, Wortmarke
 
 **Files:** Modify: `index.html` (`.dsidebar` Z. 775ff, `.dtopbar` Z. 799ff, `.tabbar` Z. 601ff, Brand-Markup im Body [grep `ds-logo\|ds-brand\|ds-wordmark`], neuer Block `/* ===== AURORA · CHROME ===== */`)
 **Mandat (visuelle Quelle: `design-lab/d-aurora.html` Sidebar/Topbar):** Sidebar = Glas auf Ink (`--glass` + `backdrop-filter:blur(22px)` + `--glass-border`-Hairline rechts + Inset-Top-Highlight); Wortmarken-Bild `<img src="assets/kb-logo-beige.webp" alt="Klinik Bavaria" class="ds-wordmark">` (height ~34px) ersetzt das KB-Monogramm+Text; aktiver Nav-Punkt = Champagner-Glow-Pill (Border `--glass-border`, `box-shadow:0 0 24px rgba(196,169,125,.18)`); Nav-Icons: bestehende Icons auf Inline-SVG 1.5px-Stroke prüfen/vereinheitlichen; „Zuweiserportal ↗" champagner; „+ Neue Anfrage" = `--brass-grad`-Button (der EINZIGE Verlaufsbutton). Topbar = Glas, sticky, Breadcrumb Fraunces. Tabbar (mobil) = Glas-Leiste, monochrome Icons, aktiv champagner — KEIN backdrop-filter auf Einzel-Tabs, nur auf der Leiste.
 
-- [ ] **Step 1:** CSS-Block anlegen, `.dsidebar`/`.dtopbar`/`.tabbar`-Basisregeln per Source-Order-Override (bestehende Regeln stehen lassen, Overrides im AURORA-Block — chirurgisch, kein Umbau der Layout-Properties: `position/width/z-index` unangetastet).
-- [ ] **Step 2:** Brand-Markup: Monogramm-Span durch `<img>`-Wortmarke ersetzen (beige auf dunklem Glas); mobiler Header analog (grep `class="brand"` im Mobil-Header).
-- [ ] **Step 3:** V1+V2+V3 (Sidebar/Topbar/Tabbar auf allen Views; `body.detail-open .dtopbar{right:460px}`-Verhalten Z. 824 intakt; ma-mode blendet Chrome weiter aus [V4 Mein Tag]) + V6.
-- [ ] **Step 4: Commit** `git commit -m "feat(aurora): Chrome — Glas-Sidebar/Topbar/Tabbar + echte Wortmarke + Glow-Nav (Stufe 1)"`.
+- [x] **Step 1:** CSS-Block anlegen, `.dsidebar`/`.dtopbar`/`.tabbar`-Basisregeln per Source-Order-Override (bestehende Regeln stehen lassen, Overrides im AURORA-Block — chirurgisch, kein Umbau der Layout-Properties: `position/width/z-index` unangetastet).
+- [x] **Step 2:** Brand-Markup: Monogramm-Span durch `<img>`-Wortmarke ersetzen (beige auf dunklem Glas); mobiler Header analog (grep `class="brand"` im Mobil-Header).
+- [x] **Step 3:** V1+V2+V3 (Sidebar/Topbar/Tabbar auf allen Views; `body.detail-open .dtopbar{right:460px}`-Verhalten Z. 824 intakt; ma-mode blendet Chrome weiter aus [V4 Mein Tag]) + V6.
+- [x] **Step 4: Commit** `git commit -m "feat(aurora): Chrome — Glas-Sidebar/Topbar/Tabbar + echte Wortmarke + Glow-Nav (Stufe 1)"`.
 
 **→ STUFEN-GATE 1:** V1–V6 komplett, push, Pages-Build „built".
 
