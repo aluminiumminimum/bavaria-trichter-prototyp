@@ -65,6 +65,7 @@ Neue führende Registry `personen[]` (Stammdaten, Lebenszyklus-Rolle, Kostenträ
 
 ### B — Pflegen wird Mechanik
 Anlass-Radar (aus `personen[]`-Daten generierte Anlässe mit Aktionsvorschlag) + Kampagnen-Workflow (Newsletter-Generator über Zuweiser-Segmente, simulierter Ablauf inkl. Vorschau und Demo-Versand). Der sichtbar größte Neuwert. Das bestehende `radar[]` (heute Altpatienten-Kulisse) wird dabei **erweitert, nicht ersetzt oder umbenannt**.
+*Nachtrag 2026-07-14 (User/Klinik-Kollegen):* B umfasst zusätzlich die Umstellung der Kontakt-Einstufung auf eine **5-Sterne-Klassifikation** (ersetzt A/B/C; Anlass-Gesten skalieren mit den Sternen) — Details in der Baustein-B-Spec `2026-07-14-baustein-b-pflege-mechanik-design.md`.
 
 ### C — Steuern wird Vorschau
 Belegungs-Forecast aus Trichter + Bestand über kommende Wochen, Frühindikatoren-Cockpit gemäß §5 statt reiner Rückschau. **Auflösungsgrenze:** C prognostiziert auf Betten-Ebene, aufgeschlüsselt nach Kostenträger-Typ (PKV/Selbstzahler/GKV — Felder existieren heute schon). Eine Aufschlüsselung nach Zimmerkategorie ist erst möglich, nachdem D das Feld eingeführt hat, und ist ausdrücklich nicht Teil von C.
