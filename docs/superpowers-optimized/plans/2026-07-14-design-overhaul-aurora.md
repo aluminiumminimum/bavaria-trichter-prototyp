@@ -124,31 +124,31 @@ html{scrollbar-color:var(--brass-line) var(--cream);accent-color:var(--brass)}
 **Files:** Modify: `index.html` (cv-CSS ~Z. 1410ff, cv-SVGs ~Z. 1776–1900 [Heute breit+schmal] + ~Z. 2313–2400 [Team-Spiegel], `.strom`-Block ~Z. 233-Kontext, Hero-Container `.greet`)
 **Does NOT cover:** KPI-Band/Kapitel (T6). Funnel-VERTRAG: `offset-path`-Pfade, `cv-travel`-Keyframes, Stagger-Delays (`cv-t2`–`cv-t6`), alle `data-sync`-Attribute und `set()`-Aufrufe bleiben BYTE-IDENTISCH — nur Farben/Strokes/Filter/Fills ändern sich.
 
-- [ ] **Step 1:** Hero-Fläche `.greet`: Direkt-Hex-Gradient (`#332d2a,#1f1c1c,#282320`) → `var(--espresso-grad)` + `--glass-border`-Rand + Inset-Highlight; Hero-Textfarben-Hexes (`#f4eee3→var(--ink)`, `#d3b78a→var(--brass)`, `#b29a76→var(--muted)`, `#8f7448→var(--brass-line)`, `#ecdfc8→var(--brass-deep)`, `#e6794f→var(--alert)`).
-- [ ] **Step 2:** cv-Re-Skin (CSS only): `.cv-chip-bg{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.09)}`; Pfad-Strokes champagner `#C4A97D` mit weichem Glow (SVG `<filter id="cvGlow"><feDropShadow dx="0" dy="0" stdDeviation="2.2" flood-color="#C4A97D" flood-opacity=".55"/></filter>` einmal je SVG-defs, auf die Linien-Gruppe); `.cv-dot{fill:#F4E9D2}` + `drop-shadow` verstärken; Fokal-Kreis: Glas-Scheibe + Champagner-Stroke + Außen-Glow; Stepper-Labels Fragment Mono; „stockt" `var(--alert)`. In ALLEN 4 SVG-Instanzen synchron (Heute breit ~1776/1849, Heute schmal ~1841, Team-Spiegel ~2313+; `grep -c "cv-chip-bg"` muss vor==nach sein).
-- [ ] **Step 3:** `.strom`-Trichter: Bänder-Fills auf Sage→Champagner-Verläufe (`<linearGradient>` in strom-defs), Zahlen `var(--ink)`, Hairlines `var(--hair)`, `fn-dot`-Verhalten unangetastet (RM-Block Z. 233 bleibt).
-- [ ] **Step 4:** Bogen-Foto-Moment (aus A): im Hero rechts `<div class="au-arch"><img src="assets/kb-suite.webp" alt="" loading="eager"></div>` — Bogen-Maske `border-radius:999px 999px 24px 24px`, Ink-Duotone-Overlay, nur ≥1200px sichtbar, Mono-Caption „KLINIK BAVARIA · BAD KISSINGEN".
-- [ ] **Step 5:** V1+V2+V3+V5: Punkte wandern in Heute (breit+schmal per Resize) UND Team; `renderHeute()`-`set()`-Sync: `simulateInbound()` abwarten → Zahlen steigen in beiden Views; Screenshots gegen `d-aurora.html`-Hero (Messlatte). V6.
-- [ ] **Step 6: Commit** `git commit -m "feat(aurora): Hero + Funnel-Re-Skin (4 Instanzen, Animation-Contract intakt) + Trichter + Bogen-Foto (Stufe 2)"`.
+- [x] **Step 1:** Hero-Fläche `.greet`: Direkt-Hex-Gradient (`#332d2a,#1f1c1c,#282320`) → `var(--espresso-grad)` + `--glass-border`-Rand + Inset-Highlight; Hero-Textfarben-Hexes (`#f4eee3→var(--ink)`, `#d3b78a→var(--brass)`, `#b29a76→var(--muted)`, `#8f7448→var(--brass-line)`, `#ecdfc8→var(--brass-deep)`, `#e6794f→var(--alert)`).
+- [x] **Step 2:** cv-Re-Skin (CSS only): `.cv-chip-bg{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.09)}`; Pfad-Strokes champagner `#C4A97D` mit weichem Glow (SVG `<filter id="cvGlow"><feDropShadow dx="0" dy="0" stdDeviation="2.2" flood-color="#C4A97D" flood-opacity=".55"/></filter>` einmal je SVG-defs, auf die Linien-Gruppe); `.cv-dot{fill:#F4E9D2}` + `drop-shadow` verstärken; Fokal-Kreis: Glas-Scheibe + Champagner-Stroke + Außen-Glow; Stepper-Labels Fragment Mono; „stockt" `var(--alert)`. In ALLEN 4 SVG-Instanzen synchron (Heute breit ~1776/1849, Heute schmal ~1841, Team-Spiegel ~2313+; `grep -c "cv-chip-bg"` muss vor==nach sein).
+- [x] **Step 3:** `.strom`-Trichter: Bänder-Fills auf Sage→Champagner-Verläufe (`<linearGradient>` in strom-defs), Zahlen `var(--ink)`, Hairlines `var(--hair)`, `fn-dot`-Verhalten unangetastet (RM-Block Z. 233 bleibt).
+- [x] **Step 4:** Bogen-Foto-Moment (aus A): im Hero rechts `<div class="au-arch"><img src="assets/kb-suite.webp" alt="" loading="eager"></div>` — Bogen-Maske `border-radius:999px 999px 24px 24px`, Ink-Duotone-Overlay, nur ≥1200px sichtbar, Mono-Caption „KLINIK BAVARIA · BAD KISSINGEN".
+- [x] **Step 5:** V1+V2+V3+V5: Punkte wandern in Heute (breit+schmal per Resize) UND Team; `renderHeute()`-`set()`-Sync: `simulateInbound()` abwarten → Zahlen steigen in beiden Views; Screenshots gegen `d-aurora.html`-Hero (Messlatte). V6.
+- [x] **Step 6: Commit** `git commit -m "feat(aurora): Hero + Funnel-Re-Skin (4 Instanzen, Animation-Contract intakt) + Trichter + Bogen-Foto (Stufe 2)"`.
 
 ### Task 6: KPI-Band + Ring-Gauges + Kapitel-Nummerierung
 
 **Files:** Modify: `index.html` (`kennzahlen()`/KPI-Markup, `kpiRing()` Z. 4049, `#anlassChap` Z. 2209 / `#belegungChap` Z. 2215 Kapitel-Köpfe, Count-up)
 **Does NOT cover:** Karten-Inhalte der Kapitel (T8/T10-Muster folgen in Stufe 3).
 
-- [ ] **Step 1:** KPI-Kacheln: Elevation-Fläche (`--paper2`, KEIN Glas), Zahlen Fraunces 600 mit dezentem Glow (`text-shadow:0 0 24px rgba(196,169,125,.28)`), Einheiten/Labels Fragment Mono uppercase.
-- [ ] **Step 2:** Count-up: bestehenden RM-sicheren Count-up-Helper wiederverwenden (Portal-Stats, `<script>`-Region um Z. 2889, `el.textContent=to+suf`-Guard) — auf die Heute-KPIs verdrahten, einmalig beim Render.
-- [ ] **Step 3:** `kpiRing()` (Z. 4049): Template auf Verlaufs-Stroke umstellen — global EINMAL verstecktes `<svg width="0" height="0"><defs><linearGradient id="auroraRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7E9B84"/><stop offset="1" stop-color="#C4A97D"/></linearGradient></defs></svg>` nach `<body>`-Start; Ring-Stroke `stroke="url(#auroraRingGrad)"`, Track `var(--hair)`.
-- [ ] **Step 4:** Kapitel-Köpfe (alle `.chap`-Header auf Heute): Mono-Nummern „01/02/03…" (aus C) + Fraunces-Zeile; Forecast-Balken (.fc) Sage→Champagner-Verlauf + Scroll-Reveal via `animation-timeline: view()` (`@supports`+`no-preference`, `animation-range: entry 0% cover 40%`; Endzustand ohne Animation = sichtbar).
-- [ ] **Step 5:** V1+V2+V3+V5 (Count-up landet exakt; RM → Endwerte sofort; Ring-Gauges überall wo `kpiRing` rendert: Team, Datenbank-Cockpit, Portal prüfen). V6.
-- [ ] **Step 6: Commit** `git commit -m "feat(aurora): KPI-Band m. Count-up/Glow + Verlaufs-Ringe + Kapitel-Nummern + Forecast-Reveal (Stufe 2)"`.
+- [x] **Step 1:** KPI-Kacheln: Elevation-Fläche (`--paper2`, KEIN Glas), Zahlen Fraunces 600 mit dezentem Glow (`text-shadow:0 0 24px rgba(196,169,125,.28)`), Einheiten/Labels Fragment Mono uppercase.
+- [x] **Step 2:** Count-up: bestehenden RM-sicheren Count-up-Helper wiederverwenden (Portal-Stats, `<script>`-Region um Z. 2889, `el.textContent=to+suf`-Guard) — auf die Heute-KPIs verdrahten, einmalig beim Render.
+- [x] **Step 3:** `kpiRing()` (Z. 4049): Template auf Verlaufs-Stroke umstellen — global EINMAL verstecktes `<svg width="0" height="0"><defs><linearGradient id="auroraRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7E9B84"/><stop offset="1" stop-color="#C4A97D"/></linearGradient></defs></svg>` nach `<body>`-Start; Ring-Stroke `stroke="url(#auroraRingGrad)"`, Track `var(--hair)`.
+- [x] **Step 4:** Kapitel-Köpfe (alle `.chap`-Header auf Heute): Mono-Nummern „01/02/03…" (aus C) + Fraunces-Zeile; Forecast-Balken (.fc) Sage→Champagner-Verlauf + Scroll-Reveal via `animation-timeline: view()` (`@supports`+`no-preference`, `animation-range: entry 0% cover 40%`; Endzustand ohne Animation = sichtbar).
+- [x] **Step 5:** V1+V2+V3+V5 (Count-up landet exakt; RM → Endwerte sofort; Ring-Gauges überall wo `kpiRing` rendert: Team, Datenbank-Cockpit, Portal prüfen). V6.
+- [x] **Step 6: Commit** `git commit -m "feat(aurora): KPI-Band m. Count-up/Glow + Verlaufs-Ringe + Kapitel-Nummern + Forecast-Reveal (Stufe 2)"`.
 
 ### Task 7: Motion-System — View-Transitions + Entrances
 
 **Files:** Modify: `index.html` (`go()` Z. 4641, neuer CSS-Block `/* ===== AURORA · MOTION ===== */`)
 **Does NOT cover:** per-Karten-Hover einzelner Flächen (Stufe 3 je Fläche).
 
-- [ ] **Step 1:** `go()` wrappen (Logik unverändert, nur Umschalt-Moment):
+- [x] **Step 1:** `go()` wrappen (Logik unverändert, nur Umschalt-Moment):
 ```js
 function go(dest,seg){
   const _run=()=>{ /* ===== bisheriger go()-Body 1:1 hierher ===== */ };
@@ -157,10 +157,10 @@ function go(dest,seg){
   } else { _run(); }
 }
 ```
-- [ ] **Step 2:** CSS: `::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}`; Entrance-Choreografie je View-Wechsel: bestehende `dv2Up`-Entrance-Muster (Design-V2) auf Aurora-Timing heben (Stagger ≤800ms, transform/opacity, Startzustand NUR im Keyframe-`from`).
-- [ ] **Step 3:** Micro-Interactions global: Buttons/Zeilen `transition:transform .12s ease,border-color .12s ease,background .12s ease`, Hover-Lift max `translateY(-2px)` (Karten -4px), `@media(hover:hover)`-gated.
-- [ ] **Step 4:** V1+V2+V5 (View-Wechsel blendet @Chrome; Fallback ohne VT-API = harter Wechsel OK; RM = keine Transitions; Esc-Kaskade + `dismissDetail`/History-Verhalten [WS1] unverändert — `openDetail`→Esc→`history.back()`-Pfad testen). V6.
-- [ ] **Step 5: Commit** `git commit -m "feat(aurora): Motion — View-Transitions auf go() + Entrances + Micro-Interactions (Stufe 2)"`.
+- [x] **Step 2:** CSS: `::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}`; Entrance-Choreografie je View-Wechsel: bestehende `dv2Up`-Entrance-Muster (Design-V2) auf Aurora-Timing heben (Stagger ≤800ms, transform/opacity, Startzustand NUR im Keyframe-`from`).
+- [x] **Step 3:** Micro-Interactions global: Buttons/Zeilen `transition:transform .12s ease,border-color .12s ease,background .12s ease`, Hover-Lift max `translateY(-2px)` (Karten -4px), `@media(hover:hover)`-gated.
+- [x] **Step 4:** V1+V2+V5 (View-Wechsel blendet @Chrome; Fallback ohne VT-API = harter Wechsel OK; RM = keine Transitions; Esc-Kaskade + `dismissDetail`/History-Verhalten [WS1] unverändert — `openDetail`→Esc→`history.back()`-Pfad testen). V6.
+- [x] **Step 5: Commit** `git commit -m "feat(aurora): Motion — View-Transitions auf go() + Entrances + Micro-Interactions (Stufe 2)"`.
 
 **→ STUFEN-GATE 2:** V1–V6, push, Pages „built".
 
