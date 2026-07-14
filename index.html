@@ -1162,7 +1162,8 @@ label{font-size:12px;letter-spacing:.08em}
   .dbc-bartitle{font:600 11px/1 Inter;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
   .dbc-bar{display:flex;height:11px;border-radius:99px;overflow:hidden;background:#efe9e0;gap:2px}
   .dbc-seg{height:100%;border-radius:2px}
-  .dbc-seg.sA{background:#5d7f60}.dbc-seg.sB{background:#b58a3e}.dbc-seg.sC{background:#a9b3a9}.dbc-seg.sG{background:#cfc8bc}
+  .dbc-seg.s5s{background:#6e5d4e}.dbc-seg.s4s{background:#9b8573}.dbc-seg.s3s{background:#bfa886}.dbc-seg.s2s{background:#d7c8bc}.dbc-seg.s1s{background:#e9e3d8}.dbc-seg.sGs{background:#c9c4bb}
+  .dbc-legend i.l5{background:#6e5d4e}.dbc-legend i.l4{background:#9b8573}.dbc-legend i.l3{background:#bfa886}.dbc-legend i.l2{background:#d7c8bc}.dbc-legend i.l1{background:#e9e3d8}.dbc-legend i.lG{background:#c9c4bb}
   .dbc-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:9px;font:500 11.5px/1 Inter;color:var(--ink-soft)}
   .dbc-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px}
   /* Kontaktkarten (klickbar) */
@@ -1523,6 +1524,13 @@ label{font-size:12px;letter-spacing:.08em}
 .pa-ev p{margin:2px 0 0;font-size:12.5px;color:var(--ink-soft);line-height:1.5}
 .pa-hint{font-size:13px;color:var(--muted);font-style:italic;border-left:2px solid var(--brass-line);padding-left:10px}
 @media(max-width:520px){.pa-k{flex-basis:88px}}
+/* ---------- Baustein B · Sterne (.st-*) ---------- */
+.st-row{display:inline-flex;gap:1px;font-size:13px;line-height:1;letter-spacing:.5px}
+.st-row .st{color:var(--hair)}
+.st-row .st.on{color:var(--brass)}
+.st-lbl{font:600 11px/1.4 Inter;letter-spacing:.04em;color:var(--muted)}
+.db-group-h.st-h .st-row{font-size:15px;margin-top:3px}
+.pa-head .st-row{font-size:12px}
 </style>
 </head>
 <body>
@@ -2519,19 +2527,19 @@ let eingang=[
 
 let bestand=[
  /* A · Warm — aktives Interesse, noch kein Termin */
- {personId:"P12",name:"Sabine Vogt",alter:54,achse:"Orthopädie",consent:"ja",tier:"A",quelle:"Erstkontakt Telefon",kontext:"Erstgespräch geführt, Komfort-Reha gewünscht"},
- {personId:"P13",name:"Bernd Kohl",alter:59,achse:"Neurologie",consent:"ja",tier:"A",quelle:"Telefon",kontext:"Interesse an Neuro-Reha, noch kein Termin"},
- {personId:"P14",name:"Markus Pfeiffer",alter:60,achse:"SalutoCare",consent:"ja",tier:"A",quelle:"entlassener Patient",kontext:"Kontaktwunsch nach Entlassung, Premium-Nachsorge"},
+ {personId:"P12",name:"Sabine Vogt",alter:54,achse:"Orthopädie",consent:"ja",quelle:"Erstkontakt Telefon",kontext:"Erstgespräch geführt, Komfort-Reha gewünscht"},
+ {personId:"P13",name:"Bernd Kohl",alter:59,achse:"Neurologie",consent:"ja",quelle:"Telefon",kontext:"Interesse an Neuro-Reha, noch kein Termin"},
+ {personId:"P14",name:"Markus Pfeiffer",alter:60,achse:"SalutoCare",consent:"ja",quelle:"entlassener Patient",kontext:"Kontaktwunsch nach Entlassung, Premium-Nachsorge"},
  /* B · Interessiert — Einwilligung + Signal (Broschüre/Newsletter) */
- {personId:"P15",name:"Petra Lindner",alter:57,achse:"Orthopädie",consent:"ja",tier:"B",quelle:"Broschüre-Download",kontext:"Reha-Broschüre geladen, Newsletter abonniert"},
- {personId:"P16",name:"Klaus Reuter",alter:62,achse:"SalutoCare",consent:"ja",tier:"B",quelle:"Broschüre-Download",kontext:"Premium-Broschüre, E-Mail-Einwilligung"},
- {personId:"P17",name:"Ilse Hartmann",alter:61,achse:"Innere",consent:"ja",tier:"B",quelle:"Newsletter",kontext:"liest Newsletter, noch keine Anfrage"},
+ {personId:"P15",name:"Petra Lindner",alter:57,achse:"Orthopädie",consent:"ja",quelle:"Broschüre-Download",kontext:"Reha-Broschüre geladen, Newsletter abonniert"},
+ {personId:"P16",name:"Klaus Reuter",alter:62,achse:"SalutoCare",consent:"ja",quelle:"Broschüre-Download",kontext:"Premium-Broschüre, E-Mail-Einwilligung"},
+ {personId:"P17",name:"Ilse Hartmann",alter:61,achse:"Innere",consent:"ja",quelle:"Newsletter",kontext:"liest Newsletter, noch keine Anfrage"},
  /* C · Potenziell — Einwilligung, aktuell ruhend */
- {personId:"P18",name:"Gerda Sommer",alter:69,achse:"Orthopädie",consent:"ja",tier:"C",quelle:"Altpatient",kontext:"frühere Reha, aktuell kein Anlass"},
- {personId:"P19",name:"Norbert Frey",alter:64,achse:"Innere",consent:"ja",tier:"C",quelle:"Gesundheitsmesse",kontext:"Messe-Kontakt, ruht"},
+ {personId:"P18",name:"Gerda Sommer",alter:69,achse:"Orthopädie",consent:"ja",quelle:"Altpatient",kontext:"frühere Reha, aktuell kein Anlass"},
+ {personId:"P19",name:"Norbert Frey",alter:64,achse:"Innere",consent:"ja",quelle:"Gesundheitsmesse",kontext:"Messe-Kontakt, ruht"},
  /* Gesperrt — keine Einwilligung */
- {personId:"P20",name:"Hannelore Beck",alter:70,achse:"Orthopädie",consent:"nein",tier:"A",quelle:"Website-Mail",kontext:"nur E-Mail, keine Freigabe angeklickt"},
- {name:"Unbekannt (Website)",alter:null,achse:"—",consent:"nein",tier:"C",quelle:"Website-Mail",kontext:"anonyme Frage, keine Freigabe"}
+ {personId:"P20",name:"Hannelore Beck",alter:70,achse:"Orthopädie",consent:"nein",quelle:"Website-Mail",kontext:"nur E-Mail, keine Freigabe angeklickt"},
+ {name:"Unbekannt (Website)",alter:null,achse:"—",consent:"nein",quelle:"Website-Mail",kontext:"anonyme Frage, keine Freigabe"}
 ];
 /* Altpatienten-Radar — ehemalige Patienten mit Einwilligung und absehbarem Wiederbedarf (proaktiv, ausgehend) */
 let radar=[
@@ -2767,7 +2775,7 @@ function paAkte(pid){
  const ewTxt=ew.status==="erteilt"?("erteilt"+(ew.form?" · "+ew.form:"")):ew.status==="widerruf"?"Widerruf":"offen";
  const hist=(p.historie||[]).slice(-6).reverse().map(h=>"<div class='pa-ev'><span class='pa-dot'></span><div class='pa-evb'><div class='pa-evm'><span class='pa-evt'>"+escapeHtml(PA_TYP[h.typ]||h.typ)+"</span><small>"+escapeHtml(paDate(h.d))+"</small></div><p>"+escapeHtml(h.text)+"</p></div></div>").join("");
  return "<div class='pa-akte'>"
-  +"<div class='pa-head'><span class='pa-title'>Akte</span><span class='pa-lz lz-"+p.lebenszyklus+"'><span class='pa-lzdot'></span>"+(LZ[p.lebenszyklus]||p.lebenszyklus)+"</span><span class='pa-ktchip'>"+escapeHtml(p.kt)+"</span></div>"
+  +"<div class='pa-head'><span class='pa-title'>Akte</span><span class='pa-lz lz-"+p.lebenszyklus+"'><span class='pa-lzdot'></span>"+(LZ[p.lebenszyklus]||p.lebenszyklus)+"</span><span class='pa-ktchip'>"+escapeHtml(p.kt)+"</span>"+(p.sterne?sterneHtml(p.sterne):"")+"</div>"
   +((g&&g.tage<=30)?"<div class='pa-anlass'>✦ <b>Wird "+g.wird+" am "+g.datum+"</b> — Geburtstag in "+g.tage+" Tagen. Anlass für eine persönliche Aufmerksamkeit.</div>":"")
   +"<div class='pa-meta'>"
   +(p.geb?"<div class='pa-row'><span class='pa-k'>Geboren</span><span class='pa-v'>"+escapeHtml(paDate(p.geb))+"</span></div>":"")
@@ -2906,7 +2914,7 @@ function inDatenbank(id){
  m.done=true;
  let _pid=null;
  if(m.einzelperson&&m.pName){_pid=pNew(m.pName,{kt:"Unklar"});pHist(_pid,"kontakt","In Datenbank aufgenommen aus "+m.kanal);}
- bestand.unshift({name:(m.einzelperson&&m.pName)?m.pName:(m.tit.split(":")[1]?m.tit.split(":")[1].trim():"Neuer Kontakt"),personId:_pid,tier:"C",alter:null,achse:m.achse,entl:"—",
+ bestand.unshift({name:(m.einzelperson&&m.pName)?m.pName:(m.tit.split(":")[1]?m.tit.split(":")[1].trim():"Neuer Kontakt"),personId:_pid,alter:null,achse:m.achse,entl:"—",
    consent:(m.tit+" "+m.txt).toLowerCase().includes("freigabe")?"ja":"nein",
    anlass:"Aus Eingang ("+m.kanal+"): "+m.txt,wv:false,stufe:2,quelle:"Broschüre-Download",
    auto:"1 Info-Mail nach 7 Tagen, dann ruhend",board:"neu",owner:"S. Koordination"});
@@ -2985,26 +2993,30 @@ function setDbView(v){dbView=v;
   document.getElementById("dbKontakte").classList.toggle("on",v==="kontakte");
   document.getElementById("dbRadar").classList.toggle("on",v==="radar");
   renderBestand();}
-const TIERS={
-  A:{label:"Warm",note:"konkretes Interesse, noch kein Termin",auto:"Persönlicher Rückruf + Wiedervorlage"},
-  B:{label:"Interessiert",note:"Einwilligung + Signal (Broschüre/Newsletter)",auto:"Automatische Info-/Newsletter-Strecke"},
-  C:{label:"Potenziell",note:"Einwilligung, aktuell ruhend",auto:"Ruhende Pflege · Radar beobachtet Wiederbedarf"}
+const STERNE={
+ 5:{label:"Heißester Lead — Wiederkehr / VIP",note:"War bereits da & begeistert · aktiver Selbstzahler/Privatpatient · hat aktiv weiterempfohlen",auto:"Persönliche Betreuung durch Recovery Manager · bevorzugte Terminvergabe",geste:"Geschenk (Stift, Visitenkarte, persönliche Note)"},
+ 4:{label:"Sehr qualifiziert — Selbstzahler mit Interesse",note:"Selbstzahler bestätigt · konkretes Gespräch, echter Bedarf · Angehöriger mit Entscheidungsauftrag",auto:"Persönlicher Rückruf + Wiedervorlage",geste:"Handgeschriebene Karte + persönlicher Anruf"},
+ 3:{label:"Qualifiziert — Interesse vorhanden",note:"Privat-/Kassenpatient mit Zusatzversicherung · Gespräch geführt · aktiv recherchierender Angehöriger",auto:"Wiedervorlage + Infopaket",geste:"Karte oder Anruf"},
+ 2:{label:"Schwacher Lead — wenig Signale",note:"Nur Broschüre · kurze Anfrage ohne konkrete Details",auto:"Automatische Info-/Newsletter-Strecke",geste:"Gruß im Newsletter"},
+ 1:{label:"Nicht qualifiziert — kein Potenzial",note:"Nie erreicht · falsche Zielgruppe · reiner Kassenpatient · explizit abgesagt",auto:"Keine aktive Pflege · Datenhygiene",geste:null}
 };
-const TIER_ORDER=["A","B","C"];
-let tierFilter="alle";
-function bucketOf(p){return p.consent!=="ja"?"gesperrt":p.tier;}
+const STERNE_ORDER=["5","4","3","2","1"];
+let sterneFilter="alle";
+function sterneVon(p){const per=p.personId?person(p.personId):null;return per&&per.sterne?per.sterne:2;}
+function bucketOf(p){return p.consent!=="ja"?"gesperrt":String(sterneVon(p));}
+function sterneHtml(n){let s="";for(let i=1;i<=5;i++)s+="<span class='st"+(i<=n?" on":"")+"'>★</span>";return "<span class='st-row' role='img' aria-label='"+n+" von 5 Sternen'>"+s+"</span>";}
 function dbCockpit(){
   const c=b=>bestand.filter(p=>bucketOf(p)===b).length;
-  const nA=c("A"),nB=c("B"),nC=c("C"),nG=c("gesperrt");
-  const nHot=bestand.filter(p=>p.consent==="ja"&&p.tier==="A").length;
+  const n5=c("5"),n4=c("4"),n3=c("3"),n2=c("2"),n1=c("1"),nG=c("gesperrt");
+  const nHot=bestand.filter(p=>p.consent==="ja"&&sterneVon(p)>=4).length;
   const nOk=bestand.filter(p=>p.consent==="ja").length;
   const seg=(n,cls)=>n?"<span class='dbc-seg "+cls+"' style='flex:"+n+"'></span>":"";
   return "<div class='db-cockpit'>"
     +"<div class='dbc-stat'><div class='dbc-num num'>"+bestand.length+"</div><div class='dbc-lbl'>Kontakte</div></div>"
     +"<div class='dbc-div'></div>"
-    +"<div class='dbc-barwrap'><div class='dbc-bartitle'>Verteilung nach Einstufung</div>"
-      +"<div class='dbc-bar'>"+seg(nA,"sA")+seg(nB,"sB")+seg(nC,"sC")+seg(nG,"sG")+"</div>"
-      +"<div class='dbc-legend'><span><i style='background:#5d7f60'></i>A · Warm "+nA+"</span><span><i style='background:#b58a3e'></i>B · Interessiert "+nB+"</span><span><i style='background:#a9b3a9'></i>C · Potenziell "+nC+"</span><span><i style='background:#cfc8bc'></i>Gesperrt "+nG+"</span></div>"
+    +"<div class='dbc-barwrap'><div class='dbc-bartitle'>Verteilung nach Sternen</div>"
+      +"<div class='dbc-bar'>"+seg(n5,"s5s")+seg(n4,"s4s")+seg(n3,"s3s")+seg(n2,"s2s")+seg(n1,"s1s")+seg(nG,"sGs")+"</div>"
+      +"<div class='dbc-legend'><span><i class='l5'></i>5★ "+n5+"</span><span><i class='l4'></i>4★ "+n4+"</span><span><i class='l3'></i>3★ "+n3+"</span><span><i class='l2'></i>2★ "+n2+"</span><span><i class='l1'></i>1★ "+n1+"</span><span><i class='lG'></i>Gesperrt "+nG+"</span></div>"
     +"</div>"
     +"<div class='dbc-div'></div>"
     +"<div class='dbc-stat hot'><div class='dbc-num num'>"+nHot+"</div><div class='dbc-lbl'>Handlungsbedarf</div></div>"
@@ -3015,10 +3027,10 @@ function renderBestand(){
   const fil=document.getElementById("tierFilter");
   if(dbView==="radar"){ if(fil)fil.innerHTML=""; renderRadar(); return; }
   const count=b=>bestand.filter(p=>bucketOf(p)===b).length;
-  const chip=(key,lbl)=>"<button class='tchip"+(tierFilter===key?" on":"")+"' onclick='tierFilter=\""+key+"\";renderBestand()'>"+lbl+" <b class='num'>"+(key==="alle"?bestand.length:count(key))+"</b></button>";
-  const chips="<div class='tier-chips'>"+chip("alle","Alle")+TIER_ORDER.map(k=>chip(k,k)).join("")+chip("gesperrt","Gesperrt")+"</div>";
+  const chip=(key,lbl)=>"<button class='tchip"+(sterneFilter===key?" on":"")+"' onclick='sterneFilter=\""+key+"\";renderBestand()'>"+lbl+" <b class='num'>"+(key==="alle"?bestand.length:count(key))+"</b></button>";
+  const chips="<div class='tier-chips'>"+chip("alle","Alle")+STERNE_ORDER.map(k=>chip(k,k+"★")).join("")+chip("gesperrt","Gesperrt")+"</div>";
   if(fil)fil.innerHTML=dbCockpit()+chips;
-  const groups=tierFilter==="alle"?[...TIER_ORDER,"gesperrt"]:[tierFilter];
+  const groups=sterneFilter==="alle"?[...STERNE_ORDER,"gesperrt"]:[sterneFilter];
   const row=(p,idx)=>{
     const col=ACHSE_COL[p.achse]||"var(--unklar)";
     const cons=p.consent==="ja"?"<span class='db-pill ok'>freigegeben</span>":"<span class='db-pill lock'>gesperrt</span>";
@@ -3030,23 +3042,17 @@ function renderBestand(){
         +(p.kontext?"<div class='db-c-ctx'>"+escapeHtml(p.kontext)+"</div>":"")
       +"</div><span class='db-c-chev'>›</span></button>";
   };
-  const ICO={
-    A:"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2'/></svg>",
-    B:"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>",
-    C:"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/></svg>",
-    gesperrt:"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><rect x='5' y='11' width='14' height='9' rx='2'/><path d='M8 11V8a4 4 0 0 1 8 0v3'/></svg>"
-  };
   document.getElementById("btable").innerHTML=groups.map(g=>{
     const entries=bestand.map((p,i)=>[p,i]).filter(e=>bucketOf(e[0])===g);
     const rows=entries.map(e=>e[0]);
     if(!rows.length)return"";
     const gesperrt=g==="gesperrt";
-    const ico="<span class='db-ico "+(gesperrt?"gesperrt":"t"+g)+"'>"+(gesperrt?ICO.gesperrt:ICO[g])+"</span>";
-    const title=gesperrt?"Gesperrt":g+" · "+TIERS[g].label;
-    const note=gesperrt?"keine Einwilligung":TIERS[g].note;
-    const auto=gesperrt?"Keine Ansprache (Compliance)":TIERS[g].auto;
+    const kopf=gesperrt?"<span class='db-ico gesperrt'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><rect x='5' y='11' width='14' height='9' rx='2'/><path d='M8 11V8a4 4 0 0 1 8 0v3'/></svg></span>":sterneHtml(Number(g));
+    const title=gesperrt?"Gesperrt":escapeHtml(STERNE[g].label);
+    const note=gesperrt?"keine Einwilligung":STERNE[g].note;
+    const auto=gesperrt?"Keine Ansprache (Compliance)":STERNE[g].auto;
     return "<section class='db-group"+(gesperrt?" is-locked":"")+"'>"
-      +"<header class='db-group-h'>"+ico+"<div class='db-group-txt'><div class='db-group-t'>"+title+"<span class='db-group-n num'>"+rows.length+"</span></div><div class='db-group-note'>"+escapeHtml(note)+"</div></div></header>"
+      +"<header class='db-group-h st-h'>"+kopf+"<div class='db-group-txt'><div class='db-group-t'>"+title+"<span class='db-group-n num'>"+rows.length+"</span></div><div class='db-group-note'>"+escapeHtml(note)+"</div></div></header>"
       +"<div class='db-group-auto'>⟳ "+escapeHtml(auto)+"</div>"
       +"<div class='db-list'>"+entries.map(e=>row(e[0],e[1])).join("")+"</div></section>";
   }).join("")||"<p class='empty'>Keine Kontakte.</p>";
@@ -3097,7 +3103,8 @@ function openDbDetail(i){
     +"<div class='di-rows'>"
     +"<div class='di-row'><span class='di-k'>Einwilligung</span><span>"+cons+"</span></div>"
     +"<div class='di-row'><span class='di-k'>Achse</span><span class='di-axis'><span class='ach-dot'></span>"+escapeHtml(p.achse)+"</span></div>"
-    +"<div class='di-row'><span class='di-k'>Einstufung</span><span>"+(p.tier||"—")+(TIERS[p.tier]?" · "+TIERS[p.tier].label:"")+"</span></div>"
+    +"<div class='di-row'><span class='di-k'>Einstufung</span><span>"+sterneHtml(sterneVon(p))+" <span class='st-lbl'>"+escapeHtml((STERNE[String(sterneVon(p))]||{}).label||"")+"</span></span></div>"
+    +((p.personId&&person(p.personId)&&person(p.personId).sterneGrund)?"<div class='di-row'><span class='di-k'>Begründung</span><span>"+escapeHtml(person(p.personId).sterneGrund)+"</span></div>":"")
     +"<div class='di-row'><span class='di-k'>Quelle</span><span>"+escapeHtml(p.quelle||"—")+"</span></div>"
     +"</div>"
     +"<div class='patient-actions'>"+action+"</div>"
@@ -3114,7 +3121,7 @@ function closeDbDetail(){
 /* Automatisierungs-Vorschlag — abgeleitet aus Alter, Quelle & Einwilligung (gemäß Michaels Memo) */
 function autoFor(b){
  if(b.consent!=="ja") return "Keine Ansprache — Einwilligung fehlt";
- return (TIERS[b.tier]&&TIERS[b.tier].auto)||"Ruhende Pflege";
+ return (STERNE[String(sterneVon(b))]||{}).auto||"Ruhende Pflege";
 }
 
 /* ---------- Render: Zuweiser ---------- */
