@@ -1546,7 +1546,9 @@ label{font-size:12px;letter-spacing:.08em}
 .ar-head{display:flex;align-items:baseline;gap:12px;margin:2px 0 12px}
 .ar-sum{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:19px;color:var(--ink-soft)}
 .ar-more{margin-left:auto;background:none;border:none;cursor:pointer;font:600 12px/1 Inter;color:var(--brass-deep);letter-spacing:.03em;padding:6px 2px}
-.ar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.ar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.ar-grid .radar-card{height:100%;display:flex;flex-direction:column}
+.ar-grid .radar-card .patient-actions{margin-top:auto}
 .ar-card{background:var(--paper);border:1px solid var(--hair);border-top:2px solid var(--brass-line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow-soft);display:flex;flex-direction:column;gap:7px}
 .ar-card.jetzt{border-top-color:var(--brass)}
 .ar-top{display:flex;align-items:center;gap:8px}
@@ -3132,11 +3134,18 @@ function arAktion(key){
 }
 const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf",zuweiser:"Zuweiser-Kontakt"};
 function arCard(a){
- return "<div class='ar-card"+(a.urg==="jetzt"?" jetzt":"")+"'>"
-  +"<div class='ar-top'><span class='ar-typ'>"+AR_TYP[a.typ]+"</span>"+(a.sterne?sterneHtml(a.sterne):"")+"</div>"
-  +"<div class='ar-name'>"+escapeHtml(a.titel)+"</div>"
-  +"<div class='ar-sub'>"+escapeHtml(a.sub)+"</div>"
-  +"<div class='ar-act'>"+(a.typ!=="zuweiser"?"<span class='ar-geste'>"+escapeHtml(a.geste.label)+"</span>":"")+"<button class='btn-brass btn-sm' onclick='arAktion(\""+a.key.replace(/"/g,"&quot;")+"\")'>"+escapeHtml(a.geste.cta)+" ›</button></div>"
+ const perName=a.pid&&person(a.pid)?person(a.pid).name:a.titel;
+ const due=a.typ==="zuweiser"?(a.urg==="jetzt"?"überfällig":"fällig"):"in "+a.tage+" Tagen";
+ const dueCls=(a.typ==="zuweiser"&&a.urg==="jetzt")?"jetzt":"bald";
+ const gLbl=a.typ==="zuweiser"?"Nächste Aktion":"Empfohlene Geste";
+ return "<div class='radar-card ar-rc' style='--acol:var(--brass)'>"
+  +"<div class='patient-top'><span class='ava'>"+initialen(perName)+"</span><span class='radar-due "+dueCls+"'>"+due+"</span></div>"
+  +"<h3>"+escapeHtml(a.titel)+"</h3>"
+  +(a.sterne?"<div class='ar-cardstars'>"+sterneHtml(a.sterne)+"</div>":"")
+  +"<div class='patient-meta'>"+AR_TYP[a.typ]+"</div>"
+  +"<div class='radar-prog'><span class='rk'>Anlass</span>"+escapeHtml(a.sub)+"</div>"
+  +"<div class='radar-prog'><span class='rk'>"+gLbl+"</span>"+escapeHtml(a.geste.label)+"</div>"
+  +"<div class='patient-actions'><button class='btn-ghost btn-sm' onclick='arAktion(\""+a.key.replace(/"/g,"&quot;")+"\")'>"+escapeHtml(a.geste.cta)+" ›</button></div>"
   +"</div>";
 }
 function renderAnlaesse(){
