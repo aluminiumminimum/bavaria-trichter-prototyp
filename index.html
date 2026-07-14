@@ -1652,6 +1652,14 @@ label{font-size:12px;letter-spacing:.08em}
   .fc-cols{gap:5px}
   .fc-wklabel{font-size:9px}
 }
+/* ---------- Baustein D · Fall-Detail Arbeitstiefe (.kz-*) ---------- */
+.kz-block{margin-bottom:14px}
+.kz-chain{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-bottom:10px}
+.kz-chain .kz-sep{color:var(--faint);font-size:12px}
+.status-pill.kz-active{background:var(--brass-soft);color:var(--brass-deep)}
+.kz-actions{display:flex;flex-wrap:wrap;gap:8px}
+.kz-notiz-row{display:flex;gap:8px}
+.kz-notiz-row input{flex:1;min-width:0}
 </style>
 </head>
 <body>
@@ -2566,6 +2574,7 @@ label{font-size:12px;letter-spacing:.08em}
           <textarea id="dReply" rows="2" placeholder="Antwort an die anfragende Person verfassen … (Demo)"></textarea>
         </div>
         <div id="dWerdegang" class="d-track"></div>
+        <div id="dKZ" class="kz-block"></div>
         <div id="dAkte"></div>
       </div>
       <div class="mgrid">
@@ -2576,7 +2585,8 @@ label{font-size:12px;letter-spacing:.08em}
           <summary>Details &amp; Unterlagen</summary>
           <div class="d-acc-body">
             <div><label for="dStatus">Status</label><select id="dStatus"></select></div>
-            <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option></select></div>
+            <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option><option>abgelehnt</option></select></div>
+            <div><label for="dKT">Kostenträger</label><select id="dKT"><option>PKV</option><option>Selbstzahler</option><option>GKV + Komfort</option><option>Beihilfe</option><option>GKV</option></select></div>
             <div><label for="dConsent">Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
             <div class="full"><label>Unterlagen <span id="docCnt" style="color:var(--brass-deep)"></span></label>
               <div class="docs">
@@ -2592,6 +2602,7 @@ label{font-size:12px;letter-spacing:.08em}
             </div>
           </div>
         </details>
+        <div class="full"><label for="dNotizSofort">Notiz sofort vermerken</label><div class="kz-notiz-row"><input id="dNotizSofort" placeholder="z. B. Rückruf erledigt"><button class="btn-ghost btn-sm" type="button" onclick="kzNotizAdd()">Ins Protokoll</button></div></div>
         <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
         <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
       </div>
@@ -2890,6 +2901,15 @@ function pNew(name,teil){
  personen.push(p);return p.pid;
 }
 function pHist(pid,typ,text){const p=person(pid);if(p)p.historie.push({d:dstr(0),typ:typ,text:text});}
+/* Baustein D: Sammelnamen (Familie/Eheleute/Unbekannt …) bekommen keine Einzelperson-Akte — folgt der einzelperson-Konvention aus Baustein A. */
+function istEinzelperson(name){return !/^(Familie|Eheleute|Unbekannt)\b/i.test(String(name||"").trim());}
+function qualifyIfNeeded(f,ns){
+  if(ns==="Verloren"||f.personId||!istEinzelperson(f.name))return;
+  if(STATUS.indexOf(ns)<STATUS.indexOf("Qualifizierung"))return;
+  f.personId=pNew(f.name,{kt:f.kt==="Privat"?"PKV":f.kt});
+  f.log.push([dstr(0),"In Datenbank aufgenommen"]);
+  pHist(f.personId,"fall","In Datenbank aufgenommen");
+}
 (function paAssert(){
  const miss=[];
  [["faelle",faelle],["eingang",eingang],["bestand",bestand],["radar",radar],["inReha",inReha]].forEach(pair=>{
@@ -2945,7 +2965,7 @@ function bar(el,daten,warm){const max=Math.max(1,...daten.map(d=>d[1]));
 function zoneOf(s){if(s==="Neu"||s==="Kontaktiert")return 0;if(s==="Qualifizierung"||s==="Unterlagen")return 1;if(s==="Aufnahme geplant")return 2;return -1;}
 function stockt(f){
   const fr=f.frist&&new Date(f.frist)<new Date(dstr(0));
-  const blk=["Unterlagen","Aufnahme geplant"].includes(f.status)&&f.kosten==="offen";
+  const blk=["Unterlagen","Aufnahme geplant"].includes(f.status)&&(f.kosten==="offen"||f.kosten==="abgelehnt");
   return fr||blk;
 }
 function offeneFaelle(){return faelle.filter(x=>!["Aufgenommen","Verloren"].includes(x.status));}
@@ -3589,7 +3609,7 @@ function renderWichtig(k){
   }
   k.offen.forEach(f=>{
     if(seen.has(f.id))return;
-    if(["Unterlagen","Aufnahme geplant"].includes(f.status)&&f.kosten==="offen")
+    if(["Unterlagen","Aufnahme geplant"].includes(f.status)&&(f.kosten==="offen"||f.kosten==="abgelehnt"))
       items.push({p:-40,ico:"coin",cls:"",tit:escapeHtml(f.name)+" — Kostenklärung offen",sub:escapeHtml(f.status)+" · "+escapeHtml(f.aufgabe||"Kostenstatus klären"),click:"openDetail("+f.id+")"});
   });
   items.sort((a,b)=>a.p-b.p);
@@ -4095,10 +4115,53 @@ function deriveSchritte(f){
  const cur=STATUS.indexOf(f.status);
  return STATUS.slice(0,6).map((s,i)=>({label:s,who:i<=cur?(f.owner||""):"",ts:"",dauerMin:null,done:i<cur}));
 }
+/* ---------- Kostenzusage-Workflow (nur aktive Station gefüllt, kein kumulativer Fortschritt) ---------- */
+const KZ_STAGES=[["offen","Offen"],["angefragt","Angefragt"],["Zusage liegt vor","Zusage"],["abgelehnt","Abgelehnt"]];
+function kzChain(f){
+ return "<div class='kz-chain'>"+KZ_STAGES.map(function(s,i){
+   const active=f.kosten===s[0];
+   const cls=!active?"lock":(s[0]==="abgelehnt"?"bad":s[0]==="Zusage liegt vor"?"ok":"kz-active");
+   return (i>0?"<span class='kz-sep'>›</span>":"")+"<span class='status-pill "+cls+"'>"+escapeHtml(s[1])+"</span>";
+ }).join("")+"</div>";
+}
+function kzActions(f){
+ if(f.kosten==="offen")
+   return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzAnfragen()'>Kostenzusage anfragen</button></div>";
+ if(f.kosten==="angefragt")
+   return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzZusage()'>Zusage erfassen</button><button class='btn-ghost btn-sm' type='button' onclick='kzAblehnung()'>Ablehnung erfassen</button></div>";
+ return "";
+}
+function kzAnfragen(){
+ const f=aktuellerFall;if(!f)return;
+ f.kosten="angefragt";
+ f.log.push([dstr(0),"Kostenzusage angefragt"]);
+ renderAll();openDetail(f.id);
+}
+function kzZusage(){
+ const f=aktuellerFall;if(!f)return;
+ f.kosten="Zusage liegt vor";
+ f.log.push([dstr(0),"Kostenzusage liegt vor"]);
+ renderAll();openDetail(f.id);
+}
+function kzAblehnung(){
+ const f=aktuellerFall;if(!f)return;
+ f.kosten="abgelehnt";
+ f.log.push([dstr(0),"Kostenzusage abgelehnt"]);
+ renderAll();openDetail(f.id);
+}
+function kzNotizAdd(){
+ const f=aktuellerFall;if(!f)return;
+ const el=document.getElementById("dNotizSofort");
+ const txt=(el?el.value:"").trim();if(!txt)return;
+ f.log.push([dstr(0),txt]);
+ if(el)el.value="";
+ document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
+}
 function advanceFall(){ const f=aktuellerFall;if(!f)return;
  const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return;
  const ns=STATUS[cur+1]; f.log.push([dstr(0),"Aufgabe erledigt · Status: "+f.status+" → "+ns]);
  if(f.personId)pHist(f.personId,ns==="Aufgenommen"?"aufnahme":"fall","Status: "+f.status+" → "+ns);
+ qualifyIfNeeded(f,ns);
  if(f.schritte&&f.schritte[cur]) f.schritte[cur].done=true;
  f.status=ns; renderAll(); openDetail(f.id);
 }
@@ -4112,15 +4175,18 @@ function openDetail(id){
   document.getElementById("dAufgabe").value=f.aufgabe||"";
   document.getElementById("dFrist").value=f.frist||"";
   document.getElementById("dKosten").value=f.kosten;
+  document.getElementById("dKT").value=f.kt;
   document.getElementById("dConsent").value=f.consent;
   ["u1","u2","u3","u4"].forEach((u,i)=>document.getElementById(u).checked=f.docs[i]);
   updateDocCnt();
   document.getElementById("dSaluto").checked=f.saluto;
   document.getElementById("dVerlust").value=f.verlust||"";
   document.getElementById("dNotiz").value="";
+  document.getElementById("dNotizSofort").value="";
   var _dr=document.getElementById("dReply");if(_dr)_dr.value="";
   document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
   document.getElementById("dWerdegang").innerHTML="<div class='kicker'>Werdegang</div>"+stepper(f.schritte||deriveSchritte(f));
+  document.getElementById("dKZ").innerHTML="<div class='kicker'>Kostenzusage</div>"+kzChain(f)+kzActions(f);
   document.getElementById("dAkte").innerHTML=paAkteSlot(f.personId);
   document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
   toggleVerlust();
@@ -4147,11 +4213,13 @@ document.getElementById("dSpeichern").onclick=()=>{
   const ns=document.getElementById("dStatus").value;
   if(ns==="Verloren"&&!document.getElementById("dVerlust").value){alert("Bitte Verlustgrund angeben. Genau dafür ist das System da.");return;}
   if(ns!==f.status)f.log.push([dstr(0),"Status: "+f.status+" zu "+ns]);
+  qualifyIfNeeded(f,ns);
   f.status=ns;
   f.owner=document.getElementById("dOwner").value;
   f.aufgabe=document.getElementById("dAufgabe").value;
   f.frist=document.getElementById("dFrist").value;
   f.kosten=document.getElementById("dKosten").value;
+  const _kt=document.getElementById("dKT").value; if(_kt)f.kt=_kt;
   f.consent=document.getElementById("dConsent").value;
   f.docs=["u1","u2","u3","u4"].map(u=>document.getElementById(u).checked);
   f.saluto=document.getElementById("dSaluto").checked;
