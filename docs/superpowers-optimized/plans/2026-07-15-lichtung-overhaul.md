@@ -32,8 +32,8 @@
 
 **Files:** Modify: `index.html` (nur der `:root`-Block, Anker `grep -n ':root' index.html` erster Treffer)
 
-- [ ] **Step 1: Vorher-Zustand sichern** — `grep -c 'offset-path' index.html` und `grep -c 'data-sync' index.html` notieren (V4-Referenzwerte für alle Gates).
-- [ ] **Step 2: `:root`-Werte ersetzen.** Bestehende Token-NAMEN behalten, Werte auf:
+- [x] **Step 1: Vorher-Zustand sichern** — `grep -c 'offset-path' index.html` und `grep -c 'data-sync' index.html` notieren (V4-Referenzwerte für alle Gates).
+- [x] **Step 2: `:root`-Werte ersetzen.** Bestehende Token-NAMEN behalten, Werte auf:
 
 ```css
 :root{
@@ -53,20 +53,20 @@
 }
 ```
   Vorsicht: Es existieren evtl. mehr Token als hier gelistet (`--aurora-grad`, Schatten-Varianten) — jeden vorhandenen Namen mit einem hell-passenden Wert belegen, KEINEN Namen löschen. `--aurora-grad:linear-gradient(110deg,#6B8F6E,#C9A45C 45%,#C9853F 75%,#C96F4A)`.
-- [ ] **Step 3: `<meta name="theme-color">` auf `#FAF8F2`.**
-- [ ] **Step 4: Verifikation** — V1; Preview @1440: App hell, Text dunkel lesbar auf allen 6 Views (dunkle Hardcodes fallen in Stufe 2/3, hier nur notieren, Liste an Orchestrator melden). @390 kein Overflow.
-- [ ] **Step 5: Commit** `feat(lichtung): Token-Hebel v3 — Werte hell (Stufe 1)`
+- [x] **Step 3: `<meta name="theme-color">` auf `#FAF8F2`.**
+- [x] **Step 4: Verifikation** — V1; Preview @1440: App hell, Text dunkel lesbar auf allen 6 Views (dunkle Hardcodes fallen in Stufe 2/3, hier nur notieren, Liste an Orchestrator melden). @390 kein Overflow.
+- [x] **Step 5: Commit** `feat(lichtung): Token-Hebel v3 — Werte hell (Stufe 1)`
 
 ### Task 2: Ambient-Wash statt Aurora-Orbs
 
 **Files:** Modify: `index.html` (Markup-Anker `grep -n 'class="aurora"' index.html`; CSS-Anker `grep -n 'orb--' index.html`)
 
-- [ ] **Step 1: Markup ersetzen** — die Orb-`<i>`-Elemente durch 3 Wash-Blobs:
+- [x] **Step 1: Markup ersetzen** — die Orb-`<i>`-Elemente durch 3 Wash-Blobs:
 
 ```html
 <div class="aurora" aria-hidden="true"><i class="lxw lxw--moss"></i><i class="lxw lxw--ochre"></i><i class="lxw lxw--azz"></i></div>
 ```
-- [ ] **Step 2: Orb-CSS-Regeln ersetzen** (alte `.orb`-Regeln raus, gleicher Block):
+- [x] **Step 2: Orb-CSS-Regeln ersetzen** (alte `.orb`-Regeln raus, gleicher Block):
 
 ```css
 .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
@@ -78,15 +78,15 @@
 @media(max-width:1023px){.lxw{animation:none}}
 ```
   Falls der bestehende globale RM-Block Animationen killt (tut er), ist kein zusätzlicher Guard nötig — Endzustand der Blobs ist ihre Basisposition (korrekt).
-- [ ] **Step 3: Body-Mobile-Farbwash** (Aurora Vivid hatte radiale Washes auf `body` mobil) — auf helle Pastell-Variante umstellen oder entfernen; Anker `grep -n 'radial-gradient' index.html | head`, nur body-bezogene Regel anpassen.
-- [ ] **Step 4: Verifikation** — @1440 Scroll-Smoke (kein Jank), Blobs sichtbar aber leise; @390 statisch. V1.
-- [ ] **Step 5: Commit** `feat(lichtung): Ambient-Wash (3 Pastell-Blobs) ersetzt Aurora-Orbs`
+- [x] **Step 3: Body-Mobile-Farbwash** (Aurora Vivid hatte radiale Washes auf `body` mobil) — auf helle Pastell-Variante umstellen oder entfernen; Anker `grep -n 'radial-gradient' index.html | head`, nur body-bezogene Regel anpassen.
+- [x] **Step 4: Verifikation** — @1440 Scroll-Smoke (kein Jank), Blobs sichtbar aber leise; @390 statisch. V1.
+- [x] **Step 5: Commit** `feat(lichtung): Ambient-Wash (3 Pastell-Blobs) ersetzt Aurora-Orbs`
 
 ### Task 3: Kachel-System (.lx-tile) + Toasts
 
 **Files:** Modify: `index.html` (neuer kommentierter Block VOR dem LICHT-INSELN-Block vor `</style>`)
 
-- [ ] **Step 1: Utility-Block einfügen:**
+- [x] **Step 1: Utility-Block einfügen:**
 
 ```css
 /* ===== LICHTUNG · KACHELN (lx-tile) ===== */
@@ -100,21 +100,21 @@
 }
 ```
   **WICHTIG:** Die exakte Selektor-Liste beim Implementieren gegen den echten Code prüfen (`grep -o 'class="[^"]*card[^"]*"' index.html | sort -u` u. ä.) — Klassen, die es nicht gibt, streichen; große Container (chap) ggf. 24px Radius. Bestehende border/background-Deklarationen dieser Klassen NICHT löschen — der additive Block gewinnt per Source-Order. Wo eine Klasse bereits Rundung/Schatten hat, prüfen, dass kein Doppel-Rahmen entsteht (dann Klasse aus Liste nehmen und gezielt stylen).
-- [ ] **Step 2: Toasts** — `rpToast`-CSS auf solide weiße Pille: `background:var(--paper);color:var(--ink);border:1px solid var(--hair);box-shadow:var(--shadow)`; kein backdrop-filter (war schon Regel).
-- [ ] **Step 3: Verifikation** — alle 6 Views: Karten wirken als weiße Kacheln mit weichem Schatten-Stack, keine Doppel-Rahmen, keine kaputten Radien in Ecken mit Fotos. V1, @390 Overflow.
-- [ ] **Step 4: Commit** `feat(lichtung): Kachel-System — Schatten-Stack + Inset-Highlight auf Karten-Familien`
+- [x] **Step 2: Toasts** — `rpToast`-CSS auf solide weiße Pille: `background:var(--paper);color:var(--ink);border:1px solid var(--hair);box-shadow:var(--shadow)`; kein backdrop-filter (war schon Regel).
+- [x] **Step 3: Verifikation** — alle 6 Views: Karten wirken als weiße Kacheln mit weichem Schatten-Stack, keine Doppel-Rahmen, keine kaputten Radien in Ecken mit Fotos. V1, @390 Overflow.
+- [x] **Step 4: Commit** `feat(lichtung): Kachel-System — Schatten-Stack + Inset-Highlight auf Karten-Familien`
 
 ### Task 4: Chrome (Sidebar/Topbar/Tabbar) + Craft + Licht-Inseln-Harmonisierung
 
 **Files:** Modify: `index.html` (`.ds-*` Desktop-Sidebar, `.dtopbar`, `.tabbar`; LICHT-INSELN-Block; Craft-Regeln)
 
-- [ ] **Step 1: Sidebar** (Referenz E3/E2 nach User-Feedback „dezent"): Fläche `var(--glass)` + `backdrop-filter:blur(14px) saturate(1.1)`, Text `var(--ink)`/`#63614F`, Icons `#8A877A`, aktiv = weiße Pill (`background:var(--paper);color:var(--sage-deep);box-shadow:0 1px 2px rgba(27,27,22,.06),0 0 0 1px rgba(27,27,22,.05)`) + 3px-Ocker-Indikator links, Hairline rechts `var(--hair)`. Logo-Kreis weiß, `kb-logo-weiss.webp` via `filter:brightness(0)` auf Ink. „Concierge OS"-Micro in `var(--brass-deep)`.
-- [ ] **Step 2: Topbar** frosted hell (`var(--glass)` + blur), Text/Icons Ink/muted; „+ Neue Anfrage"-Button: `background:var(--sage-deep);color:#F5F2E8` (einziger dunkler Button, ersetzt Verlaufsbutton).
-- [ ] **Step 3: Tabbar (mobil)** frosted hell, inaktiv `var(--muted)`, aktiv `var(--sage-deep)`.
-- [ ] **Step 4: Craft:** `::selection{background:var(--sage-deep);color:#F5F2E8}` · `:focus-visible` 2px `var(--sage-deep)` Ring · `scrollbar-color:var(--brass-line) transparent`.
-- [ ] **Step 5: Licht-Inseln:** Im `/* AURORA · LICHT-INSELN */`-Block die Re-Pin-Werte auf Lichtung harmonisieren (`.rpd-paper`,`.kp-mail`: Papier bleibt weiß — jetzt konsistent mit Canvas; `color:var(--ink)`-Reset bleibt; `@media print` unangetastet). Block-Kommentar auf `/* LICHTUNG · PAPIER-GUARD */` umbenennen.
-- [ ] **Step 6: Verifikation** — Glas-Zählung: `grep -c 'backdrop-filter' index.html` ≤ 12 (Chrome 3 + Sheets + Reserve); V1–V3-Kurzlauf; @390 Tabbar.
-- [ ] **Step 7: Commit** `feat(lichtung): Chrome frosted hell + Craft + Papier-Guard (Stufe 1 komplett)`
+- [x] **Step 1: Sidebar** (Referenz E3/E2 nach User-Feedback „dezent"): Fläche `var(--glass)` + `backdrop-filter:blur(14px) saturate(1.1)`, Text `var(--ink)`/`#63614F`, Icons `#8A877A`, aktiv = weiße Pill (`background:var(--paper);color:var(--sage-deep);box-shadow:0 1px 2px rgba(27,27,22,.06),0 0 0 1px rgba(27,27,22,.05)`) + 3px-Ocker-Indikator links, Hairline rechts `var(--hair)`. Logo-Kreis weiß, `kb-logo-weiss.webp` via `filter:brightness(0)` auf Ink. „Concierge OS"-Micro in `var(--brass-deep)`.
+- [x] **Step 2: Topbar** frosted hell (`var(--glass)` + blur), Text/Icons Ink/muted; „+ Neue Anfrage"-Button: `background:var(--sage-deep);color:#F5F2E8` (einziger dunkler Button, ersetzt Verlaufsbutton).
+- [x] **Step 3: Tabbar (mobil)** frosted hell, inaktiv `var(--muted)`, aktiv `var(--sage-deep)`.
+- [x] **Step 4: Craft:** `::selection{background:var(--sage-deep);color:#F5F2E8}` · `:focus-visible` 2px `var(--sage-deep)` Ring · `scrollbar-color:var(--brass-line) transparent`.
+- [x] **Step 5: Licht-Inseln:** Im `/* AURORA · LICHT-INSELN */`-Block die Re-Pin-Werte auf Lichtung harmonisieren (`.rpd-paper`,`.kp-mail`: Papier bleibt weiß — jetzt konsistent mit Canvas; `color:var(--ink)`-Reset bleibt; `@media print` unangetastet). Block-Kommentar auf `/* LICHTUNG · PAPIER-GUARD */` umbenennen.
+- [x] **Step 6: Verifikation** — Glas-Zählung: `grep -c 'backdrop-filter' index.html` ≤ 12 (Chrome 3 + Sheets + Reserve); V1–V3-Kurzlauf; @390 Tabbar.
+- [x] **Step 7: Commit** `feat(lichtung): Chrome frosted hell + Craft + Papier-Guard (Stufe 1 komplett)`
 
 **STUFEN-GATE 1:** V1–V6 komplett → pull → ff-merge → push main → Pages-Check.
 
