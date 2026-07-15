@@ -2015,49 +2015,22 @@ button,.btn-ghost,.mail,.patient-card,.wg-case,.db-c,[data-nav]{
    Gradient-Falloff selbst — NIE filter:blur auf animierten Layern (live-blurring
    60vw-Elemente pro Frame legt den Compositor lahm). Transform-only Keyframes. */
 .aurora{position:fixed;inset:0;z-index:-3;overflow:hidden;pointer-events:none;display:none}
-.orb{position:absolute;border-radius:50%;opacity:.5;will-change:transform}
-.orb--sage{
-  width:70vw;height:70vw;left:-16vw;top:-14vh;
-  background:radial-gradient(circle at 50% 50%, rgba(143,185,150,.95) 0%, rgba(143,185,150,.4) 38%, rgba(143,185,150,0) 68%);
-  animation:auDrift1 52s ease-in-out infinite alternate;
-}
-.orb--champ{
-  width:62vw;height:62vw;right:-16vw;top:6vh;
-  background:radial-gradient(circle at 50% 50%, rgba(214,183,126,.95) 0%, rgba(214,183,126,.4) 38%, rgba(214,183,126,0) 68%);
-  animation:auDrift2 47s ease-in-out infinite alternate;
-}
-.orb--amber{
-  width:56vw;height:56vw;left:20vw;bottom:-26vh;
-  background:radial-gradient(circle at 50% 50%, rgba(232,162,92,.9) 0%, rgba(224,145,122,.4) 40%, rgba(224,145,122,0) 68%);
-  animation:auDrift3 58s ease-in-out infinite alternate;
-}
-.orb--petrol{
-  width:48vw;height:48vw;right:8vw;bottom:-18vh;opacity:.4;
-  background:radial-gradient(circle at 50% 50%, rgba(87,160,143,.9) 0%, rgba(87,160,143,.35) 40%, rgba(87,160,143,0) 68%);
-  animation:auDrift1 64s ease-in-out infinite alternate-reverse;
-}
+.lxw{position:absolute;border-radius:50%;will-change:transform}
+.lxw--moss{width:52vw;height:52vw;left:-12vw;top:-14vh;background:radial-gradient(circle,rgba(107,143,110,.10),transparent 65%);animation:lxwDrift 64s ease-in-out infinite alternate}
+.lxw--ochre{width:46vw;height:46vw;right:-10vw;top:22vh;background:radial-gradient(circle,rgba(201,164,92,.09),transparent 65%);animation:lxwDrift 52s ease-in-out infinite alternate-reverse}
+.lxw--azz{width:40vw;height:40vw;left:24vw;bottom:-16vh;background:radial-gradient(circle,rgba(78,124,168,.07),transparent 65%);animation:lxwDrift 70s ease-in-out infinite alternate}
 .au-noise{
   position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.03;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-.au-vignette{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 90% at 50% 0%, rgba(11,13,12,0) 40%, rgba(11,13,12,.55) 100%)}
-@keyframes auDrift1{
-  from{transform:translate3d(0,0,0) scale(1)}
-  to{transform:translate3d(6vw,5vh,0) scale(1.12)}
-}
-@keyframes auDrift2{
-  from{transform:translate3d(0,0,0) scale(1.05)}
-  to{transform:translate3d(-5vw,7vh,0) scale(.95)}
-}
-@keyframes auDrift3{
-  from{transform:translate3d(0,0,0) scale(.95)}
-  to{transform:translate3d(4vw,-6vh,0) scale(1.1)}
-}
+.au-vignette{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 90% at 50% 0%, rgba(27,27,22,0) 55%, rgba(27,27,22,.06) 100%)}
+@keyframes lxwDrift{from{transform:translate(0,0)}to{transform:translate(6vw,4vh)}}
+@media(max-width:1023px){.lxw{animation:none}}
 /* Mobile-Guard: Orbs nur ab Desktop; darunter statischer Gradient auf body. */
 body{background:
-  radial-gradient(90% 60% at 12% 0%, rgba(143,185,150,.14), transparent 60%),
-  radial-gradient(80% 55% at 95% 12%, rgba(214,183,126,.13), transparent 60%),
-  radial-gradient(90% 60% at 60% 100%, rgba(232,162,92,.10), transparent 65%),
+  radial-gradient(90% 60% at 12% 0%, rgba(107,143,110,.07), transparent 60%),
+  radial-gradient(80% 55% at 95% 12%, rgba(201,164,92,.06), transparent 60%),
+  radial-gradient(90% 60% at 60% 100%, rgba(78,124,168,.05), transparent 65%),
   var(--cream)}
 @media(min-width:1024px){
   .aurora{display:block}
@@ -2113,7 +2086,7 @@ body{accent-color:var(--brass)}
 </style>
 </head>
 <body>
-<div class="aurora" aria-hidden="true"><i class="orb orb--sage"></i><i class="orb orb--champ"></i><i class="orb orb--amber"></i><i class="orb orb--petrol"></i></div>
+<div class="aurora" aria-hidden="true"><i class="lxw lxw--moss"></i><i class="lxw lxw--ochre"></i><i class="lxw lxw--azz"></i></div>
 <div class="au-noise" aria-hidden="true"></div><div class="au-vignette" aria-hidden="true"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="auroraRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7E9B84"/><stop offset="1" stop-color="#C4A97D"/></linearGradient></defs></svg>
 <!-- ============ DESKTOP SHELL (≥1024px) ============ -->
