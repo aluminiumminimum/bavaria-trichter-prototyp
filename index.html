@@ -1652,36 +1652,10 @@ label{font-size:12px;letter-spacing:.08em}
 .kp-mfoot{padding:10px 20px;background:var(--paper2);font:400 10.5px/1.4 Inter;color:var(--faint);border-top:1px solid var(--hair2)}
 .kp-foot{display:flex;gap:10px;padding:14px 22px;border-top:1px solid var(--hair);justify-content:flex-end}
 @media(max-width:520px){.kp-panel{width:100%}}
-/* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
+/* ---------- Baustein C · Belegungs-Forecast → Signatur-Rebuild ----------
+   Balken/Dots/Ziel-Linie/Numerale liegen jetzt im additiven Block
+   `SIGNATURE · FORECAST` (.lxfc-*) vor </style>. */
 #belegungChap{grid-column:1/-1}
-.fc-kpis{margin-top:2px}
-.radar-kpi.fc-brass::before{background:var(--brass)}
-.radar-kpi.fc-brass .rk-n{color:var(--brass-deep)}
-.radar-kpi.fc-sage::before{background:var(--sage)}
-.radar-kpi.fc-sage .rk-n{color:var(--sage-deep)}
-.radar-kpi.fc-taupe::before{background:var(--muted)}
-.radar-kpi.fc-taupe .rk-n{color:var(--ink-soft)}
-.fc-body{padding:14px 18px 18px}
-.fc-plot{position:relative;height:150px;margin:2px 0 4px}
-.fc-cap{position:absolute;left:0;right:0;border-top:2px dashed var(--brass-deep);opacity:.55;z-index:2}
-.fc-cols{position:relative;z-index:1;display:flex;align-items:flex-end;height:100%;gap:8px}
-.fc-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
-.fc-bar{width:100%;max-width:36px;height:100%;display:flex;flex-direction:column-reverse;border-radius:5px 5px 2px 2px;overflow:hidden;background:var(--cream2)}
-.fc-bar.fc-over{box-shadow:inset 0 0 0 2px var(--terra)}
-.fc-seg-privat{width:100%;flex-shrink:0;background:var(--brass)}
-.fc-seg-gesetzlich{width:100%;flex-shrink:0;background:var(--brass-soft)}
-.fc-wklabel{display:block;font:700 10px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);text-align:center;margin-top:8px;white-space:nowrap}
-.fc-pill-engpass{display:inline-block;margin-top:4px;font:700 9px/1 Inter;letter-spacing:.03em;color:#faf8f4;background:var(--terra);border-radius:999px;padding:3px 7px;white-space:nowrap}
-.dbc-legend i.fc-lg-privat{background:var(--brass)}
-.dbc-legend i.fc-lg-gesetzlich{background:var(--brass-soft)}
-.dbc-legend i.fc-lg-cap{background:none;border-top:2px dashed var(--brass-deep);height:0;border-radius:0}
-@media(max-width:760px){
-  .fc-kpis{flex-direction:column}
-  .fc-plot{height:120px}
-  .fc-bar{max-width:26px}
-  .fc-cols{gap:5px}
-  .fc-wklabel{font-size:9px}
-}
 /* ---------- Baustein D · Fall-Detail Arbeitstiefe (.kz-*) ---------- */
 .kz-block{margin-bottom:14px}
 .kz-chain{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-bottom:10px}
@@ -2131,17 +2105,7 @@ body{accent-color:var(--brass)}
   font-size:12px;font-weight:400;letter-spacing:.06em;color:var(--muted);text-shadow:none}
 /* (c) Kapitel-Katalognummern */
 .au-chapnum{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.15em;color:var(--brass);margin-right:10px}
-/* (d) Forecast-Balken: Champagner/Salbei-Palette · Mono-Labels · Scroll-Reveal */
-.fc-bar{background:var(--cream2);transform-origin:bottom}
-.fc-seg-privat{background:linear-gradient(180deg,var(--brass),var(--brass-deep))}
-.fc-seg-gesetzlich{background:linear-gradient(180deg,var(--sage),var(--sage-deep))}
-.dbc-legend i.fc-lg-gesetzlich{background:var(--sage)}
-.fc-wklabel{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;color:var(--ink);letter-spacing:.1em}
-@supports (animation-timeline: view()){
-  @media (prefers-reduced-motion: no-preference){
-    .fc-bar{animation:auGrow .8s ease-out both;animation-timeline:view();animation-range:entry 0% cover 35%}
-  }
-}
+/* (d) Forecast-Balken → in den Signatur-Block `SIGNATURE · FORECAST` (.lxfc-*) verlegt. */
 @keyframes auGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
 /* ===== LICHTUNG · HEUTE-HERO (Stufe 2 · Bühne) — Editorial-Hero-Politur =====
@@ -2413,6 +2377,52 @@ body{accent-color:var(--brass)}
     animation:w3reveal .75s ease-out both;animation-timeline:view();animation-range:entry 4% cover 32%}
 }
 @keyframes w3reveal{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* ============ SIGNATURE · FORECAST — Belegungs-Prognose auf E3-Niveau (.lxfc-*) ============
+   Rebuild von #belegungChap (renderBelegung): E3-Komposition — Serifen-Großzahl „x/y",
+   Prognose-Zeile, Narrativ mit fetten Zahlen, Balkenchart mit Serifen-Numeralen, Forest-Dots,
+   gestrichelter Ziel-Linie + Mono-Label und Gold-Peak. Datengetrieben aus fcWochen().
+   Wachstum: Füllung wächst via animation-timeline:view(); Basiszustand = Endhöhe (RM-robust). */
+.lxfc-top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin:6px 0 30px}
+.lxfc-head{min-width:0}
+.lxfc-big{font-family:"Fraunces",Georgia,serif;font-weight:340;font-size:clamp(38px,4.4vw,56px);line-height:.9;letter-spacing:-.03em;color:var(--sage-deep);font-variant-numeric:lining-nums tabular-nums}
+.lxfc-big small{font-size:.34em;color:var(--muted);font-weight:400;letter-spacing:0}
+.lxfc-prog{font-size:13px;color:var(--ink-soft);margin-top:8px}
+.lxfc-note{font-size:12.5px;line-height:1.55;color:var(--muted);max-width:34ch;text-align:right;margin:0}
+.lxfc-note b{color:var(--sage-deep);font-weight:600}
+.lxfc-chart{position:relative}
+.lxfc-grid{position:relative;height:clamp(190px,24vh,260px);margin-bottom:30px;display:flex;align-items:flex-end;gap:clamp(6px,1.2vw,18px)}
+.lxfc-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative}
+.lxfc-bar{position:relative;width:100%;max-width:46px}
+.lxfc-fill{position:absolute;inset:0;border-radius:10px 10px 3px 3px;transform:scaleY(1);transform-origin:bottom;z-index:1;
+  background:linear-gradient(180deg,var(--sage),var(--sage-deep))}
+.lxfc-col.is-peak .lxfc-fill{background:linear-gradient(180deg,var(--brass),var(--brass-deep))}
+.lxfc-num{position:absolute;top:-26px;left:50%;transform:translateX(-50%);z-index:3;white-space:nowrap;
+  font-family:"Fraunces",Georgia,serif;font-weight:500;font-size:14px;color:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+.lxfc-dot{position:absolute;top:-7px;left:50%;transform:translateX(-50%);z-index:3;
+  width:9px;height:9px;border-radius:50%;background:var(--sage-deep);box-shadow:0 0 0 3px var(--cream)}
+.lxfc-col.is-peak .lxfc-dot{background:var(--brass)}
+.lxfc-wk{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);white-space:nowrap;
+  font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.06em;color:var(--muted)}
+.lxfc-target{position:absolute;left:0;right:0;height:0;border-top:1.5px dashed var(--brass-deep);z-index:2;pointer-events:none}
+.lxfc-tlabel{position:absolute;right:0;top:-8px;background:var(--cream);padding:0 8px;
+  font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep)}
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .lxfc-fill{animation:auGrow .9s ease-out both;animation-timeline:view();animation-range:entry 0% cover 32%}
+  }
+}
+@media(max-width:760px){
+  .lxfc-top{margin-bottom:22px}
+  .lxfc-note{text-align:left;max-width:none}
+  .lxfc-grid{height:clamp(150px,32vw,190px);gap:5px}
+  .lxfc-bar{max-width:30px}
+  .lxfc-num{font-size:12px;top:-22px}
+}
+@media(max-width:440px){
+  .lxfc-num{display:none} /* E3-Priorität: Balken + Dots bleiben, Numerale weichen bei Enge */
+  .lxfc-wk{font-size:9px}
+}
 </style>
 </head>
 <body>
@@ -2971,16 +2981,8 @@ body{accent-color:var(--brass)}
     <!-- Row D · Belegung (span 8) + Küche (span 4) -->
     <div class="chap hb-8" id="belegungChap">
       <div class="kicker"><span class="au-chapnum">03</span>Belegung · 8-Wochen-Forecast</div>
-      <h2 class="chap-h2">Komfort- &amp; Privatbelegung</h2>
-      <div class="ar-sum" id="fcSum"></div>
-      <div class="radar-head fc-kpis" id="fcKpis"></div>
-      <div class="db-group">
-        <header class="stg-h"><div class="stg-row"><span class="stg-t">Wochenverlauf</span></div></header>
-        <div class="fc-body">
-          <div class="fc-plot" id="fcPlot"></div>
-          <div class="dbc-legend" id="fcLegend"></div>
-        </div>
-      </div>
+      <div class="lxfc-top" id="fcTop"></div>
+      <div class="lxfc-chart" id="fcPlot"></div>
     </div>
 
     <figure class="lx-fen hb-4 hb-photo"><img src="assets/kb-kueche.webp" alt="Klinikküche mit Blick ins Grüne" loading="lazy" style="object-position:center 50%"><figcaption><span class="lx-fen-n">Kulinarik</span><span class="lx-fen-s">Küche mit Blick ins Grüne</span></figcaption></figure>
@@ -4078,6 +4080,7 @@ function renderAnlaesse(){
 }
 /* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
 const FC_BETTEN=7; // Komfort-Kontingent (Privat-/Selbstzahler + Komfort-Aufzahler)
+const FC_ZIEL=FC_BETTEN-1; // Ziel-Belegung (Demo): eine Stufe unter Vollbelegung → gestrichelte Ziel-Linie im Forecast
 function fcParseISO(iso){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||"");return m?new Date(+m[1],+m[2]-1,+m[3]):null;}
 function fcKtTyp(kt){return(kt==="PKV"||kt==="Selbstzahler")?"privat":"gesetzlich";}
 /* Belegte Betten aus inReha[] + relevanten faelle[] (Aufnahme geplant / Aufgenommen falls nicht in inReha) */
@@ -4127,42 +4130,61 @@ function fcWochen(){
  return out;
 }
 function renderBelegung(){
- const kpiEl=document.getElementById("fcKpis"),plotEl=document.getElementById("fcPlot"),legEl=document.getElementById("fcLegend"),sumEl=document.getElementById("fcSum");
- if(!kpiEl||!plotEl)return;
- const h0=new Date(heute.getFullYear(),heute.getMonth(),heute.getDate());
- const bel=fcBelegte();
- const heuteBel=bel.filter(b=>b.von<=h0&&h0<b.bis);
- const belegtHeute=heuteBel.length;
- const privatHeute=heuteBel.filter(b=>b.kt==="privat").length;
- const privatPct=belegtHeute?Math.round(privatHeute/belegtHeute*100):0;
- const fensterEnde=new Date(h0);fensterEnde.setDate(fensterEnde.getDate()+56);
- const geplant=faelle.filter(f=>{if(f.status!=="Aufnahme geplant"||!f.frist)return false;const d=fcParseISO(f.frist);return d&&d>=h0&&d<fensterEnde;}).length;
-
- if(sumEl)sumEl.textContent=belegtHeute+" von "+FC_BETTEN+" Komfortbetten belegt · "+privatPct+" % Privat/Selbstzahler · "+geplant+" geplante Aufnahme"+(geplant===1?"":"n")+" in den nächsten 8 Wochen";
-
- kpiEl.innerHTML=
-   "<div class='radar-kpi fc-brass'><div class='rk-n num'>"+belegtHeute+"/"+FC_BETTEN+"</div><div class='rk-l'>Belegt heute</div></div>"
-  +"<div class='radar-kpi fc-sage'><div class='rk-n num'>"+privatPct+" %</div><div class='rk-l'>Privat/Selbstzahler</div></div>"
-  +"<div class='radar-kpi fc-taupe'><div class='rk-n num'>"+geplant+"</div><div class='rk-l'>Aufnahmen geplant</div></div>";
-
+ const topEl=document.getElementById("fcTop"),plotEl=document.getElementById("fcPlot");
+ if(!topEl||!plotEl)return;
  const wochen=fcWochen();
- const maxTotal=Math.max(FC_BETTEN,...wochen.map(w=>w.summe));
- const scale=maxTotal*1.15;
- const capPct=Math.min(100,FC_BETTEN/scale*100);
- const cols=wochen.map(w=>{
-  const over=w.summe>FC_BETTEN;
-  return "<div class='fc-col'>"
-   +"<div class='fc-bar"+(over?" fc-over":"")+"'>"
-     +"<div class='fc-seg-privat' style='height:"+(w.privat/scale*100)+"%'></div>"
-     +"<div class='fc-seg-gesetzlich' style='height:"+(w.gesetzlich/scale*100)+"%'></div>"
+ if(!wochen.length)return;
+ const first=wochen[0],last=wochen[wochen.length-1];
+ const maxSumme=Math.max(...wochen.map(w=>w.summe));
+ const maxTotal=Math.max(FC_BETTEN,maxSumme); // Skala nie unter Kapazität → Balken/Ziel-Linie bleiben im Plot
+ const voll=last.summe>=FC_BETTEN;
+
+ // Prognose-Zeile: datengetrieben — Trend-bewusst (steigend = E3-Story, fallend = Pipeline-Pointe)
+ const faellt=last.summe<first.summe;
+ const frei=FC_BETTEN-last.summe;
+ const prog=voll
+   ? "Prognose KW"+last.kw+" — Vollbelegung erstmals erreicht."
+   : (faellt
+      ? "Prognose KW"+last.kw+" — "+frei+" Komfortbetten werden frei."
+      : "Prognose KW"+last.kw+" — "+last.summe+" von "+FC_BETTEN+" Komfortbetten.");
+ // Ziel-Durchbruch: erste Woche, die die Ziel-Linie erreicht/übersteigt
+ const cross=wochen.find(w=>w.summe>=FC_ZIEL);
+ const zielSatz=faellt
+   ? "Genau diese Lücke füllt der Eingang — jede Zusage oben wird hier zum Bett."
+   : (cross
+      ? "Ziel-Linie bei <b>"+FC_ZIEL+"</b> seit KW"+cross.kw+" durchbrochen."
+      : "Ziel-Linie bei <b>"+FC_ZIEL+"</b> noch nicht erreicht.");
+
+ topEl.innerHTML=
+   "<div class='lxfc-head'>"
+    +"<div class='lxfc-big'>"+last.summe+"<small>/"+FC_BETTEN+"</small></div>"
+    +"<div class='lxfc-prog'>"+prog+"</div>"
    +"</div>"
-   +"<span class='fc-wklabel'>KW "+w.kw+"</span>"
-   +(over?"<span class='fc-pill-engpass'>Engpass</span>":"")
+   +"<p class='lxfc-note'>"+(faellt
+     ? "Ohne Neuzugänge sinkt die Belegung von <b>"+first.summe+"</b> auf <b>"+last.summe+"</b> in acht Wochen. "
+     : "Von <b>"+first.summe+"</b> auf <b>"+last.summe+"</b> Komfortbetten in acht Wochen. ")+zielSatz+"</p>";
+
+ // Gold-Peak = letzte Woche mit Höchstwert (die finale/Spitzen-Woche)
+ let peakIdx=0;wochen.forEach((w,i)=>{if(w.summe>=wochen[peakIdx].summe)peakIdx=i;});
+ const H=92; // % der Plothöhe wie E3 (Kopffreiheit für Dot+Numeral)
+ const zielBottom=(FC_ZIEL/maxTotal*H).toFixed(1);
+ const cols=wochen.map((w,i)=>{
+  const h=(w.summe/maxTotal*H).toFixed(1);
+  const peak=i===peakIdx?" is-peak":"";
+  return "<div class='lxfc-col"+peak+"'>"
+   +"<div class='lxfc-bar' style='height:"+h+"%'>"
+     +"<span class='lxfc-num'>"+w.summe+"</span>"
+     +"<span class='lxfc-dot'></span>"
+     +"<span class='lxfc-fill'></span>"
+   +"</div>"
+   +"<span class='lxfc-wk'>KW "+w.kw+"</span>"
   +"</div>";
  }).join("");
- plotEl.innerHTML="<div class='fc-cap' style='bottom:"+capPct+"%'></div><div class='fc-cols'>"+cols+"</div>";
-
- if(legEl)legEl.innerHTML="<span><i class='fc-lg-privat'></i>Privat/Selbstzahler</span><span><i class='fc-lg-gesetzlich'></i>Gesetzlich/Sonstige</span><span><i class='fc-lg-cap'></i>Kapazität ("+FC_BETTEN+" Betten)</span>";
+ plotEl.innerHTML=
+   "<div class='lxfc-grid'>"
+    +"<div class='lxfc-target' style='bottom:"+zielBottom+"%'><span class='lxfc-tlabel'>Ziel "+FC_ZIEL+"</span></div>"
+    +cols
+   +"</div>";
 }
 /* ---------- Baustein B · Kampagnen (.kp-*) — Spec 2026-07-14 §4 ---------- */
 let _kp={typ:"zuweiser",kat:"alle",status:"aktiv",betreff:"Neues aus der Klinik Bavaria",bausteine:[true,true,false]};
