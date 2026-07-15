@@ -26,7 +26,7 @@ Interaktiver **Investor-Pitch-Prototyp** einer „Privatpatienten-Maschine" für
 4. **Desktop UND Mobile.** Jede Änderung bei **390px** UND **≥1024px** prüfen: 0 horizontaler Overflow, lesbar, **0 Console-Errors**. **1440 ist die Pitch-Bühne** (Priorität Desktop). Aktueller Fokus: Desktop.
 5. **CSS additiv** als kommentierte Blöcke vor `</style>`, mit eigenem Namespace oder `#view-*`-gescopt. Bare/globale Klassen (`.card`, `.num`, `.ava`, `.kicker`, `.col`) nicht umstylen.
 6. **Animationen reduced-motion-safe:** Start-Zustand (opacity/transform/offset) NUR im Keyframe-`from`, nie in der Basisregel — der globale `prefers-reduced-motion`-Block schaltet Animationen ab, Endzustand muss dann sofort korrekt sein.
-7. **Identität wahren:** Cormorant Garamond (Display) + Inter (Body); Palette Espresso/Taupe/Sand/Messing/Salbei. Achsenfarben (`--ortho/--neuro/--geri/--innere/--saluto/--unklar`) NUR für medizinische Fachbereiche, `--terra` nur für „stockt/überfällig". Kein Blau, kein Template-Grün.
+7. **Identität wahren:** siehe CLAUDE.md (Lichtung 07/2026) — hell, Wald-Akzent, Papier-Kacheln; kein Blau/Violett außer Daten-Hue Azzurro.
 8. **Nur synthetische Demo-Daten**, Mails auf `@demo-*.local`.
 
 ---
@@ -56,22 +56,26 @@ Interaktiver **Investor-Pitch-Prototyp** einer „Privatpatienten-Maschine" für
 ### Konvergenz-Hero — wichtige Eigenheit
 Das `.cv-*`-Panel existiert **4×**: Heute (breit + schmal) und Team (breit + schmal). **Nur die Heute-Variante trägt `id="cv…"`; Team spiegelt über `data-sync="cv…"`.** `set()` in `renderHeute()` aktualisiert beide. Wer den Hero ändert, muss **alle 4 SVG-Blöcke synchron** halten. Story endet bewusst beim **„Fall"** (nicht „Belegung") — der Trichter darunter ist die einzige „→ Belegung"-Grafik (zwei getrennte Akte, Redundanz war ein Fehler und wurde behoben).
 
-### Design-Tokens (AURORA-Overhaul 07/2026 — Token-NAMEN historisch, WERTE dunkel!)
+### Design-Tokens (LICHTUNG-Overhaul 07/2026 — Token-NAMEN historisch, WERTE HELL!)
 ```
---cream:#0B0D0C (CANVAS!); --cream2:#0F1110; --paper:#141613; --paper2:#1B1E19;
---ink:#F0EBE1 (TEXT hell!); --ink-soft:#D9D3C6; --muted:#97917F; --faint:#6E6A5E;
---brass:#C4A97D; --brass-deep:#DCC094 (heller!); --brass-soft:#2B2519; --brass-line:#3B3427;
---hair:rgba(240,235,225,.09); --hair2:rgba(240,235,225,.06);
---sage:#7E9B84; --sage-deep:#A3C2AA; --sage-soft:#1C231E; --terra:#D9784F; --terra-soft:#2E1E18;
-NEU: --amber:#D99A5B --alert:#D9784F --raised:#23261F --glass/--glass-border/--glass-hi (rgba-weiß)
-Achsenfarben (dark-lifted): --ortho:#C99A54 --neuro:#7E9BB8 --geri:#8FAE95 --innere:#6FA89F --saluto:#C4A97D --unklar:#A29B8D
-Schatten: --shadow / --shadow-soft ; Verläufe: --espresso-grad (dunkel), --brass-grad (Champagner→Amber)
+--cream:#FAF8F2 (CANVAS, hell!); --cream2:#F4F1E8; --paper:#FFFFFF; --paper2:#FDFCF8;
+--ink:#1B1B16; --ink-soft:#4A4A40; --muted:#76735F; --faint:#A5A296;
+--brass:#C9A45C (Ocker); --brass-deep:#8A6B3A (Text, 4.95:1); --brass-soft:#F3EAD8; --brass-line:#E3D5B8;
+--hair:rgba(27,27,22,.10); --hair2:rgba(27,27,22,.06);
+--sage:#6B8F6E (Moos); --sage-deep:#21402D (Wald, DER Akzent); --sage-soft:#EAF0E8;
+--terra:#C96F4A (nur stockt/überfällig); --terra-soft:#F7E8E0;
+--amber:#C9853F; --alert:#C96F4A; --raised:#FFFFFF;
+--rose:#B85C6B; --rose-soft:#F7E6E4; --petrol:#2F6B60; --petrol-soft:#E4EFEA;
+--azzurro:#4E7CA8; --slate:#6E7580 (Daten-Hues — nur Charts/Fäden/Tags, nie Flächen);
+--glass/--glass-border/--glass-hi (rgba-weiß)
+Achsenfarben: --ortho:#8A6320 --neuro:#3E5F80 --geri:#4C7355 --innere:#2F6B60 --saluto:#A8854B --unklar:#6E6A5E
+Schatten (Layer, Papier-Kacheln): --shadow / --shadow-soft ; Verläufe: --espresso-grad (Wald), --brass-grad (Ocker→hell), --aurora-grad
 ```
-**Licht-Inseln** (`/* AURORA · LICHT-INSELN */`-Block): `.rpd-paper` + `.kp-mail` re-pinnen die ALTE helle
-Palette + `color:var(--ink)`-Reset — Papierdokumente/Mailing-Vorschau bleiben hell. `@media print` weiß.
-**Perf-Gesetz:** nie `filter:blur` auf Animiertem; `backdrop-filter` nur Chrome + Overlay-Sheets (Budget ~10).
+**Papier-Guard** (`/* LICHTUNG · PAPIER-GUARD */`-Block, Spec §2.2): `.rpd-paper` + `.kp-mail` bleiben
+Papier-Inseln — Weiß, `color:var(--ink)`-Reset. `@media print` weiß.
+**Perf-Gesetz:** nie `filter:blur` auf Animiertem; `backdrop-filter` nur Chrome + Overlay-Sheets + 2 Hero-Glas-Chips (Budget 13).
 Fonts: Display `"Fraunces",Georgia,serif` (opsz, Zahlen 600) · Body `Inter` · Micro/Daten `"Fragment Mono"`
-(uppercase, .12em, 11px, `--muted`; Utilities `.au-display`/`.au-micro`). Referenz: `design-lab/d-aurora.html`.
+(uppercase, .12em, 11px, `--muted`; Utilities `.au-display`/`.au-micro`). Referenz: `design-lab/e3-lichtung.html`.
 
 ---
 

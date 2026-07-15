@@ -16,12 +16,14 @@ Interaktiver Produkt-Prototyp („Privatpatienten-Maschine") für einen Investor
 - **Animationen reduced-motion-safe:** Start-Zustand (opacity/transform 0) NUR im Keyframe-`from`,
   nie in der Basisregel — der globale `@media(prefers-reduced-motion)`-Block schaltet Animationen ab
   und der Endzustand muss dann sofort korrekt sein.
-- **Identität wahren (seit Aurora-Overhaul 07/2026):** Fraunces (Display) + Inter (Body) + Fragment Mono
-  (Micro-Labels/Daten); Aurora-Palette — Ink `#0B0D0C` Canvas, Champagner `#C4A97D`, Amber `#D99A5B`,
-  Salbei `#7E9B84`, Alert `#D9784F`. Token-NAMEN sind historisch (`--cream` = Canvas dunkel!), Werte in `:root`.
-  **Licht-Inseln bleiben hell:** `.rpd-paper` (Dokumente), `.kp-mail` (Mailing-Vorschau), `@media print`.
-  **Perf-Gesetz:** NIE `filter:blur` auf Animiertem; `backdrop-filter` NUR Chrome (Sidebar/Topbar/Tabbar)
-  + Overlay-Sheets — nie auf Karten/Zeilen. Referenz-Prototyp: `design-lab/d-aurora.html`.
+- **Identität wahren (seit Lichtung-Overhaul 07/2026):** Fraunces (Display) + Inter (Body) + Fragment Mono
+  (Micro); Lichtung-Palette — Canvas HELL `#FAF8F2`, Papier-Kacheln m. Layer-Schatten, Ink `#1B1B16`,
+  Wald `#21402D` (DER Akzent), Ocker `#C9A45C` (Text: `--brass-deep` `#8A6B3A`), Terra `#C96F4A`
+  (nur stockt/überfällig), Daten-Hues Azzurro/Slate nie als Fläche. Token-NAMEN historisch
+  (`--cream` = Canvas hell!), Werte in `:root`. **Papier-Inseln:** `.rpd-paper`/`.kp-mail`
+  (Papier-Guard-Block), `@media print`. **Perf-Gesetz:** NIE `filter:blur` auf Animiertem;
+  `backdrop-filter` NUR Chrome + Overlay-Sheets + 2 Hero-Chips (Budget 13). Tilt/Parallax nur
+  hover+fine, RM-safe. Referenz-Prototyp: `design-lab/e3-lichtung.html`.
 
 ## Zusammenarbeit / Git
 - **Mehrere Leute pushen parallel auf `main`.** IMMER `git pull` vor eigenem Push.
