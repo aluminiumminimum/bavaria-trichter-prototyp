@@ -165,31 +165,30 @@
   /* ===== Espresso-Trichter (F2, nur mobil) ===== */
   .f2{display:block}
   @media(min-width:900px){.f2{display:none}}
-  .f2-card{background:linear-gradient(168deg,#241f1c 0%,#1a1715 78%);border:1px solid rgba(215,185,138,.22);
-    border-radius:24px;box-shadow:inset 0 1px 0 rgba(244,238,227,.07),0 2px 6px rgba(24,18,12,.16),
-    0 18px 44px rgba(24,18,12,.30),0 36px 90px rgba(24,18,12,.26);padding:24px 8px 16px;overflow:hidden;position:relative}
+  .f2-card{background:var(--paper);border:1px solid var(--hair2);
+    border-radius:24px;box-shadow:var(--shadow);padding:24px 8px 16px;overflow:hidden;position:relative}
   .f2-card::before{content:"";position:absolute;top:0;left:36px;right:36px;height:2px;border-radius:0 0 3px 3px;pointer-events:none;
     background:linear-gradient(90deg,transparent,rgba(215,185,138,.55) 30%,rgba(215,185,138,.55) 70%,transparent)}
   .f2-head{padding:0 16px 14px;text-align:center}
-  .f2-head .eyebrow{display:block;font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:#c9ad7d;margin-bottom:6px}
-  .f2-head h2{margin:0;font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:27px;line-height:1.1;color:#f4eee3}
+  .f2-head .eyebrow{display:block;font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:6px}
+  .f2-head h2{margin:0;font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:27px;line-height:1.1;color:var(--ink)}
   .f2-card svg{width:100%;height:auto;display:block}
   .f2 svg text{font-family:"Inter",-apple-system,sans-serif}
-  .f2 .cap{fill:#c9ad7d;font-size:13px;font-weight:700;letter-spacing:.26em}
-  .f2 .chip-lab{fill:#ece4d4;font-size:13px;font-weight:600}
-  .f2 .chip-num{font-family:"Fraunces",Georgia,serif;font-weight:700;fill:#d7b98a;font-variant-numeric:lining-nums tabular-nums}
-  .f2 .stage-num{font-family:"Fraunces",Georgia,serif;font-weight:600;fill:#f4eee3;font-variant-numeric:lining-nums tabular-nums}
-  .f2 .stage-lab{fill:#ddd3c4;font-size:14px;font-weight:600}
-  .f2 .chev{fill:#d7b98a;font-size:17px;font-weight:600}
-  .f2 .badge-t{fill:#efa67d;font-size:13px;font-weight:700;letter-spacing:.02em}
-  .f2 .tile-num{font-family:"Fraunces",Georgia,serif;font-weight:700;fill:#f4eee3;font-variant-numeric:lining-nums tabular-nums}
-  .f2 .tile-sub{fill:#b5aa94;font-size:13px;font-weight:500}
-  .f2 .foot{fill:#b5aa94;font-size:13.5px}
-  .f2 .link{stroke:#d7b98a;stroke-width:1.2;fill:none;opacity:.5;stroke-linecap:round}
+  .f2 .cap{fill:var(--muted);font-size:13px;font-weight:700;letter-spacing:.26em}
+  .f2 .chip-lab{fill:var(--ink-soft);font-size:13px;font-weight:600}
+  .f2 .chip-num{font-family:"Fraunces",Georgia,serif;font-weight:700;fill:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+  .f2 .stage-num{font-family:"Fraunces",Georgia,serif;font-weight:600;fill:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+  .f2 .stage-lab{fill:var(--ink-soft);font-size:14px;font-weight:600}
+  .f2 .chev{fill:var(--brass-deep);font-size:17px;font-weight:600}
+  .f2 .badge-t{fill:var(--terra);font-size:13px;font-weight:700;letter-spacing:.02em}
+  .f2 .tile-num{font-family:"Fraunces",Georgia,serif;font-weight:700;fill:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+  .f2 .tile-sub{fill:var(--muted);font-size:13px;font-weight:500}
+  .f2 .foot{fill:var(--muted);font-size:13.5px}
+  .f2 .link{stroke:var(--brass-line);stroke-width:1.2;fill:none;opacity:.8;stroke-linecap:round}
   .f2 .p-halo{fill:url(#dotGlow)}
-  .f2 .p-core{fill:#f6e3b8}
+  .f2 .p-core{fill:var(--brass-deep)}
   .f2 .tap{cursor:pointer;touch-action:manipulation;outline:none}
-  .f2 .tap .hit{fill:#f4eee3;opacity:0;transition:opacity .18s ease;stroke:#d7b98a;stroke-opacity:0}
+  .f2 .tap .hit{fill:var(--ink);opacity:0;transition:opacity .18s ease;stroke:var(--brass-deep);stroke-opacity:0}
   .f2 .tap:hover .hit{opacity:.05}
   .f2 .tap:active .hit{opacity:.09}
   .f2 .tap:focus-visible .hit{opacity:.07;stroke-opacity:.7;stroke-width:1.2}
@@ -217,9 +216,9 @@
   .strom text{font-family:"Inter",-apple-system,sans-serif}
   .strom .fn-cap{fill:var(--muted);font-size:13.5px;letter-spacing:.22em;font-weight:800}
   .strom-d .fn-cap{font-size:14px}
-  .strom .fn-lab{fill:#D9D3C6;font-size:15px}
+  .strom .fn-lab{fill:var(--ink-soft);font-size:15px}
   .strom-d .fn-lab{font-size:17px}
-  .strom .fn-stage{fill:#D9D3C6;font-size:13.5px;font-weight:700;letter-spacing:.01em}
+  .strom .fn-stage{fill:var(--ink-soft);font-size:13.5px;font-weight:700;letter-spacing:.01em}
   .strom-d .fn-stage{font-size:15px}
   .strom .fn-stage-sub{fill:var(--brass-deep);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
   .strom .fn-note{fill:#8F887A;font-size:13.5px}
@@ -1415,15 +1414,29 @@ label{font-size:12px;letter-spacing:.08em}
   .cv .cv-narrow{display:block;max-width:420px;margin:0 auto}
 }
 /* cv: Quellen-Chips */
-.cv-chip rect{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.09);stroke-width:1}
-.cv-chip .cv-chip-bg{fill:rgba(22,26,23,.97);stroke:rgba(255,255,255,.11);stroke-width:1}
+.cv-chip rect{fill:none;stroke:rgba(27,27,22,.06);stroke-width:1}
+.cv-chip .cv-chip-bg{fill:#FFFFFF;stroke:rgba(27,27,22,.10);stroke-width:1}
 .cv-chip-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;font-weight:500;letter-spacing:.02em;fill:var(--muted)}
 .cv-chip-n{font:700 21px "Fraunces",Georgia,serif;fill:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+/* cv: Kanal-Farben je Chip-Zähler (Reihenfolge E-Mail/Telefon/Fax/Website/Zuweiser/Portale) —
+   ein Block deckt alle 4 Instanzen, da identische Struktur/Reihenfolge */
+.cv-chip:nth-of-type(1) .cv-chip-n{fill:var(--sage-deep)}
+.cv-chip:nth-of-type(2) .cv-chip-n{fill:#4C7355}
+.cv-chip:nth-of-type(3) .cv-chip-n{fill:var(--brass-deep)}
+.cv-chip:nth-of-type(4) .cv-chip-n{fill:var(--azzurro)}
+.cv-chip:nth-of-type(5) .cv-chip-n{fill:var(--terra)}
+.cv-chip:nth-of-type(6) .cv-chip-n{fill:var(--slate)}
 .cv-narrow .cv-chip-l{font-size:8.5px;letter-spacing:.05em}
 .cv-narrow .cv-chip-n{font-size:17px}
 /* cv: Ströme + wandernde Punkte (reduced-motion: Ruhezustand = unsichtbar) */
-.cv-path{fill:none;stroke:#C4A97D;stroke-opacity:.5;stroke-width:1.1}
-.cv-dot{fill:#F4E9D2;opacity:0;offset-rotate:0deg;filter:drop-shadow(0 0 5px rgba(244,233,210,.95));
+.cv-path{fill:none;stroke:#C4A97D;stroke-opacity:.55;stroke-width:1.1}
+.cv-path:nth-of-type(1){stroke:var(--sage-deep)}
+.cv-path:nth-of-type(2){stroke:var(--sage)}
+.cv-path:nth-of-type(3){stroke:var(--brass)}
+.cv-path:nth-of-type(4){stroke:var(--azzurro)}
+.cv-path:nth-of-type(5){stroke:var(--terra)}
+.cv-path:nth-of-type(6){stroke:var(--slate)}
+.cv-dot{fill:var(--brass-deep);opacity:0;offset-rotate:0deg;filter:drop-shadow(0 0 5px rgba(201,164,92,.5));
   animation:cv-travel 3s cubic-bezier(.45,.1,.55,.9) infinite}
 .cv-t2{animation-delay:-.5s}.cv-t3{animation-delay:-1s}.cv-t4{animation-delay:-1.5s}
 .cv-t5{animation-delay:-2s}.cv-t6{animation-delay:-2.5s}
@@ -1435,13 +1448,13 @@ label{font-size:12px;letter-spacing:.08em}
 }
 /* cv: der eine Eingang (Knoten, klickbar) */
 .cv-node{cursor:pointer;outline:none}
-.cv-halo{fill:none;stroke:rgba(196,169,125,.32);stroke-width:1}
-.cv-core{fill:rgba(196,169,125,.10);stroke:#C4A97D;stroke-width:1.2}
+.cv-halo{fill:none;stroke:rgba(33,64,45,.28);stroke-width:1}
+.cv-core{fill:var(--sage-deep);stroke:var(--sage-deep);stroke-width:1.2}
 .cv-node:hover .cv-core{filter:brightness(1.15)}
 .cv-node:focus-visible .cv-halo{stroke:var(--brass-deep);stroke-width:1.5}
-.cv-total{font:700 44px "Fraunces",Georgia,serif;fill:var(--ink);text-anchor:middle;font-variant-numeric:lining-nums tabular-nums}
-.cv-node-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:9px;letter-spacing:.14em;fill:var(--muted);text-anchor:middle}
-.cv-node-s{font:500 9.5px Inter,sans-serif;letter-spacing:.04em;fill:var(--muted);text-anchor:middle}
+.cv-total{font:700 44px "Fraunces",Georgia,serif;fill:#F5F2E8;text-anchor:middle;font-variant-numeric:lining-nums tabular-nums}
+.cv-node-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:9px;letter-spacing:.14em;fill:rgba(245,242,232,.75);text-anchor:middle}
+.cv-node-s{font:500 9.5px Inter,sans-serif;letter-spacing:.04em;fill:rgba(245,242,232,.75);text-anchor:middle}
 .cv-narrow .cv-total{font-size:34px}
 .cv-narrow .cv-node-l{font-size:9px}
 .cv-narrow .cv-node-s{font-size:8.5px}
@@ -1452,19 +1465,19 @@ label{font-size:12px;letter-spacing:.08em}
 .cv-narrow .cv-stockt text{font-size:10px}
 /* cv: Ausgang → Stepper → Fall (Einsammel-Story endet beim Fall) */
 .cv-out-thick{fill:none;stroke:var(--brass);stroke-width:3.5;stroke-linecap:round}
-.cv-out-line{fill:none;stroke:rgba(188,163,125,.45);stroke-width:1}
-.cv-step-dot{fill:var(--brass)}
+.cv-out-line{fill:none;stroke:var(--brass-line);stroke-width:1}
+.cv-step-dot{fill:var(--brass-line)}
 .cv-step-l{font:600 10.5px Inter,sans-serif;letter-spacing:.06em;fill:var(--muted);text-anchor:middle}
 .cv-step-end{fill:var(--brass-deep);stroke:var(--brass-line);stroke-width:1}
 .cv-step-l-end{fill:var(--ink);font-weight:700}
 .cv-narrow .cv-step-l{font-size:9.5px;text-anchor:start}
 /* cv: Leitsatz */
-.cv-copy{font:italic 500 16px "Fraunces",Georgia,serif;fill:rgba(244,238,227,.92);text-anchor:middle}
-.cv-copy-b{fill:var(--brass)}
+.cv-copy{font:italic 500 16px "Fraunces",Georgia,serif;fill:var(--ink-soft);text-anchor:middle}
+.cv-copy-b{fill:var(--brass-deep)}
 .cv-narrow .cv-copy{font-size:12.5px}
 /* cv: Team-Variante — dunkle Karte (gleiche Konvergenz-Story wie Heute-Hero) */
-.tm-cv{background:var(--espresso-grad);border-radius:20px;
-  padding:18px 22px 6px;margin:0 0 20px;box-shadow:0 14px 34px rgba(31,28,28,.26),inset 0 1px 0 rgba(255,248,236,.07)}
+.tm-cv{background:var(--paper);border:1px solid var(--hair2);border-radius:24px;
+  padding:18px 22px 6px;margin:0 0 20px;box-shadow:var(--shadow)}
 .tm-cv.cv{margin-top:0}
 /* --- Phase 4: kompakte Eingangs-Zeilen (aufklappbar) + eine CTA --- */
 #inbox .mail{display:block;padding:0;overflow:hidden}
@@ -2129,10 +2142,8 @@ body{accent-color:var(--brass)}
 .lx-chip--stock{bottom:30px;right:128px;color:var(--alert);animation:lxFloat 7s ease-in-out .8s infinite}
 .lx-chip--stock b{color:var(--alert)}
 @keyframes lxFloat{0%,100%{transform:translateY(-3px)}50%{transform:translateY(3px)}}
-
-/* Konvergenz-Leitsatz auf hellem Hero lesbar (nur Heute; Team-Panel bleibt dunkel). */
-#view-heute .cv-copy{fill:var(--ink-soft)}
-#view-heute .cv-copy-b{fill:var(--brass-deep)}
+/* Konvergenz-Leitsatz jetzt global hell (Basisregel .cv-copy) — Team-Panel ist nun ebenfalls hell,
+   die frühere #view-heute-Scope-Überschreibung ist damit redundant und entfernt. */
 </style>
 </head>
 <body>
@@ -2440,14 +2451,14 @@ body{accent-color:var(--brass)}
              aria-label="Trichter: fünf Quellen fließen in drei Stufen, daraus drei Ergebnisse; Verlustgründe fließen zurück in die Quellen">
           <defs>
             <linearGradient id="goldFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#d7b98a" stop-opacity=".30"/>
-              <stop offset=".55" stop-color="#c4a06a" stop-opacity=".38"/>
-              <stop offset="1" stop-color="#8f7448" stop-opacity=".52"/>
+              <stop offset="0" stop-color="#EAF0E8"/>
+              <stop offset=".55" stop-color="#F3EAD8"/>
+              <stop offset="1" stop-color="#F3EAD8"/>
             </linearGradient>
             <linearGradient id="seamGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#f0ddb6" stop-opacity="0"/>
-              <stop offset=".5" stop-color="#f0ddb6" stop-opacity=".85"/>
-              <stop offset="1" stop-color="#f0ddb6" stop-opacity="0"/>
+              <stop offset="0" stop-color="#A8854B" stop-opacity="0"/>
+              <stop offset=".5" stop-color="#A8854B" stop-opacity=".5"/>
+              <stop offset="1" stop-color="#A8854B" stop-opacity="0"/>
             </linearGradient>
             <linearGradient id="tileTop" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#dcc08c" stop-opacity="0"/>
