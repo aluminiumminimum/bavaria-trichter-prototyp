@@ -209,26 +209,26 @@
 *Gemeinsames Muster je Task: hell-Hardcodes der View finden (`grep -n '#0B0D0C\|#141613\|#1B1E19\|rgba(240,235,225' index.html` im View-Abschnitt), auf Token umstellen; Karten→Kacheln (Task-3-Liste ergänzen falls Klasse fehlt); Akzente gem. Hue-Disziplin; Fotos hell re-graden; je View V1+V2+betroffene Overlays.*
 
 ### Task 10: Fälle — Eingang, Board, Fall-Schublade
-- [ ] Eingang: `.mail`/`.mrow`/`.mmore` hell, aufklapp-Vorschau `--cream2`; Ein-CTA-Politik unangetastet.
-- [ ] Board: 3 Zonen-Bänder als flache Kachel-Gruppen (Zone-Header Mono + Hue-Unterstrich sage/brass/terra je Zone-Semantik), `.done-rail` gedämpft; `boardZoneGroup`/`makeBoardCol` Signaturen unantastbar.
-- [ ] Fall-Schublade `#ovDetail`: Sheet frosted (`var(--glass)`+blur, Budget!), Inhalt Papier-Kacheln; kz-Kette: offen/abgelehnt `--terra`, erteilt `--sage-deep`; Composer hell; `.d-acc`-Akkordeon Hairlines.
-- [ ] Commit `feat(lichtung): Fälle — Eingang/Board/Schublade hell (Stufe 3.1)`
+- [x] Eingang: `.mail`/`.mrow`/`.mmore` hell, aufklapp-Vorschau `--cream2`; Ein-CTA-Politik unangetastet.
+- [x] Board: 3 Zonen-Bänder als flache Kachel-Gruppen (Zone-Header Mono + Hue-Unterstrich sage/brass/terra je Zone-Semantik), `.done-rail` gedämpft; `boardZoneGroup`/`makeBoardCol` Signaturen unantastbar.
+- [x] Fall-Schublade `#ovDetail`: Sheet frosted (`var(--glass)`+blur, Budget!), Inhalt Papier-Kacheln; kz-Kette: offen/abgelehnt `--terra`, erteilt `--sage-deep`; Composer hell; `.d-acc`-Akkordeon Hairlines.
+- [x] Commit `feat(lichtung): Fälle — Eingang/Board/Schublade hell (Stufe 3.1)`
 
 ### Task 11: Team + Mein Tag
-- [ ] Team-Cockpit-Karten als Kacheln; Team-`.cv`-Spiegel NUR via data-sync verifizieren (Task 6 hat gefärbt — hier nur prüfen).
-- [ ] Mein Tag (`.mt-*`): geführte Ruhe hell — JETZT/HEUTE/GUT-ZU-WISSEN-Blöcke als Kacheln, Fortschrittsleiste Ocker auf `--brass-soft`-Track, `mt-greet`-Gradient-Moment hell; `body.ma-mode`-Mechanik unantastbar.
-- [ ] Commit `feat(lichtung): Team + Mein Tag hell (Stufe 3.2)`
+- [x] Team-Cockpit-Karten als Kacheln; Team-`.cv`-Spiegel NUR via data-sync verifizieren (Task 6 hat gefärbt — hier nur prüfen).
+- [x] Mein Tag (`.mt-*`): geführte Ruhe hell — JETZT/HEUTE/GUT-ZU-WISSEN-Blöcke als Kacheln, Fortschrittsleiste Ocker auf `--brass-soft`-Track, `mt-greet`-Gradient-Moment hell; `body.ma-mode`-Mechanik unantastbar.
+- [x] Commit `feat(lichtung): Team + Mein Tag hell (Stufe 3.2)`
 
 ### Task 12: Netzwerk + Datenbank
-- [ ] Zuweiser-Karten (`.z*`) Kacheln; Cofounder-Button `openReferrer` in Karten nur chirurgisch (Farben via Token-Vererbung); Netzwerk-Luftbild-Band hell re-graden.
-- [ ] Datenbank: Kartei-Panels (`.stg-*`/`.db-group`) Kacheln, Ledger-Zeilen (`.db-c`) Hairlines + Zebra, Sterne `var(--brass)`, „gesperrt" `--slate`; Radar-Karten Kacheln; kp-Sheet frosted, `.kp-mail`-Vorschau bleibt Print-Artefakt (Papier-Guard).
-- [ ] Commit `feat(lichtung): Netzwerk + Datenbank hell (Stufe 3.3)`
+- [x] Zuweiser-Karten (`.z*`) Kacheln; Cofounder-Button `openReferrer` in Karten nur chirurgisch (Farben via Token-Vererbung); Netzwerk-Luftbild-Band hell re-graden.
+- [x] Datenbank: Kartei-Panels (`.stg-*`/`.db-group`) Kacheln, Ledger-Zeilen (`.db-c`) Hairlines + Zebra, Sterne `var(--brass)`, „gesperrt" `--slate`; Radar-Karten Kacheln; kp-Sheet frosted, `.kp-mail`-Vorschau bleibt Print-Artefakt (Papier-Guard).
+- [x] Commit `feat(lichtung): Netzwerk + Datenbank hell (Stufe 3.3)`
 
 ### Task 13: Reha + System + Matrix
-- [ ] Reha (`.rs-*`/`.ir-*`): Cockpit-Kacheln, rs-overlay frosted; `rsp`-Charts (Cofounder): Linien `var(--sage-deep)`/`var(--brass-deep)` auf Weiß, Grid `var(--hair2)`, Sparkline-Farben — NUR Farbwerte, `rsSeries/rsSpark/rsChart` unantastbar; `RS_BILLING`-Panel hell.
-- [ ] System: Charts hell (`strom`-SVG-Fills!), `au-plate`-Editorial-Tafel hell-grayscale; Takeaways Mono.
-- [ ] Matrix: `.mx-cell` als Kacheln — VORSICHT Source-Order (Kollegen-Padding 24/22/20px nicht überschreiben, siehe session-log 2026-07-07): eigener `.lx-*`-Block, nur background/border/shadow, KEIN Padding.
-- [ ] Commit `feat(lichtung): Reha + System + Matrix hell (Stufe 3.4)`
+- [x] Reha (`.rs-*`/`.ir-*`): Cockpit-Kacheln, rs-overlay frosted; `rsp`-Charts (Cofounder): Linien `var(--sage-deep)`/`var(--brass-deep)` auf Weiß, Grid `var(--hair2)`, Sparkline-Farben — NUR Farbwerte, `rsSeries/rsSpark/rsChart` unantastbar; `RS_BILLING`-Panel hell.
+- [x] System: Charts hell (`strom`-SVG-Fills!), `au-plate`-Editorial-Tafel hell-grayscale; Takeaways Mono.
+- [x] Matrix: `.mx-cell` als Kacheln — VORSICHT Source-Order (Kollegen-Padding 24/22/20px nicht überschreiben, siehe session-log 2026-07-07): eigener `.lx-*`-Block, nur background/border/shadow, KEIN Padding.
+- [x] Commit `feat(lichtung): Reha + System + Matrix hell (Stufe 3.4)`
 
 **STUFEN-GATE 3:** V1–V6 komplett (V3-Schwerpunkt: alle Overlays + Cofounder-Flächen) → pull → ff-merge → push main → Pages-Check.
 
