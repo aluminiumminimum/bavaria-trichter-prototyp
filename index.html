@@ -2235,6 +2235,70 @@ body{accent-color:var(--brass)}
   mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;
   animation:lxBorderHue 14s linear infinite}
 @keyframes lxBorderHue{from{background-position:0 0}to{background-position:300% 0}}
+
+/* ============================================================
+   WOW · TYPO+RAUM — E3-Lichtung-Parität (additiv, Source-Order-Override)
+   Editoriale Fraunces-Skala · getrackte Mono-Kicker · großzügigere
+   Kapitel-Rhythmik · voller Schattenstack + Inset-Highlight auf Hero-Flächen.
+   Referenz: design-lab/e3-lichtung.html
+   ============================================================ */
+
+/* — Optical Sizing für alle Fraunces-Displays (E3: font-optical-sizing:auto) — */
+.serif,.chap-h2,.vhead h1,.dt-titles h2,.ns-v,.g-stat b,.im-row b,.src-chip b,
+.stage-card h3,.patient-card h3,.module-card h3,.radar-card h3,
+.gauge .gnum,.gauge .gpct{font-optical-sizing:auto}
+
+/* — Kicker: getrackte Fragment-Mono-Marke auf Brass-Deep (E3 .mlabel-Duktus,
+     app-Identität Fragment Mono = Micro-Labels). Nur editoriale Fokuspunkte:
+     Heute-Kapitel + Per-View-Header — Shared-Kicker anderswo unberührt. — */
+#view-heute .kicker,.vhead .kicker{
+  font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;
+  font-size:11px;letter-spacing:.2em;color:var(--brass-deep)}
+
+/* — Per-View-Titel (.vhead h1): editoriale Fraunces-Skala (E3 hero-h1-Duktus,
+     Fraunces 500, enger Satz), clamp gegen 1024–1280-Umbruch & 390-Overflow — */
+.vhead{margin:8px 0 24px}
+.vhead h1{font-weight:500;letter-spacing:-.015em;line-height:1.02;
+  font-size:clamp(34px,4.4vw,44px)}
+
+/* — Desktop-Topbar-Titel „Heute · COCKPIT" — editorial hochskaliert — */
+.dt-titles h2{font-weight:500;font-size:26px;letter-spacing:-.01em;line-height:1.04}
+
+/* — Kapitel-Headlines (.chap-h2): E3-Editorialgröße ~26–33px, Fraunces 500,
+     enger getrackt, mehr Grundlinien-Abstand — */
+.chap-h2{font-weight:500;letter-spacing:-.012em;line-height:1.1;
+  font-size:clamp(26px,3vw,33px);margin:0 0 12px}
+
+/* — Kapitel-Rhythmus: mehr Luft (E3 nutzt großzügige 28–40px). Mobile-Wert;
+     Desktop-Grid (#view-heute>.chap margin-top:0) bleibt via höherer Spezifität. — */
+.chap{margin-top:44px}
+
+/* — Große Zahlen: konsistent tabellarisch-linierte Ziffern (E3 mono-num) — */
+.ns-v,.g-stat b,.im-row b,.src-chip b,.gauge .gnum,.gauge .gpct{
+  font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+/* Fraunces leichter (E3 nutzt 300–500 statt 700) auf den Flächen-Zahlen — */
+#view-heute .ns-v{font-weight:500;letter-spacing:-.02em}
+.g-stat b{font-weight:500;letter-spacing:-.02em}
+
+/* — Body/Label-Hierarchie: Mail-/Listenzeilen entkrampfen (E3 ~15.5px/1.4) — */
+.wtit{font-size:15.5px;line-height:1.35}
+.wsub{font-size:14px;line-height:1.45}
+
+/* — Hero-Grade-Flächen auf Heute: voller Schattenstack + Inset-Highlight,
+     weicherer Radius (E3 .bt: 22px + inset 0 1px 0 #fff). Mail-Listen behalten
+     ihre Dichte (:not(.list-card)); dichte Board-/Ledger-Views (Fälle/Datenbank)
+     liegen außerhalb #view-heute und bleiben unberührt. — */
+#view-heute .card:not(.list-card){
+  padding:22px;border-radius:22px;
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.9)}
+#view-heute>.greet{box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.9)}
+
+/* — 390px: editoriale Zahlen nicht überziehen, 0-Overflow halten — */
+@media(max-width:430px){
+  .chap{margin-top:34px}
+  .chap-h2{font-size:26px}
+  #view-heute .card:not(.list-card){padding:18px}
+}
 </style>
 </head>
 <body>
