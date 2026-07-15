@@ -1870,11 +1870,11 @@ body.ma-mode #view-meintag{display:block}
 
 /* (2) Heute-KPI-Kacheln: je Kachel eine andere Akzent-Haarlinie oben (statisch). */
 #view-heute .ns-m{position:relative}
-#view-heute .ns-m::before{content:"";position:absolute;top:0;left:16px;right:16px;height:2px;
-  border-radius:0 0 3px 3px;opacity:.85;pointer-events:none}
-#view-heute .ns-m:nth-child(1)::before{background:var(--brass)}
-#view-heute .ns-m:nth-child(2)::before{background:var(--petrol)}
-#view-heute .ns-m:nth-child(3)::before{background:var(--sage)}
+#view-heute .ns-m::before{content:"";position:absolute;top:0;left:16px;right:16px;height:3px;
+  border-radius:0 0 3px 3px;opacity:.9;pointer-events:none}
+#view-heute .ns-m:nth-child(1)::before{background:var(--sage-deep)}
+#view-heute .ns-m:nth-child(2)::before{background:var(--azzurro)}
+#view-heute .ns-m:nth-child(3)::before{background:var(--terra)}
 
 /* (3) SAGE = positiv: Chips bekommen einen 1px-Salbei-Rand für mehr Präsenz. */
 .typ-chip.qual{border:1px solid rgba(143,185,150,.35)}
@@ -2101,7 +2101,7 @@ body{accent-color:var(--brass)}
 #view-heute .ns-card{background:var(--paper)}
 #view-heute .ns-row{border-top:0;padding-top:6px;gap:10px}
 #view-heute .ns-m{background:var(--paper2);border:1px solid var(--hair);border-radius:18px;
-  padding:12px 8px 11px;box-shadow:inset 0 1px 0 var(--glass-hi)}
+  padding:12px 8px 11px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi)}
 #view-heute .ns-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);font-weight:400}
 #view-heute .ns-v{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--ink);
@@ -2144,12 +2144,19 @@ body{accent-color:var(--brass)}
 @keyframes lxFloat{0%,100%{transform:translateY(-3px)}50%{transform:translateY(3px)}}
 /* Konvergenz-Leitsatz jetzt global hell (Basisregel .cv-copy) — Team-Panel ist nun ebenfalls hell,
    die frühere #view-heute-Scope-Überschreibung ist damit redundant und entfernt. */
+
+/* T7 · Count-up-Glint — Klasse wird per JS EINMAL nach Abschluss des Zählens gesetzt (nie unter
+   RM, da rpCount dort früh returnt) und via animationend wieder entfernt. Basis = normaler Text. */
+.lx-glint{background:linear-gradient(100deg,currentColor 40%,#E3C98F 50%,currentColor 60%);
+  background-size:200% 100%;-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;animation:lxGlint .9s ease-out 1}
+@keyframes lxGlint{from{background-position:180% 0}to{background-position:-80% 0}}
 </style>
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><i class="lxw lxw--moss"></i><i class="lxw lxw--ochre"></i><i class="lxw lxw--azz"></i></div>
 <div class="au-noise" aria-hidden="true"></div><div class="au-vignette" aria-hidden="true"></div>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="auroraRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7E9B84"/><stop offset="1" stop-color="#C4A97D"/></linearGradient></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="auroraRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#21402D"/><stop offset="1" stop-color="#C9A45C"/></linearGradient><linearGradient id="lxRingSage" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#21402D"/><stop offset="1" stop-color="#6B8F6E"/></linearGradient><linearGradient id="lxRingAzzurro" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#35597F"/><stop offset="1" stop-color="#4E7CA8"/></linearGradient><linearGradient id="lxRingTerra" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A8492A"/><stop offset="1" stop-color="#C96F4A"/></linearGradient><linearGradient id="lxRingBrass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A8854B"/><stop offset="1" stop-color="#C9A45C"/></linearGradient></defs></svg>
 <!-- ============ DESKTOP SHELL (≥1024px) ============ -->
 <aside class="dsidebar" aria-label="Desktop-Navigation">
   <div class="ds-brand"><img src="assets/kb-logo-weiss.webp" alt="" class="ds-wordmark"><div class="ds-brandtxt"><b>Klinik Bavaria</b><span class="ds-sub">CONCIERGE OS</span></div></div>
@@ -3330,7 +3337,8 @@ function rpCount(el,to,dur,suffix){
  const t0=performance.now();
  (function step(t){const p=Math.min(1,((t||performance.now())-t0)/dur),e=1-Math.pow(1-p,3);
   el.textContent=Math.round(to*e)+suf;
-  if(p<1)requestAnimationFrame(step);})(t0);
+  if(p<1)requestAnimationFrame(step);
+  else if(el instanceof HTMLElement){el.classList.add("lx-glint");el.addEventListener("animationend",()=>el.classList.remove("lx-glint"),{once:true});}})(t0);
 }
 function rpAnimate(){
  document.querySelectorAll(".rp-stat b[data-to]").forEach((el,i)=>rpCount(el,+el.dataset.to,900+i*120,el.dataset.suf||""));
@@ -4503,13 +4511,14 @@ function renderAbschluss(zName){
   <a class="rp-call" href="#" onclick="rpToast('Rückruf angefragt — Recovery-Line meldet sich');return false">☎ Rücksprache: ${escapeHtml(d.ruecksprache)}</a>
  </div>`;
 }
-function kpiRing(val,max,label,sub){
+function kpiRing(val,max,label,sub,hue){
  const r=22,c=2*Math.PI*r,pct=Math.max(0,Math.min(1,val/max)),off=c*(1-pct);
+ const grad={sage:"lxRingSage",azzurro:"lxRingAzzurro",terra:"lxRingTerra",brass:"lxRingBrass"}[hue]||"auroraRingGrad";
  return `<div class="ring"><svg width="56" height="56" viewBox="0 0 56 56">
-   <circle cx="28" cy="28" r="${r}" fill="none" stroke="rgba(240,235,225,.09)" stroke-width="5"/>
-   <circle cx="28" cy="28" r="${r}" fill="none" stroke="url(#auroraRingGrad)" stroke-width="5" stroke-linecap="round"
+   <circle cx="28" cy="28" r="${r}" fill="none" stroke="rgba(27,27,22,.08)" stroke-width="5"/>
+   <circle cx="28" cy="28" r="${r}" fill="none" stroke="url(#${grad})" stroke-width="5" stroke-linecap="round"
      stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 28 28)"/>
-   <text x="28" y="32" text-anchor="middle" font-family="'Fraunces',serif" font-size="17" font-weight="600" fill="#F0EBE1">${val}</text></svg>
+   <text x="28" y="32" text-anchor="middle" font-family="'Fraunces',serif" font-size="17" font-weight="600" fill="var(--ink)">${val}</text></svg>
    <span class="rl">${escapeHtml(label)}</span>${sub?`<span class="rd">${escapeHtml(sub)}</span>`:""}</div>`;
 }
 /* WS3 · Abrechnungs-/Empfehlungs-Demodaten (eigene Ergänzung, greift nicht in geteilte inReha-Felder ein) */
