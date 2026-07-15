@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0D1826">
+<title>Klinik Bavaria · Concierge OS — Mitternacht & Kupfer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* MITTERNACHT & KUPFER — nocturne luxe. Historic var names kept, values remapped. */
+  --canvas:#0D1826;        /* ground — deep midnight-indigo */
+  --ground-2:#101F30;
+  --paper:#152A40;         /* panel — elevated indigo (cards) */
+  --panel-2:#1B3350;
+  --ink:#F2ECE0;           /* cream */
+  --ink-soft:#C9C2B2;
+  --muted:#8895A6;
+  --forest:#D98A52;        /* copper — THE precious metal accent (name historic) */
+  --moss:#5FC7C0;          /* glow-teal — data glow counterpoint */
+  --ochre:#E8B45C;         /* data-amber */
+  /* extended DATA hues — charts / rings / threads / tags only, never surfaces */
+  --azzurro:#5FC7C0;       /* teal */
+  --terra:#D97A7A;         /* data-rose */
+  --slate:#8895A6;
+  /* nocturne named tokens */
+  --copper:#D98A52;
+  --copper-bright:#E8A66E;
+  --copper-soft:#2A2116;
+  --copper-metal:linear-gradient(100deg,#F0C79A,#D98A52 45%,#F0C79A);
+  --glow-teal:#5FC7C0;
+  --data-amber:#E8B45C;
+  --data-rose:#D97A7A;
+  --hair:rgba(242,236,224,.10);
+  --hair-soft:rgba(242,236,224,.06);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 18px 44px rgba(0,0,0,.5);
+  --shadow-hi:0 2px 6px rgba(0,0,0,.5), 0 30px 70px rgba(0,0,0,.62);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --gutter:clamp(20px,5vw,84px);
+  --arch:999px 999px 0 0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--canvas);
+  color:var(--ink);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--copper);color:#0D1826}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--canvas)}
+::-webkit-scrollbar-thumb{background:rgba(242,236,224,.16);border-radius:20px;border:3px solid var(--canvas)}
+::-webkit-scrollbar-thumb:hover{background:rgba(217,138,82,.5)}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--copper);outline-offset:3px;border-radius:2px}
+
+.serif{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto}
+.mlabel{
+  font-family:'Fraunces',serif;
+  font-size:11px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);
+}
+.mono-num{font-family:'Fraunces',serif;font-variant-numeric:tabular-nums}
+
+/* ============ TOP NAV ============ */
+.nav{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:24px;
+  padding:15px var(--gutter);
+  background:rgba(13,24,38,.82);
+  backdrop-filter:saturate(140%) blur(14px);
+  -webkit-backdrop-filter:saturate(140%) blur(14px);
+  border-bottom:1px solid var(--hair);
+}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand-mark{
+  width:26px;height:26px;flex:none;border-radius:50%;
+  background:var(--copper-metal);
+  display:grid;place-items:center;
+  box-shadow:0 0 0 1px rgba(240,199,154,.4),0 2px 10px rgba(217,138,82,.35);
+}
+.brand-mark img{width:15px;height:15px;filter:brightness(0);opacity:.82}
+.brand-txt{font-family:'Fraunces',serif;font-weight:500;font-size:15px;letter-spacing:.01em;white-space:nowrap}
+.brand-txt .dot{color:var(--copper);font-weight:400;padding:0 4px}
+.brand-txt .os{color:var(--muted)}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{
+  position:relative;
+  font-size:13px;font-weight:400;color:var(--ink-soft);
+  padding:7px 13px;border-radius:20px;
+  transition:color .15s var(--ease),background .15s var(--ease);
+}
+.nav-links a::after{
+  content:"";position:absolute;left:13px;right:13px;bottom:3px;height:1px;
+  background:var(--copper);transform:scaleX(0);transform-origin:left;
+  transition:transform .32s var(--ease);
+}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::after{transform:scaleX(1)}
+.nav-links a.active{color:var(--copper-bright);font-weight:500}
+.nav-links a.active::after{transform:scaleX(1)}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-date{font-size:12px;color:var(--muted);white-space:nowrap}
+.nav-ava{
+  width:32px;height:32px;border-radius:50%;flex:none;
+  background:var(--copper-metal);color:#2A1F12;
+  display:grid;place-items:center;
+  font-family:'Fraunces',serif;font-weight:500;font-size:13px;
+  border:1px solid rgba(240,199,154,.35);
+}
+.nav-burger{display:none}
+
+/* ============ HERO ============ */
+.hero{
+  display:grid;
+  grid-template-columns:1.02fr .98fr;
+  min-height:calc(100vh - 58px);
+  align-items:stretch;
+}
+.hero-copy{
+  padding:clamp(36px,6vh,76px) var(--gutter) clamp(36px,5vh,60px);
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;
+}
+.hero-greet{
+  display:flex;align-items:center;gap:14px;margin-bottom:26px;
+}
+.hero-greet .line{height:1px;width:44px;background:var(--copper);opacity:.7}
+.hero-greet .txt{font-size:14px;color:var(--ink-soft)}
+.hero-greet .txt b{font-weight:500;color:var(--ink)}
+.hero-h1{
+  font-family:'Fraunces',serif;font-optical-sizing:auto;
+  font-weight:300;
+  font-size:clamp(40px,6.4vw,92px);
+  line-height:.98;letter-spacing:-.015em;
+  color:var(--ink);
+}
+.hero-h1 .em{font-style:italic;font-weight:400;color:var(--copper-bright);text-shadow:0 0 26px rgba(217,138,82,.35)}
+/* THE metallic copper hero rule (static shine — no sweep) */
+.hero-rule{position:relative;height:6px;max-width:340px;margin:26px 0 2px;overflow:hidden}
+.hero-rule::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:2px;
+  background:var(--copper-metal);opacity:.95;
+  box-shadow:0 0 14px rgba(240,199,154,.4);
+}
+.hero-rule::after{
+  content:"";position:absolute;left:0;right:0;top:5px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(217,138,82,.55),transparent);
+}
+.hero-sub{
+  margin-top:20px;max-width:34ch;
+  font-size:16px;line-height:1.65;color:var(--ink-soft);
+}
+.hero-cta{
+  margin-top:34px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+}
+.btn{
+  font-family:'Inter';font-size:13.5px;font-weight:500;
+  padding:12px 22px;border-radius:30px;cursor:pointer;border:1px solid var(--copper);
+  display:inline-flex;align-items:center;gap:9px;
+  transition:transform .15s var(--ease),background .2s var(--ease),color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.btn-p{background:var(--copper);color:#1A0F06;border-color:var(--copper-bright)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(217,138,82,.4)}
+.btn-g{background:transparent;color:var(--copper-bright)}
+.btn-g:hover{background:rgba(217,138,82,.1);transform:translateY(-2px)}
+.btn svg{width:15px;height:15px}
+
+/* hero photo */
+.hero-photo{
+  position:relative;overflow:hidden;
+  border-left:1px solid var(--hair);
+  min-height:340px;
+}
+.hero-photo .kb{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:50% 42%;
+  transform:scale(1.04);
+}
+/* indigo duotone — sink the photo into the night */
+.hero-photo .grade{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,rgba(13,24,38,.5) 0%,rgba(13,24,38,.12) 34%,rgba(13,24,38,.35) 72%,rgba(13,24,38,.72) 100%),
+    linear-gradient(120deg,rgba(21,42,64,.55),rgba(217,138,82,.12));
+  mix-blend-mode:multiply;pointer-events:none;
+}
+.hero-photo .cap{
+  position:absolute;left:24px;bottom:22px;right:24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  color:#F6F3EA;z-index:4;
+}
+.hero-photo .cap .place{font-family:'Fraunces',serif;font-style:italic;font-size:17px;font-weight:300;text-shadow:0 1px 14px rgba(0,0,0,.6)}
+.hero-photo .cap .co{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;color:var(--copper-bright);text-shadow:0 1px 10px rgba(0,0,0,.6)}
+
+/* ============ SHARED atoms reused inside bento ============ */
+/* KPI numerals / rings (tiles carry .kpi so these descendant rules apply) */
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}
+.kpi .lab{display:block}
+.kring{width:48px;height:48px;flex:none;overflow:visible}
+.kpi .val{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(30px,3.4vw,46px);line-height:1;letter-spacing:-.02em;color:var(--ink)}
+.kpi .val small{font-size:.42em;color:var(--muted);font-weight:400;letter-spacing:0}
+.kpi .val .count{color:var(--ink);text-shadow:0 0 22px rgba(232,166,110,.5),0 0 44px rgba(217,138,82,.2)}
+.kpi .delta{margin-top:10px;font-size:12.5px;color:var(--glow-teal);display:inline-flex;align-items:center;gap:6px}
+.kpi .delta.flat{color:var(--muted)}
+.kpi .delta svg{width:12px;height:12px}
+
+/* convergence svg atoms */
+.chan-lbl{font-family:'Inter';font-size:12px;font-weight:500;fill:var(--ink-soft)}
+.chan-num{font-family:'Fraunces',serif;font-size:13px;font-weight:600}
+.flowline{fill:none;stroke-width:1.5;opacity:.6}
+.hub-ring{fill:none;stroke:var(--copper);stroke-width:1.5;transition:opacity .4s var(--ease)}
+.conv-legend{
+  display:flex;flex-wrap:wrap;gap:7px 18px;
+  margin:8px 2px 0;padding-top:12px;border-top:1px solid var(--hair-soft);
+}
+.conv-legend span{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted)}
+.conv-legend i{width:9px;height:9px;border-radius:3px;flex:none}
+.stepper{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--hair-soft)}
+.step{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px}
+.step .b{width:8px;height:8px;border-radius:50%;background:var(--hair);border:1px solid var(--muted)}
+.step.on{color:var(--copper-bright);font-weight:500}
+.step.on .b{background:var(--copper);border-color:var(--copper);box-shadow:0 0 10px rgba(217,138,82,.6)}
+.step .arw{width:34px;height:1px;background:var(--hair);margin:0 14px;position:relative}
+.step .arw::after{content:"";position:absolute;right:0;top:-2px;width:5px;height:5px;border-top:1px solid var(--muted);border-right:1px solid var(--muted);transform:rotate(45deg)}
+
+/* tags (Eingang) */
+.tag{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;border-radius:20px;white-space:nowrap}
+.tag.neu{background:var(--copper);color:#1A0F06}
+.tag.wait{background:rgba(232,180,92,.16);color:#E8B45C;border:1px solid rgba(232,180,92,.42)}
+.tag.mid{background:rgba(95,199,192,.14);color:#8FE0DA;border:1px solid rgba(95,199,192,.34)}
+
+/* belegung bars (reused inside forecast tile) */
+.chart{position:relative}
+.chart-grid{position:relative;height:clamp(200px,26vh,300px);margin-bottom:30px;display:flex;align-items:flex-end;gap:clamp(8px,1.4vw,20px)}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative}
+.bar{
+  width:100%;max-width:48px;border-radius:8px 8px 3px 3px;
+  background:linear-gradient(180deg,var(--glow-teal),var(--copper));
+  box-shadow:0 0 18px rgba(95,199,192,.22);
+  position:relative;
+}
+.bar-col.peak .bar{background:linear-gradient(180deg,#F0C79A,var(--copper));box-shadow:0 0 24px rgba(232,166,110,.45)}
+.bar .cap{
+  position:absolute;top:-26px;left:50%;transform:translateX(-50%);
+  font-family:'Fraunces',serif;font-weight:500;font-size:14px;color:var(--ink);
+  white-space:nowrap;
+}
+.bar .dotcap{
+  position:absolute;top:-7px;left:50%;
+  width:9px;height:9px;border-radius:50%;background:var(--glow-teal);
+  box-shadow:0 0 0 3px var(--paper),0 0 10px rgba(95,199,192,.7);
+  transform:translateX(-50%);
+}
+.bar-col.peak .bar .dotcap{background:var(--copper-bright);box-shadow:0 0 0 3px var(--paper),0 0 12px rgba(232,166,110,.8)}
+.bar-col .wk{position:absolute;bottom:-24px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.target-line{position:absolute;left:0;right:0;height:0;border-top:1.5px dashed rgba(232,180,92,.9);z-index:3;pointer-events:none}
+.target-line .t{position:absolute;right:0;top:-9px;background:var(--paper);padding:0 8px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#E8B45C}
+
+/* ============ CLOSING ============ */
+.closing{
+  position:relative;overflow:hidden;
+  min-height:66vh;display:grid;place-items:center;text-align:center;
+  padding:clamp(60px,10vh,120px) var(--gutter);
+}
+.closing img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%}
+.closing .grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,24,38,.72),rgba(13,24,38,.88)),linear-gradient(120deg,rgba(21,42,64,.5),rgba(217,138,82,.12));mix-blend-mode:normal}
+.closing .inner{position:relative;z-index:2;color:#F2ECE0;max-width:22ch}
+.closing .mlabel{color:var(--copper-bright)}
+.closing h2{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(30px,5vw,64px);line-height:1.02;letter-spacing:-.02em;margin-top:18px}
+.closing h2 .em{font-style:italic;color:var(--copper-bright)}
+.closing .btn-p{margin-top:32px;background:var(--copper);color:#1A0F06;border-color:var(--copper-bright)}
+.closing .btn-p:hover{box-shadow:0 12px 30px rgba(217,138,82,.45)}
+
+/* footer */
+.foot{padding:26px var(--gutter);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--hair);font-size:12px;color:var(--muted)}
+.foot .l{display:flex;gap:8px;align-items:center}
+.foot b{color:var(--ink-soft);font-weight:500}
+
+/* entrance — pure-CSS auto-play. Base state is fully VISIBLE; opacity:0 lives ONLY in @keyframes lift. */
+.enter{animation:lift .6s var(--ease) both}
+@keyframes lift{from{opacity:0;transform:translateY(14px)}}
+.e1{animation-delay:.05s}.e2{animation-delay:.18s}.e3{animation-delay:.32s}.e4{animation-delay:.46s}
+
+/* ============ LEFT SIDEBAR (chrome swap 07/2026) — .side-* ============ */
+.side{
+  position:fixed;left:0;top:0;bottom:0;width:236px;z-index:70;
+  display:none;flex-direction:column;
+  padding:26px 16px 20px;
+  background:rgba(16,31,48,.72);
+  backdrop-filter:blur(14px) saturate(1.1);
+  -webkit-backdrop-filter:blur(14px) saturate(1.1);
+  color:var(--ink);
+  border-right:1px solid var(--hair);
+  animation:lift .6s var(--ease) both;
+}
+.side-brand{display:flex;align-items:center;gap:11px;padding:2px 8px 0}
+.side-mark{
+  width:34px;height:34px;flex:none;border-radius:50%;
+  background:var(--copper-metal);border:1px solid rgba(240,199,154,.4);
+  display:grid;place-items:center;
+  box-shadow:0 2px 12px rgba(217,138,82,.35);
+}
+.side-mark img{width:19px;height:19px;filter:brightness(0);opacity:.8}
+.side-brand-tx{display:flex;flex-direction:column;min-width:0;line-height:1.12}
+.side-brand-tx .nm{font-family:'Fraunces',serif;font-weight:500;font-size:16px;letter-spacing:.01em;color:var(--ink)}
+.side-brand-tx .os{
+  font-family:'Fraunces',serif;font-size:9.5px;font-weight:500;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--copper-bright);margin-top:4px;
+}
+.side-nav{display:flex;flex-direction:column;gap:2px;margin-top:34px}
+.side-nav a{
+  position:relative;display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:11px;
+  font-size:13.5px;font-weight:400;color:var(--ink-soft);
+  transition:background .14s var(--ease),color .14s var(--ease);
+}
+.side-nav a svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--muted);stroke-width:1.6;opacity:.9;transition:stroke .14s var(--ease),opacity .14s var(--ease)}
+.side-nav a:hover{background:rgba(242,236,224,.05);color:var(--ink)}
+.side-nav a:hover svg{stroke:var(--ink)}
+.side-nav a.active{background:var(--panel-2);color:var(--copper-bright);font-weight:500;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 0 1px rgba(217,138,82,.2)}
+.side-nav a.active svg{stroke:var(--copper);opacity:1}
+.side-nav a.active::before{
+  content:"";position:absolute;left:-16px;top:50%;transform:translateY(-50%);
+  width:3px;height:24px;border-radius:0 3px 3px 0;background:var(--copper);
+  box-shadow:0 0 10px rgba(217,138,82,.7);
+}
+.side-foot{margin-top:auto;padding:0 6px}
+.side-date{font-family:'Fraunces',serif;font-size:10.5px;font-weight:500;letter-spacing:.16em;color:var(--muted);white-space:nowrap}
+.side-div{height:1px;background:var(--hair);margin:14px 0}
+.side-user{display:flex;align-items:center;gap:11px}
+.side-ava{
+  width:34px;height:34px;flex:none;border-radius:50%;background:var(--copper-metal);color:#2A1F12;
+  display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:500;font-size:13px;
+}
+.side-user-tx{display:flex;flex-direction:column;min-width:0;line-height:1.22}
+.side-user-tx .nm{font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-user-tx .rl{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ≥1024px: sidebar replaces the top bar, content shifts right */
+@media(min-width:1024px){
+  .nav{display:none}
+  body{padding-left:236px}
+  .side{display:flex}
+  .hero{min-height:100vh;grid-template-columns:1.2fr .8fr}
+}
+
+/* ============================================================
+   e3 — LICHTUNG II · Ambient wash / Bento / Glass / 3D layer
+   ============================================================ */
+
+/* --- AMBIENT LIGHT WASH (fixed, pre-soft radials, transform-only drift) --- */
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ambient b{position:absolute;display:block;border-radius:50%;will-change:transform}
+.ambient .a1{
+  width:66vw;height:66vw;top:-18vw;left:-12vw;
+  background:radial-gradient(circle at 50% 50%,rgba(27,51,80,.55),rgba(27,51,80,0) 66%);
+}
+.ambient .a2{
+  width:60vw;height:60vw;bottom:-16vw;right:-10vw;
+  background:radial-gradient(circle at 50% 50%,rgba(217,138,82,.12),rgba(217,138,82,0) 64%);
+}
+.ambient .a3{
+  width:52vw;height:52vw;top:34%;left:38%;
+  background:radial-gradient(circle at 50% 50%,rgba(95,199,192,.08),rgba(95,199,192,0) 66%);
+}
+
+/* keep content above the wash */
+.hero,.bento,.closing,.foot{position:relative;z-index:1}
+
+/* --- HERO parallax layers + floating glass chips --- */
+.kb-wrap{position:absolute;inset:-16px;will-change:transform;transition:transform .5s var(--ease)}
+.gchip{position:absolute;z-index:3;will-change:transform;transition:transform .5s var(--ease)}
+.gc1{top:22px;left:22px}
+.gc2{bottom:70px;right:22px}
+.gchip-f{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:11px 16px;border-radius:16px;
+  background:rgba(13,24,38,.42);
+  backdrop-filter:blur(12px) saturate(1.15);
+  -webkit-backdrop-filter:blur(12px) saturate(1.15);
+  border:1px solid rgba(240,199,154,.28);
+  box-shadow:0 8px 30px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1);
+  color:#F2ECE0;font-size:13px;white-space:nowrap;
+}
+.gchip-f b{font-family:'Fraunces',serif;font-weight:500;font-size:19px;color:var(--copper-bright)}
+.gchip-f .gc-sm{opacity:.82;font-size:12px}
+.gchip-f .gc-dot{width:8px;height:8px;border-radius:50%;background:var(--glow-teal);box-shadow:0 0 0 3px rgba(95,199,192,.3),0 0 10px rgba(95,199,192,.7)}
+
+/* --- BENTO GRID --- */
+.bento{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:18px;grid-auto-flow:dense;
+  padding:clamp(24px,5vh,54px) var(--gutter) clamp(34px,7vh,80px);
+}
+
+/* --- tile base: layered shadow stack + inset highlight + hairline + entrance --- */
+.bt{
+  position:relative;overflow:hidden;
+  background:var(--paper);
+  border-radius:22px;
+  border:1px solid rgba(242,236,224,.07);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.4),
+    0 8px 24px rgba(0,0,0,.4),
+    0 24px 64px -24px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  transform-style:preserve-3d;will-change:transform;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+  padding:22px;
+  /* base VISIBLE — entrance auto-plays via lift; opacity:0 only inside @keyframes lift */
+  animation:lift .6s var(--ease) both;animation-delay:var(--d,0s);
+}
+.bt:hover{
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.4),
+    0 14px 34px rgba(0,0,0,.5),
+    0 34px 82px -28px rgba(0,0,0,.7),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 0 1px rgba(217,138,82,.18);
+}
+/* pointer-follow specular sheen (soft copper glow on dark) */
+.bt::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:4;
+  background:radial-gradient(520px circle at var(--mx,50%) var(--my,50%),rgba(240,199,154,.14),rgba(240,199,154,0) 42%);
+  opacity:0;transition:opacity .35s var(--ease);mix-blend-mode:screen;
+}
+.bt:hover::after{opacity:1}
+
+/* spans */
+.t-kpi{grid-column:span 1}
+.t-live{grid-column:span 4}
+.t-conv{grid-column:span 3;min-height:344px}
+.t-suite{grid-column:span 1}
+.t-eingang{grid-column:span 2}
+.t-anlass{grid-column:span 1}
+.t-anlass.wide{grid-column:span 2}
+.t-kueche{grid-column:span 2}
+.t-forecast{grid-column:span 3}
+.t-header{grid-column:span 1}
+
+/* ghost chapter numeral eyebrow */
+.bt-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px;position:relative;z-index:2}
+.bt-eyebrow .ln{height:1px;width:34px;background:linear-gradient(90deg,var(--forest),var(--ochre) 60%,var(--terra));opacity:.9}
+.bt-num{
+  position:absolute;right:2px;top:-18px;z-index:1;pointer-events:none;user-select:none;
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:120px;line-height:.8;color:rgba(217,138,82,.08);
+}
+.bt-h{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(20px,2.2vw,28px);letter-spacing:-.01em;line-height:1.05}
+.bt-h .em{font-style:italic;color:var(--forest);font-weight:400}
+.bt-lede{margin-top:8px;font-size:12.5px;color:var(--muted);max-width:44ch}
+
+/* --- KPI tile (carries .kpi for numeral rules) --- */
+.t-kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--acc,var(--forest));opacity:.85;z-index:3}
+.t-kpi .val{margin-top:2px}
+
+/* --- LIVE tile (frosted) --- */
+.t-live{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 22px;
+  background:rgba(21,42,64,.55);
+  backdrop-filter:blur(14px) saturate(1.1);
+  -webkit-backdrop-filter:blur(14px) saturate(1.1);
+  border:1px solid var(--hair);
+}
+.t-live .pulse{position:relative;width:10px;height:10px;flex:none}
+.t-live .pulse i{position:absolute;inset:0;border-radius:50%;background:var(--glow-teal);box-shadow:0 0 10px rgba(95,199,192,.9)}
+.t-live .pulse::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--glow-teal);animation:pulseRing 2.2s ease-out infinite}
+@keyframes pulseRing{from{transform:scale(1);opacity:.55}to{transform:scale(3.4);opacity:0}}
+.t-live .tx{font-size:14px;color:var(--ink-soft)}
+.t-live .tx b{color:var(--copper-bright);font-weight:600}
+.t-live .badge{margin-left:auto;font-family:'Fraunces',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+
+/* --- CONVERGENCE tile: animated gradient hairline border + hub press --- */
+.t-conv{padding:24px}
+.t-conv::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:3;pointer-events:none;
+  background:var(--copper-metal);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:.5;
+}
+.stage-wrap{position:relative}
+.stage-wrap svg.stage{display:block;width:100%;height:auto}
+.stage-wrap #hub{transform-box:view-box;transform-origin:640px 130px;transition:transform .4s var(--ease);animation:glow 4.5s ease-in-out infinite}
+/* THE nocturne signature — a slow copper glow pulse on the funnel hub (static element, drop-shadow only) */
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 7px rgba(217,138,82,.35))}50%{filter:drop-shadow(0 0 22px rgba(232,166,110,.8))}}
+.stage-wrap:hover #hub{transform:scale(1.06)}
+.stage-wrap:hover #hub .hub-ring{opacity:.55}
+
+/* --- PHOTO tiles + frosted caption chips --- */
+.t-photo{padding:0;min-height:210px}
+.t-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+.t-photo:hover img{transform:scale(1.05)}
+.t-photo .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(13,24,38,.78),rgba(13,24,38,.2) 46%,rgba(13,24,38,.06) 66%)}
+.t-photo .kb-grade{position:absolute;inset:0;z-index:1;background:linear-gradient(120deg,rgba(21,42,64,.55),rgba(217,138,82,.14));mix-blend-mode:multiply}
+.gcap{
+  position:absolute;left:14px;bottom:14px;z-index:2;
+  display:flex;flex-direction:column;gap:2px;
+  padding:9px 14px;border-radius:14px;color:#F6F3EA;
+  background:rgba(30,34,26,.34);border:1px solid rgba(255,255,255,.14);
+}
+.gcap.frost{
+  backdrop-filter:blur(10px) saturate(1.1);
+  -webkit-backdrop-filter:blur(10px) saturate(1.1);
+  background:rgba(40,44,34,.26);
+}
+.gcap .t{font-family:'Fraunces',serif;font-style:italic;font-weight:400;font-size:16px;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.gcap .s{font-family:'Fraunces',serif;font-size:9.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+
+/* --- EINGANG tile (compact rows) --- */
+.t-eingang{padding:22px}
+.eg-list{margin-top:4px}
+.eg-row{
+  display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:14px;
+  padding:13px 6px;border-top:1px solid var(--hair-soft);cursor:pointer;position:relative;
+  transition:background .2s var(--ease),padding-left .25s var(--ease);
+}
+.eg-row:first-child{border-top:none}
+.eg-row::before{content:"";position:absolute;left:-6px;top:0;bottom:0;width:2px;background:var(--copper);transform:scaleY(0);transform-origin:top;transition:transform .3s var(--ease);box-shadow:0 0 8px rgba(217,138,82,.6)}
+.eg-row:hover{background:linear-gradient(90deg,rgba(217,138,82,.08),transparent);padding-left:12px}
+.eg-row:hover::before{transform:scaleY(1)}
+.eg-ava{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:500;font-size:14px;background:rgba(217,138,82,.14);color:var(--copper-bright);border:1px solid var(--hair)}
+.eg-main{min-width:0;display:flex;flex-direction:column;gap:2px}
+.eg-nm{font-weight:500;font-size:14px;color:var(--ink)}
+.eg-sub{font-family:'Fraunces',serif;font-weight:300;font-size:14px;color:var(--ink-soft);line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eg-ch{font-size:11.5px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.eg-ch svg{width:12px;height:12px;stroke:var(--glow-teal);fill:none;stroke-width:1.6}
+
+/* --- ANLASS tiles (arch photo mask) --- */
+.t-anlass{padding:0;display:flex;flex-direction:column}
+.an-ph{position:relative;overflow:hidden;aspect-ratio:16/10;border-radius:22px 22px 0 0}
+.t-anlass.wide .an-ph{aspect-ratio:16/8}
+.an-ph img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+.t-anlass:hover .an-ph img{transform:scale(1.05)}
+.an-ph .g{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,24,38,.25),rgba(13,24,38,.62));mix-blend-mode:multiply}
+.an-kind{position:absolute;left:12px;top:12px;font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:6px 11px;border-radius:20px;background:rgba(13,24,38,.72);color:var(--copper-bright);border:1px solid rgba(217,138,82,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.an-bd{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.an-nm{font-family:'Fraunces',serif;font-weight:400;font-size:18px;line-height:1.12;color:var(--ink)}
+.an-meta{margin-top:7px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.an-meta .star{color:var(--data-amber);letter-spacing:.05em}
+.an-meta .sep{width:3px;height:3px;border-radius:50%;background:var(--muted);opacity:.6}
+.an-act{margin-top:auto;padding-top:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--hair-soft)}
+.an-act .lbl{font-size:12.5px;font-style:italic;font-family:'Fraunces',serif;color:var(--ink-soft)}
+.an-do{flex:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--copper);display:grid;place-items:center;color:var(--copper-bright);cursor:pointer;transition:background .2s var(--ease),color .2s var(--ease),transform .2s var(--ease)}
+.an-do:hover{background:var(--copper);color:#1A0F06;transform:rotate(-8deg);box-shadow:0 0 16px rgba(217,138,82,.5)}
+.an-do svg{width:15px;height:15px}
+
+/* --- FORECAST tile --- */
+.t-forecast{padding:24px;display:flex;flex-direction:column}
+.fc-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.fc-big{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(34px,4vw,54px);line-height:.9;letter-spacing:-.03em;color:var(--copper-bright);animation:glow 4.5s ease-in-out infinite}
+.fc-big small{font-size:.34em;color:var(--muted);font-weight:400}
+.fc-cap{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
+.fc-note{font-size:12px;color:var(--muted);max-width:32ch;text-align:right;line-height:1.5}
+.fc-note b{color:var(--copper-bright);font-weight:500}
+.t-forecast .chart{margin-top:22px}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr;min-height:auto}
+  .hero-photo{min-height:44vh;border-left:none;border-top:1px solid var(--hair);order:-1}
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .t-live,.t-conv,.t-eingang,.t-kueche,.t-forecast{grid-column:1/-1}
+  .t-suite,.t-header{grid-column:span 1}
+  .t-anlass,.t-anlass.wide{grid-column:span 1}
+  .t-conv{min-height:0}
+  .gc2{bottom:22px}
+}
+@media(max-width:760px){
+  .nav-links{
+    position:absolute;top:100%;right:var(--gutter);
+    flex-direction:column;align-items:stretch;gap:2px;
+    background:var(--paper);border:1px solid var(--hair);border-radius:14px;
+    padding:8px;box-shadow:var(--shadow-hi);min-width:180px;
+    opacity:0;visibility:hidden;transform:translateY(-8px);
+    transition:opacity .2s var(--ease),transform .2s var(--ease),visibility .2s;
+  }
+  .nav-links.open{opacity:1;visibility:visible;transform:translateY(6px)}
+  .nav-links a{padding:11px 14px;border-radius:9px}
+  .nav-links a::after{display:none}
+  .nav-links a:hover{background:rgba(33,64,45,.06)}
+  .nav-date{display:none}
+  .nav-burger{
+    display:grid;place-items:center;width:38px;height:38px;
+    border:1px solid var(--hair);border-radius:10px;background:var(--paper);cursor:pointer;
+  }
+  .nav-burger svg{width:18px;height:18px;stroke:var(--ink)}
+}
+@media(max-width:640px){
+  .bento{grid-template-columns:repeat(2,1fr);gap:12px}
+  .t-kpi{grid-column:span 1}
+  .t-live,.t-conv,.t-suite,.t-eingang,.t-anlass,.t-anlass.wide,.t-kueche,.t-forecast,.t-header{grid-column:1/-1}
+  .bt-num{font-size:84px;top:-12px}
+  .fc-note{text-align:left}
+  .chart-grid{gap:5px}
+  .bar .cap{font-size:11px;top:-22px}
+  .gchip-f{padding:9px 13px}
+  .gchip-f b{font-size:16px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .enter,.bt{opacity:1!important;transform:none!important}
+  .kb-wrap,.gchip,.gchip-f{transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ambient light wash (behind everything) -->
+<div class="ambient" aria-hidden="true"><b class="a1"></b><b class="a2"></b><b class="a3"></b></div>
+
+<!-- ============ LEFT SIDEBAR (desktop chrome) ============ -->
+<aside class="side" aria-label="Hauptnavigation">
+  <div class="side-brand">
+    <span class="side-mark"><img src="../assets/kb-logo-weiss.webp" alt=""></span>
+    <span class="side-brand-tx">
+      <span class="nm">Klinik Bavaria</span>
+      <span class="os">Concierge OS</span>
+    </span>
+  </div>
+  <nav class="side-nav">
+    <a href="#top" class="active">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke-linecap="round"/></svg>Heute
+    </a>
+    <a href="#eingang">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke-linejoin="round"/></svg>Fälle
+    </a>
+    <a href="#anlaesse">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0111 0" stroke-linecap="round"/><path d="M16 5.5a3 3 0 010 5.8M17 19a5.5 5.5 0 00-2-4.3" stroke-linecap="round"/></svg>Team
+    </a>
+    <a href="#eingang">
+      <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="5.5" r="2.4"/><circle cx="18" cy="18.5" r="2.4"/><path d="M8.2 11L15.8 6.6M8.2 13l7.6 4.4"/></svg>Netzwerk
+    </a>
+    <a href="#belegung">
+      <svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6M5 12v6c0 1.66 3.13 3 7 3s7-1.34 7-3v-6"/></svg>Datenbank
+    </a>
+    <a href="#top">
+      <svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10" stroke-linecap="round"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg>System
+    </a>
+  </nav>
+  <div class="side-foot">
+    <div class="side-date">DI · 15. JULI 2026</div>
+    <div class="side-div"></div>
+    <div class="side-user">
+      <span class="side-ava">SB</span>
+      <span class="side-user-tx">
+        <span class="nm">Sabine Berger</span>
+        <span class="rl">Belegungsmanagement</span>
+      </span>
+    </div>
+  </div>
+</aside>
+
+<!-- ============ NAV (mobile top-bar ≤1023px) ============ -->
+<nav class="nav enter go">
+  <div class="brand">
+    <span class="brand-mark"><img src="../assets/kb-logo-weiss.webp" alt=""></span>
+    <span class="brand-txt">Klinik Bavaria<span class="dot">·</span><span class="os">Concierge OS</span></span>
+  </div>
+  <div class="nav-links" id="navlinks">
+    <a href="#top" class="active">Heute</a>
+    <a href="#eingang">Fälle</a>
+    <a href="#anlaesse">Team</a>
+    <a href="#eingang">Netzwerk</a>
+    <a href="#belegung">Datenbank</a>
+    <a href="#top">System</a>
+  </div>
+  <div class="nav-right">
+    <span class="nav-date">Di · 15. Juli 2026</span>
+    <span class="nav-ava" title="Sabine">SB</span>
+    <button class="nav-burger" id="burger" aria-label="Menü">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</nav>
+
+<span id="top"></span>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-copy">
+    <div class="hero-greet enter go e1">
+      <span class="line"></span>
+      <span class="txt">Guten Morgen, <b>Sabine</b> — 5 neue Anfragen warten.</span>
+    </div>
+    <h1 class="hero-h1 enter go e2">Aus Quellen wird<br><span class="em">planbare</span> Belegung.</h1>
+    <div class="hero-rule enter go e2" aria-hidden="true"></div>
+    <p class="hero-sub enter go e3">Jede E-Mail, jeder Anruf, jedes Fax, jede Portal-Meldung — an einem Ort gebündelt, priorisiert und in Bewegung Richtung belegtes Bett.</p>
+    <div class="hero-cta enter go e4">
+      <a href="#eingang" class="btn btn-p">Eingang öffnen
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#belegung" class="btn btn-g">Belegung ansehen</a>
+    </div>
+  </div>
+  <div class="hero-photo enter go e2">
+    <div class="kb-wrap"><img class="kb" src="img/kb-header.jpg" alt="Luftbild der Klinik Bavaria in Bad Kissingen"></div>
+    <div class="grade"></div>
+    <div class="gchip gc1"><span class="gchip-f"><span class="gc-dot"></span><b>41</b>&nbsp;Anfragen heute</span></div>
+    <div class="gchip gc2"><span class="gchip-f"><b>31</b><span class="gc-sm">/38 Betten belegt</span></span></div>
+    <div class="cap">
+      <span class="place">Klinik Bavaria — <em>im Licht der Rhön</em></span>
+      <span class="co">Bad Kissingen</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============ BENTO ============ -->
+<main class="bento">
+
+  <!-- Row A · KPI tiles -->
+  <div class="bt t-kpi kpi" id="anchor-kpis" style="--acc:#D98A52">
+    <div class="kpi-top">
+      <span class="mlabel lab">Offene Fälle</span>
+      <svg class="kring" viewBox="0 0 48 48" data-ring="72" data-hue="#D98A52"></svg>
+    </div>
+    <div class="val"><span class="count" data-count="14">0</span></div>
+    <span class="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 15l6-6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>+3 diese Woche</span>
+  </div>
+  <div class="bt t-kpi kpi" style="--acc:#5FC7C0">
+    <div class="kpi-top">
+      <span class="mlabel lab">Neue Anfragen heute</span>
+      <svg class="kring" viewBox="0 0 48 48" data-ring="40" data-hue="#5FC7C0"></svg>
+    </div>
+    <div class="val"><span class="count" data-count="5">0</span></div>
+    <span class="delta flat">seit 00:00 Uhr</span>
+  </div>
+  <div class="bt t-kpi kpi" style="--acc:#E8B45C">
+    <div class="kpi-top">
+      <span class="mlabel lab">Conversion</span>
+      <svg class="kring" viewBox="0 0 48 48" data-ring="67" data-hue="#E8B45C"></svg>
+    </div>
+    <div class="val"><span class="count" data-count="67">0</span><small>%</small></div>
+    <span class="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 15l6-6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Anfrage → Fall</span>
+  </div>
+  <div class="bt t-kpi kpi" style="--acc:#E8A66E">
+    <div class="kpi-top">
+      <span class="mlabel lab">Belegung</span>
+      <svg class="kring" viewBox="0 0 48 48" data-ring="82" data-hue="#E8A66E"></svg>
+    </div>
+    <div class="val"><span class="count" data-count="31">0</span><small>/38 Betten</small></div>
+    <span class="delta">82 % ausgelastet</span>
+  </div>
+
+  <!-- live status strip (frosted) -->
+  <div class="bt t-live">
+    <span class="pulse"><i></i></span>
+    <span class="tx"><b>5 neue Anfragen</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.</span>
+    <span class="badge">Echtzeit</span>
+  </div>
+
+  <!-- Row B · convergence + suite photo -->
+  <section class="bt t-conv" id="eingang">
+    <div class="c-head">
+      <div class="bt-eyebrow"><span class="ln"></span><span class="mlabel">Konvergenz — sechs Quellen</span></div>
+      <h2 class="bt-h">Sechs Quellen, <span class="em">ein</span> Eingang.</h2>
+      <p class="bt-lede">41 Signale heute morgen — automatisch zusammengeführt, 14 wurden bereits zum Fall.</p>
+    </div>
+    <div class="stage-wrap">
+      <svg class="stage" viewBox="0 0 1000 260" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Sechs farbige Kanäle laufen in einen Eingang und werden zum Fall">
+        <defs>
+          <radialGradient id="hubg" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#1B3350"/><stop offset="100%" stop-color="#0F2136"/>
+          </radialGradient>
+          <filter id="dotGlow" x="-90%" y="-90%" width="280%" height="280%">
+            <feGaussianBlur stdDeviation="2.4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g id="chans"></g>
+        <g id="hub">
+          <circle class="hub-ring" cx="640" cy="130" r="62" opacity=".25"/>
+          <circle cx="640" cy="130" r="50" fill="url(#hubg)" stroke="#D98A52" stroke-width="1.2" stroke-opacity=".6"/>
+          <text x="640" y="122" text-anchor="middle" fill="#F2ECE0" font-family="Fraunces,serif" font-weight="500" font-size="26">41</text>
+          <text x="640" y="146" text-anchor="middle" fill="rgba(242,236,224,.72)" font-family="Inter" font-size="9.5" letter-spacing="1.4">EIN EINGANG</text>
+        </g>
+        <path d="M702 130 H812" fill="none" stroke="#D98A52" stroke-width="1.6" opacity=".6"/>
+        <path d="M804 124 l10 6 -10 6" fill="none" stroke="#D98A52" stroke-width="1.6" opacity=".6"/>
+        <g>
+          <rect x="832" y="104" width="128" height="52" rx="26" fill="none" stroke="#D98A52" stroke-width="1.4"/>
+          <text x="896" y="127" text-anchor="middle" fill="#E8A66E" font-family="Fraunces,serif" font-weight="500" font-size="24">14</text>
+          <text x="896" y="145" text-anchor="middle" fill="#8895A6" font-family="Inter" font-size="9" letter-spacing="1.2">FÄLLE</text>
+        </g>
+      </svg>
+    </div>
+    <div class="conv-legend" id="convlegend"></div>
+    <div class="stepper">
+      <div class="step on"><span class="b"></span>Eingang</div>
+      <span class="arw"></span>
+      <div class="step"><span class="b"></span>Zuteilung</div>
+      <span class="arw"></span>
+      <div class="step"><span class="b"></span>Antwort</div>
+      <span class="arw"></span>
+      <div class="step"><span class="b"></span>Fall</div>
+    </div>
+  </section>
+
+  <a class="bt t-photo t-suite" href="#belegung">
+    <img src="img/kb-suite.webp" alt="Panorama-Suite der Klinik Bavaria" style="object-position:center 55%">
+    <div class="kb-grade"></div><div class="scrim"></div>
+    <div class="gcap frost"><span class="t">Panorama-Suite</span><span class="s">Komfort-Kategorie</span></div>
+  </a>
+
+  <!-- Row C · Eingang rows + two Anlässe -->
+  <section class="bt t-eingang">
+    <span class="bt-num">01</span>
+    <div class="bt-eyebrow"><span class="ln"></span><span class="mlabel">Kapitel Eins — Eingang</span></div>
+    <h2 class="bt-h">Alles kommt hier <span class="em">zuerst</span> an.</h2>
+    <div class="eg-list">
+      <a class="eg-row">
+        <span class="eg-ava">WA</span>
+        <span class="eg-main">
+          <span class="eg-nm">Werner Aumann</span>
+          <span class="eg-sub">„Anfrage Anschlussheilbehandlung nach Hüft-OP"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 9l9 6 9-6"/></svg>Website · vor 12 Min</span>
+        </span>
+        <span class="tag neu">Neu</span>
+      </a>
+      <a class="eg-row">
+        <span class="eg-ava">HS</span>
+        <span class="eg-main">
+          <span class="eg-nm">Dr. med. H. Sailer</span>
+          <span class="eg-sub">„Verlegung Kardio-Reha, privat"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7z"/></svg>Zuweiser-Portal · vor 38 Min</span>
+        </span>
+        <span class="tag mid">Zuweiser</span>
+      </a>
+      <a class="eg-row">
+        <span class="eg-ava">FB</span>
+        <span class="eg-main">
+          <span class="eg-nm">Familie Brenner</span>
+          <span class="eg-sub">„Rückfrage Komfortzimmer & Kostenübernahme"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2a12 12 0 006 6l2-3 5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>Telefon · vor 1 Std</span>
+        </span>
+        <span class="tag mid">Anruf</span>
+      </a>
+      <a class="eg-row">
+        <span class="eg-ava">MO</span>
+        <span class="eg-main">
+          <span class="eg-nm">M. Ostheimer</span>
+          <span class="eg-sub">„Unterlagen nachgereicht — Kostenzusage?"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 9l9 6 9-6"/></svg>E-Mail · vor 2 Std</span>
+        </span>
+        <span class="tag wait">Wartet</span>
+      </a>
+    </div>
+  </section>
+
+  <article class="bt t-anlass" id="anlaesse">
+    <div class="an-ph"><img src="../assets/kb-garten.webp" alt="Feingebäck im Klinikgarten" style="object-position:50% 55%"><div class="g"></div><span class="an-kind">Geburtstag</span></div>
+    <div class="an-bd">
+      <span class="bt-num">02</span>
+      <div class="an-nm">Margarete Brandl wird 74</div>
+      <div class="an-meta"><span class="star">★★★★★</span><span class="sep"></span>Stammgast seit 2019</div>
+      <div class="an-act"><span class="lbl">Persönliche Karte + Anruf</span>
+        <button class="an-do" aria-label="Aktion starten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </article>
+
+  <article class="bt t-anlass">
+    <div class="an-ph"><img src="../assets/kb-fach-1.webp" alt="Behandlungsszene" style="object-position:50% 50%"><div class="g"></div><span class="an-kind">Wiederbedarf</span></div>
+    <div class="an-bd">
+      <div class="an-nm">Klaus Hofreiter</div>
+      <div class="an-meta">Entlassung vor 11 Monaten<span class="sep"></span>Orthopädie</div>
+      <div class="an-act"><span class="lbl">Nachsorge-Angebot</span>
+        <button class="an-do" aria-label="Aktion starten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Row D · third Anlass (wide) + Küche photo -->
+  <article class="bt t-anlass wide">
+    <div class="an-ph"><img src="../assets/kb-haus.webp" alt="Therapie-Szene" style="object-position:50% 45%"><div class="g"></div><span class="an-kind">Zuweiser-Rhythmus</span></div>
+    <div class="an-bd">
+      <div class="an-nm">Praxis Dr. Wagenknecht</div>
+      <div class="an-meta">Letzter Kontakt vor 6 Wochen</div>
+      <div class="an-act"><span class="lbl">Quartalsgespräch anbieten</span>
+        <button class="an-do" aria-label="Aktion starten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </article>
+
+  <a class="bt t-photo t-kueche" href="#anlaesse">
+    <img src="img/kb-kueche.webp" alt="Klinikküche mit Blick ins Grüne" style="object-position:center 50%">
+    <div class="kb-grade"></div><div class="scrim"></div>
+    <div class="gcap frost"><span class="t">Kulinarik</span><span class="s">Küche mit Blick ins Grüne</span></div>
+  </a>
+
+  <!-- Row E · forecast + campus photo -->
+  <section class="bt t-forecast" id="belegung">
+    <span class="bt-num">03</span>
+    <div class="bt-eyebrow"><span class="ln"></span><span class="mlabel">Kapitel Drei — Belegung</span></div>
+    <div class="fc-top">
+      <div>
+        <div class="fc-big">38<small>/38</small></div>
+        <div class="fc-cap">Prognose KW36 — Vollbelegung erstmals erreicht.</div>
+      </div>
+      <div class="fc-note">Von <b>29</b> auf <b>38</b> Betten in acht Wochen. Ziel-Linie bei <b>34</b> seit KW34 durchbrochen.</div>
+    </div>
+    <div class="chart" id="chart">
+      <div class="chart-grid" id="bars">
+        <div class="target-line" style="bottom:calc((34/38) * 92%)"><span class="t">Ziel 34</span></div>
+      </div>
+    </div>
+  </section>
+
+  <a class="bt t-photo t-header" href="#top">
+    <img src="img/kb-header.jpg" alt="Campus der Klinik in Kurpark-Lage" style="object-position:center 45%">
+    <div class="kb-grade"></div><div class="scrim"></div>
+    <div class="gcap"><span class="t">Campus</span><span class="s">Kurpark-Lage</span></div>
+  </a>
+
+</main>
+
+<!-- ============ CLOSING ============ -->
+<section class="closing">
+  <img class="bg" src="img/forest-light.jpg" alt="Lichtung im Wald bei Bad Kissingen">
+  <div class="grade"></div>
+  <div class="inner">
+    <span class="mlabel">Klinik Bavaria · Concierge OS</span>
+    <h2 class="serif">Ruhe im <span class="em">Betrieb</span>,<br>Klarheit in der Belegung.</h2>
+    <a href="#top" class="btn btn-p">Zum Tagesüberblick
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 19V5M6 11l6-6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<footer class="foot">
+  <span class="l"><b>Klinik Bavaria</b> · Concierge OS — Prototyp „Lichtung II"</span>
+  <span>Synthetische Demo-Daten · Bad Kissingen · 2026</span>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine   = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  /* ---- burger menu ---- */
+  var burger = document.getElementById('burger');
+  var navlinks = document.getElementById('navlinks');
+  if(burger){
+    burger.addEventListener('click', function(e){ e.stopPropagation(); navlinks.classList.toggle('open'); });
+    document.addEventListener('click', function(){ navlinks.classList.remove('open'); });
+    navlinks.addEventListener('click', function(){ navlinks.classList.remove('open'); });
+  }
+
+  /* ---- build convergence channels (per-channel colored light-threads) ---- */
+  var chans = [
+    {n:'E-Mail',   v:12, c:'#D98A52'}, /* copper */
+    {n:'Telefon',  v:7,  c:'#5FC7C0'}, /* glow-teal */
+    {n:'Fax',      v:3,  c:'#E8B45C'}, /* data-amber */
+    {n:'Website',  v:9,  c:'#E8A66E'}, /* copper-bright */
+    {n:'Zuweiser', v:6,  c:'#D97A7A'}, /* data-rose */
+    {n:'Portale',  v:4,  c:'#8895A6'}  /* slate-blue */
+  ];
+  var g = document.getElementById('chans');
+  var hubX = 640, hubY = 130, startX = 60, colX = 200;
+  var frag = '';
+  chans.forEach(function(c, i){
+    var y = 30 + i * 40;
+    var path = 'M'+colX+' '+y+' C '+(colX+180)+' '+y+', '+(hubX-170)+' '+hubY+', '+(hubX-52)+' '+hubY;
+    frag += '<path class="flowline" d="'+path+'" id="fp'+i+'" stroke="'+c.c+'"/>';
+    frag += '<text class="chan-lbl" x="'+startX+'" y="'+(y+4)+'">'+c.n+'</text>';
+    frag += '<text class="chan-num" x="'+(colX-14)+'" y="'+(y+4)+'" text-anchor="end" fill="'+c.c+'">'+c.v+'</text>';
+    frag += '<circle cx="'+(colX-4)+'" cy="'+y+'" r="2.6" fill="'+c.c+'"/>';
+  });
+  g.innerHTML = frag;
+
+  /* colour legend beneath the stage */
+  var legend = document.getElementById('convlegend');
+  if(legend){
+    legend.innerHTML = chans.map(function(c){
+      return '<span><i style="background:'+c.c+'"></i>'+c.n+'</span>';
+    }).join('');
+  }
+
+  /* ambient: per-channel dots traveling the threads, soft SVG glow (skipped in reduced-motion) */
+  if(!reduce){
+    chans.forEach(function(c, i){
+      var pathEl = document.getElementById('fp'+i);
+      if(!pathEl) return;
+      var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('r','3');
+      dot.setAttribute('fill', c.c);
+      dot.setAttribute('filter','url(#dotGlow)');
+      var am = document.createElementNS('http://www.w3.org/2000/svg','animateMotion');
+      am.setAttribute('dur', (3.4 + i*0.55)+'s');
+      am.setAttribute('repeatCount','indefinite');
+      am.setAttribute('begin', (i*0.5)+'s');
+      am.setAttribute('rotate','auto');
+      var mp = document.createElementNS('http://www.w3.org/2000/svg','mpath');
+      mp.setAttributeNS('http://www.w3.org/1999/xlink','href','#fp'+i);
+      am.appendChild(mp); dot.appendChild(am);
+      g.appendChild(dot);
+    });
+  }
+
+  /* ---- KPI ring-gauges (draw arc in own hue) + count-up + one-shot glint ---- */
+  function drawRing(svg){
+    if(svg.dataset.done) return; svg.dataset.done = '1';
+    var pct = +svg.getAttribute('data-ring');
+    var hue = svg.getAttribute('data-hue');
+    var r = 19, c = 2*Math.PI*r, cx = 24, cy = 24;
+    var ns = 'http://www.w3.org/2000/svg';
+    function circle(stroke, w, dash, off, cap){
+      var el = document.createElementNS(ns,'circle');
+      el.setAttribute('cx',cx); el.setAttribute('cy',cy); el.setAttribute('r',r);
+      el.setAttribute('fill','none'); el.setAttribute('stroke',stroke);
+      el.setAttribute('stroke-width',w);
+      if(dash!=null){ el.setAttribute('stroke-dasharray', dash); el.setAttribute('stroke-dashoffset', off); }
+      if(cap) el.setAttribute('stroke-linecap','round');
+      el.setAttribute('transform','rotate(-90 '+cx+' '+cy+')');
+      return el;
+    }
+    svg.appendChild(circle('rgba(242,236,224,.1)', 4.5));
+    var target = c * (1 - pct/100);
+    var arc = circle(hue, 4.5, c, c, true);
+    svg.appendChild(arc);
+    if(reduce){ arc.setAttribute('stroke-dashoffset', target); return; }
+    var start = null, dur = 1100;
+    requestAnimationFrame(function step(t){
+      if(!start) start = t;
+      var k = Math.min((t-start)/dur, 1);
+      var e = 1 - Math.pow(1-k, 3);
+      arc.setAttribute('stroke-dashoffset', c - (c-target)*e);
+      if(k<1) requestAnimationFrame(step);
+    });
+  }
+  function countUp(el){
+    if(el.dataset.done) return; el.dataset.done = '1';
+    var end = +el.getAttribute('data-count');
+    if(reduce){ el.textContent = end; return; }
+    var start = null, dur = 1400;
+    requestAnimationFrame(function step(t){
+      if(!start) start = t;
+      var k = Math.min((t-start)/dur, 1);
+      var e = 1 - Math.pow(1-k, 3);
+      el.textContent = Math.round(end * e);
+      if(k<1){ requestAnimationFrame(step); }
+      else { el.textContent = end; }
+    });
+  }
+  var kpisFired = false;
+  function fireKpis(){
+    if(kpisFired) return; kpisFired = true;
+    document.querySelectorAll('svg.kring').forEach(drawRing);
+    document.querySelectorAll('.count').forEach(countUp);
+  }
+
+  /* ---- belegung bars (growing stems + colored cap dots) ---- */
+  var data = [
+    {wk:'KW29', v:29}, {wk:'KW30', v:31}, {wk:'KW31', v:33}, {wk:'KW32', v:34},
+    {wk:'KW33', v:36}, {wk:'KW34', v:35}, {wk:'KW35', v:37}, {wk:'KW36', v:38}
+  ];
+  var max = 38;
+  var bars = document.getElementById('bars');
+  var bhtml = '';
+  data.forEach(function(d, i){
+    var pct = (d.v / max) * 92;
+    var peak = d.v === 38 ? ' peak' : '';
+    var delay = (i * 0.08).toFixed(2) + 's';
+    bhtml += '<div class="bar-col'+peak+'" style="--d:'+delay+'"><div class="bar" style="height:'+pct.toFixed(1)+'%"><span class="cap">'+d.v+'</span><span class="dotcap"></span></div><span class="wk">'+d.wk+'</span></div>';
+  });
+  bars.insertAdjacentHTML('beforeend', bhtml);
+
+  /* ---- BENTO entrance + triggered content ---- */
+  var tiles = Array.prototype.slice.call(document.querySelectorAll('.bt'));
+  /* stagger the pure-CSS lift entrance via per-tile delay; content is visible by default */
+  tiles.forEach(function(el,i){ el.style.setProperty('--d', Math.min(i*0.05, 0.4).toFixed(2)+'s'); });
+
+  /* KPI rings + count-ups draw on load (no scroll gating — page renders 100% without it) */
+  fireKpis();
+
+  /* ---- 3D pointer-tilt (hover-capable, motion-safe) ---- */
+  if(fine && !reduce){
+    tiles.forEach(function(el){
+      el.addEventListener('mousemove', function(ev){
+        var r = el.getBoundingClientRect();
+        var px = (ev.clientX - r.left) / r.width;
+        var py = (ev.clientY - r.top) / r.height;
+        var rx = (0.5 - py) * 7;   /* max ~3.5deg */
+        var ry = (px - 0.5) * 7;
+        el.style.setProperty('--mx', (px*100).toFixed(1)+'%');
+        el.style.setProperty('--my', (py*100).toFixed(1)+'%');
+        el.style.transform = 'perspective(900px) rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg)';
+      });
+      el.addEventListener('mouseleave', function(){ el.style.transform = ''; });
+    });
+
+    /* ---- hero mouse-parallax (photo layer + 2 glass chips, differing rates) ---- */
+    var hero = document.querySelector('.hero-photo');
+    var kbw  = document.querySelector('.kb-wrap');
+    var c1   = document.querySelector('.gc1');
+    var c2   = document.querySelector('.gc2');
+    if(hero){
+      hero.addEventListener('pointermove', function(ev){
+        var r = hero.getBoundingClientRect();
+        var dx = (ev.clientX - r.left) / r.width - 0.5;
+        var dy = (ev.clientY - r.top) / r.height - 0.5;
+        if(kbw) kbw.style.transform = 'translate3d('+(dx*-12).toFixed(1)+'px,'+(dy*-12).toFixed(1)+'px,0)';
+        if(c1)  c1.style.transform  = 'translate3d('+(dx*24).toFixed(1)+'px,'+(dy*24).toFixed(1)+'px,0)';
+        if(c2)  c2.style.transform  = 'translate3d('+(dx*-20).toFixed(1)+'px,'+(dy*20).toFixed(1)+'px,0)';
+      });
+      hero.addEventListener('pointerleave', function(){
+        if(kbw) kbw.style.transform = '';
+        if(c1)  c1.style.transform  = '';
+        if(c2)  c2.style.transform  = '';
+      });
+    }
+  }
+
+})();
+</script>
+</body>
+</html>
