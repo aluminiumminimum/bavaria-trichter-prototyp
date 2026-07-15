@@ -852,13 +852,18 @@
   .di-row:first-child{border-top:0}
   .di-k{color:var(--muted);font-weight:600}
 }
-/* ===== DESKTOP TASK 4 — Heute-Dashboard (Multi-Column) ===== */
+/* ===== DESKTOP TASK 4 — Heute-Dashboard · E3-Bento (12-Spalten) ===== */
 @media(min-width:1024px){
-  #view-heute.view.active{display:grid;grid-template-columns:1fr 1fr;gap:26px 30px;align-items:start}
-  #view-heute>.greet{grid-column:1/-1;margin:0}
-  #view-heute>.chap:nth-of-type(1){grid-column:1/-1}
-  #view-heute>.chap:last-of-type{grid-column:1/-1}
-  #view-heute>.chap{margin-top:0}
+  #view-heute.view.active{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;align-items:stretch}
+  #view-heute>.greet{grid-column:span 12;margin:0}
+  #view-heute>.hb-a{grid-column:span 12}    /* Row A · KPI/Nordstern-Band */
+  #view-heute>.hb-8{grid-column:span 8}     /* Row B/C/D · Trichter, Anlässe, Forecast */
+  #view-heute>.hb-4{grid-column:span 4}     /* Row B/C/D · Foto / kompaktes Kapitel */
+  #view-heute>.hb-12{grid-column:span 12}   /* Row E · Foto-Band */
+  #view-heute>.card.ns-card,#view-heute>.lx-fen,#view-heute>.chap{margin:0}
+  /* Foto-Kacheln füllen die Zeilenhöhe (align-items:stretch) */
+  #view-heute>.hb-photo{align-self:stretch}
+  #view-heute>.hb-photo img{height:100%}
 }
 /* ===== DESKTOP TASK 5 — breitere Grids + Feinbreakpoint ===== */
 @media(min-width:1024px){
@@ -880,9 +885,9 @@
 /* ===== Heute-Trichter — Funnel über Hub-Stack, größere Labels, schickere Animation ===== */
 @keyframes fnFlow{to{stroke-dashoffset:-14}}
 @media(min-width:900px){
-  #view-heute>.chap:nth-of-type(1){display:flex;flex-direction:column}
-  #view-heute>.chap:nth-of-type(1)>.hub-stack{order:1;margin-top:10px}
-  #view-heute>.chap:nth-of-type(1)>.strom{margin-top:6px}
+  #view-heute>.hb-trichter{display:flex;flex-direction:column}
+  #view-heute>.hb-trichter>.hub-stack{order:1;margin-top:10px}
+  #view-heute>.hb-trichter>.strom{margin-top:6px}
   .strom-d .fn-cap{font-size:15.5px}
   .strom-d .fn-lab{font-size:19px}
   .strom-d .fn-stage{font-size:16.5px}
@@ -1400,11 +1405,6 @@ label{font-size:12px;letter-spacing:.08em}
 .wrow-all{color:var(--brass-deep)}
 .wrow-all .wtit{font-weight:700}
 .wrow-all{border-top:1px solid var(--hair2)}
-@media(min-width:1024px){
-  /* Nordstern (Spalte 1) und Heute-wichtig (Spalte 2) nebeneinander statt gestapelt */
-  #view-heute>.chap:last-of-type{grid-column:auto}
-  #view-heute>.card.ns-card{grid-column:1}
-}
 /* --- Phase 3: Konvergenz-Panel (ersetzt .g-stats) --- */
 .cv{margin-top:20px;position:relative}
 .cv svg{display:block;width:100%;height:auto}
@@ -2085,11 +2085,11 @@ body{accent-color:var(--brass)}
    Container relativ; das Numeral ist eingerückt (right:18px) und schmaler als der Container
    → kein horizontaler/vertikaler Overflow, daher bewusst KEIN overflow:hidden (das würde
    Karten-Schatten bzw. das Trichter-SVG innerhalb des Kapitels beschneiden). */
-#view-heute>.chap:nth-of-type(1),#anlassChap,#belegungChap{position:relative}
-#view-heute>.chap:nth-of-type(1)::after{content:"01"}
+#view-heute>.hb-trichter,#anlassChap,#belegungChap{position:relative}
+#view-heute>.hb-trichter::after{content:"01"}
 #anlassChap::after{content:"02"}
 #belegungChap::after{content:"03"}
-#view-heute>.chap:nth-of-type(1)::after,#anlassChap::after,#belegungChap::after{
+#view-heute>.hb-trichter::after,#anlassChap::after,#belegungChap::after{
   position:absolute;top:8px;right:18px;font-family:"Fraunces",Georgia,serif;font-size:88px;
   font-weight:600;color:var(--ink);opacity:.05;line-height:1;pointer-events:none}
 /* (5) Kapitel-Kicker auf Token-Brass (Mono-Nummer .au-chapnum bleibt via eigener Regel Champagner) */
@@ -2212,9 +2212,8 @@ body{accent-color:var(--brass)}
 .ns-ring .ring svg{width:44px;height:44px}
 .ns-ring .rl,.ns-ring .rd{display:none}
 
-/* (G3) Foto-Fenster-Reihe zwischen Anlässe- und Belegung-Kapitel.
+/* (G3) Foto-Kacheln als Bento-Items im Heute-Grid (E3-Parität) verteilt.
    Solide Weiß-Chips als Caption (KEINE Glas-Unschärfe — Budget-Deckel). */
-.lx-fenster{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:4px}
 .lx-fen{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--hair2);
   box-shadow:var(--shadow-soft);transition:transform .3s cubic-bezier(.22,.61,.36,1),box-shadow .3s}
 .lx-fen img{width:100%;height:200px;object-fit:cover;display:block;filter:saturate(1.06) brightness(1.02)}
@@ -2223,7 +2222,7 @@ body{accent-color:var(--brass)}
   padding:8px 13px;border-radius:13px;background:rgba(255,255,255,.85);border:1px solid var(--hair);box-shadow:var(--shadow-soft)}
 .lx-fen-n{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500;font-size:15px;color:var(--ink);line-height:1.1}
 .lx-fen-s{font-family:"Fragment Mono",ui-monospace,monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-@media(max-width:760px){.lx-fenster{grid-template-columns:1fr}}
+@media(max-width:1023px){#view-heute>.lx-fen{margin-top:24px}}
 
 /* (G5a) Konvergenz-Politur — animierte Gradient-Haarlinie um das Hero-Panel (.greet).
    Padding-Ring via mask-composite (wie e3 .t-conv::before). RM-safe: Basis = statischer
@@ -2299,6 +2298,18 @@ body{accent-color:var(--brass)}
   .chap-h2{font-size:26px}
   #view-heute .card:not(.list-card){padding:18px}
 }
+/* ===== W2 · Heute-Bento — gestaffelter Kachel-Auftritt (nur beim View-Eintritt).
+   Läuft auf den ÄUSSEREN Grid-Kacheln (nie von renderHeute neu gebaut), replayt beim
+   display:none→grid-Wechsel via .active-Toggle in go(); Datenrender lässt sie unberührt.
+   opacity:0 nur im Keyframe-`from` → RM-Kill (Z. animation:none!important) zeigt sofort opacity:1. */
+@keyframes hbRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+#view-heute.view.active>*{animation:hbRise .4s cubic-bezier(.22,1,.36,1) both}
+#view-heute.view.active>*:nth-child(2){animation-delay:.05s}
+#view-heute.view.active>*:nth-child(3){animation-delay:.10s}
+#view-heute.view.active>*:nth-child(4){animation-delay:.15s}
+#view-heute.view.active>*:nth-child(5){animation-delay:.20s}
+#view-heute.view.active>*:nth-child(6){animation-delay:.25s}
+#view-heute.view.active>*:nth-child(n+7){animation-delay:.28s}
 </style>
 </head>
 <body>
@@ -2475,7 +2486,53 @@ body{accent-color:var(--brass)}
 </div>
     </header>
 
-    <div class="chap">
+    <!-- Row A · KPI/Nordstern-Band (span 12) -->
+    <div class="card ns-card hb-a">
+      <div class="kicker">Nordstern · Privatauslastung</div>
+      <svg class="gauge" viewBox="0 0 200 152" role="img" aria-label="Privatauslastung 78 Prozent, Ziel 90 Prozent">
+        <defs><linearGradient id="gaugeGold" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#d6ba8c"/><stop offset=".55" stop-color="#bca37d"/><stop offset="1" stop-color="#8f7448"/>
+        </linearGradient></defs>
+        <path class="track" d="M34.2,134 A76,76 0 1 1 165.8,134"/>
+        <path class="val" d="M34.2,134 A76,76 0 1 1 165.8,134" stroke-dasharray="248.3 318.3"/>
+        <line class="tick" x1="167.6" y1="103.1" x2="183.5" y2="104.8"/>
+        <text class="gziel" x="186" y="96" text-anchor="middle">90</text>
+        <text class="gnum num" x="92" y="116" text-anchor="middle">78</text>
+        <text class="gpct" x="126" y="114">%</text>
+      </svg>
+      <div class="ns-betten">31 von 40 Privatbetten belegt · Ziel 90&nbsp;%+</div>
+      <div class="ns-row">
+        <div class="ns-m">
+          <div class="ns-mtext">
+            <span class="ns-l">Vorlauf</span>
+            <span class="ns-v num"><b id="nsVorlauf">9</b> <span>Tage</span></span>
+            <span class="ns-t">Ziel 21 Tage</span>
+            <span id="plusTagH"></span>
+          </div>
+          <span class="ns-ring" id="nsRingVorlauf"></span>
+        </div>
+        <div class="ns-m">
+          <div class="ns-mtext">
+            <span class="ns-l">Ø Erstreaktion</span>
+            <span class="ns-v num" id="nsRz"></span>
+            <span class="ns-t">Ziel unter 24 Std.</span>
+          </div>
+          <span class="ns-ring" id="nsRingRz"></span>
+        </div>
+        <div class="ns-m">
+          <div class="ns-mtext">
+            <span class="ns-l">Conversion</span>
+            <span class="ns-v num" id="nsConv"></span>
+            <span class="ns-t" id="nsConvSub"></span>
+          </div>
+          <span class="ns-ring" id="nsRingConv"></span>
+        </div>
+      </div>
+      <div class="lx-live" aria-live="polite"><i class="lx-pulse"></i><b><span data-sync="cvTotal">–</span> Anfragen heute</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.<span class="lx-rt">ECHTZEIT</span></div>
+    </div>
+
+    <!-- Row B · Der Trichter (span 8) + Panorama-Suite (span 4, hoch) -->
+    <div class="chap hb-8 hb-trichter">
       <div class="hd-row">
         <div class="kicker"><span class="au-chapnum">01</span>Der Trichter · heute</div>
         <button class="hd-link" onclick="go('system','idee')">Die ganze Idee ›</button>
@@ -2794,19 +2851,22 @@ body{accent-color:var(--brass)}
       </div>
     </div>
 
-    <div class="chap" id="anlassChap">
+    <figure class="lx-fen hb-4 hb-photo"><img src="assets/kb-suite.webp" alt="Panorama-Suite der Klinik Bavaria" loading="lazy" style="object-position:center 55%"><figcaption><span class="lx-fen-n">Panorama-Suite</span><span class="lx-fen-s">Komfort-Kategorie</span></figcaption></figure>
+
+    <!-- Row C · Heute wichtig (span 4) + Anlässe (span 8) -->
+    <div class="chap hb-4">
+      <div class="kicker">Heute wichtig</div>
+      <div class="card list-card" id="wichtigList"></div>
+    </div>
+
+    <div class="chap hb-8" id="anlassChap">
       <div class="kicker"><span class="au-chapnum">02</span>Anlässe · Beziehungen pflegen</div>
       <div class="ar-head"><span class="ar-sum" id="anlassSum"></span><button class="ar-more" onclick="go('netzwerk','bestand');setDbView('radar')">Alle Anlässe ›</button></div>
       <div class="ar-grid" id="anlassList"></div>
     </div>
 
-    <div class="lx-fenster" aria-label="Klinik-Impressionen">
-      <figure class="lx-fen"><img src="assets/kb-suite.webp" alt="Panorama-Suite der Klinik Bavaria" loading="lazy" style="object-position:center 55%"><figcaption><span class="lx-fen-n">Panorama-Suite</span><span class="lx-fen-s">Komfort-Kategorie</span></figcaption></figure>
-      <figure class="lx-fen"><img src="assets/kb-header.jpg" alt="Campus der Klinik in Kurpark-Lage" loading="lazy" style="object-position:center 45%"><figcaption><span class="lx-fen-n">Campus</span><span class="lx-fen-s">Kurpark-Lage</span></figcaption></figure>
-      <figure class="lx-fen"><img src="assets/kb-kueche.webp" alt="Klinikküche mit Blick ins Grüne" loading="lazy" style="object-position:center 50%"><figcaption><span class="lx-fen-n">Kulinarik</span><span class="lx-fen-s">Küche mit Blick ins Grüne</span></figcaption></figure>
-    </div>
-
-    <div class="chap" id="belegungChap">
+    <!-- Row D · Belegung (span 8) + Küche (span 4) -->
+    <div class="chap hb-8" id="belegungChap">
       <div class="kicker"><span class="au-chapnum">03</span>Belegung · 8-Wochen-Forecast</div>
       <h2 class="chap-h2">Komfort- &amp; Privatbelegung</h2>
       <div class="ar-sum" id="fcSum"></div>
@@ -2820,54 +2880,10 @@ body{accent-color:var(--brass)}
       </div>
     </div>
 
-    <div class="card ns-card">
-      <div class="kicker">Nordstern · Privatauslastung</div>
-      <svg class="gauge" viewBox="0 0 200 152" role="img" aria-label="Privatauslastung 78 Prozent, Ziel 90 Prozent">
-        <defs><linearGradient id="gaugeGold" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#d6ba8c"/><stop offset=".55" stop-color="#bca37d"/><stop offset="1" stop-color="#8f7448"/>
-        </linearGradient></defs>
-        <path class="track" d="M34.2,134 A76,76 0 1 1 165.8,134"/>
-        <path class="val" d="M34.2,134 A76,76 0 1 1 165.8,134" stroke-dasharray="248.3 318.3"/>
-        <line class="tick" x1="167.6" y1="103.1" x2="183.5" y2="104.8"/>
-        <text class="gziel" x="186" y="96" text-anchor="middle">90</text>
-        <text class="gnum num" x="92" y="116" text-anchor="middle">78</text>
-        <text class="gpct" x="126" y="114">%</text>
-      </svg>
-      <div class="ns-betten">31 von 40 Privatbetten belegt · Ziel 90&nbsp;%+</div>
-      <div class="ns-row">
-        <div class="ns-m">
-          <div class="ns-mtext">
-            <span class="ns-l">Vorlauf</span>
-            <span class="ns-v num"><b id="nsVorlauf">9</b> <span>Tage</span></span>
-            <span class="ns-t">Ziel 21 Tage</span>
-            <span id="plusTagH"></span>
-          </div>
-          <span class="ns-ring" id="nsRingVorlauf"></span>
-        </div>
-        <div class="ns-m">
-          <div class="ns-mtext">
-            <span class="ns-l">Ø Erstreaktion</span>
-            <span class="ns-v num" id="nsRz"></span>
-            <span class="ns-t">Ziel unter 24 Std.</span>
-          </div>
-          <span class="ns-ring" id="nsRingRz"></span>
-        </div>
-        <div class="ns-m">
-          <div class="ns-mtext">
-            <span class="ns-l">Conversion</span>
-            <span class="ns-v num" id="nsConv"></span>
-            <span class="ns-t" id="nsConvSub"></span>
-          </div>
-          <span class="ns-ring" id="nsRingConv"></span>
-        </div>
-      </div>
-      <div class="lx-live" aria-live="polite"><i class="lx-pulse"></i><b><span data-sync="cvTotal">–</span> Anfragen heute</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.<span class="lx-rt">ECHTZEIT</span></div>
-    </div>
+    <figure class="lx-fen hb-4 hb-photo"><img src="assets/kb-kueche.webp" alt="Klinikküche mit Blick ins Grüne" loading="lazy" style="object-position:center 50%"><figcaption><span class="lx-fen-n">Kulinarik</span><span class="lx-fen-s">Küche mit Blick ins Grüne</span></figcaption></figure>
 
-    <div class="chap">
-      <div class="kicker">Heute wichtig</div>
-      <div class="card list-card" id="wichtigList"></div>
-    </div>
+    <!-- Row E · Campus-Foto-Band (span 12) -->
+    <figure class="lx-fen hb-12"><img src="assets/kb-header.jpg" alt="Campus der Klinik in Kurpark-Lage" loading="lazy" style="object-position:center 45%"><figcaption><span class="lx-fen-n">Campus</span><span class="lx-fen-s">Kurpark-Lage</span></figcaption></figure>
 
   </section>
 
