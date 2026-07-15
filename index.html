@@ -1279,7 +1279,7 @@ label{font-size:12px;letter-spacing:.08em}
   .rs-empf li{font:400 13px/1.55 Inter;color:var(--ink-soft)}
   /* ===== WS4 · Automatisierung — Anfrage -> Fall (Toast + Eingang-Highlight) ===== */
   .mail.neu{border-color:var(--brass-line);box-shadow:0 0 0 2px var(--brass-soft);position:relative;animation:mailIn .5s ease both}
-  .mail.neu::after{content:"NEU";position:absolute;top:10px;right:12px;font:700 9px/1 Inter;letter-spacing:.08em;color:var(--cream);background:var(--brass-deep);border-radius:99px;padding:3px 7px}
+  .mail.neu::after{content:"NEU";position:absolute;top:10px;right:12px;font:700 9px/1 Inter;letter-spacing:.08em;color:var(--sage-deep);background:var(--sage-soft);border-radius:99px;padding:3px 7px}
   @keyframes mailIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
   .sim-cta{margin-top:8px;width:100%;color:var(--brass-deep);border:1px dashed var(--brass-line);background:transparent;border-radius:99px;padding:9px 14px;font:600 12.5px/1 Inter}
   @media(hover:hover){.sim-cta:hover{background:var(--brass-soft)}}
@@ -1483,7 +1483,7 @@ label{font-size:12px;letter-spacing:.08em}
 #inbox .mail{display:block;padding:0;overflow:hidden}
 .mrow{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:transparent;border:0;
   cursor:pointer;padding:13px 16px;font:inherit;color:inherit}
-@media(hover:hover){.mrow:hover{background:var(--paper2)}}
+@media(hover:hover){.mrow:hover{background:var(--cream2)}}
 .mhtxt{flex:1;min-width:0}
 .mail:not(.open) .mtit{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .mrow .mmeta{margin-top:4px}
@@ -1984,7 +1984,7 @@ body.ma-mode #view-meintag{display:block}
    Source-Order-Overrides: gewinnen über die Basisregeln oben, greifen NUR Fälle-Scopes. */
 
 /* — Eingang: aufgeklappter Mail-Body als eigene Elevationsstufe, Meta/Zeit in Mono — */
-#inbox .mail.open .mmore{background:var(--paper2)}
+#inbox .mail.open .mmore{background:var(--cream2)}
 #inbox .mtime,#inbox .mmeta .chtag{font-family:"Fragment Mono",ui-monospace,monospace;letter-spacing:.1em}
 #inbox .mtime{text-transform:uppercase}
 
@@ -2080,6 +2080,27 @@ body{accent-color:var(--brass)}
 .db-group::before{
   content:"";position:absolute;inset:0 0 auto 0;height:1px;background:var(--glass-hi);border-radius:24px 24px 0 0;pointer-events:none}
 
+/* ===== LICHTUNG · HEUTE-KAPITEL — Bento: Ghost-Nummern · Bogen-Anlässe · Eingang hell ===== */
+/* (1) Ghost-Katalognummern: großes Fraunces-Numeral in der Kapitel-Ecke (Whisper, opacity .05).
+   Container relativ; das Numeral ist eingerückt (right:18px) und schmaler als der Container
+   → kein horizontaler/vertikaler Overflow, daher bewusst KEIN overflow:hidden (das würde
+   Karten-Schatten bzw. das Trichter-SVG innerhalb des Kapitels beschneiden). */
+#view-heute>.chap:nth-of-type(1),#anlassChap,#belegungChap{position:relative}
+#view-heute>.chap:nth-of-type(1)::after{content:"01"}
+#anlassChap::after{content:"02"}
+#belegungChap::after{content:"03"}
+#view-heute>.chap:nth-of-type(1)::after,#anlassChap::after,#belegungChap::after{
+  position:absolute;top:8px;right:18px;font-family:"Fraunces",Georgia,serif;font-size:88px;
+  font-weight:600;color:var(--ink);opacity:.05;line-height:1;pointer-events:none}
+/* (5) Kapitel-Kicker auf Token-Brass (Mono-Nummer .au-chapnum bleibt via eigener Regel Champagner) */
+#view-heute .kicker{color:var(--brass-deep)}
+/* (2) Anlass-Bogen: der Foto-Strip am Kartenkopf (.ar-rc, margin -16px) wird zum Bogen und
+   bekommt eine helle, warme Aufhellung statt des dunklen Duotones — die globalen .au-photo-
+   Duotone-Overlays (Team/Netzwerk/Meintag/System) bleiben unberührt (höhere Spezifität scoped). */
+.ar-rc>.au-photo{border-radius:999px 999px 0 0}
+.ar-rc>.au-photo::after{background:linear-gradient(rgba(250,248,242,.04),rgba(250,248,242,.14))}
+.ar-rc>.au-photo img{filter:saturate(1.06) brightness(1.02)}
+
 /* ===== LICHTUNG · PAPIER-GUARD — Papier bleibt Papier (Spec §2.2) =====
    (Final: nur echtes Papier — .rpd-paper Dokument-Viewer + .kp-mail; Portal ist dunkel, Task 12)
    Werte auf die aktuellen Lichtung-Tokens harmonisiert — Papier #FFFFFF-ish, Tinte dunkel. */
@@ -2111,11 +2132,11 @@ body{accent-color:var(--brass)}
 /* (c) Kapitel-Katalognummern */
 .au-chapnum{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.15em;color:var(--brass);margin-right:10px}
 /* (d) Forecast-Balken: Champagner/Salbei-Palette · Mono-Labels · Scroll-Reveal */
-.fc-bar{background:var(--hair);transform-origin:bottom}
-.fc-seg-privat{background:linear-gradient(180deg,#D4BC94,#C4A97D)}
-.fc-seg-gesetzlich{background:linear-gradient(180deg,#6FB3A2,#57A08F)}
-.dbc-legend i.fc-lg-gesetzlich{background:var(--petrol)}
-.fc-wklabel{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;color:var(--muted);letter-spacing:.1em}
+.fc-bar{background:var(--cream2);transform-origin:bottom}
+.fc-seg-privat{background:linear-gradient(180deg,var(--brass),var(--brass-deep))}
+.fc-seg-gesetzlich{background:linear-gradient(180deg,var(--sage),var(--sage-deep))}
+.dbc-legend i.fc-lg-gesetzlich{background:var(--sage)}
+.fc-wklabel{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;color:var(--ink);letter-spacing:.1em}
 @supports (animation-timeline: view()){
   @media (prefers-reduced-motion: no-preference){
     .fc-bar{animation:auGrow .8s ease-out both;animation-timeline:view();animation-range:entry 0% cover 35%}
