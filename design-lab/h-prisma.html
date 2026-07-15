@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#F4F5F6" />
+<title>Klinik Bavaria · Concierge OS — PRISMA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   PRISMA — Iridescent Soft-Depth
+   Klinik Bavaria · Concierge OS  (Design-Prototyp, synthetische Demo-Daten)
+   ============================================================ */
+
+:root{
+  --pearl:#F4F5F6;
+  --ink:#1B1E26;
+  --muted:#6B7080;
+  --frost:rgba(255,255,255,.72);
+  --frost-solid:rgba(255,255,255,.86);
+  --border:rgba(28,30,38,.08);
+  --border-str:rgba(28,30,38,.14);
+
+  --aqua:#8FD4C6;
+  --peach:#F3C4A0;
+  --lilac:#C6BCE6;
+  --butter:#F0E1A4;
+  --ice:#AECBEB;
+  --petrol:#2B5D5A;
+
+  --prism:linear-gradient(90deg,#8FD4C6 0%,#AECBEB 26%,#C6BCE6 50%,#F3C4A0 76%,#F0E1A4 100%);
+  --shadow-sm:0 1px 2px rgba(20,24,34,.04), 0 4px 14px rgba(20,24,34,.05);
+  --shadow-lg:0 2px 6px rgba(20,24,34,.06), 0 20px 50px rgba(20,24,34,.10);
+  --radius:22px;
+  --radius-lg:28px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  color:var(--ink);
+  background:var(--pearl);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+
+/* ---- selection / focus / scrollbar ---- */
+::selection{background:rgba(143,212,198,.45);color:var(--ink)}
+:focus-visible{outline:2px solid var(--petrol);outline-offset:3px;border-radius:8px}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(107,112,128,.32);border-radius:20px;border:3px solid var(--pearl)}
+::-webkit-scrollbar-thumb:hover{background:rgba(107,112,128,.5)}
+
+h1,h2,h3,h4,.num,.micro{font-family:'Space Grotesk','Inter',sans-serif}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.micro{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* ============================================================
+   BACKGROUND — animated gradient mesh (transform-only, no blur filter)
+   ============================================================ */
+.mesh{position:fixed;inset:-30vmax;z-index:-2;pointer-events:none;overflow:hidden}
+.mesh span{
+  position:absolute;border-radius:50%;
+  /* pre-soft radial gradients — softness baked into the gradient, not a filter */
+  mix-blend-mode:normal;opacity:.9;
+  will-change:transform;
+}
+.blob1{width:60vmax;height:60vmax;left:-8vmax;top:-6vmax;
+  background:radial-gradient(circle at 50% 50%, rgba(143,212,198,.55), rgba(143,212,198,0) 62%);
+  animation:drift1 34s ease-in-out infinite;}
+.blob2{width:56vmax;height:56vmax;right:-6vmax;top:2vmax;
+  background:radial-gradient(circle at 50% 50%, rgba(174,203,235,.5), rgba(174,203,235,0) 62%);
+  animation:drift2 42s ease-in-out infinite;}
+.blob3{width:52vmax;height:52vmax;left:22vmax;bottom:-14vmax;
+  background:radial-gradient(circle at 50% 50%, rgba(198,188,230,.44), rgba(198,188,230,0) 62%);
+  animation:drift3 38s ease-in-out infinite;}
+.blob4{width:46vmax;height:46vmax;right:14vmax;bottom:-6vmax;
+  background:radial-gradient(circle at 50% 50%, rgba(243,196,160,.4), rgba(243,196,160,0) 62%);
+  animation:drift4 46s ease-in-out infinite;}
+/* warm-cool overlay to keep pearl canvas alive */
+.mesh::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(120deg, rgba(244,245,246,.2) 0%, rgba(240,243,246,0) 40%, rgba(246,243,240,.35) 100%);}
+@keyframes drift1{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(8vmax,5vmax,0) scale(1.12)}}
+@keyframes drift2{0%,100%{transform:translate3d(0,0,0) scale(1.05)}50%{transform:translate3d(-7vmax,7vmax,0) scale(.95)}}
+@keyframes drift3{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(6vmax,-6vmax,0) scale(1.1)}}
+@keyframes drift4{0%,100%{transform:translate3d(0,0,0) scale(1.08)}50%{transform:translate3d(-9vmax,-4vmax,0) scale(.94)}}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.shell{display:grid;grid-template-columns:246px 1fr;min-height:100vh}
+
+/* ---- left rail (glass surface #1) ---- */
+.rail{
+  position:sticky;top:0;height:100vh;
+  display:flex;flex-direction:column;gap:8px;
+  padding:26px 18px;
+  background:rgba(255,255,255,.55);
+  -webkit-backdrop-filter:blur(22px) saturate(1.3);
+  backdrop-filter:blur(22px) saturate(1.3);
+  border-right:1px solid var(--border);
+  z-index:20;
+}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 8px 20px;}
+.brand .logo{
+  width:38px;height:38px;border-radius:12px;flex:none;
+  display:grid;place-items:center;
+  background:var(--prism);
+  box-shadow:0 6px 16px rgba(43,93,90,.22), inset 0 0 0 1px rgba(255,255,255,.4);
+  position:relative;overflow:hidden;
+}
+.brand .logo img{width:22px;height:22px;object-fit:contain;
+  filter:brightness(0) invert(1) drop-shadow(0 1px 1px rgba(0,0,0,.2));}
+.brand .bt{line-height:1.15}
+.brand .bt b{font-family:'Space Grotesk';font-size:14.5px;font-weight:600;letter-spacing:-.01em;display:block}
+.brand .bt span{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-family:'Space Grotesk';font-weight:500}
+
+.nav{display:flex;flex-direction:column;gap:3px;margin-top:4px}
+.nav a{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 13px;border-radius:14px;
+  color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;
+  transition:background .14s ease, color .14s ease, transform .14s ease;
+}
+.nav a svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.5}
+.nav a:hover{background:rgba(255,255,255,.7);color:var(--ink)}
+.nav a.on{
+  color:var(--ink);font-weight:600;
+  background:linear-gradient(90deg, rgba(143,212,198,.24), rgba(174,203,235,.16));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.6), 0 3px 10px rgba(20,24,34,.05);
+}
+.nav a.on::before{content:"";width:3px;height:20px;border-radius:3px;background:var(--prism);margin:-2px 4px -2px -6px}
+.rail .foot{margin-top:auto;display:flex;align-items:center;gap:11px;padding:12px 10px;border-top:1px solid var(--border)}
+.rail .foot .av{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--lilac),var(--ice));display:grid;place-items:center;font-family:'Space Grotesk';font-weight:600;font-size:13px;color:#3a3550;flex:none}
+.rail .foot .fx{line-height:1.2}
+.rail .foot b{font-size:13px;font-weight:600}
+.rail .foot span{font-size:11px;color:var(--muted)}
+
+/* ---- main ---- */
+.main{padding:26px clamp(20px,3.2vw,44px) 80px;max-width:1280px}
+
+/* topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.tb-l .day{font-size:12.5px;color:var(--muted);letter-spacing:.02em}
+.tb-l h2{font-family:'Space Grotesk';font-size:clamp(20px,2.4vw,25px);font-weight:600;letter-spacing:-.02em;margin-top:2px}
+.tb-r{display:flex;align-items:center;gap:10px}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:9px 15px;border-radius:40px;font-size:12.5px;font-weight:500;
+  background:var(--frost);border:1px solid var(--border);box-shadow:var(--shadow-sm);color:var(--ink);
+}
+.chip.live{
+  background:rgba(255,255,255,.5);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);/* glass surface #2 */
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--aqua);box-shadow:0 0 0 4px rgba(143,212,198,.28);position:relative}
+.dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--aqua);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.4);opacity:0}}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  padding:10px 17px;border-radius:40px;font-size:13px;font-weight:600;border:none;
+  background:var(--petrol);color:#fff;box-shadow:0 6px 18px rgba(43,93,90,.28);
+  transition:transform .14s ease, box-shadow .14s ease;font-family:'Inter';
+}
+.btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:1.7}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(43,93,90,.34)}
+
+/* ============================================================
+   HERO (glass surface #3) — text + convergence graphic
+   ============================================================ */
+.hero{
+  position:relative;
+  border-radius:var(--radius-lg);
+  background:rgba(255,255,255,.5);
+  -webkit-backdrop-filter:blur(26px) saturate(1.35);
+  backdrop-filter:blur(26px) saturate(1.35);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,.7);
+  padding:30px;
+  display:grid;grid-template-columns:minmax(0,0.86fr) minmax(0,1.14fr);gap:28px;align-items:center;
+  overflow:hidden;
+}
+.hero::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--prism);opacity:.7}
+.hero-l .kicker{display:inline-flex;align-items:center;gap:8px;margin-bottom:16px}
+.hero-l .kicker i{width:26px;height:2px;border-radius:2px;background:var(--prism);display:inline-block}
+.hero-l h1{
+  font-family:'Space Grotesk';font-weight:600;letter-spacing:-.03em;line-height:1.06;
+  font-size:clamp(27px,3.6vw,42px);
+  background:linear-gradient(120deg,#1B1E26 0%, #2B5D5A 62%, #1B1E26 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-l p.lead{color:var(--muted);font-size:15px;margin-top:14px;max-width:34ch}
+
+/* stepper */
+.stepper{display:flex;align-items:center;gap:6px;margin-top:26px;flex-wrap:wrap}
+.step{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;border-radius:40px;
+  background:var(--frost);border:1px solid var(--border);font-size:12.5px;font-weight:500;box-shadow:var(--shadow-sm)}
+.step b{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-family:'Space Grotesk';font-size:11px;font-weight:600;color:#fff}
+.step:nth-child(1) b{background:var(--aqua);color:#1c4a42}
+.step:nth-child(3) b{background:var(--ice);color:#2a4560}
+.step:nth-child(5) b{background:var(--lilac);color:#403757}
+.step:nth-child(7) b{background:var(--petrol)}
+.step-arrow{color:var(--muted);opacity:.5;font-size:14px}
+
+/* convergence graphic */
+.conv{position:relative;min-width:0}
+.conv svg{width:100%;height:auto;display:block;overflow:visible}
+.conv .cv-legend{display:flex;gap:14px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.conv .cv-legend span{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-family:'Space Grotesk';font-weight:500}
+.conv .cv-legend i{width:9px;height:9px;border-radius:3px}
+.flow{stroke-dasharray:5 9;animation:flow 1.7s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-14}}
+.core-glow{transform-origin:center;animation:breathe 4.5s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:.9;transform:scale(1.08)}}
+
+/* ============================================================
+   ENTRANCE choreography
+   ============================================================ */
+.rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+.d1{animation-delay:.05s}.d2{animation-delay:.13s}.d3{animation-delay:.21s}
+.d4{animation-delay:.29s}.d5{animation-delay:.37s}.d6{animation-delay:.45s}
+
+/* ============================================================
+   SECTION HEADS
+   ============================================================ */
+.chap{margin-top:40px}
+.chap-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px}
+.chap-head .ct{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.chap-head .cn{font-family:'Space Grotesk';font-size:12px;font-weight:600;letter-spacing:.16em;color:var(--petrol)}
+.chap-head h3{font-family:'Space Grotesk';font-size:clamp(18px,2vw,22px);font-weight:600;letter-spacing:-.02em}
+.chap-head .cs{font-size:13px;color:var(--muted)}
+.prism-line{height:2px;flex:1;min-width:40px;border-radius:2px;background:var(--prism);opacity:.55;margin-bottom:6px}
+
+/* ============================================================
+   KPI BAND
+   ============================================================ */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.kpi{
+  position:relative;border-radius:var(--radius);padding:20px;
+  background:var(--frost);border:1px solid var(--border);box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;gap:14px;overflow:hidden;
+  transition:transform .16s ease, box-shadow .16s ease;
+}
+.kpi::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:var(--prism);opacity:0;
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  transition:opacity .18s ease;pointer-events:none;}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.kpi:hover::before{opacity:.85}
+.kpi .kh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.kpi .ring{width:52px;height:52px;flex:none}
+.kpi .val{font-family:'Space Grotesk';font-weight:600;letter-spacing:-.02em;font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+.kpi .val small{font-size:17px;color:var(--muted);font-weight:500}
+.kpi .lab{font-size:13px;color:var(--muted)}
+.kpi .delta{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;font-family:'Space Grotesk';margin-top:2px}
+.kpi .delta.up{color:var(--petrol)}
+.kpi .delta svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* ============================================================
+   PHOTO WINDOWS
+   ============================================================ */
+.gallery{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px;margin-top:22px}
+.win{
+  position:relative;border-radius:var(--radius);overflow:hidden;min-height:190px;
+  border:1px solid var(--border);box-shadow:var(--shadow-sm);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.win::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;
+  background:var(--prism);opacity:.35;
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;transition:opacity .18s ease}
+.win:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.win:hover::after{opacity:.85}
+.win img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;
+  filter:saturate(.92) brightness(1.02) contrast(.98);transition:transform 6s ease}
+.win:hover img{transform:scale(1.05)}
+.win .cap{position:absolute;left:14px;bottom:13px;right:14px;z-index:2;color:#fff}
+.win .cap .t{font-family:'Space Grotesk';font-weight:600;font-size:15px;letter-spacing:-.01em;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.win .cap .s{font-size:11.5px;opacity:.9;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.win .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(to top, rgba(10,14,20,.62) 0%, rgba(10,14,20,.05) 46%, rgba(10,14,20,0) 70%)}
+
+/* ============================================================
+   CH.01 — EINGANG rows
+   ============================================================ */
+.card{background:var(--frost);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden}
+.rows{display:flex;flex-direction:column}
+.row{
+  display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  transition:background .14s ease;cursor:pointer;position:relative;
+}
+.row:last-child{border-bottom:none}
+.row:hover{background:rgba(255,255,255,.55)}
+.row .acc{position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--prism);opacity:0;transition:opacity .14s}
+.row:hover .acc{opacity:1}
+.row .who{display:flex;align-items:center;gap:13px;min-width:0}
+.av2{width:42px;height:42px;border-radius:13px;flex:none;display:grid;place-items:center;font-family:'Space Grotesk';font-weight:600;font-size:14px;color:#fff}
+.row .nm{font-weight:600;font-size:14.5px;letter-spacing:-.01em}
+.row .via{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;margin-top:2px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:30px;font-size:10.5px;font-weight:600;font-family:'Space Grotesk';letter-spacing:.02em}
+.pill svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:1.6}
+.p-mail{background:rgba(243,196,160,.28);color:#8a5a2e}
+.p-web{background:rgba(174,203,235,.3);color:#2f5478}
+.p-tel{background:rgba(143,212,198,.3);color:#1f5a4f}
+.p-zuw{background:rgba(198,188,230,.32);color:#4a3f6b}
+.subj{color:var(--ink);font-size:13.5px;opacity:.92;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .rt{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex:none}
+.row .time{font-size:11.5px;color:var(--muted);font-family:'Space Grotesk';white-space:nowrap}
+.tag{font-size:10px;font-weight:700;font-family:'Space Grotesk';letter-spacing:.1em;padding:4px 9px;border-radius:8px}
+.tag.neu{background:var(--petrol);color:#fff}
+.tag.wait{background:rgba(240,225,164,.5);color:#7a6417;box-shadow:inset 0 0 0 1px rgba(122,100,23,.18)}
+
+/* ============================================================
+   CH.02 — ANLÄSSE cards
+   ============================================================ */
+.anl{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.acard{
+  position:relative;border-radius:var(--radius);padding:22px;overflow:hidden;
+  background:var(--frost);border:1px solid var(--border);box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;gap:14px;
+  transition:transform .16s ease, box-shadow .16s ease;
+}
+.acard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.acard .ai{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
+.acard .ai svg{width:22px;height:22px;stroke-width:1.5;fill:none}
+.acard .atype{font-family:'Space Grotesk';font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.acard h4{font-family:'Space Grotesk';font-size:17px;font-weight:600;letter-spacing:-.01em}
+.acard .ameta{font-size:13px;color:var(--muted)}
+.acard .stars{color:#c99a3e;font-size:12px;letter-spacing:1px}
+.acard .act{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding-top:14px;border-top:1px solid var(--border)}
+.acard .act .a-lab{font-size:12.5px;font-weight:600;color:var(--ink)}
+.acard .go{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;
+  background:#fff;border:1px solid var(--border);cursor:pointer;transition:transform .14s,background .14s}
+.acard .go svg{width:15px;height:15px;stroke:var(--petrol);fill:none;stroke-width:1.8}
+.acard .go:hover{background:var(--petrol);transform:translateX(2px)}
+.acard .go:hover svg{stroke:#fff}
+.acard.a-geb .ai{background:linear-gradient(135deg,rgba(243,196,160,.5),rgba(240,225,164,.4))}
+.acard.a-geb .ai svg{stroke:#a9662d}
+.acard.a-wie .ai{background:linear-gradient(135deg,rgba(143,212,198,.5),rgba(174,203,235,.4))}
+.acard.a-wie .ai svg{stroke:#1f5a4f}
+.acard.a-zuw .ai{background:linear-gradient(135deg,rgba(198,188,230,.5),rgba(174,203,235,.4))}
+.acard.a-zuw .ai svg{stroke:#4a3f6b}
+
+/* ============================================================
+   CH.03 — BELEGUNG bars
+   ============================================================ */
+.beleg{display:grid;grid-template-columns:1.55fr 1fr;gap:16px}
+.chart{padding:24px 24px 18px;position:relative}
+.chart .clead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
+.chart .cbig{font-family:'Space Grotesk';font-size:30px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.chart .cbig small{font-size:15px;color:var(--muted);font-weight:500}
+.chart .cnote{font-size:12.5px;color:var(--muted)}
+.bars{display:grid;grid-template-columns:repeat(8,1fr);gap:12px;align-items:end;height:210px;margin-top:20px;position:relative;padding-top:10px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:9px;height:100%;justify-content:flex-end;position:relative;z-index:2}
+.bar{
+  width:100%;max-width:34px;border-radius:9px 9px 4px 4px;position:relative;
+  background:linear-gradient(to top, var(--petrol) 0%, #4d8a80 45%, var(--aqua) 100%);
+  box-shadow:0 4px 12px rgba(43,93,90,.22), inset 0 1px 0 rgba(255,255,255,.35);
+  transform-origin:bottom;
+}
+.bar.armed{animation:barrise .9s cubic-bezier(.2,.75,.25,1) both}
+@keyframes barrise{from{transform:scaleY(0)}}
+.bar-col:nth-child(1) .bar.armed{animation-delay:.04s}
+.bar-col:nth-child(2) .bar.armed{animation-delay:.10s}
+.bar-col:nth-child(3) .bar.armed{animation-delay:.16s}
+.bar-col:nth-child(4) .bar.armed{animation-delay:.22s}
+.bar-col:nth-child(5) .bar.armed{animation-delay:.28s}
+.bar-col:nth-child(6) .bar.armed{animation-delay:.34s}
+.bar-col:nth-child(7) .bar.armed{animation-delay:.40s}
+.bar-col:nth-child(8) .bar.armed{animation-delay:.46s}
+.bar .bv{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-family:'Space Grotesk';font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+.bar-col .bk{font-size:10.5px;color:var(--muted);font-family:'Space Grotesk';font-variant-numeric:tabular-nums}
+.bar.peak{background:linear-gradient(to top, var(--petrol) 0%, #4d8a80 40%, var(--butter) 100%)}
+/* glass target line */
+.target{position:absolute;left:14px;right:14px;z-index:3;height:0;border-top:2px dashed rgba(43,93,90,.55);pointer-events:none}
+.target .tl{position:absolute;right:0;top:-10px;font-size:10.5px;font-family:'Space Grotesk';font-weight:600;color:var(--petrol);
+  background:rgba(255,255,255,.8);padding:2px 8px;border-radius:20px;border:1px solid rgba(43,93,90,.2);
+  -webkit-backdrop-filter:blur(4px)}
+
+.beleg .side{border-radius:var(--radius);overflow:hidden;position:relative;min-height:260px}
+.beleg .side img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;object-position:center 40%;
+  filter:saturate(.9) brightness(1.02)}
+.beleg .side .scrim{position:absolute;inset:0;background:linear-gradient(to top, rgba(10,14,20,.68), rgba(10,14,20,.12) 55%, rgba(10,14,20,0))}
+.beleg .side .cap{position:absolute;left:18px;right:18px;bottom:16px;color:#fff;z-index:2}
+.beleg .side .cap .t{font-family:'Space Grotesk';font-weight:600;font-size:16px;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.beleg .side .cap .s{font-size:12px;opacity:.9;margin-top:3px;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.beleg .side::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;
+  background:var(--prism);opacity:.4;
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+/* footer */
+.foot-note{margin-top:44px;text-align:center;font-size:11.5px;color:var(--muted);font-family:'Space Grotesk';letter-spacing:.03em}
+.foot-note i{display:inline-block;width:120px;height:2px;border-radius:2px;background:var(--prism);opacity:.5;vertical-align:middle;margin:0 12px}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1080px){
+  .hero{grid-template-columns:1fr}
+  .gallery{grid-template-columns:1fr 1fr}
+  .beleg{grid-template-columns:1fr}
+}
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:sticky;top:0;height:auto;flex-direction:row;align-items:center;gap:6px;
+    padding:12px 14px;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
+  .brand{padding:0 12px 0 4px}
+  .rail .nav{flex-direction:row;margin-top:0}
+  .nav a{padding:9px 12px;white-space:nowrap}
+  .nav a.on::before{display:none}
+  .nav a span.nl{display:none}
+  .rail .foot{display:none}
+  .kpis{grid-template-columns:1fr 1fr}
+  .anl{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .main{padding:18px 15px 60px}
+  .gallery{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr}
+  .row{grid-template-columns:auto 1fr;gap:12px}
+  .row .rt{grid-column:2;flex-direction:row;justify-content:flex-start;margin-top:6px}
+  .subj{white-space:normal}
+  .bars{gap:6px}
+  .bar .bv{font-size:10px}
+  .topbar{gap:10px}
+  .tb-r{width:100%}
+  .btn{flex:1;justify-content:center}
+}
+
+/* ============================================================
+   REDUCED-MOTION KILL-SWITCH
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+}
+</style>
+</head>
+<body>
+
+<!-- animated gradient mesh -->
+<div class="mesh" aria-hidden="true">
+  <span class="blob1"></span><span class="blob2"></span>
+  <span class="blob3"></span><span class="blob4"></span>
+</div>
+
+<div class="shell">
+
+  <!-- ===== LEFT RAIL ===== -->
+  <aside class="rail">
+    <div class="brand">
+      <div class="logo"><img src="../assets/kb-logo-weiss.webp" alt="" /></div>
+      <div class="bt"><b>Klinik Bavaria</b><span>Concierge OS</span></div>
+    </div>
+    <nav class="nav">
+      <a href="#" class="on"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span class="nl">Heute</span></a>
+      <a href="#eingang"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg><span class="nl">Fälle</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M4 20c0-3 2.5-5 5-5s5 2 5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15 20c0-2.4 1.5-4 3.5-4"/></svg><span class="nl">Team</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="7" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8 8l3 8M16 8l-3 8"/></svg><span class="nl">Netzwerk</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span class="nl">Datenbank</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg><span class="nl">System</span></a>
+    </nav>
+    <div class="foot">
+      <div class="av">SB</div>
+      <div class="fx"><b>Sabine Berger</b><span>Belegungsmanagement</span></div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <!-- topbar -->
+    <header class="topbar rise d1">
+      <div class="tb-l">
+        <div class="day">Dienstag · 15. Juli 2026 · Bad Kissingen</div>
+        <h2>Guten Morgen, Sabine</h2>
+      </div>
+      <div class="tb-r">
+        <span class="chip live"><span class="dot"></span> 5 neue Anfragen</span>
+        <button class="btn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Neuer Fall</button>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero rise d2">
+      <div class="hero-l">
+        <div class="kicker"><i></i><span class="micro">Konvergenz</span></div>
+        <h1>Aus Quellen wird planbare Belegung.</h1>
+        <p class="lead">Sechs Eingangskanäle, ein Posteingang, klare Fälle — jede Anfrage findet automatisch ihren Weg zur Zuteilung.</p>
+        <div class="stepper">
+          <span class="step"><b>1</b> Eingang</span><span class="step-arrow">→</span>
+          <span class="step"><b>2</b> Zuteilung</span><span class="step-arrow">→</span>
+          <span class="step"><b>3</b> Antwort</span><span class="step-arrow">→</span>
+          <span class="step"><b>4</b> Fall</span>
+        </div>
+      </div>
+
+      <!-- convergence graphic -->
+      <div class="conv">
+        <svg viewBox="0 0 620 340" role="img" aria-label="Konvergenz von sechs Kanälen in einen Eingang und daraus 14 Fälle">
+          <defs>
+            <linearGradient id="gPetrol" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#8FD4C6"/><stop offset="1" stop-color="#2B5D5A"/>
+            </linearGradient>
+            <radialGradient id="gCore" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+              <stop offset="55%" stop-color="#ffffff" stop-opacity=".85"/>
+              <stop offset="100%" stop-color="#AECBEB" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="gPrism" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#8FD4C6"/><stop offset=".3" stop-color="#AECBEB"/>
+              <stop offset=".6" stop-color="#C6BCE6"/><stop offset="1" stop-color="#F3C4A0"/>
+            </linearGradient>
+          </defs>
+
+          <!-- threads: 6 channels -> core (x=360,y=170) -->
+          <g fill="none" stroke-width="2.4" stroke-linecap="round">
+            <path d="M78 40 C 210 40, 250 170, 360 170"  stroke="#F3C4A0" opacity=".85"/>
+            <path d="M78 92 C 210 92, 250 170, 360 170"  stroke="#AECBEB" opacity=".85"/>
+            <path d="M78 144 C 210 144, 250 170, 360 170" stroke="#C6BCE6" opacity=".85"/>
+            <path d="M78 196 C 210 196, 250 170, 360 170" stroke="#8FD4C6" opacity=".85"/>
+            <path d="M78 248 C 210 248, 250 170, 360 170" stroke="#F0E1A4" opacity=".9"/>
+            <path d="M78 300 C 210 300, 250 170, 360 170" stroke="#7FB8D6" opacity=".85"/>
+          </g>
+          <!-- animated light on top of threads -->
+          <g fill="none" stroke-width="2.4" stroke-linecap="round">
+            <path class="flow" d="M78 40 C 210 40, 250 170, 360 170"  stroke="#F3C4A0"/>
+            <path class="flow" d="M78 92 C 210 92, 250 170, 360 170"  stroke="#AECBEB"/>
+            <path class="flow" d="M78 144 C 210 144, 250 170, 360 170" stroke="#C6BCE6"/>
+            <path class="flow" d="M78 196 C 210 196, 250 170, 360 170" stroke="#8FD4C6"/>
+            <path class="flow" d="M78 248 C 210 248, 250 170, 360 170" stroke="#F0E1A4"/>
+            <path class="flow" d="M78 300 C 210 300, 250 170, 360 170" stroke="#7FB8D6"/>
+          </g>
+
+          <!-- channel nodes + labels -->
+          <g font-family="Space Grotesk" font-size="12.5" font-weight="600">
+            <g><circle cx="78" cy="40"  r="6" fill="#F3C4A0"/><text x="62" y="44" text-anchor="end" fill="#1B1E26">E-Mail</text><text x="62" y="30" text-anchor="end" fill="#6B7080" font-size="10">12</text></g>
+            <g><circle cx="78" cy="92"  r="6" fill="#AECBEB"/><text x="62" y="96" text-anchor="end" fill="#1B1E26">Telefon</text><text x="62" y="82" text-anchor="end" fill="#6B7080" font-size="10">7</text></g>
+            <g><circle cx="78" cy="144" r="6" fill="#C6BCE6"/><text x="62" y="148" text-anchor="end" fill="#1B1E26">Fax</text><text x="62" y="134" text-anchor="end" fill="#6B7080" font-size="10">3</text></g>
+            <g><circle cx="78" cy="196" r="6" fill="#8FD4C6"/><text x="62" y="200" text-anchor="end" fill="#1B1E26">Website</text><text x="62" y="186" text-anchor="end" fill="#6B7080" font-size="10">9</text></g>
+            <g><circle cx="78" cy="248" r="6" fill="#F0E1A4"/><text x="62" y="252" text-anchor="end" fill="#1B1E26">Zuweiser</text><text x="62" y="238" text-anchor="end" fill="#6B7080" font-size="10">6</text></g>
+            <g><circle cx="78" cy="300" r="6" fill="#7FB8D6"/><text x="62" y="304" text-anchor="end" fill="#1B1E26">Portale</text><text x="62" y="290" text-anchor="end" fill="#6B7080" font-size="10">4</text></g>
+          </g>
+
+          <!-- glowing white core -->
+          <circle class="core-glow" cx="360" cy="170" r="62" fill="url(#gCore)"/>
+          <circle cx="360" cy="170" r="46" fill="#ffffff"/>
+          <circle cx="360" cy="170" r="46" fill="none" stroke="url(#gPrism)" stroke-width="2.5"/>
+          <text x="360" y="166" text-anchor="middle" font-family="Space Grotesk" font-size="30" font-weight="700" fill="#1B1E26">41</text>
+          <text x="360" y="188" text-anchor="middle" font-family="Space Grotesk" font-size="9.5" font-weight="600" letter-spacing="1.5" fill="#6B7080">EIN EINGANG</text>
+
+          <!-- core -> Fall -->
+          <path d="M406 170 C 470 170, 500 170, 540 170" fill="none" stroke="url(#gPetrol)" stroke-width="3" stroke-linecap="round"/>
+          <path class="flow" d="M406 170 C 470 170, 500 170, 540 170" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>
+
+          <!-- Fall node -->
+          <circle cx="565" cy="170" r="40" fill="#2B5D5A"/>
+          <circle cx="565" cy="170" r="40" fill="none" stroke="url(#gPrism)" stroke-width="2" opacity=".6"/>
+          <text x="565" y="167" text-anchor="middle" font-family="Space Grotesk" font-size="26" font-weight="700" fill="#fff">14</text>
+          <text x="565" y="186" text-anchor="middle" font-family="Space Grotesk" font-size="9" font-weight="600" letter-spacing="1.5" fill="#B9D6D0">FÄLLE</text>
+        </svg>
+        <div class="cv-legend">
+          <span><i style="background:#F3C4A0"></i>E-Mail</span>
+          <span><i style="background:#AECBEB"></i>Telefon</span>
+          <span><i style="background:#C6BCE6"></i>Fax</span>
+          <span><i style="background:#8FD4C6"></i>Website</span>
+          <span><i style="background:#F0E1A4"></i>Zuweiser</span>
+          <span><i style="background:#7FB8D6"></i>Portale</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI band -->
+    <section class="kpis" style="margin-top:22px">
+      <div class="kpi rise d3">
+        <div class="kh">
+          <div><div class="lab">Offene Fälle</div><div class="val num" data-count="14">0</div></div>
+          <svg class="ring" viewBox="0 0 52 52" data-ring="72" data-hue="#8FD4C6"></svg>
+        </div>
+        <div class="delta up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>+3 diese Woche</div>
+      </div>
+      <div class="kpi rise d4">
+        <div class="kh">
+          <div><div class="lab">Neue Anfragen heute</div><div class="val num" data-count="5">0</div></div>
+          <svg class="ring" viewBox="0 0 52 52" data-ring="40" data-hue="#F3C4A0"></svg>
+        </div>
+        <div class="delta up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>seit 06:00 Uhr</div>
+      </div>
+      <div class="kpi rise d5">
+        <div class="kh">
+          <div><div class="lab">Conversion</div><div class="val num"><span data-count="67">0</span><small>%</small></div></div>
+          <svg class="ring" viewBox="0 0 52 52" data-ring="67" data-hue="#C6BCE6"></svg>
+        </div>
+        <div class="delta up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>Anfrage → Fall</div>
+      </div>
+      <div class="kpi rise d6">
+        <div class="kh">
+          <div><div class="lab">Belegung</div><div class="val num"><span data-count="31">0</span><small>/38 Betten</small></div></div>
+          <svg class="ring" viewBox="0 0 52 52" data-ring="82" data-hue="#AECBEB"></svg>
+        </div>
+        <div class="delta up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>82 % ausgelastet</div>
+      </div>
+    </section>
+
+    <!-- PHOTO WINDOWS -->
+    <section class="gallery">
+      <a class="win rise d3" href="#" aria-label="Panorama-Suite">
+        <img src="img/kb-suite.webp" alt="Panorama-Suite der Klinik Bavaria" style="object-position:center 55%"/>
+        <div class="scrim"></div>
+        <div class="cap"><div class="t">Panorama-Suite</div><div class="s">Komfort-Kategorie · Rhön-Blick</div></div>
+      </a>
+      <a class="win rise d4" href="#" aria-label="Luftaufnahme">
+        <img src="img/kb-header.jpg" alt="Luftaufnahme der Klinik" style="object-position:center 40%"/>
+        <div class="scrim"></div>
+        <div class="cap"><div class="t">Campus</div><div class="s">Bad Kissingen · Kurpark-Lage</div></div>
+      </a>
+      <a class="win rise d5" href="#" aria-label="Garten">
+        <img src="../assets/kb-garten.webp" alt="Kulinarik im Garten" style="object-position:center 50%"/>
+        <div class="scrim"></div>
+        <div class="cap"><div class="t">Kulinarik</div><div class="s">Küche mit Blick ins Grüne</div></div>
+      </a>
+    </section>
+
+    <!-- CH.01 EINGANG -->
+    <section class="chap" id="eingang">
+      <div class="chap-head">
+        <div class="ct"><span class="cn">01</span><h3>Eingang</h3><span class="cs">Neue Anfragen aus allen Kanälen</span></div>
+        <div class="prism-line"></div>
+      </div>
+      <div class="card rise d2">
+        <div class="rows">
+
+          <div class="row">
+            <span class="acc"></span>
+            <div class="who">
+              <div class="av2" style="background:linear-gradient(135deg,#8FD4C6,#4d8a80)">WA</div>
+              <div>
+                <div class="nm">Werner Aumann</div>
+                <div class="via">
+                  <span class="pill p-web"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"/></svg>Website</span>
+                  <span class="subj">Anfrage Anschlussheilbehandlung nach Hüft-OP</span>
+                </div>
+              </div>
+            </div>
+            <div class="rt"><span class="time">vor 12 Min</span><span class="tag neu">NEU</span></div>
+          </div>
+
+          <div class="row">
+            <span class="acc"></span>
+            <div class="who">
+              <div class="av2" style="background:linear-gradient(135deg,#C6BCE6,#8f7fb8)">HS</div>
+              <div>
+                <div class="nm">Dr. med. H. Sailer <span style="font-weight:400;color:var(--muted);font-size:12.5px">· Leopoldina-Krankenhaus</span></div>
+                <div class="via">
+                  <span class="pill p-zuw"><svg viewBox="0 0 24 24"><path d="M4 20v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2"/><circle cx="12" cy="7" r="4"/></svg>Zuweiser-Portal</span>
+                  <span class="subj">Verlegung Kardio-Reha, privat</span>
+                </div>
+              </div>
+            </div>
+            <div class="rt"><span class="time">vor 38 Min</span></div>
+          </div>
+
+          <div class="row">
+            <span class="acc"></span>
+            <div class="who">
+              <div class="av2" style="background:linear-gradient(135deg,#AECBEB,#5f88ad)">FB</div>
+              <div>
+                <div class="nm">Familie Brenner</div>
+                <div class="via">
+                  <span class="pill p-tel"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></svg>Telefon</span>
+                  <span class="subj">Rückfrage Komfortzimmer &amp; Kostenübernahme</span>
+                </div>
+              </div>
+            </div>
+            <div class="rt"><span class="time">vor 1 Std</span></div>
+          </div>
+
+          <div class="row">
+            <span class="acc"></span>
+            <div class="who">
+              <div class="av2" style="background:linear-gradient(135deg,#F3C4A0,#c98a52)">MO</div>
+              <div>
+                <div class="nm">M. Ostheimer</div>
+                <div class="via">
+                  <span class="pill p-mail"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>E-Mail</span>
+                  <span class="subj">Unterlagen nachgereicht — Kostenzusage?</span>
+                </div>
+              </div>
+            </div>
+            <div class="rt"><span class="time">vor 2 Std</span><span class="tag wait">WARTET</span></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CH.02 ANLÄSSE -->
+    <section class="chap">
+      <div class="chap-head">
+        <div class="ct"><span class="cn">02</span><h3>Anlässe</h3><span class="cs">Proaktive Kontaktpunkte</span></div>
+        <div class="prism-line"></div>
+      </div>
+      <div class="anl">
+
+        <div class="acard a-geb rise d3">
+          <div class="ai"><svg viewBox="0 0 24 24"><path d="M4 15h16v5H4z"/><path d="M4 15v-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3"/><path d="M9 10V7M12 10V6M15 10V7"/><circle cx="9" cy="4.5" r="1"/><circle cx="12" cy="3.5" r="1"/><circle cx="15" cy="4.5" r="1"/></svg></div>
+          <div><div class="atype">Geburtstag</div><h4>Margarete Brandl wird 74</h4></div>
+          <div class="ameta"><span class="stars">★★★★★</span> Stammgast · dritter Aufenthalt</div>
+          <div class="act"><span class="a-lab">Persönliche Karte + Anruf</span><button class="go" aria-label="Aktion starten"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+        </div>
+
+        <div class="acard a-wie rise d4">
+          <div class="ai"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg></div>
+          <div><div class="atype">Wiederbedarf</div><h4>Klaus Hofreiter</h4></div>
+          <div class="ameta">Entlassung vor 11 Monaten · Orthopädie</div>
+          <div class="act"><span class="a-lab">Nachsorge-Angebot Orthopädie</span><button class="go" aria-label="Aktion starten"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+        </div>
+
+        <div class="acard a-zuw rise d5">
+          <div class="ai"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18" opacity=".0"/><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <div><div class="atype">Zuweiser-Rhythmus</div><h4>Praxis Dr. Wagenknecht</h4></div>
+          <div class="ameta">Letzter Kontakt vor 6 Wochen</div>
+          <div class="act"><span class="a-lab">Quartalsgespräch anbieten</span><button class="go" aria-label="Aktion starten"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CH.03 BELEGUNG -->
+    <section class="chap">
+      <div class="chap-head">
+        <div class="ct"><span class="cn">03</span><h3>Belegung</h3><span class="cs">Prognose KW 29 – KW 36</span></div>
+        <div class="prism-line"></div>
+      </div>
+      <div class="beleg">
+        <div class="card chart rise d2" id="chart">
+          <div class="clead">
+            <div class="cbig num">38<small> / 38 Betten · KW 36</small></div>
+            <div class="cnote">Ziel-Auslastung: 34 Betten</div>
+          </div>
+          <div class="bars" id="bars">
+            <!-- values: 29,31,33,34,36,35,37,38 / 38 ; target 34 -->
+            <div class="bar-col"><div class="bar"  style="height:76.3%"><span class="bv">29</span></div><span class="bk">KW29</span></div>
+            <div class="bar-col"><div class="bar"  style="height:81.6%"><span class="bv">31</span></div><span class="bk">KW30</span></div>
+            <div class="bar-col"><div class="bar"  style="height:86.8%"><span class="bv">33</span></div><span class="bk">KW31</span></div>
+            <div class="bar-col"><div class="bar"  style="height:89.5%"><span class="bv">34</span></div><span class="bk">KW32</span></div>
+            <div class="bar-col"><div class="bar peak" style="height:94.7%"><span class="bv">36</span></div><span class="bk">KW33</span></div>
+            <div class="bar-col"><div class="bar"  style="height:92.1%"><span class="bv">35</span></div><span class="bk">KW34</span></div>
+            <div class="bar-col"><div class="bar peak" style="height:97.4%"><span class="bv">37</span></div><span class="bk">KW35</span></div>
+            <div class="bar-col"><div class="bar peak" style="height:100%"><span class="bv">38</span></div><span class="bk">KW36</span></div>
+            <!-- target line at 34/38 = 89.5% of 210px chart height, measured from bottom of bar area -->
+            <div class="target" style="bottom:188px"><span class="tl">Ziel 34</span></div>
+          </div>
+        </div>
+
+        <div class="side rise d3">
+          <img src="img/kb-komfortzimmer.webp" alt="Komfortzimmer der Klinik Bavaria" />
+          <div class="scrim"></div>
+          <div class="cap"><div class="t">7 Betten frei in KW 29</div><div class="s">Komfort-Kategorie priorisiert · jetzt zuteilen</div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot-note"><i></i>Prototyp · synthetische Demo-Daten · Klinik Bavaria Concierge OS<i></i></div>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- KPI rings (draw arc + track) ---- */
+  document.querySelectorAll('svg.ring').forEach(function(svg){
+    var pct = +svg.getAttribute('data-ring');
+    var hue = svg.getAttribute('data-hue');
+    var r = 21, c = 2 * Math.PI * r, cx = 26, cy = 26;
+    var ns = 'http://www.w3.org/2000/svg';
+    function circle(stroke, w, dash, off, cap){
+      var el = document.createElementNS(ns,'circle');
+      el.setAttribute('cx',cx); el.setAttribute('cy',cy); el.setAttribute('r',r);
+      el.setAttribute('fill','none'); el.setAttribute('stroke',stroke);
+      el.setAttribute('stroke-width',w);
+      if(dash!=null){ el.setAttribute('stroke-dasharray', dash); el.setAttribute('stroke-dashoffset', off); }
+      if(cap) el.setAttribute('stroke-linecap','round');
+      el.setAttribute('transform','rotate(-90 '+cx+' '+cy+')');
+      return el;
+    }
+    svg.appendChild(circle('rgba(28,30,38,.08)', 5));
+    var target = c * (1 - pct/100);
+    var arc = circle(hue, 5, c, c, true);
+    svg.appendChild(arc);
+    if(reduce){ arc.setAttribute('stroke-dashoffset', target); }
+    else {
+      var start = null, dur = 900;
+      requestAnimationFrame(function step(t){
+        if(!start) start = t;
+        var k = Math.min((t-start)/dur, 1);
+        var e = 1 - Math.pow(1-k, 3);
+        arc.setAttribute('stroke-dashoffset', c - (c-target)*e);
+        if(k<1) requestAnimationFrame(step);
+      });
+    }
+  });
+
+  /* ---- count-up KPIs ---- */
+  document.querySelectorAll('[data-count]').forEach(function(el){
+    var end = +el.getAttribute('data-count');
+    if(reduce){ el.textContent = end; return; }
+    var start = null, dur = 1000;
+    requestAnimationFrame(function step(t){
+      if(!start) start = t;
+      var k = Math.min((t-start)/dur, 1);
+      var e = 1 - Math.pow(1-k, 3);
+      el.textContent = Math.round(end * e);
+      if(k<1) requestAnimationFrame(step);
+    });
+  });
+
+  /* ---- scroll-reveal: forecast bars rise ---- */
+  var bars = document.getElementById('bars');
+  if(bars){
+    if(reduce){
+      /* leave bars at their final CSS height, no animation class */
+    } else if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){
+            bars.querySelectorAll('.bar').forEach(function(b){ b.classList.add('armed'); });
+            io.disconnect();
+          }
+        });
+      }, {threshold:.35});
+      io.observe(bars);
+    } else {
+      bars.querySelectorAll('.bar').forEach(function(b){ b.classList.add('armed'); });
+    }
+  }
+})();
+</script>
+</body>
+</html>

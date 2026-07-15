@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2E62A8">
+<title>Klinik Bavaria · Concierge OS — Riviera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RIVIERA — Mediterranean Modernism
+   Klinik Bavaria · Concierge OS  (Design-Prototyp, synthetische Daten)
+   ============================================================ */
+:root{
+  --cream:#F7F1E4;      /* sun-bleached canvas */
+  --white:#FFFDF8;      /* panel */
+  --sand:#EFE6D2;       /* warm panel */
+  --azzurro:#2E62A8;    /* ceramic majolica blue */
+  --marine:#1D3E63;     /* deep marine */
+  --terra:#C96F4A;      /* terracotta */
+  --citrus:#E5B13F;     /* citrus */
+  --cypress:#4C6B4F;    /* cypress green */
+  --ink:#23201A;
+  --ink-60:rgba(35,32,26,.60);
+  --ink-42:rgba(35,32,26,.42);
+  --line:rgba(35,32,26,.12);
+  --line-soft:rgba(35,32,26,.07);
+  --shadow:0 1px 2px rgba(29,62,99,.05), 0 10px 30px -14px rgba(29,62,99,.22);
+  --shadow-lift:0 2px 6px rgba(29,62,99,.07), 0 26px 50px -22px rgba(29,62,99,.32);
+  --rail:84px;
+  --arch:999px 999px 0 0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Instrument Sans',system-ui,sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+  overflow-x:hidden;
+}
+::selection{background:var(--citrus);color:var(--marine)}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--cream)}
+::-webkit-scrollbar-thumb{background:rgba(46,98,168,.35);border-radius:99px;border:3px solid var(--cream)}
+::-webkit-scrollbar-thumb:hover{background:rgba(46,98,168,.55)}
+:focus-visible{outline:2.5px solid var(--terra);outline-offset:3px;border-radius:4px}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+img{display:block;max-width:100%}
+
+.serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;letter-spacing:-.01em}
+.italic{font-style:italic}
+.micro{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+
+/* ---------- LAYOUT SHELL ---------- */
+.shell{display:flex;min-height:100vh}
+
+/* ---------- LEFT RAIL ---------- */
+.rail{
+  position:fixed;top:0;left:0;bottom:0;width:var(--rail);z-index:40;
+  display:flex;flex-direction:column;align-items:center;
+  padding:22px 0 20px;gap:10px;
+  background:var(--marine);
+  color:#F3E9D6;
+}
+.rail::after{ /* arcade rhythm at rail foot */
+  content:"";position:absolute;left:0;right:0;bottom:0;height:52px;
+  background:
+    radial-gradient(14px 20px at 14px 0, transparent 61%, rgba(255,253,248,.09) 62%) repeat-x;
+  background-size:28px 52px;opacity:.7;
+}
+.rail-logo{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--azzurro);
+  display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);
+}
+.rail-logo img{width:26px;height:26px;opacity:.96}
+.rail-nav{display:flex;flex-direction:column;gap:4px;margin-top:14px;width:100%;align-items:center}
+.rn{
+  width:56px;height:56px;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  color:rgba(243,233,214,.62);
+  transition:background .13s ease,color .13s ease,transform .13s ease;
+  position:relative;
+}
+.rn svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.rn span{font-size:9.5px;letter-spacing:.05em;font-weight:600}
+.rn:hover{color:#FBF3E1;background:rgba(255,255,255,.06)}
+.rn.active{color:var(--marine);background:var(--citrus)}
+.rn.active::before{
+  content:"";position:absolute;left:-14px;top:50%;transform:translateY(-50%);
+  width:5px;height:26px;border-radius:99px;background:var(--citrus);
+}
+
+/* ---------- MAIN ---------- */
+.main{margin-left:var(--rail);flex:1;min-width:0;padding:0 0 90px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 40px}
+
+/* ---------- TOPBAR ---------- */
+.topbar{
+  position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;gap:20px;
+  padding:16px 40px;
+  background:rgba(247,241,228,.78);
+  backdrop-filter:saturate(1.3) blur(12px);
+  -webkit-backdrop-filter:saturate(1.3) blur(12px);
+  border-bottom:1px solid var(--line-soft);
+}
+.brandline{font-weight:600;font-size:14px;letter-spacing:.01em;color:var(--marine)}
+.brandline b{color:var(--terra);font-weight:600}
+.topbar .spacer{flex:1}
+.pill{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:99px;
+  background:var(--white);border:1px solid var(--line);
+  font-size:13px;font-weight:600;color:var(--ink-60);
+  transition:transform .13s ease,box-shadow .13s ease;
+}
+.pill:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.pill svg{width:16px;height:16px;stroke:var(--azzurro);stroke-width:1.6;fill:none}
+.avatar{
+  width:40px;height:40px;border-radius:50%;overflow:hidden;flex:none;
+  box-shadow:0 0 0 2px var(--white),0 0 0 4px var(--citrus);
+}
+.avatar img{width:100%;height:100%;object-fit:cover;object-position:50% 32%}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;padding:34px 40px 10px;overflow:hidden}
+.hero-grid{
+  display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:stretch;
+  max-width:1180px;margin:0 auto;
+}
+.hero-copy{padding-top:14px;position:relative;z-index:2}
+.greet{color:var(--terra);margin-bottom:12px}
+.hero h1{
+  font-family:'Instrument Serif',serif;font-weight:400;
+  font-size:clamp(38px,5.4vw,68px);line-height:.98;letter-spacing:-.02em;
+  color:var(--marine);margin-bottom:8px;
+}
+.hero h1 em{font-style:italic;color:var(--terra)}
+.wave{display:block;width:220px;height:12px;margin:14px 0 20px}
+.wave path{fill:none;stroke:var(--citrus);stroke-width:2.5;stroke-linecap:round;
+  stroke-dasharray:520;stroke-dashoffset:520;}
+.lede{font-size:17px;color:var(--ink-60);max-width:38ch;margin-bottom:24px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:12px 20px;border-radius:99px;font-weight:600;font-size:14px;
+  transition:transform .13s ease,box-shadow .13s ease,background .13s ease;
+}
+.btn svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.7;fill:none}
+.btn-primary{background:var(--azzurro);color:#FBF3E1;box-shadow:var(--shadow)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);background:var(--marine)}
+.btn-ghost{background:var(--white);color:var(--marine);border:1px solid var(--line)}
+.btn-ghost:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+
+/* hero arched photo + convergence */
+.hero-stage{position:relative;display:flex;flex-direction:column;gap:16px}
+.arch-photo{
+  position:relative;border-radius:var(--arch);overflow:hidden;
+  height:230px;box-shadow:var(--shadow-lift);
+  background:var(--marine);
+}
+.arch-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 46%;
+  filter:saturate(1.12) contrast(1.03) brightness(1.03)}
+.arch-photo::after{ /* golden-hour warm overlay */
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(229,177,63,.16),transparent 42%),
+    linear-gradient(28deg,rgba(201,111,74,.28),transparent 60%);
+  mix-blend-mode:multiply;
+}
+.sun-glare{ /* ambient sweep */
+  content:"";position:absolute;top:-30%;left:-40%;width:45%;height:160%;
+  background:linear-gradient(105deg,transparent,rgba(255,249,230,.55),transparent);
+  transform:skewX(-14deg);pointer-events:none;z-index:2;
+}
+.arch-cap{
+  position:absolute;left:16px;bottom:14px;z-index:3;color:#FBF3E1;
+  text-shadow:0 1px 12px rgba(29,62,99,.5);
+}
+.arch-cap .micro{opacity:.85}
+.arch-cap b{font-family:'Instrument Serif',serif;font-size:19px;font-weight:400;font-style:italic}
+
+/* convergence graphic */
+.converge{
+  background:var(--white);border:1px solid var(--line-soft);border-radius:20px;
+  padding:16px 18px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.converge .micro{color:var(--ink-42);margin-bottom:6px}
+.cv-svg{width:100%;height:150px;display:block}
+.cv-lane{stroke:rgba(46,98,168,.28);stroke-width:1.4;fill:none;
+  stroke-dasharray:6 5;}
+.cv-flow{stroke:var(--azzurro);stroke-width:2.2;fill:none;stroke-linecap:round;
+  stroke-dasharray:4 8;animation:flow 2.6s linear infinite}
+@keyframes flow{from{stroke-dashoffset:0}to{stroke-dashoffset:-24}}
+.cv-node{font-size:10px;font-weight:600;fill:var(--ink-60)}
+.cv-num{font-size:11px;font-weight:700;fill:var(--marine)}
+.cv-hub{fill:var(--azzurro)}
+.cv-hublabel{font-family:'Instrument Serif',serif;font-style:italic;fill:#FBF3E1;font-size:15px}
+.cv-hubnum{fill:#FBF3E1;font-weight:700;font-size:19px}
+.cv-out{fill:var(--terra)}
+.stepper{display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap}
+.step{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-42)}
+.step .dot{width:7px;height:7px;border-radius:50%;background:var(--line);}
+.step.on{color:var(--marine)}
+.step.on .dot{background:var(--citrus)}
+.step .arr{color:var(--line);font-weight:400}
+
+/* ---------- KPI BAND ---------- */
+.section{max-width:1180px;margin:0 auto;padding:0 40px}
+.kpi-band{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px;
+}
+.kpi{
+  position:relative;background:var(--white);border:1px solid var(--line-soft);
+  border-radius:16px 16px 16px 16px;padding:20px 18px 18px;box-shadow:var(--shadow);
+  overflow:hidden;transition:transform .14s ease,box-shadow .14s ease;
+}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;
+  border-radius:16px 16px 0 0}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift)}
+.kpi.k1::before{background:var(--azzurro)} .kpi.k2::before{background:var(--terra)}
+.kpi.k3::before{background:var(--cypress)} .kpi.k4::before{background:var(--citrus)}
+.kpi .micro{color:var(--ink-42);margin-bottom:12px}
+.kpi .big{font-family:'Instrument Serif',serif;font-size:44px;line-height:.9;color:var(--marine);letter-spacing:-.02em}
+.kpi .big small{font-size:20px;color:var(--ink-42)}
+.kpi .sub{font-size:12.5px;color:var(--ink-60);margin-top:8px;font-weight:500}
+.kpi .up{color:var(--cypress);font-weight:700}
+.kpi-ring{position:absolute;right:14px;bottom:12px;width:46px;height:46px}
+
+/* ---------- CHAPTER HEAD ---------- */
+.chap{margin-top:56px}
+.chap-head{display:flex;align-items:baseline;gap:16px;margin-bottom:20px}
+.chap-num{font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;color:var(--terra)}
+.chap-head h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:30px;color:var(--marine);letter-spacing:-.01em}
+.chap-head .micro{color:var(--ink-42);margin-left:auto;align-self:center}
+
+/* ---------- CH01 EINGANG rows ---------- */
+.eingang{background:var(--white);border:1px solid var(--line-soft);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.row{
+  display:grid;grid-template-columns:44px 1.4fr 1fr auto;gap:16px;align-items:center;
+  padding:16px 20px;border-bottom:1px solid var(--line-soft);
+  transition:background .13s ease;cursor:pointer;
+}
+.row:last-child{border-bottom:none}
+.row:hover{background:linear-gradient(90deg,rgba(46,98,168,.05),transparent 70%)}
+.row-ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none}
+.row-ic svg{width:20px;height:20px;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ic-web{background:rgba(46,98,168,.12)} .ic-web svg{stroke:var(--azzurro)}
+.ic-portal{background:rgba(76,107,79,.14)} .ic-portal svg{stroke:var(--cypress)}
+.ic-tel{background:rgba(201,111,74,.14)} .ic-tel svg{stroke:var(--terra)}
+.ic-mail{background:rgba(229,177,63,.18)} .ic-mail svg{stroke:#B8871E}
+.row-name{font-weight:700;font-size:15px;color:var(--marine)}
+.row-sub{font-size:13px;color:var(--ink-60);margin-top:2px}
+.row-src{font-size:12px;color:var(--ink-42);font-weight:600}
+.row-meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.row-time{font-size:12px;color:var(--ink-42);font-weight:600;white-space:nowrap}
+.tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:4px 9px;border-radius:99px}
+.tag-neu{background:var(--azzurro);color:#FBF3E1}
+.tag-wait{background:rgba(201,111,74,.16);color:var(--terra)}
+
+/* ---------- CH02 ANLÄSSE cards ---------- */
+.anlass{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:18px}
+.acard{
+  position:relative;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);
+  background:var(--white);border:1px solid var(--line-soft);
+  display:flex;flex-direction:column;transition:transform .14s ease,box-shadow .14s ease;
+}
+.acard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lift)}
+.acard-media{position:relative;height:150px;overflow:hidden;background:var(--sand);
+  border-radius:16px 16px 0 0}
+.acard-media img{width:100%;height:100%;object-fit:cover;filter:saturate(1.12) brightness(1.03)}
+.acard-media::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(200deg,rgba(229,177,63,.15),transparent 50%,rgba(29,62,99,.22))}
+.acard.big{grid-row:span 1}
+.acard.big .acard-media{height:190px;border-radius:16px 16px 0 0}
+.acard-badge{position:absolute;top:12px;left:12px;z-index:2;
+  background:rgba(255,253,248,.94);color:var(--marine);
+  padding:5px 11px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.04em;
+  display:inline-flex;align-items:center;gap:6px}
+.acard-badge svg{width:13px;height:13px;stroke:var(--terra);stroke-width:1.8;fill:none}
+.acard-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.acard-title{font-family:'Instrument Serif',serif;font-size:22px;color:var(--marine);line-height:1.05}
+.acard-meta{font-size:12.5px;color:var(--ink-60);font-weight:500}
+.stars{color:var(--citrus);letter-spacing:1px;font-size:13px}
+.acard-act{
+  margin-top:auto;display:inline-flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:11px 15px;border-radius:12px;background:var(--sand);
+  font-size:13px;font-weight:600;color:var(--marine);
+  transition:background .13s ease,transform .13s ease;
+}
+.acard-act:hover{background:var(--citrus);transform:translateX(2px)}
+.acard-act svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.7;fill:none;flex:none}
+
+/* ---------- CH03 BELEGUNG ---------- */
+.beleg{
+  background:var(--white);border:1px solid var(--line-soft);border-radius:20px;
+  box-shadow:var(--shadow);padding:26px 30px 22px;position:relative;overflow:hidden;
+}
+.beleg-top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:8px;flex-wrap:wrap}
+.beleg-top .lgd{display:flex;gap:16px;font-size:12px;color:var(--ink-60);font-weight:600}
+.beleg-top .lgd i{width:16px;height:3px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px}
+.chart{position:relative;height:230px;margin-top:26px;display:flex;align-items:flex-end;
+  gap:clamp(10px,2.4vw,26px);padding-bottom:26px;border-bottom:1.5px solid var(--line)}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative}
+.bar{
+  width:100%;max-width:56px;border-radius:10px 10px 3px 3px;
+  background:linear-gradient(180deg,var(--azzurro),var(--marine));
+  height:0;transition:height .9s cubic-bezier(.22,1,.36,1);position:relative;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+}
+.bar-col.peak .bar{background:linear-gradient(180deg,var(--citrus),var(--terra))}
+.bar-val{position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+  font-size:12px;font-weight:700;color:var(--marine);opacity:0;transition:opacity .3s ease .5s}
+.bar-col.shown .bar-val{opacity:1}
+.bar-lbl{position:absolute;bottom:-24px;left:0;right:0;text-align:center;
+  font-size:11px;font-weight:600;color:var(--ink-42);letter-spacing:.03em}
+.ziel-line{position:absolute;left:0;right:0;height:0;border-top:2px dashed var(--terra);z-index:3;
+  pointer-events:none}
+.ziel-tag{position:absolute;right:0;top:-10px;background:var(--terra);color:#FBF3E1;
+  font-size:10px;font-weight:700;letter-spacing:.08em;padding:3px 9px;border-radius:99px;text-transform:uppercase}
+
+/* ---------- FOOTER ARCADE ---------- */
+.arcade{
+  max-width:1180px;margin:60px auto 0;padding:0 40px;
+}
+.arcade-strip{display:flex;gap:12px;align-items:flex-end}
+.arch-mini{
+  flex:1;height:0;border-radius:var(--arch);background:var(--sand);position:relative;overflow:hidden;
+  transition:height .7s cubic-bezier(.22,1,.36,1);
+}
+.arch-mini img{width:100%;height:100%;object-fit:cover;filter:saturate(1.1)}
+.arch-mini::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(29,62,99,.28))}
+.arcade-cap{text-align:center;margin-top:20px;color:var(--ink-42)}
+.arcade-cap .serif{font-size:24px;color:var(--marine);font-style:italic;display:block;margin-top:4px}
+
+/* ---------- ENTRANCE CHOREO ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes archgrow{from{opacity:0;transform:translateY(24px) scaleY(.85);transform-origin:bottom}
+  to{opacity:1;transform:translateY(0) scaleY(1)}}
+@keyframes sweep{
+  0%{transform:translateX(-40%) skewX(-14deg)}
+  100%{transform:translateX(1100%) skewX(-14deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes drawwave{to{stroke-dashoffset:0}}
+
+.anim{opacity:0}
+.anim.go{animation:rise .7s cubic-bezier(.22,1,.36,1) forwards}
+[data-d="1"]{animation-delay:.05s}[data-d="2"]{animation-delay:.14s}
+[data-d="3"]{animation-delay:.23s}[data-d="4"]{animation-delay:.32s}
+[data-d="5"]{animation-delay:.42s}[data-d="6"]{animation-delay:.52s}
+.arch-photo.anim.go{animation:archgrow .8s cubic-bezier(.22,1,.36,1) forwards}
+.sun-glare{animation:sweep 8s ease-in-out 1.2s infinite}
+.float{animation:float 6s ease-in-out infinite}
+.wave.go path{animation:drawwave 1.1s ease .4s forwards}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.seen{opacity:1;transform:none}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:960px){
+  .hero-grid{grid-template-columns:1fr;gap:24px}
+  .kpi-band{grid-template-columns:repeat(2,1fr)}
+  .anlass{grid-template-columns:1fr 1fr}
+  .acard.big{grid-column:span 2}
+}
+@media(max-width:640px){
+  :root{--rail:0px}
+  .rail{flex-direction:row;top:auto;bottom:0;width:100%;height:64px;
+    padding:0 6px;justify-content:space-around;gap:0;z-index:50}
+  .rail::after{display:none}
+  .rail-logo{display:none}
+  .rail-nav{flex-direction:row;margin-top:0;gap:0;justify-content:space-around}
+  .rn{width:auto;flex:1;height:64px;border-radius:0}
+  .rn.active{background:transparent;color:var(--citrus)}
+  .rn.active::before{left:50%;top:6px;transform:translateX(-50%);width:24px;height:4px}
+  .rn span{font-size:9px}
+  .main{margin-left:0;padding-bottom:80px}
+  .topbar{padding:14px 20px;gap:12px}
+  .brandline{font-size:12px}
+  .topbar .pill{display:none}
+  .hero{padding:22px 20px 4px}
+  .wrap,.section,.arcade{padding-left:20px;padding-right:20px}
+  .kpi-band{grid-template-columns:1fr 1fr;gap:12px}
+  .kpi .big{font-size:36px}
+  .anlass{grid-template-columns:1fr}
+  .acard.big{grid-column:span 1}
+  .row{grid-template-columns:38px 1fr;gap:12px}
+  .row-src,.row-meta{display:none}
+  .beleg{padding:20px 16px 18px}
+  .chart{gap:6px}
+  .bar-lbl{font-size:9px}
+  .arcade-strip{gap:6px}
+}
+
+/* ---------- REDUCED MOTION KILL-SWITCH ---------- */
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .anim,.reveal,.wave path{opacity:1!important;transform:none!important;stroke-dashoffset:0!important}
+  .bar{height:var(--h,60%)!important}
+  .bar-val{opacity:1!important}
+  .arch-mini{height:var(--mh,120px)!important}
+  .sun-glare{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ LEFT RAIL ============ -->
+  <nav class="rail" aria-label="Hauptnavigation">
+    <div class="rail-logo"><img src="../assets/kb-logo-weiss.webp" alt="Klinik Bavaria"></div>
+    <div class="rail-nav">
+      <button class="rn active" aria-current="page">
+        <svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg><span>Heute</span></button>
+      <button class="rn">
+        <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16"/></svg><span>Fälle</span></button>
+      <button class="rn">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M4 20c0-3 2-5 5-5s5 2 5 5"/><circle cx="17" cy="9" r="2"/></svg><span>Team</span></button>
+      <button class="rn">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 7l3.5 3M17 7l-3.5 3"/></svg><span>Netzwerk</span></button>
+      <button class="rn">
+        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg><span>Daten</span></button>
+      <button class="rn">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2 2M16.4 16.4l2 2M18.4 5.6l-2 2M7.6 16.4l-2 2"/></svg><span>System</span></button>
+    </div>
+  </nav>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- topbar -->
+    <header class="topbar">
+      <span class="brandline">Klinik Bavaria · <b>Concierge OS</b></span>
+      <span class="spacer"></span>
+      <button class="pill anim" data-d="1">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>Suchen</button>
+      <button class="pill anim" data-d="2">
+        <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 20a2 2 0 004 0"/></svg>3</button>
+      <div class="avatar anim" data-d="3"><img src="../assets/kb-team-1.webp" alt="Sabine"></div>
+    </header>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="micro greet anim" data-d="1">Dienstag · 15. Juli · Bad Kissingen · 22°</div>
+          <h1 class="anim" data-d="2">Guten Morgen,<br>Sabine.</h1>
+          <svg class="wave" viewBox="0 0 220 12" aria-hidden="true"><path d="M2 6 Q30 -2 58 6 T114 6 T170 6 T218 6"/></svg>
+          <h1 class="serif anim" data-d="3" style="font-size:clamp(26px,3.4vw,40px);line-height:1.02;color:var(--ink)">Aus Quellen wird<br><em>planbare Belegung.</em></h1>
+          <p class="lede anim" data-d="4">Sechs Kanäle, ein Eingang. Jede Anfrage wird zugeteilt, beantwortet und wird zum Fall — ohne dass etwas liegen bleibt.</p>
+          <div class="hero-cta anim" data-d="5">
+            <button class="btn btn-primary"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Eingang öffnen</button>
+            <button class="btn btn-ghost"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Tagesplan</button>
+          </div>
+        </div>
+
+        <div class="hero-stage">
+          <div class="arch-photo anim float" data-d="3">
+            <img src="img/kb-header.jpg" alt="Klinik Bavaria aus der Luft, Morgensonne">
+            <div class="sun-glare"></div>
+            <div class="arch-cap"><div class="micro">Klinik Bavaria</div><b>Bad Kissingen</b></div>
+          </div>
+
+          <div class="converge anim" data-d="5">
+            <div class="micro">Konvergenz · heute</div>
+            <svg class="cv-svg" viewBox="0 0 420 150" aria-label="Sechs Kanäle laufen in einen Eingang zusammen und werden zu Fällen">
+              <!-- lanes + flow from 6 sources to hub -->
+              <g>
+                <path class="cv-lane" d="M70 16 C160 16 180 75 250 75"/>
+                <path class="cv-lane" d="M70 42 C160 42 190 75 250 75"/>
+                <path class="cv-lane" d="M70 68 C170 68 200 75 250 75"/>
+                <path class="cv-lane" d="M70 82 C170 82 200 75 250 75"/>
+                <path class="cv-lane" d="M70 108 C160 108 190 75 250 75"/>
+                <path class="cv-lane" d="M70 134 C160 134 180 75 250 75"/>
+                <path class="cv-flow" d="M70 16 C160 16 180 75 250 75"/>
+                <path class="cv-flow" d="M70 68 C170 68 200 75 250 75"/>
+                <path class="cv-flow" d="M70 134 C160 134 180 75 250 75"/>
+              </g>
+              <!-- source labels -->
+              <text class="cv-node" x="8" y="19">E-Mail</text><text class="cv-num" x="52" y="19">12</text>
+              <text class="cv-node" x="8" y="45">Telefon</text><text class="cv-num" x="52" y="45">7</text>
+              <text class="cv-node" x="8" y="71">Fax</text><text class="cv-num" x="52" y="71">3</text>
+              <text class="cv-node" x="8" y="85">Website</text><text class="cv-num" x="52" y="85">9</text>
+              <text class="cv-node" x="8" y="111">Zuweiser</text><text class="cv-num" x="52" y="111">6</text>
+              <text class="cv-node" x="8" y="137">Portale</text><text class="cv-num" x="52" y="137">4</text>
+              <!-- hub -->
+              <circle class="cv-hub" cx="288" cy="75" r="38"/>
+              <text class="cv-hublabel" x="288" y="70" text-anchor="middle">EIN EINGANG</text>
+              <text class="cv-hubnum" x="288" y="94" text-anchor="middle">41</text>
+              <!-- to Fall -->
+              <path class="cv-flow" d="M326 75 H372" style="stroke:var(--terra)"/>
+              <circle class="cv-out" cx="392" cy="75" r="22"/>
+              <text x="392" y="72" text-anchor="middle" style="fill:#FBF3E1;font-family:'Instrument Serif',serif;font-style:italic;font-size:13px">Fall</text>
+              <text x="392" y="90" text-anchor="middle" style="fill:#FBF3E1;font-weight:700;font-size:16px">14</text>
+            </svg>
+            <div class="stepper">
+              <span class="step on"><span class="dot"></span>Eingang</span><span class="arr">→</span>
+              <span class="step on"><span class="dot"></span>Zuteilung</span><span class="arr">→</span>
+              <span class="step"><span class="dot"></span>Antwort</span><span class="arr">→</span>
+              <span class="step"><span class="dot"></span>Fall</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KPI BAND ============ -->
+    <section class="section">
+      <div class="kpi-band">
+        <div class="kpi k1 reveal">
+          <div class="micro">Offene Fälle</div>
+          <div class="big">14</div>
+          <div class="sub"><span class="up">+3</span> diese Woche</div>
+        </div>
+        <div class="kpi k2 reveal">
+          <div class="micro">Neue Anfragen heute</div>
+          <div class="big">5</div>
+          <div class="sub">seit 06:00 Uhr</div>
+        </div>
+        <div class="kpi k3 reveal">
+          <div class="micro">Conversion</div>
+          <div class="big">67<small>%</small></div>
+          <div class="sub">Anfrage → Fall</div>
+          <svg class="kpi-ring" viewBox="0 0 46 46"><circle cx="23" cy="23" r="19" fill="none" stroke="rgba(35,32,26,.10)" stroke-width="5"/><circle cx="23" cy="23" r="19" fill="none" stroke="var(--cypress)" stroke-width="5" stroke-linecap="round" stroke-dasharray="119" stroke-dashoffset="39" transform="rotate(-90 23 23)"/></svg>
+        </div>
+        <div class="kpi k4 reveal">
+          <div class="micro">Belegung</div>
+          <div class="big">31<small>/38</small></div>
+          <div class="sub">Betten belegt</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CH 01 EINGANG ============ -->
+    <section class="section chap">
+      <div class="chap-head reveal">
+        <span class="chap-num">01</span>
+        <h2>Eingang</h2>
+        <span class="micro">4 unbearbeitet</span>
+      </div>
+      <div class="eingang reveal">
+        <div class="row">
+          <div class="row-ic ic-web"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg></div>
+          <div><div class="row-name">Werner Aumann</div><div class="row-sub">Anfrage Anschlussheilbehandlung nach Hüft-OP</div></div>
+          <div class="row-src">Website</div>
+          <div class="row-meta"><span class="tag tag-neu">Neu</span><span class="row-time">vor 12 Min</span></div>
+        </div>
+        <div class="row">
+          <div class="row-ic ic-portal"><svg viewBox="0 0 24 24"><path d="M4 20v-8a8 8 0 0116 0v8"/><path d="M4 16h4v4H4zM16 16h4v4h-4z"/></svg></div>
+          <div><div class="row-name">Dr. med. H. Sailer <span style="font-weight:500;color:var(--ink-42)">· Leopoldina-Krankenhaus</span></div><div class="row-sub">Verlegung Kardio-Reha, privat</div></div>
+          <div class="row-src">Zuweiser-Portal</div>
+          <div class="row-meta"><span class="row-time">vor 38 Min</span></div>
+        </div>
+        <div class="row">
+          <div class="row-ic ic-tel"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2c1 2 3 4 5 5l2-3 5 2v4a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z"/></svg></div>
+          <div><div class="row-name">Familie Brenner</div><div class="row-sub">Rückfrage Komfortzimmer &amp; Kostenübernahme</div></div>
+          <div class="row-src">Telefon</div>
+          <div class="row-meta"><span class="row-time">vor 1 Std</span></div>
+        </div>
+        <div class="row">
+          <div class="row-ic ic-mail"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
+          <div><div class="row-name">M. Ostheimer</div><div class="row-sub">Unterlagen nachgereicht — Kostenzusage?</div></div>
+          <div class="row-src">E-Mail</div>
+          <div class="row-meta"><span class="tag tag-wait">Wartet</span><span class="row-time">vor 2 Std</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CH 02 ANLÄSSE ============ -->
+    <section class="section chap">
+      <div class="chap-head reveal">
+        <span class="chap-num">02</span>
+        <h2>Anlässe</h2>
+        <span class="micro">Beziehungspflege</span>
+      </div>
+      <div class="anlass">
+        <div class="acard big reveal">
+          <div class="acard-media">
+            <img src="../assets/kb-garten.webp" alt="Festlich angerichtetes Dessert im Garten">
+            <span class="acard-badge"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg>Geburtstag</span>
+          </div>
+          <div class="acard-body">
+            <div class="acard-title">Margarete Brandl wird 74</div>
+            <div class="acard-meta"><span class="stars">★★★★★</span> Stammgast · 3. Aufenthalt</div>
+            <button class="acard-act">Persönliche Karte + Anruf<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+        <div class="acard reveal">
+          <div class="acard-media">
+            <img src="../assets/kb-fach-1.webp" alt="Orthopädische Nachsorge" style="object-position:50% 40%">
+            <span class="acard-badge"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 019-9M21 12a9 9 0 01-9 9"/><path d="M12 3v4M12 17v4"/></svg>Wiederbedarf</span>
+          </div>
+          <div class="acard-body">
+            <div class="acard-title">Klaus Hofreiter</div>
+            <div class="acard-meta">Entlassung vor 11 Monaten</div>
+            <button class="acard-act">Nachsorge-Angebot Orthopädie<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+        <div class="acard reveal">
+          <div class="acard-media">
+            <img src="../assets/kb-haus.webp" alt="Therapie-Szene" style="object-position:50% 50%">
+            <span class="acard-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Zuweiser-Rhythmus</span>
+          </div>
+          <div class="acard-body">
+            <div class="acard-title">Praxis Dr. Wagenknecht</div>
+            <div class="acard-meta">Letzter Kontakt vor 6 Wochen</div>
+            <button class="acard-act">Quartalsgespräch anbieten<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CH 03 BELEGUNG ============ -->
+    <section class="section chap">
+      <div class="chap-head reveal">
+        <span class="chap-num">03</span>
+        <h2>Belegung im Verlauf</h2>
+        <span class="micro">KW 29 – 36 · Prognose</span>
+      </div>
+      <div class="beleg reveal">
+        <div class="beleg-top">
+          <div class="serif" style="font-size:20px;color:var(--marine)">Die Auslastung steigt wie die Tide.</div>
+          <div class="lgd">
+            <span><i style="background:linear-gradient(90deg,var(--azzurro),var(--marine))"></i>Belegte Betten</span>
+            <span><i style="background:var(--terra)"></i>Ziel 34</span>
+          </div>
+        </div>
+        <div class="chart" id="chart">
+          <div class="ziel-line" id="zielLine"><span class="ziel-tag">Ziel 34</span></div>
+          <!-- bars injected/styled below; values of 38 -->
+          <div class="bar-col" style="--v:29"><span class="bar-val">29</span><div class="bar"></div><span class="bar-lbl">KW 29</span></div>
+          <div class="bar-col" style="--v:31"><span class="bar-val">31</span><div class="bar"></div><span class="bar-lbl">KW 30</span></div>
+          <div class="bar-col" style="--v:33"><span class="bar-val">33</span><div class="bar"></div><span class="bar-lbl">KW 31</span></div>
+          <div class="bar-col" style="--v:34"><span class="bar-val">34</span><div class="bar"></div><span class="bar-lbl">KW 32</span></div>
+          <div class="bar-col" style="--v:36"><span class="bar-val">36</span><div class="bar"></div><span class="bar-lbl">KW 33</span></div>
+          <div class="bar-col" style="--v:35"><span class="bar-val">35</span><div class="bar"></div><span class="bar-lbl">KW 34</span></div>
+          <div class="bar-col peak" style="--v:37"><span class="bar-val">37</span><div class="bar"></div><span class="bar-lbl">KW 35</span></div>
+          <div class="bar-col peak" style="--v:38"><span class="bar-val">38</span><div class="bar"></div><span class="bar-lbl">KW 36</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ARCADE ============ -->
+    <section class="arcade">
+      <div class="arcade-strip" id="arcade">
+        <div class="arch-mini" style="--mh:150px"><img src="img/kb-suite.webp" alt="Suite"></div>
+        <div class="arch-mini" style="--mh:190px"><img src="img/kb-komfortzimmer.webp" alt="Komfortzimmer"></div>
+        <div class="arch-mini" style="--mh:130px"><img src="img/kb-kueche.webp" alt="Küche"></div>
+        <div class="arch-mini" style="--mh:200px"><img src="img/kb-umgebung-1.jpg" alt="Umgebung Bad Kissingen"></div>
+        <div class="arch-mini" style="--mh:145px"><img src="../assets/kb-fach-3.webp" alt="Fachbereich"></div>
+        <div class="arch-mini" style="--mh:180px"><img src="img/green-hills.jpg" alt="Hügel"></div>
+      </div>
+      <div class="arcade-cap">
+        <div class="micro">Klinik Bavaria · Concierge OS</div>
+        <span class="serif italic">Sonne, Struktur, planbare Belegung.</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // entrance choreography
+  document.querySelectorAll('.anim').forEach(function(el){ el.classList.add('go'); });
+  var wave = document.querySelector('.wave'); if(wave) wave.classList.add('go');
+
+  // rising-tide bar heights (max 38 -> % of chart minus label padding)
+  function setBars(){
+    document.querySelectorAll('.bar-col').forEach(function(col){
+      var v = parseFloat(col.getAttribute('style').match(/--v:(\d+)/)[1]);
+      var pct = (v/38)*100;
+      col.querySelector('.bar').style.setProperty('--h', pct+'%');
+    });
+    // ziel line at 34/38
+    var z = document.getElementById('zielLine');
+    if(z){ z.style.bottom = (26 + (34/38)*(230-26)) + 'px'; }
+  }
+  setBars();
+
+  // Ziel line uses absolute bottom relative to chart; recompute uses chart geometry
+  function placeZiel(){
+    var chart = document.getElementById('chart'); if(!chart) return;
+    var z = document.getElementById('zielLine');
+    var innerH = chart.clientHeight - 26; // padding-bottom
+    z.style.bottom = (26 + (34/38)*innerH) + 'px';
+  }
+  window.addEventListener('resize', placeZiel);
+
+  // reveal + fill on scroll
+  function fill(col){
+    var bar = col.querySelector('.bar');
+    var h = bar.style.getPropertyValue('--h');
+    bar.style.height = h;
+    col.classList.add('shown');
+  }
+  function growArch(el){ el.style.height = el.style.getPropertyValue('--mh'); }
+
+  if(reduce){
+    // final states immediately
+    document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('seen');});
+    document.querySelectorAll('.bar-col').forEach(fill);
+    document.querySelectorAll('.arch-mini').forEach(growArch);
+    placeZiel();
+    return;
+  }
+
+  placeZiel();
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(!en.isIntersecting) return;
+      var t = en.target;
+      t.classList.add('seen');
+      if(t.id === 'chart'){
+        var cols = t.querySelectorAll('.bar-col');
+        cols.forEach(function(c,i){ setTimeout(function(){ fill(c); }, i*90); });
+        placeZiel();
+      }
+      if(t.id === 'arcade'){
+        t.querySelectorAll('.arch-mini').forEach(function(a,i){ setTimeout(function(){ growArch(a); }, i*80); });
+      }
+      io.unobserve(t);
+    });
+  }, {threshold:.22, rootMargin:'0px 0px -8% 0px'});
+
+  document.querySelectorAll('.reveal').forEach(function(e){ io.observe(e); });
+  var chart = document.getElementById('chart'); if(chart) io.observe(chart);
+  var arcade = document.getElementById('arcade'); if(arcade) io.observe(arcade);
+
+  // rail nav demo interaction (no navigation, prototype)
+  document.querySelectorAll('.rn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.rn').forEach(function(b){ b.classList.remove('active'); b.removeAttribute('aria-current'); });
+      btn.classList.add('active'); btn.setAttribute('aria-current','page');
+    });
+  });
+})();
+</script>
+</body>
+</html>

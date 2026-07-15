@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0C1F1A">
+<title>Klinik Bavaria · Concierge OS — Grand Palais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   GRAND PALAIS · ART-DECO JEWEL — Klinik Bavaria Concierge OS
+   Direction I. Midnight emerald velvet · jade · champagne · burgundy.
+   ZERO brown/olive/murk. High chroma, dark, glamorous.
+   ============================================================ */
+
+:root{
+  --bg-0:#0C1F1A;
+  --bg-1:#10291F;
+  --panel:#14332A;
+  --panel-hi:#1B4034;
+
+  --ivory:#F5F0E3;
+  --muted:#9DB4A8;
+
+  --jade:#3FC49A;
+  --champ:#EBCF94;
+  --burgundy:#A64459;
+  --absinth:#B9E084;
+
+  --hair:rgba(245,240,227,.14);
+  --hair-strong:rgba(245,240,227,.24);
+  --champ-line:rgba(235,207,148,.55);
+
+  --r-lg:20px;
+  --r-md:14px;
+  --r-sm:9px;
+
+  --rail-w:248px;
+
+  accent-color:var(--jade);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{scroll-behavior:smooth}
+
+body{
+  background:
+    radial-gradient(1200px 700px at 78% -8%, rgba(63,196,154,.10), transparent 60%),
+    linear-gradient(180deg,#0C1F1A 0%,#0E241C 45%,#10291F 100%);
+  background-attachment:fixed;
+  color:var(--ivory);
+  font-family:'Jost',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size:15px;
+  line-height:1.6;
+  font-weight:300;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ---- selection / focus / scrollbar ---- */
+::selection{background:var(--champ);color:#0C1F1A}
+::-moz-selection{background:var(--champ);color:#0C1F1A}
+
+:focus-visible{outline:2px solid var(--jade);outline-offset:3px;border-radius:4px}
+
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,var(--champ),#c9a862);
+  border:3px solid var(--bg-0);border-radius:20px;
+}
+::-webkit-scrollbar-thumb:hover{background:var(--champ)}
+*{scrollbar-color:var(--champ) transparent;scrollbar-width:thin}
+
+h1,h2,h3,.display{font-family:'Marcellus',Georgia,serif;font-weight:400;line-height:1.1}
+
+.mono{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+
+/* micro deco label */
+.eyebrow{
+  font-family:'Jost',sans-serif;font-weight:500;
+  font-size:11px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--champ);
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.shell{display:flex;min-height:100vh}
+
+/* ---- left rail (desktop) ---- */
+.rail{
+  position:fixed;inset:0 auto 0 0;width:var(--rail-w);z-index:40;
+  display:flex;flex-direction:column;
+  padding:26px 20px 22px;
+  background:linear-gradient(180deg,rgba(16,41,31,.92),rgba(12,31,26,.96));
+  border-right:1px solid var(--hair);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.rail::after{ /* champagne inner hairline */
+  content:"";position:absolute;top:0;right:0;bottom:0;width:1px;
+  background:linear-gradient(180deg,transparent,var(--champ-line) 20%,var(--champ-line) 80%,transparent);
+  opacity:.5;
+}
+.brand{display:flex;align-items:center;gap:11px;padding:0 6px 4px}
+.brand img{width:26px;height:26px;object-fit:contain;
+  filter:brightness(0) saturate(100%) invert(86%) sepia(18%) saturate(560%) hue-rotate(3deg) brightness(96%);}
+.brand .bt{font-family:'Marcellus',serif;font-size:15px;letter-spacing:.06em;line-height:1.2}
+.brand .bt small{display:block;font-family:'Jost';font-weight:400;font-size:9.5px;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+
+.rail-rule{height:1px;margin:20px 6px;
+  background:linear-gradient(90deg,transparent,var(--hair-strong),transparent)}
+
+.nav{display:flex;flex-direction:column;gap:3px;list-style:none}
+.nav a{
+  display:flex;align-items:center;gap:13px;
+  padding:11px 14px;border-radius:var(--r-sm);
+  color:var(--muted);text-decoration:none;font-size:14px;font-weight:400;
+  letter-spacing:.02em;position:relative;
+  transition:color .14s ease,background .14s ease;
+}
+.nav a svg{width:18px;height:18px;flex:none;stroke:currentColor;stroke-width:1.5;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+.nav a:hover{color:var(--ivory);background:rgba(63,196,154,.07)}
+.nav a.active{color:var(--ivory);background:linear-gradient(90deg,rgba(63,196,154,.14),rgba(63,196,154,.02))}
+.nav a.active::before{
+  content:"";position:absolute;left:0;top:8px;bottom:8px;width:2.5px;border-radius:2px;
+  background:linear-gradient(180deg,var(--champ),var(--jade));
+}
+.nav a.active svg{opacity:1;stroke:var(--jade)}
+
+.rail-foot{margin-top:auto;padding:14px 12px 0}
+.rail-user{display:flex;align-items:center;gap:11px}
+.rail-user .av{
+  width:36px;height:36px;border-radius:50%;flex:none;
+  display:grid;place-items:center;font-family:'Marcellus';font-size:14px;color:#0C1F1A;
+  background:linear-gradient(135deg,var(--champ),#c9a862);
+  box-shadow:0 0 0 1px rgba(235,207,148,.4),0 6px 16px -8px rgba(235,207,148,.6);
+}
+.rail-user .rt{font-size:13px;line-height:1.25}
+.rail-user .rt small{display:block;color:var(--muted);font-size:11px;letter-spacing:.02em}
+
+/* ---- main ---- */
+.main{margin-left:var(--rail-w);flex:1;min-width:0;position:relative}
+
+/* ambient drifting glows (transform only, pre-soft radial) */
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ambient span{position:absolute;border-radius:50%;opacity:.5}
+.amb-jade{width:640px;height:640px;left:52%;top:-16%;
+  background:radial-gradient(closest-side,rgba(63,196,154,.34),transparent 70%);
+  animation:drift1 34s ease-in-out infinite}
+.amb-burg{width:560px;height:560px;left:60%;top:64%;
+  background:radial-gradient(closest-side,rgba(166,68,89,.30),transparent 70%);
+  animation:drift2 42s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-90px,60px) scale(1.12)}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(70px,-70px) scale(1.1)}}
+
+.wrap{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:34px 44px 90px}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;padding:22px 0 8px;overflow:hidden;isolation:isolate}
+.sunburst{
+  position:absolute;top:-190px;right:-60px;width:620px;height:620px;z-index:-1;
+  pointer-events:none;opacity:.9;transform-origin:70% 60%;
+  animation:sunspin 120s linear infinite;
+}
+.sunburst .glow{animation:sunbreath 7s ease-in-out infinite}
+@keyframes sunspin{to{transform:rotate(360deg)}}
+@keyframes sunbreath{0%,100%{opacity:.55}50%{opacity:1}}
+
+.greet{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.greet .eyebrow{margin:0}
+.greet .dot{width:5px;height:5px;border-radius:50%;background:var(--jade);
+  box-shadow:0 0 10px 2px rgba(63,196,154,.7)}
+.greet time{color:var(--muted);font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+
+h1.hl{
+  font-size:clamp(34px,5vw,60px);letter-spacing:.005em;
+  max-width:16ch;margin-bottom:8px;color:var(--ivory);
+}
+h1.hl .clip{
+  background:linear-gradient(100deg,var(--champ) 8%,var(--absinth) 52%,var(--jade) 96%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  -webkit-text-fill-color:transparent;
+}
+.hero-sub{color:var(--muted);max-width:52ch;font-size:15.5px;margin-bottom:30px}
+
+/* --- convergence graphic --- */
+.conv{
+  position:relative;border:1px solid var(--hair);border-radius:var(--r-lg);
+  background:linear-gradient(180deg,rgba(20,51,42,.72),rgba(16,41,31,.66));
+  padding:26px 30px;overflow:hidden;
+}
+.conv::before{ /* double-rule top champagne, gilded shimmer sweep */
+  content:"";position:absolute;left:22px;right:22px;top:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--champ) 20%,#fff6e0 50%,var(--champ) 80%,transparent);
+  background-size:220% 100%;
+  animation:shimmer 6.5s linear infinite;
+  opacity:.85;
+}
+.conv::after{content:"";position:absolute;left:22px;right:22px;top:4px;height:1px;background:var(--champ-line);opacity:.4}
+@keyframes shimmer{0%{background-position:120% 0}100%{background-position:-120% 0}}
+
+.conv-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:6px}
+.conv-head .eyebrow{margin:0}
+.conv-head .lede{font-family:'Marcellus';font-size:17px;color:var(--ivory)}
+.conv svg{display:block;width:100%;height:auto}
+
+/* stepper */
+.stepper{display:flex;align-items:center;gap:0;margin-top:22px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase}
+.step .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  font-family:'Marcellus';font-size:12px;border:1px solid var(--hair-strong);color:var(--champ)}
+.step.on{color:var(--ivory)}
+.step.on .n{border-color:var(--jade);background:rgba(63,196,154,.14);color:var(--jade)}
+.step-arrow{flex:1;min-width:22px;height:1px;margin:0 14px;
+  background:linear-gradient(90deg,var(--hair-strong),transparent)}
+
+/* ============================================================
+   KPI BAND
+   ============================================================ */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:30px 0 8px}
+.kpi{
+  position:relative;border:1px solid var(--hair);border-radius:var(--r-md);
+  background:linear-gradient(180deg,var(--panel),rgba(16,41,31,.8));
+  padding:20px 20px 18px;overflow:hidden;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.kpi::before{content:"";position:absolute;left:16px;top:0;width:34px;height:2px;
+  background:linear-gradient(90deg,var(--champ),transparent)}
+.kpi:hover{transform:translateY(-3px);border-color:rgba(63,196,154,.4);
+  box-shadow:0 18px 40px -22px rgba(63,196,154,.55)}
+.kpi .lab{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.kpi .val{font-family:'Marcellus';font-size:40px;line-height:1;color:var(--ivory);letter-spacing:.01em}
+.kpi .val .sm{font-size:20px;color:var(--muted)}
+.kpi .delta{margin-top:9px;font-size:12px;letter-spacing:.03em;color:var(--jade);display:flex;align-items:center;gap:6px}
+.kpi .delta.flat{color:var(--muted)}
+.kpi .delta svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.6;fill:none}
+
+/* ============================================================
+   CHAPTERS / SECTION HEADERS
+   ============================================================ */
+.chapter{margin-top:58px}
+.ch-head{display:flex;align-items:center;gap:18px;margin-bottom:22px}
+.ch-num{font-family:'Marcellus';font-size:13px;letter-spacing:.3em;color:var(--champ);
+  border:1px solid var(--champ-line);border-radius:4px;padding:5px 10px}
+.ch-title{font-family:'Marcellus';font-size:26px;letter-spacing:.06em;color:var(--ivory)}
+.ch-title .sub{display:block;font-family:'Jost';font-weight:300;font-size:13px;
+  letter-spacing:.04em;color:var(--muted);text-transform:none;margin-top:2px}
+.ch-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--hair-strong),transparent);min-width:20px}
+/* chevron divider ornament */
+.chev{flex:none;width:52px;height:12px;opacity:.7}
+
+/* ---- EINGANG rows ---- */
+.inbox{border:1px solid var(--hair);border-radius:var(--r-lg);overflow:hidden;
+  background:linear-gradient(180deg,rgba(20,51,42,.6),rgba(16,41,31,.5))}
+.row{
+  display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:center;
+  padding:16px 22px;border-top:1px solid var(--hair);position:relative;
+  transition:background .14s ease;
+}
+.row:first-child{border-top:none}
+.row:hover{background:rgba(63,196,154,.06)}
+.row:hover::before{opacity:1}
+.row::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:2px;border-radius:2px;
+  background:linear-gradient(180deg,var(--jade),var(--champ));opacity:0;transition:opacity .14s ease}
+.row .ic{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;flex:none;
+  background:rgba(63,196,154,.10);border:1px solid var(--hair)}
+.row .ic svg{width:19px;height:19px;stroke:var(--jade);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.row .body{min-width:0}
+.row .who{font-size:15px;color:var(--ivory);font-weight:400;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.row .chan{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--champ);
+  border:1px solid var(--champ-line);border-radius:20px;padding:2px 9px}
+.row .subj{color:var(--muted);font-size:13.5px;margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .meta{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex:none}
+.row .ago{font-size:12px;color:var(--muted);letter-spacing:.02em}
+.badge{font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:3px 9px;border-radius:20px;font-weight:500}
+.badge.neu{background:rgba(63,196,154,.16);color:var(--jade);border:1px solid rgba(63,196,154,.4)}
+.badge.wartet{background:rgba(166,68,89,.16);color:#e39aa8;border:1px solid rgba(166,68,89,.45)}
+
+/* ---- ANLÄSSE cards ---- */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{
+  border:1px solid var(--hair);border-radius:var(--r-lg);overflow:hidden;
+  background:linear-gradient(180deg,var(--panel),rgba(16,41,31,.8));
+  display:flex;flex-direction:column;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.card:hover{transform:translateY(-4px);border-color:rgba(63,196,154,.35);
+  box-shadow:0 22px 48px -26px rgba(63,196,154,.5)}
+.card .frame{position:relative;height:150px;overflow:hidden}
+.card .frame::after{ /* double-rule champagne bottom edge */
+  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--champ),transparent);opacity:.8}
+.card .frame img{width:100%;height:100%;object-fit:cover;
+  filter:saturate(.55) contrast(1.05);}
+.card .frame::before{ /* emerald duotone wash */
+  content:"";position:absolute;inset:0;z-index:1;mix-blend-mode:color;
+  background:linear-gradient(160deg,rgba(12,31,26,.7),rgba(63,196,154,.35))}
+.card .duo{position:absolute;inset:0;z-index:2;
+  background:linear-gradient(180deg,rgba(12,31,26,0) 40%,rgba(12,31,26,.85))}
+.card .tag{position:absolute;left:14px;top:13px;z-index:3;
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--champ);
+  background:rgba(12,31,26,.72);border:1px solid var(--champ-line);border-radius:20px;padding:4px 11px;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.card .cbody{padding:17px 19px 20px;display:flex;flex-direction:column;flex:1;gap:6px}
+.card .cname{font-family:'Marcellus';font-size:18px;color:var(--ivory);letter-spacing:.02em}
+.card .cwhen{font-size:12.5px;color:var(--muted)}
+.card .stars{color:var(--champ);letter-spacing:2px;font-size:13px}
+.card .caction{margin-top:auto;padding-top:14px;display:flex;align-items:center;gap:8px;
+  font-size:13px;color:var(--jade);border-top:1px solid var(--hair);cursor:pointer}
+.card .caction svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.6;fill:none;transition:transform .15s ease}
+.card .caction:hover svg{transform:translateX(4px)}
+
+/* ---- BELEGUNG bar chart ---- */
+.beleg{border:1px solid var(--hair);border-radius:var(--r-lg);padding:28px 30px 22px;
+  background:linear-gradient(180deg,rgba(20,51,42,.6),rgba(16,41,31,.55));position:relative;overflow:hidden}
+.beleg-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px;margin-bottom:26px}
+.beleg-top .rt{text-align:right;font-size:12.5px;color:var(--muted)}
+.beleg-top .rt b{color:var(--champ);font-family:'Marcellus';font-weight:400;font-size:15px}
+.chart{position:relative;height:220px;display:flex;align-items:flex-end;gap:16px}
+.chart .target{position:absolute;left:0;right:0;z-index:3;border-top:1px dashed var(--champ-line);pointer-events:none}
+.chart .target span{position:absolute;right:0;top:-9px;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--champ);background:var(--bg-1);padding:0 6px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end;min-width:0}
+.bar .cap{font-size:14px;font-family:'Marcellus';color:var(--ivory);font-variant-numeric:tabular-nums}
+.bar .col{width:100%;max-width:44px;border-radius:6px 6px 0 0;position:relative;
+  height:var(--h);transform-origin:bottom;
+  background:linear-gradient(180deg,var(--jade),#1f7a5f);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);}
+.bar.over .col{background:linear-gradient(180deg,var(--absinth),var(--jade))}
+.bar.miss .col{background:linear-gradient(180deg,var(--burgundy),#6f2836)}
+.bar .col::after{ /* glowing top dot */
+  content:"";position:absolute;top:-4px;left:50%;transform:translateX(-50%);
+  width:7px;height:7px;border-radius:50%;background:var(--champ);
+  box-shadow:0 0 9px 2px rgba(235,207,148,.7)}
+.axis{display:flex;gap:16px;margin-top:10px}
+.axis span{flex:1;text-align:center;font-size:10.5px;letter-spacing:.1em;color:var(--muted);
+  text-transform:uppercase;min-width:0}
+/* curtain-rise reveal */
+.reveal .col{animation:rise .8s cubic-bezier(.2,.75,.25,1) both}
+@keyframes rise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+/* ============================================================
+   GALLERY / photography band
+   ============================================================ */
+.gallery{margin-top:58px;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:18px;grid-auto-rows:220px}
+.gframe{position:relative;overflow:hidden;border-radius:var(--r-md);border:1px solid var(--hair)}
+.gframe.tall{grid-row:span 2}
+.gframe img{width:100%;height:100%;object-fit:cover;filter:saturate(.5) contrast(1.06);
+  transition:transform .5s ease}
+.gframe:hover img{transform:scale(1.05)}
+.gframe::before{content:"";position:absolute;inset:0;z-index:1;mix-blend-mode:color;
+  background:linear-gradient(160deg,rgba(12,31,26,.72),rgba(63,196,154,.4))}
+.gframe::after{content:"";position:absolute;inset:6px;z-index:2;pointer-events:none;
+  border:1px solid var(--champ-line);border-radius:9px;opacity:.5}
+.gcap{position:absolute;left:16px;bottom:14px;z-index:3}
+.gcap .gt{font-family:'Marcellus';font-size:17px;color:var(--ivory);letter-spacing:.03em;
+  text-shadow:0 1px 12px rgba(0,0,0,.6)}
+.gcap .gs{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--champ)}
+.gframe .grad{position:absolute;inset:0;z-index:2;
+  background:linear-gradient(180deg,rgba(12,31,26,0) 45%,rgba(12,31,26,.82))}
+
+/* ---- footer ---- */
+.foot{margin-top:64px;padding-top:24px;border-top:1px solid var(--hair);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
+  color:var(--muted);font-size:12px;letter-spacing:.06em}
+.foot .fr{color:var(--champ);font-family:'Marcellus';letter-spacing:.16em}
+
+/* ============================================================
+   ENTRANCE CHOREOGRAPHY (start-states only in keyframes)
+   ============================================================ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .6s cubic-bezier(.2,.7,.3,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.14s}.d3{animation-delay:.23s}
+.d4{animation-delay:.32s}.d5{animation-delay:.42s}.d6{animation-delay:.52s}
+
+/* flowing dashes in convergence SVG */
+.flow{stroke-dasharray:5 9;animation:flow 2.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-28}}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1023px){
+  :root{--rail-w:0px}
+  .rail{
+    position:sticky;top:0;left:0;width:100%;height:auto;flex-direction:row;
+    align-items:center;gap:14px;padding:12px 16px;overflow-x:auto;z-index:50;
+    border-right:none;border-bottom:1px solid var(--hair);
+  }
+  .rail::after{display:none}
+  .rail-rule,.rail-foot{display:none}
+  .brand{padding:0;flex:none}
+  .brand .bt small{display:none}
+  .nav{flex-direction:row;gap:2px;flex:1}
+  .nav a{padding:8px 12px;white-space:nowrap;font-size:13px}
+  .nav a span{display:none}
+  .nav a.active::before{display:none}
+  .main{margin-left:0}
+  .wrap{padding:24px 18px 70px}
+  .sunburst{width:420px;top:-150px;right:-120px}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .cards{grid-template-columns:1fr}
+  .gallery{grid-template-columns:1fr 1fr;grid-auto-rows:170px}
+  .gframe.tall{grid-row:span 1}
+}
+@media (max-width:560px){
+  .wrap{padding:20px 15px 60px}
+  h1.hl{font-size:32px}
+  .conv{padding:20px 16px}
+  .kpis{grid-template-columns:1fr 1fr;gap:12px}
+  .kpi .val{font-size:34px}
+  .row{grid-template-columns:38px 1fr;padding:14px 16px}
+  .row .meta{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start}
+  .row .ic{width:38px;height:38px}
+  .gallery{grid-template-columns:1fr}
+  .chart{gap:8px;height:190px}
+  .bar .cap{font-size:12px}
+  .ch-title{font-size:22px}
+}
+
+/* ============================================================
+   REDUCED MOTION KILL-SWITCH
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none!important;transition:none!important;
+    scroll-behavior:auto!important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ================= LEFT RAIL ================= -->
+  <aside class="rail">
+    <div class="brand">
+      <img src="img/kb-logo-weiss.webp" alt="Klinik Bavaria">
+      <div class="bt">Klinik Bavaria<small>Concierge OS</small></div>
+    </div>
+    <div class="rail-rule"></div>
+    <nav>
+      <ul class="nav">
+        <li><a href="#" class="active"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Heute</span></a></li>
+        <li><a href="#"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg><span>Fälle</span></a></li>
+        <li><a href="#"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 6.5a3 3 0 0 1 0 5.6M15 20a6 6 0 0 1 6-6"/></svg><span>Team</span></a></li>
+        <li><a href="#"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.4"/><circle cx="18" cy="7" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M8 8.5 11 16M16 8.5 13 16"/></svg><span>Netzwerk</span></a></li>
+        <li><a href="#"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg><span>Datenbank</span></a></li>
+        <li><a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3m0 12v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M3 12h3m12 0h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>System</span></a></li>
+      </ul>
+    </nav>
+    <div class="rail-foot">
+      <div class="rail-user">
+        <div class="av">SB</div>
+        <div class="rt">Sabine Brandtner<small>Belegungsmanagement</small></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <div class="ambient" aria-hidden="true">
+      <span class="amb-jade"></span>
+      <span class="amb-burg"></span>
+    </div>
+
+    <div class="wrap">
+
+      <!-- ===== HERO ===== -->
+      <section class="hero">
+        <!-- half-sunburst deco (thin champagne strokes) -->
+        <svg class="sunburst" viewBox="0 0 400 400" aria-hidden="true">
+          <defs>
+            <radialGradient id="sunG" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#EBCF94" stop-opacity=".9"/>
+              <stop offset="100%" stop-color="#EBCF94" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle class="glow" cx="200" cy="200" r="60" fill="url(#sunG)" opacity=".5"/>
+          <g id="rays" stroke="#EBCF94" stroke-width="1" opacity=".5"></g>
+          <circle cx="200" cy="200" r="150" fill="none" stroke="#EBCF94" stroke-width="1" opacity=".28"/>
+          <circle cx="200" cy="200" r="120" fill="none" stroke="#3FC49A" stroke-width="1" opacity=".22"/>
+        </svg>
+
+        <div class="greet anim d1">
+          <span class="dot"></span>
+          <span class="eyebrow">Guten Morgen, Sabine</span>
+          <time>Dienstag · 15. Juli</time>
+        </div>
+        <h1 class="hl anim d2">Aus Quellen wird <span class="clip">planbare Belegung.</span></h1>
+        <p class="hero-sub anim d3">Sechs Kanäle, ein Eingang, ein klarer Weg zum Fall. Alles, was heute Aufmerksamkeit braucht — an einem Ort, in einer Ordnung.</p>
+
+        <!-- convergence graphic -->
+        <div class="conv anim d4">
+          <div class="conv-head">
+            <span class="eyebrow">Konvergenz</span>
+            <span class="lede">Sechs Quellen · ein Eingang · der Fall</span>
+          </div>
+          <svg viewBox="0 0 900 240" role="img" aria-label="Sechs Kanäle konvergieren zu einem Eingang mit 41 Anfragen, daraus werden 14 Fälle">
+            <defs>
+              <linearGradient id="flowG" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#3FC49A" stop-opacity=".25"/>
+                <stop offset="100%" stop-color="#EBCF94" stop-opacity=".9"/>
+              </linearGradient>
+            </defs>
+            <!-- flow lines from 6 channels to hub -->
+            <g fill="none" stroke="url(#flowG)" stroke-width="1.4" opacity=".8">
+              <path class="flow" d="M170 30 C 320 30, 380 120, 520 120"/>
+              <path class="flow" d="M170 72 C 320 72, 400 120, 520 120"/>
+              <path class="flow" d="M170 114 C 330 114, 420 120, 520 120"/>
+              <path class="flow" d="M170 156 C 330 156, 420 120, 520 120"/>
+              <path class="flow" d="M170 198 C 320 198, 400 120, 520 120"/>
+              <path class="flow" d="M170 240 C 320 240, 380 120, 520 120"/>
+            </g>
+            <!-- channel labels -->
+            <g font-family="Jost" font-size="13" fill="#F5F0E3">
+              <g class="chn"><text x="12" y="34">E-Mail</text><text x="132" y="34" fill="#EBCF94" font-family="Marcellus" text-anchor="end">12</text></g>
+              <g class="chn"><text x="12" y="76">Telefon</text><text x="132" y="76" fill="#EBCF94" font-family="Marcellus" text-anchor="end">7</text></g>
+              <g class="chn"><text x="12" y="118">Fax</text><text x="132" y="118" fill="#EBCF94" font-family="Marcellus" text-anchor="end">3</text></g>
+              <g class="chn"><text x="12" y="160">Website</text><text x="132" y="160" fill="#EBCF94" font-family="Marcellus" text-anchor="end">9</text></g>
+              <g class="chn"><text x="12" y="202">Zuweiser</text><text x="132" y="202" fill="#EBCF94" font-family="Marcellus" text-anchor="end">6</text></g>
+              <g class="chn"><text x="12" y="240">Portale</text><text x="132" y="240" fill="#EBCF94" font-family="Marcellus" text-anchor="end">4</text></g>
+            </g>
+            <!-- hub: EIN EINGANG 41 -->
+            <circle cx="520" cy="120" r="52" fill="rgba(63,196,154,.10)" stroke="#EBCF94" stroke-width="1.4"/>
+            <circle cx="520" cy="120" r="60" fill="none" stroke="#3FC49A" stroke-width="1" opacity=".4"/>
+            <text x="520" y="112" text-anchor="middle" font-family="Jost" font-size="10.5" letter-spacing="2.4" fill="#9DB4A8">EIN EINGANG</text>
+            <text x="520" y="146" text-anchor="middle" font-family="Marcellus" font-size="34" fill="#F5F0E3">41</text>
+            <!-- flow hub -> fall -->
+            <path class="flow" d="M580 120 C 660 120, 690 120, 760 120" fill="none" stroke="#EBCF94" stroke-width="1.6" opacity=".85"/>
+            <!-- fall node -->
+            <rect x="762" y="86" width="118" height="68" rx="10" fill="rgba(235,207,148,.08)" stroke="#EBCF94" stroke-width="1.4"/>
+            <text x="821" y="112" text-anchor="middle" font-family="Jost" font-size="10.5" letter-spacing="2.4" fill="#9DB4A8">FALL</text>
+            <text x="821" y="144" text-anchor="middle" font-family="Marcellus" font-size="30" fill="#3FC49A">14</text>
+          </svg>
+
+          <div class="stepper">
+            <div class="step on"><span class="n">1</span>Eingang</div>
+            <div class="step-arrow"></div>
+            <div class="step on"><span class="n">2</span>Zuteilung</div>
+            <div class="step-arrow"></div>
+            <div class="step"><span class="n">3</span>Antwort</div>
+            <div class="step-arrow"></div>
+            <div class="step"><span class="n">4</span>Fall</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== KPI BAND ===== -->
+      <section class="kpis">
+        <div class="kpi anim d3">
+          <div class="lab">Offene Fälle</div>
+          <div class="val"><span class="count" data-to="14">0</span></div>
+          <div class="delta"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>+3 diese Woche</div>
+        </div>
+        <div class="kpi anim d4">
+          <div class="lab">Neue Anfragen heute</div>
+          <div class="val"><span class="count" data-to="5">0</span></div>
+          <div class="delta flat"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>seit 06:00 Uhr</div>
+        </div>
+        <div class="kpi anim d5">
+          <div class="lab">Conversion</div>
+          <div class="val"><span class="count" data-to="67">0</span><span class="sm">%</span></div>
+          <div class="delta"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>Anfrage → Fall</div>
+        </div>
+        <div class="kpi anim d6">
+          <div class="lab">Belegung</div>
+          <div class="val"><span class="count" data-to="31">0</span><span class="sm">/38 Betten</span></div>
+          <div class="delta flat"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>7 frei</div>
+        </div>
+      </section>
+
+      <!-- ===== CHAPTER 01 EINGANG ===== -->
+      <section class="chapter">
+        <div class="ch-head anim">
+          <span class="ch-num">01</span>
+          <div class="ch-title">Eingang<span class="sub">Was heute hereinkam</span></div>
+          <span class="ch-rule"></span>
+          <svg class="chev" viewBox="0 0 52 12" fill="none" stroke="#EBCF94" stroke-width="1" opacity=".7">
+            <path d="M2 2l6 4-6 4M14 2l6 4-6 4M26 2l6 4-6 4M38 2l6 4-6 4"/>
+          </svg>
+        </div>
+        <div class="inbox anim">
+          <div class="row">
+            <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M4 8l8 5 8-5"/></svg></div>
+            <div class="body">
+              <div class="who">Werner Aumann <span class="chan">Website</span></div>
+              <div class="subj">Anfrage Anschlussheilbehandlung nach Hüft-OP</div>
+            </div>
+            <div class="meta"><span class="badge neu">Neu</span><span class="ago">vor 12 Min</span></div>
+          </div>
+          <div class="row">
+            <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-7 7v3l-1.5 3h17L19 13v-3a7 7 0 0 0-7-7zM9.5 20a2.5 2.5 0 0 0 5 0"/></svg></div>
+            <div class="body">
+              <div class="who">Dr. med. H. Sailer <span class="chan">Zuweiser-Portal</span></div>
+              <div class="subj">Leopoldina-Krankenhaus · Verlegung Kardio-Reha, privat</div>
+            </div>
+            <div class="meta"><span class="ago">vor 38 Min</span></div>
+          </div>
+          <div class="row">
+            <div class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h4l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></div>
+            <div class="body">
+              <div class="who">Familie Brenner <span class="chan">Telefon</span></div>
+              <div class="subj">Rückfrage Komfortzimmer &amp; Kostenübernahme</div>
+            </div>
+            <div class="meta"><span class="ago">vor 1 Std</span></div>
+          </div>
+          <div class="row">
+            <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M4 8l8 5 8-5"/></svg></div>
+            <div class="body">
+              <div class="who">M. Ostheimer <span class="chan">E-Mail</span></div>
+              <div class="subj">Unterlagen nachgereicht — Kostenzusage?</div>
+            </div>
+            <div class="meta"><span class="badge wartet">Wartet</span><span class="ago">vor 2 Std</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CHAPTER 02 ANLÄSSE ===== -->
+      <section class="chapter">
+        <div class="ch-head anim">
+          <span class="ch-num">02</span>
+          <div class="ch-title">Anlässe<span class="sub">Momente für persönliche Nähe</span></div>
+          <span class="ch-rule"></span>
+          <svg class="chev" viewBox="0 0 52 12" fill="none" stroke="#EBCF94" stroke-width="1" opacity=".7">
+            <path d="M2 2l6 4-6 4M14 2l6 4-6 4M26 2l6 4-6 4M38 2l6 4-6 4"/>
+          </svg>
+        </div>
+        <div class="cards">
+          <article class="card anim">
+            <div class="frame"><span class="tag">Geburtstag</span>
+              <img src="../assets/kb-garten.webp" alt="" loading="lazy">
+              <div class="duo"></div>
+            </div>
+            <div class="cbody">
+              <div class="cname">Margarete Brandl wird 74</div>
+              <div class="stars">★★★★★ <span style="color:var(--muted);font-family:Jost;letter-spacing:0">Stammgast</span></div>
+              <div class="cwhen">Ein wiederkehrender Gast seit vielen Jahren.</div>
+              <div class="caction">Persönliche Karte + Anruf <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            </div>
+          </article>
+          <article class="card anim">
+            <div class="frame"><span class="tag">Wiederbedarf</span>
+              <img src="img/kb-komfortzimmer.webp" alt="" loading="lazy" style="object-position:center 60%">
+              <div class="duo"></div>
+            </div>
+            <div class="cbody">
+              <div class="cname">Klaus Hofreiter</div>
+              <div class="cwhen">Entlassung vor 11 Monaten · Orthopädie</div>
+              <div class="cwhen" style="color:var(--muted)">Der richtige Moment für ein Nachsorge-Angebot.</div>
+              <div class="caction">Nachsorge-Angebot Orthopädie <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            </div>
+          </article>
+          <article class="card anim">
+            <div class="frame"><span class="tag">Zuweiser-Rhythmus</span>
+              <img src="../assets/kb-fach-2.webp" alt="" loading="lazy">
+              <div class="duo"></div>
+            </div>
+            <div class="cbody">
+              <div class="cname">Praxis Dr. Wagenknecht</div>
+              <div class="cwhen">Letzter Kontakt vor 6 Wochen</div>
+              <div class="cwhen" style="color:var(--muted)">Beziehungspflege hält den Zufluss stabil.</div>
+              <div class="caction">Quartalsgespräch anbieten <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===== CHAPTER 03 BELEGUNG ===== -->
+      <section class="chapter">
+        <div class="ch-head anim">
+          <span class="ch-num">03</span>
+          <div class="ch-title">Belegung<span class="sub">Prognose der kommenden Wochen</span></div>
+          <span class="ch-rule"></span>
+          <svg class="chev" viewBox="0 0 52 12" fill="none" stroke="#EBCF94" stroke-width="1" opacity=".7">
+            <path d="M2 2l6 4-6 4M14 2l6 4-6 4M26 2l6 4-6 4M38 2l6 4-6 4"/>
+          </svg>
+        </div>
+        <div class="beleg anim">
+          <div class="beleg-top">
+            <div><span class="eyebrow">KW 29 – KW 36</span></div>
+            <div class="rt">Kapazität <b>38 Betten</b> · Ziel-Auslastung <b>34</b></div>
+          </div>
+          <div class="chart" id="chart">
+            <div class="target" style="bottom:calc(100% * 34 / 40)"><span>Ziel 34</span></div>
+            <!-- 8 bars, max scale 40 -->
+            <div class="bar"     ><span class="cap">29</span><i class="col" style="--h:calc(100% * 29 / 40)"></i></div>
+            <div class="bar"     ><span class="cap">31</span><i class="col" style="--h:calc(100% * 31 / 40)"></i></div>
+            <div class="bar"     ><span class="cap">33</span><i class="col" style="--h:calc(100% * 33 / 40)"></i></div>
+            <div class="bar"     ><span class="cap">34</span><i class="col" style="--h:calc(100% * 34 / 40)"></i></div>
+            <div class="bar over"><span class="cap">36</span><i class="col" style="--h:calc(100% * 36 / 40)"></i></div>
+            <div class="bar over"><span class="cap">35</span><i class="col" style="--h:calc(100% * 35 / 40)"></i></div>
+            <div class="bar over"><span class="cap">37</span><i class="col" style="--h:calc(100% * 37 / 40)"></i></div>
+            <div class="bar over"><span class="cap">38</span><i class="col" style="--h:calc(100% * 38 / 40)"></i></div>
+          </div>
+          <div class="axis">
+            <span>KW29</span><span>KW30</span><span>KW31</span><span>KW32</span>
+            <span>KW33</span><span>KW34</span><span>KW35</span><span>KW36</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== GALLERY ===== -->
+      <section class="gallery">
+        <div class="gframe tall"><img src="img/kb-suite.webp" alt="Suite" style="object-position:center 55%"><div class="grad"></div>
+          <div class="gcap"><div class="gs">Aufenthalt</div><div class="gt">Privatsuite mit Aussicht</div></div></div>
+        <div class="gframe"><img src="img/kb-kueche.webp" alt="Küche"><div class="grad"></div>
+          <div class="gcap"><div class="gs">Kulinarik</div><div class="gt">À-la-carte</div></div></div>
+        <div class="gframe"><img src="img/kb-klinik.jpg" alt="Klinik" style="object-position:center 40%"><div class="grad"></div>
+          <div class="gcap"><div class="gs">Haus</div><div class="gt">Das Palais</div></div></div>
+        <div class="gframe"><img src="img/kb-komfort-wall.webp" alt="Komfortzimmer"><div class="grad"></div>
+          <div class="gcap"><div class="gs">Komfort</div><div class="gt">Rückzugsort</div></div></div>
+        <div class="gframe"><img src="img/kb-umgebung-1.jpg" alt="Umgebung"><div class="grad"></div>
+          <div class="gcap"><div class="gs">Bad Kissingen</div><div class="gt">Rundum Ruhe</div></div></div>
+      </section>
+
+      <footer class="foot">
+        <div>Klinik Bavaria · Bad Kissingen — Demonstrationsdaten, keine realen Personen.</div>
+        <div class="fr">GRAND&nbsp;PALAIS</div>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* --- build sunburst rays (thin champagne strokes, half fan) --- */
+  var rays = document.getElementById('rays');
+  if(rays){
+    var cx=200, cy=200, r0=64, r1=185, frag='';
+    for(var i=0;i<=28;i++){
+      var a = (-100 + (i/28)*200) * Math.PI/180; // ~200° fan
+      var x1=cx+Math.cos(a)*r0, y1=cy+Math.sin(a)*r0;
+      var x2=cx+Math.cos(a)*r1, y2=cy+Math.sin(a)*r1;
+      frag += '<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"/>';
+    }
+    rays.innerHTML = frag;
+  }
+
+  /* --- KPI count-up with champagne glint --- */
+  function countUp(el){
+    var to = parseFloat(el.getAttribute('data-to'));
+    if(reduce){ el.textContent = to; return; }
+    var start = performance.now(), dur = 1100;
+    function tick(now){
+      var p = Math.min((now-start)/dur, 1);
+      var e = 1 - Math.pow(1-p, 3);
+      el.textContent = Math.round(to * e);
+      if(p<1){ requestAnimationFrame(tick); }
+      else {
+        el.textContent = to;
+        el.style.transition='color .18s ease,text-shadow .18s ease';
+        el.style.color='#EBCF94'; el.style.textShadow='0 0 14px rgba(235,207,148,.6)';
+        setTimeout(function(){ el.style.color=''; el.style.textShadow=''; }, 260);
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  var counters = document.querySelectorAll('.count');
+  if('IntersectionObserver' in window && !reduce){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ countUp(en.target); io.unobserve(en.target); }
+      });
+    }, {threshold:.6});
+    counters.forEach(function(c){ io.observe(c); });
+  } else {
+    counters.forEach(function(c){ c.textContent = c.getAttribute('data-to'); });
+  }
+
+  /* --- BELEGUNG curtain-rise on scroll --- */
+  var chart = document.getElementById('chart');
+  if(chart){
+    if(reduce || !('IntersectionObserver' in window)){
+      chart.classList.add('reveal');
+    } else {
+      var cio = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){
+            // stagger the curtain rise
+            en.target.querySelectorAll('.bar .col').forEach(function(col,i){
+              col.style.animationDelay = (i*0.07)+'s';
+            });
+            en.target.classList.add('reveal');
+            cio.unobserve(en.target);
+          }
+        });
+      }, {threshold:.35});
+      cio.observe(chart);
+    }
+  }
+})();
+</script>
+</body>
+</html>

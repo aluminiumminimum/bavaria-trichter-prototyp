@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#1E4634" />
+<title>Klinik Bavaria · Concierge OS — Botanica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Outfit:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   BOTANICA — Biophilic Immersion · Klinik Bavaria Concierge OS
+   Palette: eggshell canvas / white-warm cards / pine·verdant·mint·lichen greens / clay accent
+   ============================================================ */
+:root{
+  --eggshell:#F4F2E8;
+  --card:#FDFCF7;
+  --ink:#1C2A20;
+  --pine:#1E4634;
+  --verdant:#2E7D4F;
+  --mint:#A9D9B8;
+  --lichen:#7FA98C;
+  --clay:#C77B54;
+  --line:rgba(28,42,32,.10);
+  --line-soft:rgba(28,42,32,.06);
+  --muted:#5C6B60;
+  --shadow:0 1px 2px rgba(28,42,32,.04), 0 18px 40px -24px rgba(28,42,32,.28);
+  --shadow-lift:0 2px 4px rgba(28,42,32,.05), 0 30px 60px -28px rgba(28,42,32,.36);
+  --rail:216px;
+  --serif:'Young Serif',Georgia,serif;
+  --emo:'Fraunces',Georgia,serif;
+  --ui:'Outfit',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:var(--ui);
+  background:var(--eggshell);
+  color:var(--ink);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--mint);color:var(--pine)}
+:focus-visible{outline:2.5px solid var(--verdant);outline-offset:3px;border-radius:6px}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4{margin:0;font-weight:400}
+p{margin:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+/* scrollbar */
+*::-webkit-scrollbar{width:11px;height:11px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{background:var(--lichen);border-radius:20px;border:3px solid var(--eggshell)}
+*::-webkit-scrollbar-thumb:hover{background:var(--verdant)}
+*{scrollbar-width:thin;scrollbar-color:var(--lichen) transparent}
+
+/* ---------- micro type ---------- */
+.mono{font-family:var(--ui);font-weight:600;letter-spacing:.16em;text-transform:uppercase;font-size:11px}
+.eyebrow{font-family:var(--ui);font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:11px;color:var(--verdant)}
+.serif{font-family:var(--serif)}
+.emo{font-family:var(--emo);font-style:italic;font-weight:400}
+
+/* ============================================================
+   LEFT RAIL
+   ============================================================ */
+.rail{
+  position:fixed;top:0;left:0;bottom:0;width:var(--rail);
+  background:linear-gradient(180deg,#1B3F2E 0%,#15321F 100%);
+  color:#EAF0E9;
+  display:flex;flex-direction:column;
+  padding:26px 18px 22px;
+  z-index:40;
+  border-right:1px solid rgba(0,0,0,.2);
+}
+.rail-brand{display:flex;align-items:center;gap:11px;margin-bottom:34px;padding:0 6px}
+.rail-brand img{width:26px;height:26px;object-fit:contain;filter:brightness(0) invert(1);opacity:.95}
+.rail-brand .bt{font-family:var(--serif);font-size:16px;line-height:1.05;letter-spacing:.01em}
+.rail-brand .bs{font-family:var(--ui);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mint);opacity:.85}
+.rail-nav{display:flex;flex-direction:column;gap:3px}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:11px;
+  color:#C6D4C6;font-weight:500;font-size:14px;
+  transition:background .15s ease,color .15s ease;
+  position:relative;
+}
+.nav-item svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{background:rgba(169,217,184,.16);color:#fff}
+.nav-item.active::before{content:"";position:absolute;left:-18px;top:50%;transform:translateY(-50%);width:3px;height:22px;background:var(--mint);border-radius:0 3px 3px 0}
+.rail-foot{margin-top:auto;display:flex;align-items:center;gap:11px;padding:10px 8px 2px;border-top:1px solid rgba(255,255,255,.1)}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--lichen),var(--verdant));display:grid;place-items:center;font-weight:600;font-size:13px;color:#0f2417;flex:none}
+.rail-foot .fn{font-size:13px;font-weight:600;line-height:1.1}
+.rail-foot .fr{font-size:11px;color:var(--mint);opacity:.85}
+
+/* mobile top bar (hidden desktop) */
+.topbar{display:none}
+
+/* ============================================================
+   MAIN
+   ============================================================ */
+.main{margin-left:var(--rail);min-height:100vh}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,3vw,40px)}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;overflow:hidden;
+  min-height:560px;
+  margin-bottom:8px;
+  display:flex;align-items:flex-end;
+  isolation:isolate;
+}
+.hero-photo{
+  position:absolute;inset:0;
+  background:url('img/forest-light.jpg') center 34%/cover no-repeat;
+  z-index:-3;
+}
+.hero-tint{
+  position:absolute;inset:0;z-index:-2;
+  background:
+    linear-gradient(180deg, rgba(27,63,46,.10) 0%, rgba(21,50,31,.30) 46%, rgba(15,36,23,.86) 100%),
+    linear-gradient(90deg, rgba(46,125,79,.34) 0%, rgba(46,125,79,0) 55%);
+}
+/* dappled light — the ONE ambient animation (no blur filter, pre-soft gradients) */
+.dapple{position:absolute;inset:-20%;z-index:-1;pointer-events:none;mix-blend-mode:soft-light}
+.dapple span{position:absolute;border-radius:50%;opacity:.9}
+.d1{width:46vw;height:46vw;left:6%;top:2%;
+  background:radial-gradient(circle at 50% 50%, rgba(226,240,205,.9), rgba(226,240,205,0) 62%);
+  animation:drift1 19s ease-in-out infinite}
+.d2{width:34vw;height:34vw;right:8%;top:20%;
+  background:radial-gradient(circle at 50% 50%, rgba(169,217,184,.85), rgba(169,217,184,0) 60%);
+  animation:drift2 24s ease-in-out infinite}
+.d3{width:26vw;height:26vw;left:38%;bottom:-6%;
+  background:radial-gradient(circle at 50% 50%, rgba(255,244,214,.75), rgba(255,244,214,0) 64%);
+  animation:drift3 16s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(6%,4%,0) scale(1.12)}}
+@keyframes drift2{0%,100%{transform:translate3d(0,0,0) scale(1.05)}50%{transform:translate3d(-7%,5%,0) scale(.92)}}
+@keyframes drift3{0%,100%{transform:translate3d(0,0,0) scale(.95)}50%{transform:translate3d(5%,-6%,0) scale(1.1)}}
+
+.hero-inner{position:relative;width:100%;padding:clamp(28px,4vw,52px) clamp(18px,3vw,40px) clamp(30px,4vw,46px);color:#F3F7F0}
+.hero-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(24px,4vw,64px);align-items:end}
+.greet{opacity:0}
+.greet .eyebrow{color:var(--mint)}
+.greet .hi{font-family:var(--serif);font-size:clamp(15px,1.6vw,18px);margin:14px 0 4px;color:#DDE9DA}
+.greet h1{font-family:var(--serif);font-size:clamp(34px,4.6vw,58px);line-height:1.02;letter-spacing:-.01em;color:#fff;text-shadow:0 2px 30px rgba(10,26,16,.4)}
+.greet h1 .accent{color:var(--mint)}
+.greet .sub{font-family:var(--emo);font-style:italic;font-size:clamp(16px,1.6vw,20px);margin-top:16px;color:#E4EEE0;max-width:34ch}
+.leaf-orn{margin-top:20px;width:180px;height:38px;display:block}
+.leaf-orn path{fill:none;stroke:var(--mint);stroke-width:1.5;stroke-linecap:round}
+
+/* convergence graphic */
+.conv{opacity:0}
+.conv-card{
+  background:rgba(253,252,247,.09);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:22px;
+  padding:20px 22px 18px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+.conv-card .ch{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+.conv-card .ch .t{font-family:var(--ui);font-weight:600;letter-spacing:.16em;text-transform:uppercase;font-size:11px;color:var(--mint)}
+.conv-card .ch .n{font-family:var(--ui);font-size:12px;color:#CFE0CD}
+.conv-svg{width:100%;height:auto;display:block}
+.conv-svg text{font-family:var(--ui)}
+.flowpath{stroke:var(--mint);stroke-width:1.6;fill:none;opacity:.55;
+  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  animation:draw 1.1s ease forwards;animation-delay:var(--pd,.5s)}
+@keyframes draw{to{stroke-dashoffset:0}}
+.stepper{display:flex;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#DCE8D9}
+.step b{width:20px;height:20px;border-radius:50%;background:rgba(169,217,184,.22);border:1px solid rgba(169,217,184,.5);display:grid;place-items:center;font-weight:600;font-size:11px;color:#fff}
+.step.on b{background:var(--verdant);border-color:var(--verdant)}
+.step-sep{width:14px;height:1px;background:rgba(255,255,255,.32)}
+
+/* ---------- KPI band ---------- */
+.kpi-band{
+  max-width:1180px;margin:-40px auto 0;position:relative;z-index:5;
+  padding:0 clamp(18px,3vw,40px);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+}
+.kpi{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:18px 20px 16px;box-shadow:var(--shadow);
+  opacity:0;transform:translateY(14px);
+}
+.kpi.in{animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+.kpi .kl{font-size:12px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:7px}
+.kpi .kl svg{width:15px;height:15px;stroke:var(--lichen);stroke-width:1.5;fill:none}
+.kpi .kv{font-family:var(--serif);font-size:38px;line-height:1;color:var(--pine);margin:10px 0 4px;position:relative;display:inline-block}
+.kpi .kv::after{content:"";position:absolute;left:0;bottom:-5px;height:3px;width:100%;background:var(--mint);border-radius:3px;transform:scaleX(0);transform-origin:left;animation:sweep .7s ease forwards;animation-delay:calc(var(--d,0s) + .35s)}
+@keyframes sweep{to{transform:scaleX(1)}}
+.kpi .kd{font-size:12px;color:var(--verdant);font-weight:600}
+.kpi .kd.warn{color:var(--clay)}
+@keyframes rise{to{opacity:1;transform:none}}
+
+/* ---------- section shell ---------- */
+.section{padding:clamp(38px,5vw,64px) 0 8px}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:22px}
+.sec-head .l{display:flex;flex-direction:column;gap:9px}
+.sec-num{font-family:var(--emo);font-style:italic;font-size:14px;color:var(--lichen)}
+.sec-head h2{font-family:var(--serif);font-size:clamp(24px,3vw,34px);color:var(--ink);line-height:1.05}
+.sec-head p{font-size:13.5px;color:var(--muted);max-width:40ch}
+.linkbtn{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px;color:var(--verdant);white-space:nowrap;transition:gap .15s ease}
+.linkbtn svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.6;fill:none}
+.linkbtn:hover{gap:9px}
+
+/* leaf divider that draws on scroll */
+.divider{margin:6px auto 0;max-width:1180px;padding:0 clamp(18px,3vw,40px)}
+.divider svg{width:100%;height:46px;display:block;overflow:visible}
+.divider path{fill:none;stroke:var(--lichen);stroke-width:1.4;stroke-linecap:round;
+  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 1.6s ease}
+.divider.drawn path{stroke-dashoffset:0}
+.divider .leafdot{fill:var(--verdant);opacity:0;transition:opacity .4s ease .8s}
+.divider.drawn .leafdot{opacity:1}
+
+/* ---------- reveal helper ---------- */
+.reveal{opacity:0;transform:translateY(16px) scale(.985)}
+.reveal.in{animation:grow .62s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+@keyframes grow{to{opacity:1;transform:none}}
+
+/* ============================================================
+   CH 01 — EINGANG (rows)
+   ============================================================ */
+.inbox{display:flex;flex-direction:column;gap:12px}
+.row{
+  display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:16px 20px;box-shadow:var(--shadow);
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;
+}
+.row:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:rgba(46,125,79,.35)}
+.row-ico{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(169,217,184,.28);flex:none}
+.row-ico svg{width:20px;height:20px;stroke:var(--pine);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.row-mid .rn{font-weight:600;font-size:15px;color:var(--ink);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.row-mid .rq{font-family:var(--emo);font-style:italic;font-size:14px;color:var(--muted);margin-top:2px}
+.row-meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right}
+.chan{font-size:11px;font-weight:600;letter-spacing:.05em;color:var(--verdant);text-transform:uppercase}
+.time{font-size:12px;color:var(--muted)}
+.tag{font-family:var(--ui);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:9.5px;padding:3px 8px;border-radius:20px}
+.tag.neu{background:var(--verdant);color:#fff}
+.tag.wait{background:rgba(199,123,84,.16);color:var(--clay);border:1px solid rgba(199,123,84,.4)}
+
+/* ============================================================
+   CH 02 — ANLÄSSE (art-directed cards, varied rhythm)
+   ============================================================ */
+.anl{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:18px}
+.acard{
+  position:relative;overflow:hidden;border-radius:22px;
+  background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);
+  display:flex;flex-direction:column;min-height:270px;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.acard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift)}
+.acard .amedia{position:relative;height:132px;overflow:hidden}
+.acard .amedia img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.acard:hover .amedia img{transform:scale(1.05)}
+.acard .amedia::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,50,31,0) 40%,rgba(21,50,31,.35))}
+.acat{position:absolute;top:12px;left:12px;background:rgba(253,252,247,.92);color:var(--pine);
+  font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:10px;padding:5px 11px;border-radius:20px;backdrop-filter:blur(4px)}
+.acard .abody{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.acard h3{font-family:var(--serif);font-size:19px;color:var(--ink);line-height:1.12}
+.acard .adesc{font-size:13px;color:var(--muted);margin-top:6px;flex:1}
+.stars{color:var(--clay);font-size:12px;letter-spacing:2px}
+.abtn{margin-top:14px;align-self:flex-start;display:inline-flex;align-items:center;gap:7px;
+  background:var(--pine);color:#EAF3EA;font-weight:600;font-size:13px;padding:9px 15px;border-radius:11px;
+  transition:background .15s ease,transform .15s ease}
+.abtn:hover{background:var(--verdant);transform:translateY(-1px)}
+.abtn svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.6;fill:none}
+/* first card taller / blob accent */
+.acard.feat{grid-row:span 1}
+.acard.feat .amedia{height:168px}
+.blob{position:absolute;width:120px;height:120px;right:-30px;bottom:-30px;
+  background:radial-gradient(circle at 30% 30%,var(--mint),rgba(169,217,184,0) 70%);
+  border-radius:60% 40% 55% 45% / 55% 45% 60% 40%;opacity:.6;pointer-events:none}
+
+/* ============================================================
+   CH 03 — BELEGUNG (growing stems)
+   ============================================================ */
+.beleg{
+  background:var(--card);border:1px solid var(--line);border-radius:24px;
+  padding:clamp(22px,3vw,34px);box-shadow:var(--shadow);
+  display:grid;grid-template-columns:1.6fr 1fr;gap:clamp(24px,4vw,48px);align-items:center;
+}
+.chart-wrap{position:relative}
+.chart{display:flex;align-items:flex-end;justify-content:space-between;gap:clamp(6px,1.4vw,16px);height:230px;position:relative;padding:26px 0 30px}
+.stem{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative}
+.stembar{
+  width:clamp(16px,2.4vw,30px);border-radius:14px 14px 5px 5px;
+  background:linear-gradient(180deg,var(--verdant),var(--pine));
+  height:0;transition:height 1s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s);
+  position:relative;
+}
+.stem.peak .stembar{background:linear-gradient(180deg,var(--mint),var(--verdant))}
+.leafdotb{position:absolute;top:-9px;left:50%;transform:translateX(-50%) scale(0);
+  width:15px;height:15px;transition:transform .4s ease;transition-delay:calc(var(--d,0s) + .8s)}
+.chart.grown .leafdotb{transform:translateX(-50%) scale(1)}
+.leafdotb svg{width:15px;height:15px;display:block}
+.stem .kw{font-family:var(--ui);font-size:11px;color:var(--muted);font-weight:500;position:absolute;bottom:-24px;left:50%;transform:translateX(-50%)}
+.stem .val{font-family:var(--serif);font-size:13px;color:var(--pine);position:absolute;top:-30px;opacity:0;transition:opacity .4s ease;transition-delay:calc(var(--d,0s) + .7s)}
+.chart.grown .val{opacity:1}
+.target-line{position:absolute;left:0;right:0;height:0;border-top:2px dashed var(--clay);opacity:0;transition:opacity .5s ease .9s}
+.chart.grown .target-line{opacity:.8}
+.target-line span{position:absolute;right:0;top:-9px;background:var(--eggshell);padding:0 6px;font-size:11px;font-weight:600;color:var(--clay)}
+.beleg-side .eyebrow{color:var(--verdant)}
+.beleg-side h3{font-family:var(--serif);font-size:26px;color:var(--ink);margin:12px 0 10px;line-height:1.1}
+.beleg-side p{font-size:13.5px;color:var(--muted)}
+.beleg-side .bignum{font-family:var(--serif);font-size:48px;color:var(--pine);line-height:1;margin-top:16px}
+.beleg-side .bignum small{font-size:18px;color:var(--lichen)}
+
+/* ---------- immersion strip (chapter divider photo) ---------- */
+.strip{position:relative;height:150px;margin:44px 0 0;overflow:hidden}
+.strip img{width:100%;height:100%;object-fit:cover;object-position:center 60%}
+.strip::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(21,50,31,.7),rgba(46,125,79,.25) 60%,rgba(21,50,31,.55))}
+.strip .stxt{position:absolute;inset:0;display:flex;align-items:center;padding:0 clamp(24px,5vw,64px)}
+.strip .stxt p{font-family:var(--emo);font-style:italic;color:#F1F7EF;font-size:clamp(18px,2.4vw,28px);max-width:24ch;text-shadow:0 2px 24px rgba(0,0,0,.4)}
+
+/* ---------- footer ---------- */
+.foot{padding:38px clamp(18px,3vw,40px) 46px;max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:12px}
+.foot .fl{display:flex;align-items:center;gap:9px}
+.foot .fl .dot{width:7px;height:7px;border-radius:50%;background:var(--verdant)}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1023px){
+  :root{--rail:0px}
+  .rail{display:none}
+  .topbar{
+    display:flex;align-items:center;gap:12px;
+    position:sticky;top:0;z-index:40;
+    background:linear-gradient(180deg,#1B3F2E,#173824);
+    padding:12px 16px;color:#EAF0E9;
+  }
+  .topbar img{width:24px;height:24px;object-fit:contain;filter:brightness(0) invert(1)}
+  .topbar .bt{font-family:var(--serif);font-size:15px}
+  .topbar .bs{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--mint);display:block;margin-top:-2px}
+  .topnav{display:flex;gap:6px;overflow-x:auto;margin-left:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .topnav::-webkit-scrollbar{display:none}
+  .tn{padding:7px 12px;border-radius:20px;font-size:13px;font-weight:500;color:#C6D4C6;white-space:nowrap}
+  .tn.active{background:rgba(169,217,184,.2);color:#fff}
+  .hero-grid{grid-template-columns:1fr}
+  .kpi-band{grid-template-columns:repeat(2,1fr)}
+  .anl{grid-template-columns:1fr 1fr}
+  .beleg{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .hero{min-height:520px}
+  .kpi-band{grid-template-columns:1fr 1fr;gap:12px}
+  .anl{grid-template-columns:1fr}
+  .row{grid-template-columns:auto 1fr;gap:14px}
+  .row-meta{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start;flex-wrap:wrap}
+  .sec-head{flex-direction:column;align-items:flex-start}
+  .greet h1{font-size:32px}
+  .chart{height:180px}
+}
+
+/* ============================================================
+   REDUCED MOTION — global kill switch
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+  .greet,.conv,.kpi,.reveal{opacity:1 !important;transform:none !important}
+  .stembar{transition:none !important}
+  .divider path{stroke-dashoffset:0 !important}
+  .flowpath{stroke-dashoffset:0 !important}
+  .kpi .kv::after{transform:scaleX(1) !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== LEFT RAIL ===================== -->
+<aside class="rail">
+  <div class="rail-brand">
+    <img src="../assets/kb-logo-weiss.webp" alt="" />
+    <div>
+      <div class="bt">Klinik Bavaria</div>
+      <div class="bs">Concierge OS</div>
+    </div>
+  </div>
+  <nav class="rail-nav">
+    <a class="nav-item active" data-nav href="#top"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Heute</a>
+    <a class="nav-item" data-nav href="#eingang"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h6l2 3h8"/></svg>Fälle</a>
+    <a class="nav-item" data-nav href="#anlaesse"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M4 20c0-3 2-5 5-5s5 2 5 5"/><path d="M16 8h5M18.5 5.5v5"/></svg>Team</a>
+    <a class="nav-item" data-nav href="#anlaesse"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M8 7l3.2 9M16 7l-3.2 9"/></svg>Netzwerk</a>
+    <a class="nav-item" data-nav href="#belegung"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>Datenbank</a>
+    <a class="nav-item" data-nav href="#top"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2 2M16.4 16.4l2 2M18.4 5.6l-2 2M7.6 16.4l-2 2"/></svg>System</a>
+  </nav>
+  <div class="rail-foot">
+    <div class="avatar">SB</div>
+    <div><div class="fn">Sabine Berger</div><div class="fr">Belegungsmanagement</div></div>
+  </div>
+</aside>
+
+<!-- ===================== MOBILE TOP BAR ===================== -->
+<header class="topbar">
+  <img src="../assets/kb-logo-weiss.webp" alt="" />
+  <div><span class="bt">Klinik Bavaria</span><span class="bs">Concierge OS</span></div>
+  <nav class="topnav">
+    <a class="tn active" href="#top">Heute</a>
+    <a class="tn" href="#eingang">Fälle</a>
+    <a class="tn" href="#anlaesse">Team</a>
+    <a class="tn" href="#anlaesse">Netzwerk</a>
+    <a class="tn" href="#belegung">Datenbank</a>
+    <a class="tn" href="#top">System</a>
+  </nav>
+</header>
+
+<main class="main" id="top">
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="hero-photo"></div>
+    <div class="hero-tint"></div>
+    <div class="dapple"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    <div class="hero-inner">
+      <div class="hero-grid">
+        <div class="greet" id="greet">
+          <div class="eyebrow">Dienstag · 15. Juli · Bad Kissingen</div>
+          <div class="hi">Guten Morgen, Sabine</div>
+          <h1>Aus Quellen wird<br><span class="accent">planbare Belegung.</span></h1>
+          <p class="sub">Jede Anfrage — gleich woher — wird zu einem Fall, der wächst.</p>
+          <svg class="leaf-orn" viewBox="0 0 180 38" aria-hidden="true">
+            <path id="orn" d="M2 30 C 40 30, 55 8, 90 8 S 150 30, 178 14"/>
+            <path d="M78 12 q 6 -9 15 -8 q -3 9 -15 8 Z" fill="#A9D9B8" stroke="none" opacity=".9"/>
+          </svg>
+        </div>
+
+        <div class="conv" id="conv">
+          <div class="conv-card">
+            <div class="ch"><span class="t">Der Trichter · Live</span><span class="n">Heute 06:00–09:12</span></div>
+            <svg class="conv-svg" viewBox="0 0 520 236" aria-label="Sechs Kanäle laufen in einen Eingang zusammen und werden zum Fall">
+              <!-- paths (source -> hub) -->
+              <g>
+                <path class="flowpath" style="--len:300;--pd:.45s" d="M120 26 C 200 26, 210 118, 300 118"/>
+                <path class="flowpath" style="--len:280;--pd:.55s" d="M120 60 C 200 60, 220 118, 300 118"/>
+                <path class="flowpath" style="--len:260;--pd:.65s" d="M120 94 C 210 94, 240 118, 300 118"/>
+                <path class="flowpath" style="--len:260;--pd:.75s" d="M120 142 C 210 142, 240 118, 300 118"/>
+                <path class="flowpath" style="--len:280;--pd:.85s" d="M120 176 C 200 176, 220 118, 300 118"/>
+                <path class="flowpath" style="--len:300;--pd:.95s" d="M120 210 C 200 210, 210 118, 300 118"/>
+                <path class="flowpath" style="--len:150;--pd:1.15s" d="M360 118 C 400 118, 420 118, 452 118"/>
+              </g>
+              <!-- source labels -->
+              <g font-size="12.5" fill="#EAF3E8" text-anchor="end">
+                <text x="112" y="30">E-Mail <tspan fill="#A9D9B8" font-weight="600">12</tspan></text>
+                <text x="112" y="64">Telefon <tspan fill="#A9D9B8" font-weight="600">7</tspan></text>
+                <text x="112" y="98">Fax <tspan fill="#A9D9B8" font-weight="600">3</tspan></text>
+                <text x="112" y="146">Website <tspan fill="#A9D9B8" font-weight="600">9</tspan></text>
+                <text x="112" y="180">Zuweiser <tspan fill="#A9D9B8" font-weight="600">6</tspan></text>
+                <text x="112" y="214">Portale <tspan fill="#A9D9B8" font-weight="600">4</tspan></text>
+              </g>
+              <!-- hub -->
+              <circle cx="330" cy="118" r="40" fill="rgba(46,125,79,.55)" stroke="#A9D9B8" stroke-width="1.5"/>
+              <text x="330" y="112" text-anchor="middle" font-size="10" letter-spacing="1.5" fill="#DCEBD9">EIN EINGANG</text>
+              <text x="330" y="138" text-anchor="middle" font-family="'Young Serif',serif" font-size="26" fill="#fff">41</text>
+              <!-- fall -->
+              <rect x="452" y="94" width="60" height="48" rx="13" fill="#FDFCF7"/>
+              <text x="482" y="114" text-anchor="middle" font-size="9.5" letter-spacing="1" fill="#5C6B60">FALL</text>
+              <text x="482" y="134" text-anchor="middle" font-family="'Young Serif',serif" font-size="20" fill="#1E4634">14</text>
+            </svg>
+            <div class="stepper">
+              <div class="step on"><b>1</b>Eingang</div><span class="step-sep"></span>
+              <div class="step on"><b>2</b>Zuteilung</div><span class="step-sep"></span>
+              <div class="step"><b>3</b>Antwort</div><span class="step-sep"></span>
+              <div class="step"><b>4</b>Fall</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== KPI BAND ===================== -->
+  <div class="kpi-band" id="kpiband">
+    <div class="kpi" style="--d:.05s">
+      <div class="kl"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Offene Fälle</div>
+      <div class="kv">14</div><div class="kd">+3 diese Woche</div>
+    </div>
+    <div class="kpi" style="--d:.13s">
+      <div class="kl"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3z"/></svg>Neue Anfragen heute</div>
+      <div class="kv">5</div><div class="kd">seit 06:00 Uhr</div>
+    </div>
+    <div class="kpi" style="--d:.21s">
+      <div class="kl"><svg viewBox="0 0 24 24"><path d="M4 18l6-6 4 4 6-8"/></svg>Conversion</div>
+      <div class="kv">67<span style="font-size:22px">%</span></div><div class="kd">Anfrage → Fall</div>
+    </div>
+    <div class="kpi" style="--d:.29s">
+      <div class="kl"><svg viewBox="0 0 24 24"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-6h6v6"/></svg>Belegung</div>
+      <div class="kv">31<span style="font-size:22px">/38</span></div><div class="kd warn">7 Betten frei</div>
+    </div>
+  </div>
+
+  <!-- ===================== CH 01 · EINGANG ===================== -->
+  <section class="section wrap" id="eingang">
+    <div class="sec-head">
+      <div class="l">
+        <span class="sec-num">Kapitel 01 · <span class="eyebrow" style="color:var(--verdant)">Eingang</span></span>
+        <h2>Was heute Morgen eingegangen ist</h2>
+        <p>Vier Anliegen aus vier Kanälen — bereit zur Zuteilung.</p>
+      </div>
+      <a class="linkbtn" href="#top">Alle 41 ansehen <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="inbox">
+      <div class="row reveal" style="--d:.0s">
+        <div class="row-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div>
+        <div class="row-mid"><div class="rn">Werner Aumann <span class="tag neu">Neu</span></div>
+          <div class="rq">„Anfrage Anschlussheilbehandlung nach Hüft-OP"</div></div>
+        <div class="row-meta"><span class="chan">Website</span><span class="time">vor 12 Min</span></div>
+      </div>
+      <div class="row reveal" style="--d:.08s">
+        <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M9 3H4v5M20 15v5h-5"/><path d="M4 8a12 12 0 0012 12"/></svg></div>
+        <div class="row-mid"><div class="rn">Dr. med. H. Sailer <span style="font-weight:400;color:var(--muted);font-size:13px">· Leopoldina-Krankenhaus</span></div>
+          <div class="rq">„Verlegung Kardio-Reha, privat"</div></div>
+        <div class="row-meta"><span class="chan">Zuweiser-Portal</span><span class="time">vor 38 Min</span></div>
+      </div>
+      <div class="row reveal" style="--d:.16s">
+        <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2a12 12 0 006 6l2-3 5 2v4a2 2 0 01-2 2A17 17 0 013 6a2 2 0 012-2z"/></svg></div>
+        <div class="row-mid"><div class="rn">Familie Brenner</div>
+          <div class="rq">„Rückfrage Komfortzimmer & Kostenübernahme"</div></div>
+        <div class="row-meta"><span class="chan">Telefon</span><span class="time">vor 1 Std</span></div>
+      </div>
+      <div class="row reveal" style="--d:.24s">
+        <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 7l8 6 8-6"/></svg></div>
+        <div class="row-mid"><div class="rn">M. Ostheimer <span class="tag wait">Wartet</span></div>
+          <div class="rq">„Unterlagen nachgereicht — Kostenzusage?"</div></div>
+        <div class="row-meta"><span class="chan">E-Mail</span><span class="time">vor 2 Std</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- immersion strip -->
+  <div class="strip reveal" style="--d:0s">
+    <img src="img/green-hills.jpg" alt="Landschaft rund um Bad Kissingen" />
+    <div class="stxt"><p>„Heilung beginnt dort, wo Menschen sich gesehen fühlen."</p></div>
+  </div>
+
+  <!-- leaf divider (draws on scroll) -->
+  <div class="divider" data-divider>
+    <svg viewBox="0 0 1180 46" preserveAspectRatio="none" aria-hidden="true">
+      <path style="--len:1200" d="M0 34 C 260 34, 320 12, 560 12 C 760 12, 820 34, 1180 22"/>
+      <circle class="leafdot" cx="560" cy="12" r="4.5"/>
+      <circle class="leafdot" cx="880" cy="27" r="3.5"/>
+    </svg>
+  </div>
+
+  <!-- ===================== CH 02 · ANLÄSSE ===================== -->
+  <section class="section wrap" id="anlaesse">
+    <div class="sec-head">
+      <div class="l">
+        <span class="sec-num">Kapitel 02 · <span class="eyebrow" style="color:var(--verdant)">Anlässe</span></span>
+        <h2>Momente, die eine Geste verdienen</h2>
+        <p>Das System erkennt Gelegenheiten — Sie schaffen die Beziehung.</p>
+      </div>
+      <a class="linkbtn" href="#top">Alle Anlässe <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="anl">
+      <article class="acard feat reveal" style="--d:0s">
+        <div class="amedia"><img src="../assets/kb-garten.webp" alt="Festliches Dessert" />
+          <span class="acat">Geburtstag</span></div>
+        <div class="abody">
+          <div class="stars">★★★★★ <span style="color:var(--muted);font-size:12px;letter-spacing:0">Stammgast</span></div>
+          <h3 style="margin-top:8px">Margarete Brandl wird 74</h3>
+          <p class="adesc">Seit acht Jahren treue Gästin. Ein handgeschriebener Gruß bleibt in Erinnerung.</p>
+          <button class="abtn">Persönliche Karte + Anruf <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+        <div class="blob"></div>
+      </article>
+      <article class="acard reveal" style="--d:.1s">
+        <div class="amedia"><img src="../assets/kb-fach-1.webp" alt="Orthopädie" style="object-position:center 40%" />
+          <span class="acat">Wiederbedarf</span></div>
+        <div class="abody">
+          <h3>Klaus Hofreiter</h3>
+          <p class="adesc">Entlassung vor 11 Monaten. Zeitfenster für Nachsorge ist jetzt ideal.</p>
+          <button class="abtn">Nachsorge Orthopädie <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </article>
+      <article class="acard reveal" style="--d:.2s">
+        <div class="amedia"><img src="../assets/kb-haus.webp" alt="Therapieszene" style="object-position:center 45%" />
+          <span class="acat">Zuweiser-Rhythmus</span></div>
+        <div class="abody">
+          <h3>Praxis Dr. Wagenknecht</h3>
+          <p class="adesc">Letzter Kontakt vor 6 Wochen. Ein Quartalsgespräch hält die Bindung warm.</p>
+          <button class="abtn">Quartalsgespräch anbieten <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== CH 03 · BELEGUNG ===================== -->
+  <section class="section wrap" id="belegung">
+    <div class="sec-head">
+      <div class="l">
+        <span class="sec-num">Kapitel 03 · <span class="eyebrow" style="color:var(--verdant)">Belegung</span></span>
+        <h2>Die Kurve, die nach oben wächst</h2>
+        <p>Prognose KW 29–36 — jeder Balken ein Stängel, der das Ziel erreicht.</p>
+      </div>
+      <a class="linkbtn" href="#top">Zur Kapazität <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="beleg reveal" style="--d:0s">
+      <div class="chart-wrap">
+        <div class="chart" id="chart" data-chart>
+          <!-- target line at 34/38 ~ 89.5% => bottom 89.5% -->
+          <div class="target-line" style="bottom:calc(89.5% - 20.1px)"><span>Ziel 34</span></div>
+          <!-- bars: value/38 -->
+          <div class="stem" style="--d:.0s"><span class="val">29</span><div class="stembar" data-h="76.3"><div class="leafdotb"><svg viewBox="0 0 15 15"><path d="M13 2 C6 3 2 7 2 13 C8 12 12 8 13 2Z" fill="#2E7D4F"/></svg></div></div><span class="kw">KW29</span></div>
+          <div class="stem" style="--d:.09s"><span class="val">31</span><div class="stembar" data-h="81.6"><div class="leafdotb"><svg viewBox="0 0 15 15"><path d="M13 2 C6 3 2 7 2 13 C8 12 12 8 13 2Z" fill="#2E7D4F"/></svg></div></div><span class="kw">KW30</span></div>
+          <div class="stem" style="--d:.18s"><span class="val">33</span><div class="stembar" data-h="86.8"><div class="leafdotb"><svg viewBox="0 0 15 15"><path d="M13 2 C6 3 2 7 2 13 C8 12 12 8 13 2Z" fill="#2E7D4F"/></svg></div></div><span class="kw">KW31</span></div>
+          <div class="stem" style="--d:.27s"><span class="val">34</span><div class="stembar" data-h="89.5"><div class="leafdotb"><svg viewBox="0 0 15 15"><path d="M13 2 C6 3 2 7 2 13 C8 12 12 8 13 2Z" fill="#2E7D4F"/></svg></div></div><span class="kw">KW32</span></div>
+          <div class="stem peak" style="--d:.36s"><span class="val">36</span><div class="stembar" data-h="94.7"><div class="leafdotb"><svg viewBox="0 0 15 15"><path d="M13 2 C6 3 2 7 2 13 C8 12 12 8 13 2Z" fill="#A9D9B8"/></svg></div></div><span class="kw">KW33</span></div>
+          <div class="stem" style="--d:.45s"><span class="val">35</span><div class="stembar" data-h="92.1"><div class="leafdotb"><svg viewBox="0 0 15 15"><path d="M13 2 C6 3 2 7 2 13 C8 12 12 8 13 2Z" fill="#2E7D4F"/></svg></div></div><span class="kw">KW34</span></div>
+          <div class="stem peak" style="--d:.54s"><span class="val">37</span><div class="stembar" data-h="97.4"><div class="leafdotb"><svg viewBox="0 0 15 15"><path d="M13 2 C6 3 2 7 2 13 C8 12 12 8 13 2Z" fill="#A9D9B8"/></svg></div></div><span class="kw">KW35</span></div>
+          <div class="stem peak" style="--d:.63s"><span class="val">38</span><div class="stembar" data-h="100"><div class="leafdotb"><svg viewBox="0 0 15 15"><path d="M13 2 C6 3 2 7 2 13 C8 12 12 8 13 2Z" fill="#A9D9B8"/></svg></div></div><span class="kw">KW36</span></div>
+        </div>
+      </div>
+      <div class="beleg-side">
+        <div class="eyebrow">Prognose · Vollauslastung</div>
+        <h3>Ab KW 36 sind alle Betten belegt.</h3>
+        <p>Der Trichter füllt die Kurve vier Wochen im Voraus — planbar statt zufällig.</p>
+        <div class="bignum">38<small>/38 Betten</small></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="fl"><span class="dot"></span> System aktiv · Alle Daten synthetisch (Demo)</div>
+    <div>Klinik Bavaria · Concierge OS — Konzeptstudie „Botanica"</div>
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // hero entrance (staggered) — respect reduced motion
+  var greet = document.getElementById('greet');
+  var conv  = document.getElementById('conv');
+  if(reduce){
+    if(greet) greet.style.opacity=1;
+    if(conv)  conv.style.opacity=1;
+  }else{
+    if(greet) greet.animate([{opacity:0,transform:'translateY(18px)'},{opacity:1,transform:'none'}],{duration:640,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards',delay:120});
+    if(conv)  conv.animate([{opacity:0,transform:'translateY(22px) scale(.98)'},{opacity:1,transform:'none'}],{duration:700,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards',delay:320});
+  }
+
+  // KPI band on view
+  var kpis = document.querySelectorAll('#kpiband .kpi');
+  // reveal cards / rows / dividers / chart via IntersectionObserver
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var el = e.target;
+      if(el.classList.contains('reveal')) el.classList.add('in');
+      if(el.classList.contains('kpi'))    el.classList.add('in');
+      if(el.hasAttribute('data-divider')) el.classList.add('drawn');
+      if(el.hasAttribute('data-chart')){
+        el.querySelectorAll('.stembar').forEach(function(b){ b.style.height = b.getAttribute('data-h') + '%'; });
+        el.classList.add('grown');
+      }
+      io.unobserve(el);
+    });
+  }, {threshold:.18, rootMargin:'0px 0px -8% 0px'});
+
+  document.querySelectorAll('.reveal, #kpiband .kpi, [data-divider], [data-chart]').forEach(function(el){ io.observe(el); });
+
+  // nav active state (visual only — single-page demo)
+  document.querySelectorAll('.nav-item, .tn').forEach(function(n){
+    n.addEventListener('click', function(){
+      var group = n.classList.contains('tn') ? '.tn' : '.nav-item';
+      document.querySelectorAll(group).forEach(function(x){ x.classList.remove('active'); });
+      n.classList.add('active');
+    });
+  });
+})();
+</script>
+</body>
+</html>
