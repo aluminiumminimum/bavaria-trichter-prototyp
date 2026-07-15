@@ -742,7 +742,7 @@
   .radar-when b svg{width:15px;height:15px;color:var(--brass)}
   /* ===== Altpatienten-Radar ===== */
   .radar-grid{display:grid;grid-template-columns:1fr;gap:12px}
-  .radar-card{background:var(--paper2);border:1px solid var(--hair);border-radius:18px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi);padding:16px;display:flex;flex-direction:column;transition:box-shadow .15s ease}
+  .radar-card{background:var(--paper2);border:1px solid var(--hair);border-radius:18px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi);padding:16px;display:flex;flex-direction:column;transition:box-shadow .15s ease,transform .28s cubic-bezier(.22,.61,.36,1)}
   .radar-card.hot{border-color:var(--brass-line);background:linear-gradient(180deg,var(--paper2),var(--brass-soft))}
   .radar-card.locked{opacity:.72;background:repeating-linear-gradient(135deg,var(--paper2),var(--paper2) 9px,var(--raised) 9px,var(--raised) 18px)}
   .radar-card h3{font-family:"Fraunces",Georgia,serif;font-size:23px;line-height:1.05;margin:8px 0 0;font-weight:700}
@@ -2172,6 +2172,15 @@ body{accent-color:var(--brass)}
   background-size:200% 100%;-webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;animation:lxGlint .9s ease-out 1}
 @keyframes lxGlint{from{background-position:180% 0}to{background-position:-80% 0}}
+
+/* ===== LICHTUNG · TILT + HERO-PARALLAX (Task 9, additiv) =====
+   Pointer-Tilt-Glättung: .radar-card erweitert seine transition inline (Zeile ~745,
+   behält box-shadow); .ns-m hat keine eigene transition -> hier ergänzt.
+   .ar-rc tritt nur zusammen mit .radar-card auf (redundant, erbt darüber).
+   Hero-Foto-Parallax liegt auf dem ELTERN .au-arch (das <img> trägt Ken-Burns auf
+   transform) und bewahrt die vertikale Zentrierung translateY(-50%). */
+.ns-m{transition:transform .28s cubic-bezier(.22,.61,.36,1)}
+.au-arch{transform:translate(var(--pxl,0),calc(-50% + var(--pyl,0)))}
 </style>
 </head>
 <body>
@@ -5205,6 +5214,44 @@ renderAll();
 applyHash();
 setTimeout(simulateInbound,3200);
 (function(){const el=document.getElementById("dtopDate");if(el)el.textContent=heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});})();
+
+/* ===== LICHTUNG · TILT =====
+   SEL final: .ns-m,.radar-card,.ar-rc — .rs-card existiert nicht; .tm-card entfernt
+   (eigenes :hover{transform:translateY(-2px)} würde mit dem Tilt kollidieren).
+   Keiner der Ziele rendert in #refOverlay. */
+(function(){
+  var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)');
+  var fine=window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)');
+  if(!rm||!fine||rm.matches||!fine.matches)return;
+  var SEL='.ns-m,.radar-card,.ar-rc';
+  var cur=null;
+  document.addEventListener('pointermove',function(e){
+    var t=e.target&&e.target.closest?e.target.closest(SEL):null;
+    if(cur&&cur!==t){cur.style.transform='';cur=null;}
+    if(!t)return;cur=t;
+    var r=t.getBoundingClientRect();
+    var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    t.style.transform='perspective(900px) rotateX('+(-y*3.5).toFixed(2)+'deg) rotateY('+(x*3.5).toFixed(2)+'deg)';
+  },{passive:true});
+  document.addEventListener('pointerleave',function(){if(cur){cur.style.transform='';cur=null;}},{passive:true,capture:true});
+})();
+
+/* hero parallax — Foto-Layer auf .au-arch (Eltern), da <img> Ken-Burns trägt.
+   Chip-Differential-Parallax verworfen: .lx-chip animiert lxFloat auf transform
+   (würde inline transform überschreiben) — Chips bewegen sich mit dem Eltern-Layer. */
+(function(){
+  var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)');
+  var fine=window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)');
+  if(!rm||!fine||rm.matches||!fine.matches)return;
+  var hero=document.querySelector('.greet');if(!hero)return;
+  hero.addEventListener('pointermove',function(e){
+    var r=hero.getBoundingClientRect();
+    var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    hero.style.setProperty('--pxl',(x*-10).toFixed(1)+'px');
+    hero.style.setProperty('--pyl',(y*-6).toFixed(1)+'px');
+  },{passive:true});
+  hero.addEventListener('pointerleave',function(){['--pxl','--pyl'].forEach(function(p){hero.style.removeProperty(p)});},{passive:true});
+})();
 </script>
 </body>
 </html>
