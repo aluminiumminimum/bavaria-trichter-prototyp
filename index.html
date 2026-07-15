@@ -9,7 +9,7 @@
 <script>document.documentElement.classList.add('fonts-pending');setTimeout(function(){document.documentElement.classList.remove('fonts-pending')},2000)</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600;700&family=Fragment+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@300;400;500;600;700&family=Fragment+Mono&display=swap" rel="stylesheet">
 <script>(function(){var d=document.documentElement,done=false;function reveal(){if(done)return;done=true;d.classList.remove('fonts-pending')}try{if(document.fonts&&document.fonts.load){var f=["600 1em 'Fraunces'","400 1em 'Inter'","600 1em 'Inter'"];Promise.race([Promise.all(f.map(function(x){return document.fonts.load(x)})).then(function(){return document.fonts.ready}),new Promise(function(r){setTimeout(r,900)})]).then(reveal);setTimeout(reveal,1100)}else{reveal()}}catch(e){reveal()}})()</script>
 <style>
   :root{
@@ -1654,7 +1654,7 @@ label{font-size:12px;letter-spacing:.08em}
 @media(max-width:520px){.kp-panel{width:100%}}
 /* ---------- Baustein C · Belegungs-Forecast → Signatur-Rebuild ----------
    Balken/Dots/Ziel-Linie/Numerale liegen jetzt im additiven Block
-   `SIGNATURE · FORECAST` (.lxfc-*) vor </style>. */
+   "SIGNATURE · FORECAST" (.lxfc-*) am Ende des Style-Blocks. */
 #belegungChap{grid-column:1/-1}
 /* ---------- Baustein D · Fall-Detail Arbeitstiefe (.kz-*) ---------- */
 .kz-block{margin-bottom:14px}
@@ -2099,8 +2099,8 @@ body{accent-color:var(--brass)}
   padding:12px 8px 11px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi)}
 #view-heute .ns-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);font-weight:400}
-#view-heute .ns-v{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--ink);
-  text-shadow:0 0 24px rgba(196,169,125,.28)}
+#view-heute .ns-v{font-family:"Fraunces",Georgia,serif;font-weight:300;letter-spacing:-.02em;color:var(--ink);
+  text-shadow:none}
 #view-heute .ns-v small,#view-heute .ns-v span{font-family:"Fragment Mono",ui-monospace,monospace;
   font-size:12px;font-weight:400;letter-spacing:.06em;color:var(--muted);text-shadow:none}
 /* (c) Kapitel-Katalognummern */
@@ -2211,26 +2211,31 @@ body{accent-color:var(--brass)}
 .stage-card h3,.patient-card h3,.module-card h3,.radar-card h3,
 .gauge .gnum,.gauge .gpct{font-optical-sizing:auto}
 
-/* — Kicker: getrackte Fragment-Mono-Marke auf Brass-Deep (E3 .mlabel-Duktus,
-     app-Identität Fragment Mono = Micro-Labels). Nur editoriale Fokuspunkte:
-     Heute-Kapitel + Per-View-Header — Shared-Kicker anderswo unberührt. — */
+/* — Kicker: E3 .mlabel-Duktus EXAKT (User-Feedback „auch font ist anders"):
+     Fraunces 500, 11px, .14em, uppercase, muted + 34px-Gradient-Strich davor.
+     Nur editoriale Fokuspunkte: Heute-Kapitel + Per-View-Header. — */
 #view-heute .kicker,.vhead .kicker{
-  font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;
-  font-size:11px;letter-spacing:.2em;color:var(--brass-deep)}
+  font-family:"Fraunces",Georgia,serif;font-weight:500;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  display:inline-flex;align-items:center;gap:10px}
+#view-heute .kicker::before,.vhead .kicker::before{
+  content:"";height:1px;width:34px;flex:none;
+  background:linear-gradient(90deg,var(--sage-deep),var(--brass) 60%,var(--terra));opacity:.9}
 
-/* — Per-View-Titel (.vhead h1): editoriale Fraunces-Skala (E3 hero-h1-Duktus,
-     Fraunces 500, enger Satz), clamp gegen 1024–1280-Umbruch & 390-Overflow — */
+/* — Per-View-Titel (.vhead h1): E3 hero-h1-Duktus — Fraunces 300, enger Satz,
+     clamp gegen 1024–1280-Umbruch & 390-Overflow — */
 .vhead{margin:8px 0 24px}
-.vhead h1{font-weight:500;letter-spacing:-.015em;line-height:1.02;
+.vhead h1{font-weight:300;letter-spacing:-.015em;line-height:1.02;
   font-size:clamp(34px,4.4vw,44px)}
 
-/* — Desktop-Topbar-Titel „Heute · COCKPIT" — editorial hochskaliert — */
-.dt-titles h2{font-weight:500;font-size:26px;letter-spacing:-.01em;line-height:1.04}
+/* — Desktop-Topbar-Titel „Heute · COCKPIT" — E3-Gewicht 300 — */
+.dt-titles h2{font-weight:300;font-size:26px;letter-spacing:-.01em;line-height:1.04}
 
-/* — Kapitel-Headlines (.chap-h2): E3-Editorialgröße ~26–33px, Fraunces 500,
+/* — Kapitel-Headlines (.chap-h2): E3 .bt-h EXAKT — Fraunces 300,
      enger getrackt, mehr Grundlinien-Abstand — */
-.chap-h2{font-weight:500;letter-spacing:-.012em;line-height:1.1;
+.chap-h2{font-weight:300;letter-spacing:-.012em;line-height:1.1;
   font-size:clamp(26px,3vw,33px);margin:0 0 12px}
+.chap-h2 em,.vhead h1 em{font-style:italic;font-weight:400;color:var(--sage-deep)}
 
 /* — Kapitel-Rhythmus: mehr Luft (E3 nutzt großzügige 28–40px). Mobile-Wert;
      Desktop-Grid (#view-heute>.chap margin-top:0) bleibt via höherer Spezifität. — */
@@ -2239,9 +2244,10 @@ body{accent-color:var(--brass)}
 /* — Große Zahlen: konsistent tabellarisch-linierte Ziffern (E3 mono-num) — */
 .ns-v,.g-stat b,.im-row b,.src-chip b,.gauge .gnum,.gauge .gpct{
   font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
-/* Fraunces leichter (E3 nutzt 300–500 statt 700) auf den Flächen-Zahlen — */
-#view-heute .ns-v{font-weight:500;letter-spacing:-.02em}
-.g-stat b{font-weight:500;letter-spacing:-.02em}
+/* Fraunces 300 auf den Flächen-Zahlen (E3 .kpi .val EXAKT; Gold-Glow entfernt,
+   der zuvor gegen die leichte 300 sprach) — */
+#view-heute .ns-v{font-weight:300;letter-spacing:-.02em}
+.g-stat b{font-weight:300;letter-spacing:-.02em}
 
 /* — Body/Label-Hierarchie: Mail-/Listenzeilen entkrampfen (E3 ~15.5px/1.4) — */
 .wtit{font-size:15.5px;line-height:1.35}
