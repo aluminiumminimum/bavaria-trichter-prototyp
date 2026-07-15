@@ -2310,6 +2310,109 @@ body{accent-color:var(--brass)}
 #view-heute.view.active>*:nth-child(5){animation-delay:.20s}
 #view-heute.view.active>*:nth-child(6){animation-delay:.25s}
 #view-heute.view.active>*:nth-child(n+7){animation-delay:.28s}
+
+/* ============================================================================
+   W3 · GLAS + MOTION ENTFESSELT + FUNNEL-PREMIUM  (additiv, .w3-/Reuse-Namespaces)
+   Alle Start-Zustände (opacity/transform 0) leben NUR im Keyframe-`from`; die
+   globale reduced-motion-Regel (animation:none!important) zeigt dann sofort den
+   korrekten Endzustand. NIE filter:blur() auf Animiertem — nur drop-shadow auf
+   statischen/positions-animierten Elementen (rule-konform) + backdrop-filter.
+   ============================================================================ */
+
+/* — 1 · FROSTED GLASS: Overlay-Sheets über App-Inhalt + Foto-Caption-Pills — */
+#ovDetail .modal,#dbDetail .modal{
+  background:rgba(250,248,242,.86);
+  backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15)}
+#ovDetail .mfoot,#dbDetail .mfoot{background:rgba(250,248,242,.55)}
+/* Band-Fotos: helle Aurora-Caption-Pill (dunkler Text) für lx-fen, dunkle Pill (heller Text) für au-photo */
+.lx-fen figcaption{padding:7px 12px;border-radius:14px;
+  background:rgba(250,248,242,.66);border:1px solid rgba(255,255,255,.5);
+  backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2);
+  box-shadow:0 4px 14px rgba(27,27,22,.14)}
+.au-photo figcaption{left:12px;bottom:12px;padding:5px 11px;border-radius:999px;
+  background:rgba(18,24,18,.34);border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(9px) saturate(1.25);-webkit-backdrop-filter:blur(9px) saturate(1.25)}
+/* Avatar-Rollmenü (Dropdown über Content) frosten */
+.mt-rollmenu{backdrop-filter:blur(14px) saturate(1.1);-webkit-backdrop-filter:blur(14px) saturate(1.1)}
+
+/* — 2 · VIEW-ENTRANCE CHOREOGRAFIE app-weit (hbRise-Muster auf die 5 übrigen Views).
+   Ziel sind die STABILEN direkten Kinder (header/.sub/Grid-Container) — deren Innen-
+   HTML von renderX() ersetzt wird, der Container selbst überlebt → kein Replay-Glitch.
+   Replay nur beim View-Eintritt via .active-Toggle in go(). — */
+@keyframes w3viewIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+#view-faelle.view.active>*,#view-team.view.active>*,#view-netzwerk.view.active>*,
+#view-matrix.view.active>*,#view-system.view.active>*{
+  animation:w3viewIn .42s cubic-bezier(.22,1,.36,1) both}
+#view-faelle.view.active>*:nth-child(2),#view-team.view.active>*:nth-child(2),
+#view-netzwerk.view.active>*:nth-child(2),#view-matrix.view.active>*:nth-child(2),
+#view-system.view.active>*:nth-child(2){animation-delay:.06s}
+#view-faelle.view.active>*:nth-child(3),#view-team.view.active>*:nth-child(3),
+#view-netzwerk.view.active>*:nth-child(3),#view-matrix.view.active>*:nth-child(3),
+#view-system.view.active>*:nth-child(3){animation-delay:.12s}
+#view-faelle.view.active>*:nth-child(4),#view-team.view.active>*:nth-child(4),
+#view-netzwerk.view.active>*:nth-child(4),#view-system.view.active>*:nth-child(4){animation-delay:.18s}
+#view-faelle.view.active>*:nth-child(n+5),#view-team.view.active>*:nth-child(n+5),
+#view-netzwerk.view.active>*:nth-child(n+5),#view-system.view.active>*:nth-child(n+5){animation-delay:.22s}
+
+/* — 3 · FUNNEL-PREMIUM — */
+/* (a) Hub „EIN EINGANG": weicher Aussen-Glow (Kern animiert KEIN transform → drop-shadow ok)
+       + zweiter, langsam atmender Ring auf .cv-halo (transform-only Scale-Pulse) */
+.cv-core{filter:drop-shadow(0 0 14px rgba(201,164,92,.45))}
+.cv-node:hover .cv-core{filter:brightness(1.12) drop-shadow(0 0 20px rgba(201,164,92,.65))}
+.cv-halo{transform-box:fill-box;transform-origin:center;animation:w3halo 4.6s ease-in-out infinite}
+@keyframes w3halo{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.09);opacity:1}}
+/* (b) wandernde Punkte: stärkere Präsenz — größerer drop-shadow-Radius (Position animiert, kein blur) */
+.cv-dot{filter:drop-shadow(0 0 9px rgba(201,164,92,.72))}
+/* (c) Kanal-Chips: Hover-Lift + kanalgefärbter Rahmen (nth-of-type wie der Farb-Block) */
+.cv-chip{transition:transform .22s cubic-bezier(.22,1,.36,1)}
+.cv-chip:hover{transform:translateY(-2px)}
+.cv-chip:nth-of-type(1):hover .cv-chip-bg{stroke:var(--sage-deep);stroke-width:1.6}
+.cv-chip:nth-of-type(2):hover .cv-chip-bg{stroke:#4C7355;stroke-width:1.6}
+.cv-chip:nth-of-type(3):hover .cv-chip-bg{stroke:var(--brass-deep);stroke-width:1.6}
+.cv-chip:nth-of-type(4):hover .cv-chip-bg{stroke:var(--azzurro);stroke-width:1.6}
+.cv-chip:nth-of-type(5):hover .cv-chip-bg{stroke:var(--terra);stroke-width:1.6}
+.cv-chip:nth-of-type(6):hover .cv-chip-bg{stroke:var(--slate);stroke-width:1.6}
+/* (d) Trichter-Naht-Shimmer: langsames Opacity-Atmen auf den dünnen Nahtlinien (kein Filter → safe) */
+.f2 .f2-seam{animation:w3seam 6.5s ease-in-out infinite alternate}
+@keyframes w3seam{from{opacity:.45}to{opacity:1}}
+
+/* — 4 · MICRO-DELIGHT — */
+/* Buttons + Forest-CTAs: einmaliger Sheen-Sweep bei Hover (::after, 500ms, forwards → endet off-screen) */
+.btn-brass,.rp-cta,.ds-cta{position:relative;overflow:hidden}
+.btn-brass::after,.rp-cta::after,.ds-cta::after{content:"";position:absolute;inset:0;pointer-events:none;
+  transform:translateX(-130%);
+  background:linear-gradient(105deg,transparent 32%,rgba(255,255,255,.4) 50%,transparent 68%)}
+@media(hover:hover){.btn-brass:hover::after,.rp-cta:hover::after,.ds-cta:hover::after{animation:w3sheen .5s ease forwards}}
+@keyframes w3sheen{to{transform:translateX(130%)}}
+/* Sidebar-Nav: Icon-Nudge bei Hover (zusätzlich zum bestehenden Button-Nudge) */
+.ds-nav button svg{transition:transform .2s ease}
+.ds-nav button:hover svg{transform:translateX(3px)}
+/* Toasts: Slide-in mit leichtem Overshoot */
+#rpToast{transition:opacity .3s ease,transform .42s cubic-bezier(.34,1.56,.64,1)}
+.inb-toast.show{animation-timing-function:cubic-bezier(.34,1.56,.64,1)}
+/* lx-live Puls-Dot: zweiter, verzögerter Sonar-Ring */
+.lx-pulse::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--sage);
+  animation:w3sonar 2.4s ease-out infinite;animation-delay:.7s}
+@keyframes w3sonar{from{transform:scale(1);opacity:.5}to{transform:scale(3.2);opacity:0}}
+
+/* — 5 · KEN-BURNS: Band-Fotos sehr langsam, alternierend, transform-only.
+   .au-arch img (auKen) bleibt unberührt (andere Klasse). Dauern gestaffelt gegen Sync. — */
+@keyframes w3ken{from{transform:scale(1)}to{transform:scale(1.05)}}
+.au-photo img,.lx-fen img{animation:w3ken 34s ease-in-out infinite alternate}
+.au-photo:nth-of-type(2n) img{animation-duration:38s}
+.au-photo:nth-of-type(3n) img{animation-duration:31s}
+.lx-fen:nth-of-type(2n) img{animation-duration:37s}
+.lx-fen:nth-of-type(3n) img{animation-duration:40.5s}
+
+/* — 6 · SCROLL-REVEAL: unterhalb der Falte liegende, VERSCHACHTELTE Foto-Kacheln
+   (Grandchildren der .sub — NICHT von der View-Entrance-Stagger erfasst) bekommen
+   einen view()-Timeline-Rise. Muster wie .fc-bar (auGrow). Fallback ohne view():
+   sie sind bereits durch die View-Entrance-Choreografie abgedeckt. — */
+@supports (animation-timeline: view()){
+  #view-netzwerk .sub>.au-photo,#view-faelle .sub>.au-photo{
+    animation:w3reveal .75s ease-out both;animation-timeline:view();animation-range:entry 4% cover 32%}
+}
+@keyframes w3reveal{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -2663,9 +2766,9 @@ body{accent-color:var(--brass)}
              aria-label="Trichter: fünf Quellen fließen in drei Stufen, daraus drei Ergebnisse; Verlustgründe fließen zurück in die Quellen">
           <defs>
             <linearGradient id="goldFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#EAF0E8"/>
-              <stop offset=".55" stop-color="#F3EAD8"/>
-              <stop offset="1" stop-color="#F3EAD8"/>
+              <stop offset="0" stop-color="#E6EEE1"/>
+              <stop offset=".5" stop-color="#F3EAD8"/>
+              <stop offset="1" stop-color="#E7CFA0"/>
             </linearGradient>
             <linearGradient id="seamGrad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#A8854B" stop-opacity="0"/>
@@ -2741,11 +2844,11 @@ body{accent-color:var(--brass)}
             <path class="glow" d="M64,232 L326,232 L252,474 L138,474 Z" fill="#b8945c" filter="url(#softBlur)"/>
             <path d="M64,232 L326,232 L252,474 L138,474 Z" fill="url(#goldFill)" stroke="#d7b98a" stroke-opacity=".55" stroke-width="1"/>
             <g clip-path="url(#funClip)"><rect class="shimmer" x="-160" y="230" width="130" height="246" fill="url(#shimmerGrad)"/></g>
-            <line x1="64" y1="232" x2="326" y2="232" stroke="url(#seamGrad)" stroke-width="1.4"/>
+            <line class="f2-seam" x1="64" y1="232" x2="326" y2="232" stroke="url(#seamGrad)" stroke-width="1.4"/>
             <line x1="89" y1="312" x2="301" y2="312" stroke="url(#seamGrad)" stroke-width="3.4" opacity=".5" filter="url(#seamBlur)"/>
-            <line x1="89" y1="312" x2="301" y2="312" stroke="url(#seamGrad)" stroke-width="1.1"/>
+            <line class="f2-seam" x1="89" y1="312" x2="301" y2="312" stroke="url(#seamGrad)" stroke-width="1.1"/>
             <line x1="113" y1="392" x2="277" y2="392" stroke="url(#seamGrad)" stroke-width="3.4" opacity=".5" filter="url(#seamBlur)"/>
-            <line x1="113" y1="392" x2="277" y2="392" stroke="url(#seamGrad)" stroke-width="1.1"/>
+            <line class="f2-seam" x1="113" y1="392" x2="277" y2="392" stroke="url(#seamGrad)" stroke-width="1.1"/>
 
             <text class="stage-num" x="152" y="278" text-anchor="end" font-size="44" data-sync="zc0"></text>
             <text class="stage-lab" x="164" y="274">neu &amp; kontaktiert <tspan class="chev" dy="1">›</tspan></text>
