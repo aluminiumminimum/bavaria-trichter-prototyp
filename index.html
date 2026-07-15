@@ -960,16 +960,16 @@ label{font-size:12px;letter-spacing:.08em}
 }
 /* ===== ZUWEISER-PREMIUM-SUITE (.rp-*) — Hero, Tabs, Screens ===== */
 .ref-body{max-width:1100px}
-.rp-hero{background:var(--espresso-grad);border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 var(--glass-hi),var(--shadow);border-radius:20px;padding:30px 26px 0;margin:2px 0 20px;color:var(--ink);position:relative;overflow:hidden}
+.rp-hero{background:var(--cream2);border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 var(--glass-hi),var(--shadow);border-radius:20px;padding:30px 26px 0;margin:2px 0 20px;color:var(--ink);position:relative;overflow:hidden}
 .rp-hero::after{content:"";position:absolute;top:0;left:24px;right:24px;height:2px;background:linear-gradient(90deg,transparent,#cdb083 30%,#cdb083 70%,transparent);opacity:.6}
-.rp-mark{font:600 12.5px/1 Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--brass);margin-bottom:14px}
-.rp-greet{font:italic 600 30px/1.12 'Fraunces',Georgia,serif;margin:0 0 6px;color:var(--ink)}
+.rp-mark{font:600 12.5px/1 Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:14px}
+.rp-greet{font:italic 600 30px/1.12 'Fraunces',Georgia,serif;margin:0 0 6px;color:var(--sage-deep)}
 .rp-sub{font:400 14.5px/1.5 Inter;color:var(--muted);margin:0 0 20px}
 .rp-tabs{display:flex;gap:4px;margin:0 -6px}
 .rp-tab{flex:1;background:transparent;border:none;border-bottom:2px solid transparent;padding:10px 6px 14px;text-align:center;cursor:pointer;color:var(--muted);transition:color .18s ease}
 .rp-tab small{display:block;font:600 10.5px/1 Inter;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;color:inherit}
 .rp-tab span{font:600 14px/1.2 Inter;color:inherit}
-.rp-tab.on{color:var(--ink);border-bottom-color:var(--brass)}
+.rp-tab.on{color:var(--sage-deep);border-bottom-color:var(--sage-deep)}
 @media(hover:hover){.rp-tab:hover{color:var(--ink)}}
 .rp-lead{font:400 15px/1.55 Inter;color:var(--muted);margin:0 0 16px;max-width:64ch}
 .rp-card{background:var(--paper);border:1px solid var(--hair);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow-soft);position:relative}
@@ -1025,7 +1025,7 @@ label{font-size:12px;letter-spacing:.08em}
 .rp-check{display:flex;align-items:center;gap:8px;font:500 13.5px/1.3 Inter;margin:12px 0}
 .rp-check input{width:auto;min-height:0}
 .rp-upload{border:1.5px dashed var(--brass-line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font:500 13.5px/1.3 Inter;margin-bottom:14px;background:var(--paper)}
-.rp-cta{display:block;width:100%;background:var(--brass-grad);color:#fff;border:none;border-radius:99px;padding:14px 18px;font:600 15px/1 Inter;min-height:48px;cursor:pointer;box-shadow:0 4px 14px rgba(155,133,115,.35)}
+.rp-cta{display:block;width:100%;background:var(--espresso-grad);color:#F5F2E8;border:none;border-radius:99px;padding:14px 18px;font:600 15px/1 Inter;min-height:48px;cursor:pointer;box-shadow:0 4px 14px rgba(33,64,45,.28)}
 .rp-cta.ghost{background:transparent;border:1px solid var(--brass-line);color:var(--brass-deep);box-shadow:none;margin-top:10px}
 @keyframes rpFlash{0%{box-shadow:0 0 0 3px rgba(205,176,131,.9)}100%{box-shadow:0 0 0 3px rgba(205,176,131,0)}}
 .rp-card.flash{animation:rpFlash 1.2s ease-out 1}
@@ -1338,7 +1338,7 @@ label{font-size:12px;letter-spacing:.08em}
   .tm-status{font-size:10px;text-transform:uppercase;letter-spacing:.04em}
   /* Team · Kanal-Bündelung */
 /* ===== ABSCHLUSS-DOKUMENTE + QR + REHA-CHARTS ===== */
-#rpDocView{position:fixed;inset:0;z-index:110;display:none;align-items:flex-start;justify-content:center;background:rgba(31,28,28,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);overflow-y:auto;padding:4vh 14px}
+#rpDocView{position:fixed;inset:0;z-index:110;display:none;align-items:flex-start;justify-content:center;background:rgba(27,27,22,.35);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);overflow-y:auto;padding:4vh 14px}
 #rpDocView.open{display:flex}
 .rpd-paper{position:relative;background:#fff;width:100%;max-width:660px;border-radius:6px;box-shadow:0 30px 80px rgba(20,16,12,.45);padding:34px 38px 30px;margin:auto 0;animation:rpUp .4s cubic-bezier(.4,0,.2,1) both;overflow:hidden}
 .rpd-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--hair);background:#fff;font:400 18px/1 Inter;color:#6b6460;cursor:pointer;z-index:2}
@@ -1838,13 +1838,13 @@ body.ma-mode #view-meintag{display:block}
    Geteilte Foto-Komponente + Duotone-Akzente. Rein additiv, keine Animation, kein Blur —
    die Wäsche kommt aus Gradienten im ::after (dark base + subtiler Farbstich). */
 .au-photo{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--glass-border)}
-.au-photo img{width:100%;height:100%;object-fit:cover;object-position:center 35%;display:block;filter:saturate(.9)}
-.au-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg, rgba(12,15,13,.22) 30%, rgba(12,15,13,.62)),linear-gradient(rgba(12,15,13,.16),rgba(12,15,13,.16));pointer-events:none}
-.au-photo figcaption{position:absolute;left:12px;bottom:10px;z-index:1;font-family:"Fragment Mono",ui-monospace,monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,242,234,.85)}
-.au-photo--sage::after{background:linear-gradient(160deg, rgba(12,15,13,0) 40%, rgba(12,15,13,.55)),linear-gradient(0deg, rgba(143,185,150,.16), rgba(143,185,150,.16))}
-.au-photo--petrol::after{background:linear-gradient(160deg, rgba(12,15,13,0) 40%, rgba(12,15,13,.55)),linear-gradient(0deg, rgba(87,160,143,.16), rgba(87,160,143,.16))}
-.au-photo--rose::after{background:linear-gradient(160deg, rgba(12,15,13,0) 40%, rgba(12,15,13,.55)),linear-gradient(0deg, rgba(224,145,122,.14), rgba(224,145,122,.14))}
-.au-photo--gold::after{background:linear-gradient(160deg, rgba(12,15,13,0) 40%, rgba(12,15,13,.55)),linear-gradient(0deg, rgba(214,183,126,.14), rgba(214,183,126,.14))}
+.au-photo img{width:100%;height:100%;object-fit:cover;object-position:center 35%;display:block;filter:saturate(1.06) brightness(1.02)}
+.au-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg, rgba(250,248,242,.05) 30%, rgba(250,248,242,.16)),linear-gradient(rgba(250,248,242,.04),rgba(250,248,242,.04));pointer-events:none}
+.au-photo figcaption{position:absolute;left:12px;bottom:10px;z-index:1;font-family:"Fragment Mono",ui-monospace,monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#FFFFFF;text-shadow:0 1px 8px rgba(27,27,22,.45)}
+.au-photo--sage::after{background:linear-gradient(160deg, rgba(250,248,242,.05) 30%, rgba(250,248,242,.16)),linear-gradient(0deg, rgba(143,185,150,.12), rgba(143,185,150,.12))}
+.au-photo--petrol::after{background:linear-gradient(160deg, rgba(250,248,242,.05) 30%, rgba(250,248,242,.16)),linear-gradient(0deg, rgba(87,160,143,.12), rgba(87,160,143,.12))}
+.au-photo--rose::after{background:linear-gradient(160deg, rgba(250,248,242,.05) 30%, rgba(250,248,242,.16)),linear-gradient(0deg, rgba(224,145,122,.10), rgba(224,145,122,.10))}
+.au-photo--gold::after{background:linear-gradient(160deg, rgba(250,248,242,.05) 30%, rgba(250,248,242,.16)),linear-gradient(0deg, rgba(214,183,126,.10), rgba(214,183,126,.10))}
 /* Kontext-Größen (je Platzierung) */
 #view-team>.au-photo{height:140px;margin:0 0 16px}
 #sub-netzwerk-zuweiser>.au-photo{height:120px;margin:12px 0}
@@ -1854,7 +1854,7 @@ body.ma-mode #view-meintag{display:block}
 .ar-rc>.au-photo{height:64px;border-radius:12px;margin:-16px -16px 12px}
 /* Portal-Hero: bogenmaskiertes Foto rechts, nur auf breitem Desktop */
 .rp-arch{position:absolute;right:26px;top:50%;transform:translateY(-50%);width:150px;height:200px;border-radius:999px 999px 18px 18px;overflow:hidden;border:1px solid var(--glass-border);display:none;z-index:1}
-.rp-arch img{width:100%;height:100%;object-fit:cover;filter:saturate(.85);opacity:.92;display:block}
+.rp-arch img{width:100%;height:100%;object-fit:cover;filter:saturate(1.06) brightness(1.02);opacity:.92;display:block}
 @media(min-width:1200px){.rp-arch{display:block} .rp-hero{padding-right:200px}}
 
 /* ===== AURORA · VIVID FARBEN =====
