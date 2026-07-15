@@ -83,15 +83,15 @@
   .btn-sm{min-height:44px;padding:9px 16px;font-size:14.5px}
 
   /* ===== Heute: Begrüßung ===== */
-  .greet{margin:2px 0 4px;background:var(--espresso-grad);border-radius:20px;border:1px solid var(--glass-border);
-    padding:22px 20px 20px;box-shadow:inset 0 1px 0 var(--glass-hi),var(--shadow);
+  .greet{margin:2px 0 4px;background:var(--paper);border-radius:24px;border:1px solid var(--hair2);
+    padding:22px 20px 20px;box-shadow:var(--shadow);
     position:relative;overflow:hidden}
   .greet::after{content:"";position:absolute;top:-50px;right:-36px;width:200px;height:200px;border-radius:50%;
     background:radial-gradient(circle,rgba(188,163,125,.2),transparent 70%);pointer-events:none}
   .g-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
   .greet h1{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:600;color:var(--ink);
     font-size:28px;line-height:1.14;margin:0;letter-spacing:.005em}
-  .greet h1 em{font-style:inherit;color:var(--brass)}
+  .greet h1 em{font-style:inherit;color:var(--sage-deep)}
   .g-date{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:9px;font-weight:600}
   .g-mono{flex-shrink:0;width:46px;height:46px;border-radius:50%;border:1px solid var(--brass-line);
     background:radial-gradient(circle at 35% 30%,#3a332e,#262220);color:var(--brass);
@@ -101,7 +101,8 @@
      Konvergenz-SVG rechts (FALL-Kette). So bleibt der Trichter unberührt lesbar. Nur ≥1200px. */
   .au-arch{position:absolute;right:36px;top:50%;transform:translateY(-50%);width:168px;display:none;z-index:1}
   @media(min-width:1360px){.au-arch{display:block} .greet .cv{margin-right:224px}}
-  .au-arch img{width:100%;height:200px;object-fit:cover;border-radius:999px 999px 22px 22px;display:block;filter:saturate(.85);opacity:.9;border:1px solid var(--glass-border)}
+  .au-arch img{width:100%;height:200px;object-fit:cover;border-radius:999px 999px 22px 22px;display:block;filter:saturate(1.06) brightness(1.03);opacity:1;border:1px solid var(--hair2)}
+  .au-arch::after{content:"";position:absolute;top:0;left:0;right:0;height:200px;border-radius:999px 999px 22px 22px;pointer-events:none;background:linear-gradient(rgba(250,248,242,.04),rgba(250,248,242,.14))}
   .au-arch span{display:block;text-align:center;margin-top:8px;font-family:"Fragment Mono",monospace;font-size:9px;letter-spacing:.18em;color:var(--muted)}
   .g-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px;position:relative}
   .g-stat{background:rgba(255,248,236,.06);border:1px solid rgba(188,163,125,.38);border-radius:14px;
@@ -2108,6 +2109,30 @@ body{accent-color:var(--brass)}
   }
 }
 @keyframes auGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+/* ===== LICHTUNG · HEUTE-HERO (Stufe 2 · Bühne) — Editorial-Hero-Politur =====
+   Panel/Foto/Typo werden in den Basisregeln hell gestellt; hier NUR additive Deko:
+   vergoldete Doppel-Linie mit wanderndem Schimmer, zwei Glas-Chips über dem Foto,
+   und der Leitsatz im Konvergenz-SVG lesbar auf Weiß — strikt auf #view-heute
+   gescopet, damit das dunkle Team-Panel (.tm-cv, gleiche .cv-* Klassen) unberührt bleibt. */
+.lx-rule{height:3px;border-top:1px solid var(--brass-line);border-bottom:1px solid var(--brass-line);width:min(280px,38%);position:relative;overflow:hidden;margin:14px 0 4px}
+.lx-rule::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(201,164,92,.75),transparent);transform:translateX(-110%);animation:lxSweep 7s ease-in-out infinite}
+@keyframes lxSweep{0%,55%{transform:translateX(-110%)}75%,100%{transform:translateX(110%)}}
+
+/* Glas-Chips über dem Bogen-Foto — live gespiegelte Werte via data-sync (cvTotal/cvStock).
+   backdrop-filter bewusst als EINE gemeinsame Regel für beide Chips (2 geblurrte Flächen). */
+.lx-chip{position:absolute;z-index:2;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);
+  border-radius:999px;box-shadow:var(--shadow-soft);padding:8px 14px;font-size:12.5px;color:var(--ink-soft);font-weight:500}
+.lx-chip b{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:16px;color:var(--brass-deep);line-height:1}
+.lx-chip--in{top:14px;right:110px;animation:lxFloat 7s ease-in-out infinite}
+.lx-chip--stock{bottom:30px;right:128px;color:var(--alert);animation:lxFloat 7s ease-in-out .8s infinite}
+.lx-chip--stock b{color:var(--alert)}
+@keyframes lxFloat{0%,100%{transform:translateY(-3px)}50%{transform:translateY(3px)}}
+
+/* Konvergenz-Leitsatz auf hellem Hero lesbar (nur Heute; Team-Panel bleibt dunkel). */
+#view-heute .cv-copy{fill:var(--ink-soft)}
+#view-heute .cv-copy-b{fill:var(--brass-deep)}
 </style>
 </head>
 <body>
@@ -2142,9 +2167,10 @@ body{accent-color:var(--brass)}
       <div class="g-row">
         <div>
           <h1 id="greetTitle">Aus Quellen wird <em>planbare Belegung.</em></h1>
+          <div class="lx-rule" aria-hidden="true"></div>
           <div class="g-date" id="greetDate"></div>
         </div>
-        <div class="au-arch" aria-hidden="true"><img src="assets/kb-suite.webp" alt="" loading="eager"><span>KLINIK BAVARIA · BAD KISSINGEN</span></div>
+        <div class="au-arch" aria-hidden="true"><img src="assets/kb-suite.webp" alt="" loading="eager"><span>KLINIK BAVARIA · BAD KISSINGEN</span><div class="lx-chip lx-chip--in"><b data-sync="cvTotal">5</b> Anfragen heute</div><div class="lx-chip lx-chip--stock" data-sync-wrap="cvStockWrap"><b data-sync="cvStock">1</b> stockt</div></div>
       </div>
 <div class="cv">
 
