@@ -2181,6 +2181,60 @@ body{accent-color:var(--brass)}
    transform) und bewahrt die vertikale Zentrierung translateY(-50%). */
 .ns-m{transition:transform .28s cubic-bezier(.22,.61,.36,1)}
 .au-arch{transform:translate(var(--pxl,0),calc(-50% + var(--pyl,0)))}
+
+/* ============================================================
+   E3-PARITÄT (Graft-Pass 07/2026) — additive Übernahmen aus
+   design-lab/e3-lichtung.html in die HEUTE-Ansicht. Eigene
+   .lx-* / .ns-* Namespaces, strikt gescopet, keine fremden Regeln.
+   ============================================================ */
+
+/* (G1) Echtzeit-Strip — schmales Vollbreiten-Band unter dem KPI-Band.
+   EINZIGE neue geblurrte Fläche (Budget 13→14, blur+webkit auf EINER Zeile).
+   RM-safe: die Puls-Basis ist ein voll sichtbarer Punkt, nur der Ring pulsiert. */
+.lx-live{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 18px;
+  background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--glass-border);border-radius:999px;font-size:13px;color:var(--ink-soft);
+  box-shadow:var(--shadow-soft)}
+.lx-live b{font-weight:600;color:var(--ink)}
+.lx-live b span{font-family:"Fraunces",Georgia,serif;color:var(--brass-deep)}
+.lx-pulse{position:relative;width:8px;height:8px;flex:none;border-radius:50%;background:var(--sage)}
+.lx-pulse::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--sage);animation:lxPulse 2.2s ease-out infinite}
+@keyframes lxPulse{from{transform:scale(1);opacity:.55}to{transform:scale(3.4);opacity:0}}
+.lx-rt{margin-left:auto;font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;
+  letter-spacing:.16em;color:var(--muted);white-space:nowrap}
+
+/* (G2) KPI-Ringe im Nordstern-Band — bestehender kpiRing-Helper, rechts neben dem Wert.
+   ns-m wird zur Flex-Zeile; Text in .ns-mtext, Ring rechts (Label/Sub des Helpers versteckt). */
+#view-heute .ns-m{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+.ns-mtext{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ns-ring{flex:none;line-height:0}
+.ns-ring .ring{min-width:0;gap:0}
+.ns-ring .ring svg{width:44px;height:44px}
+.ns-ring .rl,.ns-ring .rd{display:none}
+
+/* (G3) Foto-Fenster-Reihe zwischen Anlässe- und Belegung-Kapitel.
+   Solide Weiß-Chips als Caption (KEINE Glas-Unschärfe — Budget-Deckel). */
+.lx-fenster{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:4px}
+.lx-fen{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--hair2);
+  box-shadow:var(--shadow-soft);transition:transform .3s cubic-bezier(.22,.61,.36,1),box-shadow .3s}
+.lx-fen img{width:100%;height:200px;object-fit:cover;display:block;filter:saturate(1.06) brightness(1.02)}
+.lx-fen:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.lx-fen figcaption{position:absolute;left:12px;bottom:12px;display:flex;flex-direction:column;gap:1px;
+  padding:8px 13px;border-radius:13px;background:rgba(255,255,255,.85);border:1px solid var(--hair);box-shadow:var(--shadow-soft)}
+.lx-fen-n{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500;font-size:15px;color:var(--ink);line-height:1.1}
+.lx-fen-s{font-family:"Fragment Mono",ui-monospace,monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+@media(max-width:760px){.lx-fenster{grid-template-columns:1fr}}
+
+/* (G5a) Konvergenz-Politur — animierte Gradient-Haarlinie um das Hero-Panel (.greet).
+   Padding-Ring via mask-composite (wie e3 .t-conv::before). RM-safe: Basis = statischer
+   sichtbarer Gradient, die Animation bewegt nur die Position. */
+.greet::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:3;pointer-events:none;
+  background:linear-gradient(120deg,var(--sage-deep),var(--brass),var(--azzurro),var(--terra),var(--sage-deep));
+  background-size:300% 100%;opacity:.5;
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;
+  animation:lxBorderHue 14s linear infinite}
+@keyframes lxBorderHue{from{background-position:0 0}to{background-position:300% 0}}
 </style>
 </head>
 <body>
@@ -2682,6 +2736,12 @@ body{accent-color:var(--brass)}
       <div class="ar-grid" id="anlassList"></div>
     </div>
 
+    <div class="lx-fenster" aria-label="Klinik-Impressionen">
+      <figure class="lx-fen"><img src="assets/kb-suite.webp" alt="Panorama-Suite der Klinik Bavaria" loading="lazy" style="object-position:center 55%"><figcaption><span class="lx-fen-n">Panorama-Suite</span><span class="lx-fen-s">Komfort-Kategorie</span></figcaption></figure>
+      <figure class="lx-fen"><img src="assets/kb-header.jpg" alt="Campus der Klinik in Kurpark-Lage" loading="lazy" style="object-position:center 45%"><figcaption><span class="lx-fen-n">Campus</span><span class="lx-fen-s">Kurpark-Lage</span></figcaption></figure>
+      <figure class="lx-fen"><img src="assets/kb-kueche.webp" alt="Klinikküche mit Blick ins Grüne" loading="lazy" style="object-position:center 50%"><figcaption><span class="lx-fen-n">Kulinarik</span><span class="lx-fen-s">Küche mit Blick ins Grüne</span></figcaption></figure>
+    </div>
+
     <div class="chap" id="belegungChap">
       <div class="kicker"><span class="au-chapnum">03</span>Belegung · 8-Wochen-Forecast</div>
       <h2 class="chap-h2">Komfort- &amp; Privatbelegung</h2>
@@ -2712,22 +2772,32 @@ body{accent-color:var(--brass)}
       <div class="ns-betten">31 von 40 Privatbetten belegt · Ziel 90&nbsp;%+</div>
       <div class="ns-row">
         <div class="ns-m">
-          <span class="ns-l">Vorlauf</span>
-          <span class="ns-v num"><b id="nsVorlauf">9</b> <span>Tage</span></span>
-          <span class="ns-t">Ziel 21 Tage</span>
-          <span id="plusTagH"></span>
+          <div class="ns-mtext">
+            <span class="ns-l">Vorlauf</span>
+            <span class="ns-v num"><b id="nsVorlauf">9</b> <span>Tage</span></span>
+            <span class="ns-t">Ziel 21 Tage</span>
+            <span id="plusTagH"></span>
+          </div>
+          <span class="ns-ring" id="nsRingVorlauf"></span>
         </div>
         <div class="ns-m">
-          <span class="ns-l">Ø Erstreaktion</span>
-          <span class="ns-v num" id="nsRz"></span>
-          <span class="ns-t">Ziel unter 24 Std.</span>
+          <div class="ns-mtext">
+            <span class="ns-l">Ø Erstreaktion</span>
+            <span class="ns-v num" id="nsRz"></span>
+            <span class="ns-t">Ziel unter 24 Std.</span>
+          </div>
+          <span class="ns-ring" id="nsRingRz"></span>
         </div>
         <div class="ns-m">
-          <span class="ns-l">Conversion</span>
-          <span class="ns-v num" id="nsConv"></span>
-          <span class="ns-t" id="nsConvSub"></span>
+          <div class="ns-mtext">
+            <span class="ns-l">Conversion</span>
+            <span class="ns-v num" id="nsConv"></span>
+            <span class="ns-t" id="nsConvSub"></span>
+          </div>
+          <span class="ns-ring" id="nsRingConv"></span>
         </div>
       </div>
+      <div class="lx-live" aria-live="polite"><i class="lx-pulse"></i><b><span data-sync="cvTotal">–</span> Anfragen heute</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.<span class="lx-rt">ECHTZEIT</span></div>
     </div>
 
     <div class="chap">
@@ -3802,7 +3872,7 @@ function arCard(a,i){
  const due=a.typ==="zuweiser"?(a.urg==="jetzt"?"überfällig":"fällig"):"in "+a.tage+" Tagen";
  const dueCls=(a.typ==="zuweiser"&&a.urg==="jetzt")?"jetzt":"bald";
  const gLbl=a.typ==="zuweiser"?"Nächste Aktion":"Empfohlene Geste";
- const strip=(i===0&&AR_FOTO[a.typ])?"<figure class='au-photo au-photo--"+AR_FOTO[a.typ][1]+"'><img src='assets/"+AR_FOTO[a.typ][0]+"' alt='' loading='lazy'></figure>":"";
+ const strip=(AR_FOTO[a.typ])?"<figure class='au-photo au-photo--"+AR_FOTO[a.typ][1]+"'><img src='assets/"+AR_FOTO[a.typ][0]+"' alt='' loading='lazy'></figure>":"";
  return "<div class='radar-card ar-rc' style='--acol:var(--brass)'>"
   +strip
   +"<div class='patient-top'><span class='ava'>"+initialen(perName)+"</span><span class='radar-due "+dueCls+"'>"+due+"</span></div>"
@@ -3821,7 +3891,7 @@ function renderAnlaesse(){
  const sum=document.getElementById("anlassSum");
  if(sum)sum.textContent=[nG?nG+(nG===1?" Geburtstag":" Geburtstage"):null,nJ?nJ+(nJ===1?" Jubiläum":" Jubiläen"):null,nW?nW+"× Wiederbedarf":null,nZ?nZ+(nZ===1?" Zuweiser wartet":" Zuweiser warten"):null].filter(Boolean).join(" · ")||"Keine offenen Anlässe";
  el.innerHTML=list.slice(0,3).map(arCard).join("")||"<p class='empty'>Alles gepflegt — keine offenen Anlässe.</p>";
- /* arCard erhält von .map(cb,i) automatisch den Index → Foto-Strip nur auf der ersten/dominanten Karte */
+ /* Foto-Strip auf JEDER Karte mit AR_FOTO-Eintrag (geburtstag/wiederbedarf/zuweiser) */
 }
 /* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
 const FC_BETTEN=7; // Komfort-Kontingent (Privat-/Selbstzahler + Komfort-Aufzahler)
@@ -4232,6 +4302,11 @@ function renderHeute(){
   html("nsRz","<b>"+k.rzAvg+"</b> <span>Std.</span>");
   html("nsConv","<b>"+k.conv+"</b> <span>%</span>");
   set("nsConvSub",k.auf+" aufgenommen · "+k.verl+" verloren");
+  // KPI-Ringe (E3-Parität): reale Verhältnisse — Vorlauf/Ziel 21 Tage · Ø Erstreaktion/Ziel 24 Std · Conversion/100
+  const nsRing=(id,val,max,hue)=>{const el=document.getElementById(id);if(el)el.innerHTML=kpiRing(val,max,"","",hue);};
+  nsRing("nsRingVorlauf",horizont,21,"sage");
+  nsRing("nsRingRz",k.rzAvg,24,"azzurro");
+  nsRing("nsRingConv",k.conv,100,"terra");
   // Heute wichtig
   renderWichtig(k);
   // Quellen
