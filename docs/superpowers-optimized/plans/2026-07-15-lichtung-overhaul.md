@@ -126,17 +126,17 @@
 
 **Files:** Modify: `index.html` (`#view-heute` Greeting/Hero-Bereich, `.au-arch`-Slot, neuer `.lx-hero*`-CSS-Block)
 
-- [ ] **Step 1: Begrüßungszeile + H1** — bestehende `.greet`-Struktur: Eyebrow-Zeile (Hairline + „Guten Morgen, **Sabine** — N neue Anfragen warten." aus bestehender Logik), H1 in Fraunces mit *Italic*-Gradient-Moment auf „planbare" (bestehender `em`-Mechanismus, Farbe `var(--sage-deep)`, der --aurora-grad-Text-Effekt bleibt @supports-gated auf hellem Verlauf). Darunter vergoldete Doppel-Regel mit Schimmer:
+- [x] **Step 1: Begrüßungszeile + H1** — bestehende `.greet`-Struktur: Eyebrow-Zeile (Hairline + „Guten Morgen, **Sabine** — N neue Anfragen warten." aus bestehender Logik), H1 in Fraunces mit *Italic*-Gradient-Moment auf „planbare" (bestehender `em`-Mechanismus, Farbe `var(--sage-deep)`, der --aurora-grad-Text-Effekt bleibt @supports-gated auf hellem Verlauf). Darunter vergoldete Doppel-Regel mit Schimmer:
 
 ```css
 .lx-rule{height:3px;border-top:1px solid var(--brass-line);border-bottom:1px solid var(--brass-line);width:min(300px,40%);position:relative;overflow:hidden;margin:18px 0 22px}
 .lx-rule::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(201,164,92,.75),transparent);transform:translateX(-110%);animation:lxSweep 7s ease-in-out infinite}
 @keyframes lxSweep{0%,55%{transform:translateX(-110%)}75%{transform:translateX(110%)}100%{transform:translateX(110%)}}
 ```
-- [ ] **Step 2: Foto-Fläche** — `.au-arch`-Slot (kb-header.jpg, das Luftbild) vergrößern/re-graden: heller warmer Grade statt Duotone (`filter:saturate(1.08) brightness(1.03)` + Soft-Light-Overlay statt dunkler Gradient); Ken-Burns behalten; 2 driftende Soft-Light-Lichtflecken + Sonnen-Glare-Band (~14s) als absolute Kinder (transform-only, vorgeweichte Gradients).
-- [ ] **Step 3: 2 Glas-Chips** auf der Foto-Fläche, Werte an bestehende Sync-Mechanik: Chip 1 „<span data-sync="cvGesamt">41</span> Anfragen heute" (exakte data-sync-ID aus dem Code übernehmen, `grep -o 'id="cv[A-Za-z]*"' index.html | sort -u`), Chip 2 Belegung aus `renderBelegung`-Daten falls ohne Umbau verfügbar — sonst statischer Demo-Wert MIT Kommentar. CSS: `background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:999px` + Float-Idle (translateY ±3px, 7s).
-- [ ] **Step 4: Verifikation** — `set()`-Sync intakt (Werte in Chips ändern sich nach `simulateInbound`), Ken-Burns läuft, RM: alles sofort sichtbar. V1.
-- [ ] **Step 5: Commit** `feat(lichtung): Heute-Hero — Editorial-H1, Gold-Regel, Foto-Fläche m. Glas-Chips`
+- [x] **Step 2: Foto-Fläche** — `.au-arch`-Slot (kb-header.jpg, das Luftbild) vergrößern/re-graden: heller warmer Grade statt Duotone (`filter:saturate(1.08) brightness(1.03)` + Soft-Light-Overlay statt dunkler Gradient); Ken-Burns behalten; 2 driftende Soft-Light-Lichtflecken + Sonnen-Glare-Band (~14s) als absolute Kinder (transform-only, vorgeweichte Gradients).
+- [x] **Step 3: 2 Glas-Chips** auf der Foto-Fläche, Werte an bestehende Sync-Mechanik: Chip 1 „<span data-sync="cvGesamt">41</span> Anfragen heute" (exakte data-sync-ID aus dem Code übernehmen, `grep -o 'id="cv[A-Za-z]*"' index.html | sort -u`), Chip 2 Belegung aus `renderBelegung`-Daten falls ohne Umbau verfügbar — sonst statischer Demo-Wert MIT Kommentar. CSS: `background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:999px` + Float-Idle (translateY ±3px, 7s).
+- [x] **Step 4: Verifikation** — `set()`-Sync intakt (Werte in Chips ändern sich nach `simulateInbound`), Ken-Burns läuft, RM: alles sofort sichtbar. V1.
+- [x] **Step 5: Commit** `feat(lichtung): Heute-Hero — Editorial-H1, Gold-Regel, Foto-Fläche m. Glas-Chips`
 
 ### Task 6: Funnel-Re-Skin hell (alle 4 Instanzen)
 
@@ -144,39 +144,39 @@
 
 **Does NOT cover:** Änderungen an Pfad-Geometrie, offset-path-Werten, Keyframes, Delays, `set()`/`data-sync` — alles Contract.
 
-- [ ] **Step 1: Vorher-Gates erfassen:** `grep -c 'offset-path' index.html` (=24), `grep -c 'cv-travel' index.html`, `grep -c 'data-sync' index.html` — Werte notieren.
-- [ ] **Step 2: Farb-Mapping anwenden** (NUR Farb-/Filter-Attribute bzw. CSS): Kanal-Strokes E-Mail `var(--sage-deep)` · Telefon `var(--sage)` · Fax `var(--brass)` · Website `var(--azzurro)` · Zuweiser `var(--terra)` · Portale `var(--slate)`; wandernde Punkte je Kanalfarbe (fill), drop-shadow hell weich; Chips (`.cv-chip-bg`) `fill:#FFFFFF;stroke:rgba(27,27,22,.10)`; Label-Text `var(--ink)`/`var(--muted)`; Fokal-Kreis „EIN EINGANG" `fill:var(--sage-deep)`, Zahl weiß; „Fall"-Pill Ocker-Rand; Stepper Mono `var(--muted)`, aktiv `var(--ink)`; „2 stockt" `var(--terra)`. Alle 4 Blöcke synchron (Heute breit/schmal, Team breit/schmal).
-- [ ] **Step 3: Trichter darunter:** Bänder helle Flächen (`--sage-soft`/`--brass-soft`-Stufen), Fills Moos→Ocker-Verlauf, Zahlen `var(--ink)`, „→ Belegung"-Beschriftung Mono.
-- [ ] **Step 4: Gates nachmessen** — alle 3 grep-Werte identisch zu Step 1; Punkte wandern (4 Instanzen visuell/DOM); `cv-pulse`-Ring (Basis opacity:0 als korrekter RM-Endzustand) unangetastet.
-- [ ] **Step 5: Commit** `feat(lichtung): Funnel-Re-Skin hell — per-Kanal-Hues, Contract byte-identisch`
+- [x] **Step 1: Vorher-Gates erfassen:** `grep -c 'offset-path' index.html` (=24), `grep -c 'cv-travel' index.html`, `grep -c 'data-sync' index.html` — Werte notieren.
+- [x] **Step 2: Farb-Mapping anwenden** (NUR Farb-/Filter-Attribute bzw. CSS): Kanal-Strokes E-Mail `var(--sage-deep)` · Telefon `var(--sage)` · Fax `var(--brass)` · Website `var(--azzurro)` · Zuweiser `var(--terra)` · Portale `var(--slate)`; wandernde Punkte je Kanalfarbe (fill), drop-shadow hell weich; Chips (`.cv-chip-bg`) `fill:#FFFFFF;stroke:rgba(27,27,22,.10)`; Label-Text `var(--ink)`/`var(--muted)`; Fokal-Kreis „EIN EINGANG" `fill:var(--sage-deep)`, Zahl weiß; „Fall"-Pill Ocker-Rand; Stepper Mono `var(--muted)`, aktiv `var(--ink)`; „2 stockt" `var(--terra)`. Alle 4 Blöcke synchron (Heute breit/schmal, Team breit/schmal).
+- [x] **Step 3: Trichter darunter:** Bänder helle Flächen (`--sage-soft`/`--brass-soft`-Stufen), Fills Moos→Ocker-Verlauf, Zahlen `var(--ink)`, „→ Belegung"-Beschriftung Mono.
+- [x] **Step 4: Gates nachmessen** — alle 3 grep-Werte identisch zu Step 1; Punkte wandern (4 Instanzen visuell/DOM); `cv-pulse`-Ring (Basis opacity:0 als korrekter RM-Endzustand) unangetastet.
+- [x] **Step 5: Commit** `feat(lichtung): Funnel-Re-Skin hell — per-Kanal-Hues, Contract byte-identisch`
 
 ### Task 7: KPI-Kacheln — Hue-Kopflinien + Ring-Gauges + Count-up-Glint
 
 **Files:** Modify: `index.html` (`kennzahlen()`-Rendering/KPI-CSS, `kpiRing()`-Helper, globales SVG-defs)
 
-- [ ] **Step 1: Hue-Zuordnung** der 4 Heute-KPIs: 1→`--sage-deep`, 2→`--azzurro`, 3→`--terra`, 4→`--brass`. Kopflinie: `.kpi{border-top:3px solid var(--kpi-hue)}` via Inline-Style oder nth-Regel (implementierungsnah entscheiden, KEINE Render-Signatur ändern).
-- [ ] **Step 2: `kpiRing()`** — Stroke von `url(#auroraRingGrad)` auf `currentColor` umstellen und Aufrufern die Hue via `color:` mitgeben; ODER 4 Hue-Gradients in den globalen defs ergänzen und per Parameter wählen — die Variante wählen, die KEINE Signatur-Änderung braucht (zusätzlicher optionaler Parameter ist ok, alle bestehenden Aufrufer bleiben gültig). Ring-Wert-Text `var(--ink)`.
-- [ ] **Step 3: Count-up-Glint** — bestehendes `rpCount` bleibt; nach Settle einmalig Klasse `lx-glint` (background-clip-Shine, 900ms, `animationend` entfernt Klasse; bei RM nie hinzufügen — `matchMedia`-Guard).
-- [ ] **Step 4: Echtzeit-Strip** — falls Heute bereits eine Live-/Auto-Zuteilungs-Zeile hat (`grep -n 'Auto-Zuteilung\|simulateInbound' index.html`), als frosted Strip stylen (`var(--glass)`+blur, Puls-Punkt `var(--sage)`); WENN nicht vorhanden: NICHT neu erfinden (Nicht-Ziel: keine neuen Features) — stattdessen überspringen und im Report vermerken.
-- [ ] **Step 5: Verifikation** — Ringe zeichnen in 4 Hues, Count-up + Glint einmalig, RM: Endwerte sofort. V1.
-- [ ] **Step 6: Commit** `feat(lichtung): KPI-Kacheln — Hue-Ringe, Count-up-Glint, Echtzeit-Strip`
+- [x] **Step 1: Hue-Zuordnung** der 4 Heute-KPIs: 1→`--sage-deep`, 2→`--azzurro`, 3→`--terra`, 4→`--brass`. Kopflinie: `.kpi{border-top:3px solid var(--kpi-hue)}` via Inline-Style oder nth-Regel (implementierungsnah entscheiden, KEINE Render-Signatur ändern).
+- [x] **Step 2: `kpiRing()`** — Stroke von `url(#auroraRingGrad)` auf `currentColor` umstellen und Aufrufern die Hue via `color:` mitgeben; ODER 4 Hue-Gradients in den globalen defs ergänzen und per Parameter wählen — die Variante wählen, die KEINE Signatur-Änderung braucht (zusätzlicher optionaler Parameter ist ok, alle bestehenden Aufrufer bleiben gültig). Ring-Wert-Text `var(--ink)`.
+- [x] **Step 3: Count-up-Glint** — bestehendes `rpCount` bleibt; nach Settle einmalig Klasse `lx-glint` (background-clip-Shine, 900ms, `animationend` entfernt Klasse; bei RM nie hinzufügen — `matchMedia`-Guard).
+- [x] **Step 4: Echtzeit-Strip** — falls Heute bereits eine Live-/Auto-Zuteilungs-Zeile hat (`grep -n 'Auto-Zuteilung\|simulateInbound' index.html`), als frosted Strip stylen (`var(--glass)`+blur, Puls-Punkt `var(--sage)`); WENN nicht vorhanden: NICHT neu erfinden (Nicht-Ziel: keine neuen Features) — stattdessen überspringen und im Report vermerken.
+- [x] **Step 5: Verifikation** — Ringe zeichnen in 4 Hues, Count-up + Glint einmalig, RM: Endwerte sofort. V1.
+- [x] **Step 6: Commit** `feat(lichtung): KPI-Kacheln — Hue-Ringe, Count-up-Glint, Echtzeit-Strip`
 
 ### Task 8: Heute-Kapitel als Bento — Anlass-Bögen + Forecast-Stängel
 
 **Files:** Modify: `index.html` (`#anlassChap`/`#belegungChap`/Eingang-Kapitel CSS, `arCard`/`AR_FOTO`-Grade, `.fc-bar`-Regeln)
 
-- [ ] **Step 1: Kapitel-Kacheln** — die Kapitel-Container erhalten Kachel-Optik (Task-3-Regeln greifen ggf. schon; sonst Klasse ergänzen) + Ghost-Nummern: bestehende Mono-Kapitelnummern (01/02/03) zusätzlich als große ghosted Fraunces-Ziffer in der Kachel-Ecke (`position:absolute;font-size:96px;opacity:.06`).
-- [ ] **Step 2: Anlass-Karten** — `AR_FOTO`-Strips: Bogen-Maske `border-radius:999px 999px 0 0` auf dem Foto-Element, Grade hell-warm (Overlay-Gradient des `.au-photo`-Duotone hier auf `linear-gradient(rgba(250,248,242,.06),rgba(250,248,242,.18))` + saturate-Lift). Nur CSS/AR_FOTO-Werte — `arCard`-Signatur unantastbar.
-- [ ] **Step 3: Forecast-Stängel** — `.fc-bar`: Fill Moos→Ocker-Verlauf, `transform-origin:bottom`; bestehender Scroll-Reveal (`animation-timeline: view()` @supports-gated) bleibt Mechanik, Keyframe wird scaleY-Wachstum; Punkt-Kappe: `::after`-Dot in Kanalfarbe, Peak-Woche Ocker; Ziellinie gestrichelt `var(--brass-deep)`.
-- [ ] **Step 4: Eingang-Kapitel** — Mail-Zeilen hell (Zebra `var(--cream2)`), NEU/WARTET-Tags: NEU `var(--sage-soft)`+`var(--sage-deep)`-Text, WARTET `var(--terra-soft)`+`var(--terra)`-Text.
-- [ ] **Step 5: Verifikation** — Anlässe rendern m. Bogen-Fotos (3 Typen: geburtstag/wiederbedarf/zuweiser), fc-Balken wachsen bei Scroll, RM: volle Höhe sofort. V1, @390.
-- [ ] **Step 6: Commit** `feat(lichtung): Heute-Kapitel als Bento — Bogen-Anlässe, Forecast-Stängel`
+- [x] **Step 1: Kapitel-Kacheln** — die Kapitel-Container erhalten Kachel-Optik (Task-3-Regeln greifen ggf. schon; sonst Klasse ergänzen) + Ghost-Nummern: bestehende Mono-Kapitelnummern (01/02/03) zusätzlich als große ghosted Fraunces-Ziffer in der Kachel-Ecke (`position:absolute;font-size:96px;opacity:.06`).
+- [x] **Step 2: Anlass-Karten** — `AR_FOTO`-Strips: Bogen-Maske `border-radius:999px 999px 0 0` auf dem Foto-Element, Grade hell-warm (Overlay-Gradient des `.au-photo`-Duotone hier auf `linear-gradient(rgba(250,248,242,.06),rgba(250,248,242,.18))` + saturate-Lift). Nur CSS/AR_FOTO-Werte — `arCard`-Signatur unantastbar.
+- [x] **Step 3: Forecast-Stängel** — `.fc-bar`: Fill Moos→Ocker-Verlauf, `transform-origin:bottom`; bestehender Scroll-Reveal (`animation-timeline: view()` @supports-gated) bleibt Mechanik, Keyframe wird scaleY-Wachstum; Punkt-Kappe: `::after`-Dot in Kanalfarbe, Peak-Woche Ocker; Ziellinie gestrichelt `var(--brass-deep)`.
+- [x] **Step 4: Eingang-Kapitel** — Mail-Zeilen hell (Zebra `var(--cream2)`), NEU/WARTET-Tags: NEU `var(--sage-soft)`+`var(--sage-deep)`-Text, WARTET `var(--terra-soft)`+`var(--terra)`-Text.
+- [x] **Step 5: Verifikation** — Anlässe rendern m. Bogen-Fotos (3 Typen: geburtstag/wiederbedarf/zuweiser), fc-Balken wachsen bei Scroll, RM: volle Höhe sofort. V1, @390.
+- [x] **Step 6: Commit** `feat(lichtung): Heute-Kapitel als Bento — Bogen-Anlässe, Forecast-Stängel`
 
 ### Task 9: Tilt-Utility + Hero-Parallax
 
 **Files:** Modify: `index.html` (neuer kleiner `<script>`-Abschnitt am Ende des Haupt-Scripts + `.lx-tilt`-CSS)
 
-- [ ] **Step 1: Tilt-JS** (einmalig, delegiert):
+- [x] **Step 1: Tilt-JS** (einmalig, delegiert):
 
 ```js
 /* LICHTUNG · TILT */
@@ -196,9 +196,9 @@
 })();
 ```
   Selektor-Liste beim Implementieren gegen echte Klassen prüfen; KEINE Listen-Zeilen (.mrow,.db-c), KEINE Buttons. CSS: `transition:transform .25s var? ease;` auf den Ziel-Klassen + optionaler Sheen (`background:radial-gradient(circle at var(--shx,50%) var(--shy,50%),rgba(255,255,255,.35),transparent 55%)` auf einem ::after mit opacity nur bei :hover).
-- [ ] **Step 2: Hero-Parallax** — pointermove auf dem Hero-Container: Foto-Layer `translate(±12px)` invers zu Chips `translate(±20px)`, via CSS-Vars, gleiche rm/fine-Guards, `{passive:true}`.
-- [ ] **Step 3: Verifikation** — Tilt nur auf Kacheln, Klick-Funktionen (openDetail via Karten? — prüfen: Karten mit onclick behalten Klickbarkeit trotz transform), RM+Touch: kein Effekt. V1.
-- [ ] **Step 4: Commit** `feat(lichtung): Tilt-Utility (3.5°, hover+fine) + Hero-Parallax`
+- [x] **Step 2: Hero-Parallax** — pointermove auf dem Hero-Container: Foto-Layer `translate(±12px)` invers zu Chips `translate(±20px)`, via CSS-Vars, gleiche rm/fine-Guards, `{passive:true}`.
+- [x] **Step 3: Verifikation** — Tilt nur auf Kacheln, Klick-Funktionen (openDetail via Karten? — prüfen: Karten mit onclick behalten Klickbarkeit trotz transform), RM+Touch: kein Effekt. V1.
+- [x] **Step 4: Commit** `feat(lichtung): Tilt-Utility (3.5°, hover+fine) + Hero-Parallax`
 
 **STUFEN-GATE 2:** V1–V6 komplett (V4-Schwerpunkt!) → pull → ff-merge → push main → Pages-Check.
 
