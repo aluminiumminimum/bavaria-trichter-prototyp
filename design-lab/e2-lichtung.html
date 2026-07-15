@@ -573,53 +573,52 @@ img{display:block;max-width:100%}
   position:fixed;left:0;top:0;bottom:0;width:236px;z-index:70;
   display:none;flex-direction:column;
   padding:26px 16px 20px;
-  background:linear-gradient(180deg,#254631 0%,#21402D 44%,#1B3626 100%);
-  color:#F5F2E8;
-  border-right:1px solid rgba(201,164,92,.16);
+  background:#F4F1E8;
+  color:var(--ink);
+  border-right:1px solid rgba(27,27,22,.10);
   animation:sideIn .7s var(--ease) both;
 }
 @keyframes sideIn{from{opacity:0;transform:translateX(-16px)}}
 .side-brand{display:flex;align-items:center;gap:11px;padding:2px 8px 0}
 .side-mark{
   width:34px;height:34px;flex:none;border-radius:50%;
-  background:rgba(245,242,232,.08);border:1px solid rgba(201,164,92,.3);
+  background:#FFFFFF;border:1px solid rgba(27,27,22,.14);
   display:grid;place-items:center;
 }
-.side-mark img{width:19px;height:19px;filter:brightness(0) invert(1);opacity:.95}
+.side-mark img{width:19px;height:19px;filter:brightness(0);opacity:.82}
 .side-brand-tx{display:flex;flex-direction:column;min-width:0;line-height:1.12}
-.side-brand-tx .nm{font-family:'Fraunces',serif;font-weight:500;font-size:16px;letter-spacing:.01em;color:#F5F2E8}
+.side-brand-tx .nm{font-family:'Fraunces',serif;font-weight:500;font-size:16px;letter-spacing:.01em;color:var(--ink)}
 .side-brand-tx .os{
   font-family:'Fraunces',serif;font-size:9.5px;font-weight:500;
-  letter-spacing:.2em;text-transform:uppercase;color:rgba(201,164,92,.85);margin-top:4px;
+  letter-spacing:.2em;text-transform:uppercase;color:#A8854B;margin-top:4px;
 }
 .side-nav{display:flex;flex-direction:column;gap:2px;margin-top:34px}
 .side-nav a{
   position:relative;display:flex;align-items:center;gap:12px;
   padding:10px 12px;border-radius:11px;
-  font-size:13.5px;font-weight:400;color:rgba(245,242,232,.72);
+  font-size:13.5px;font-weight:400;color:#63614F;
   transition:background .14s var(--ease),color .14s var(--ease);
 }
-.side-nav a svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--moss);stroke-width:1.6;opacity:.9;transition:stroke .14s var(--ease),opacity .14s var(--ease)}
-.side-nav a:hover{background:rgba(245,242,232,.07);color:#F5F2E8}
-.side-nav a:hover svg{stroke:#F5F2E8}
-.side-nav a.active{background:rgba(245,242,232,.10);color:#F5F2E8;font-weight:500}
-.side-nav a.active svg{stroke:var(--ochre);opacity:1}
+.side-nav a svg{width:18px;height:18px;flex:none;fill:none;stroke:#8A877A;stroke-width:1.6;opacity:.9;transition:stroke .14s var(--ease),opacity .14s var(--ease)}
+.side-nav a:hover{background:rgba(27,27,22,.045);color:var(--ink)}
+.side-nav a:hover svg{stroke:var(--ink)}
+.side-nav a.active{background:#FFFFFF;color:var(--forest);font-weight:500;box-shadow:0 1px 2px rgba(27,27,22,.06),0 0 0 1px rgba(27,27,22,.05)}
+.side-nav a.active svg{stroke:var(--forest);opacity:1}
 .side-nav a.active::before{
   content:"";position:absolute;left:-16px;top:50%;transform:translateY(-50%);
   width:3px;height:24px;border-radius:0 3px 3px 0;background:var(--ochre);
-  box-shadow:0 0 10px 1px rgba(201,164,92,.55);
 }
 .side-foot{margin-top:auto;padding:0 6px}
-.side-date{font-family:'Fraunces',serif;font-size:10.5px;font-weight:500;letter-spacing:.16em;color:rgba(245,242,232,.5);white-space:nowrap}
-.side-div{height:1px;background:rgba(245,242,232,.12);margin:14px 0}
+.side-date{font-family:'Fraunces',serif;font-size:10.5px;font-weight:500;letter-spacing:.16em;color:#8A877A;white-space:nowrap}
+.side-div{height:1px;background:rgba(27,27,22,.10);margin:14px 0}
 .side-user{display:flex;align-items:center;gap:11px}
 .side-ava{
   width:34px;height:34px;flex:none;border-radius:50%;background:var(--ochre);color:#2A2413;
   display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:500;font-size:13px;
 }
 .side-user-tx{display:flex;flex-direction:column;min-width:0;line-height:1.22}
-.side-user-tx .nm{font-size:13px;font-weight:500;color:#F5F2E8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.side-user-tx .rl{font-size:10.5px;color:rgba(245,242,232,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-user-tx .nm{font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-user-tx .rl{font-size:10.5px;color:#8A877A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* ≥1024px: sidebar replaces the top bar, content shifts right */
 @media(min-width:1024px){
   .nav{display:none}
