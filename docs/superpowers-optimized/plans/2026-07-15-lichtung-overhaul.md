@@ -237,22 +237,22 @@
 ## Stufe 4 · Feinschliff (Tasks 14–16)
 
 ### Task 14: Portal (rp) + Dokument-Viewer + Foto-Grades app-weit
-- [ ] Portal-Suite (`.rp-*`): Hero hell-editorial (Begrüßung Fraunces-Italic `var(--sage-deep)`, Espresso-Hardcodes → Token), Sub-Nav-Tabs hell, Belegungs-Zellen `--sage-soft`-Skala, `rpPrefill`/`rpFlash`-Puls Ocker; `renderSuite`/`rpTab`/`rpPersona` unantastbar. Portal-Bogenfenster-Foto (kb-komfortzimmer) hell re-graden.
-- [ ] `#rpDocView`: Backdrop frosted HELL, Papier unangetastet (Papier-Guard), QR s/w bleibt.
-- [ ] App-weite Foto-Momente (Team-Band kb-haus, Netzwerk kb-header, DB kb-garten, Reha kb-suite, MeinTag kb-komfort-wall, System forest-sun): `.au-photo`-Overlay von Ink-Duotone auf hellen warmen Grade (`linear-gradient(rgba(250,248,242,.05),rgba(250,248,242,.16))` + `filter:saturate(1.06) brightness(1.02)`); System-Tafel bleibt grayscale.
-- [ ] Commit `feat(lichtung): Portal + Dokument-Backdrop + Foto-Grades hell (Stufe 4.1)`
+- [x] Portal-Suite (`.rp-*`): Hero hell-editorial (Begrüßung Fraunces-Italic `var(--sage-deep)`, Espresso-Hardcodes → Token), Sub-Nav-Tabs hell, Belegungs-Zellen `--sage-soft`-Skala, `rpPrefill`/`rpFlash`-Puls Ocker; `renderSuite`/`rpTab`/`rpPersona` unantastbar. Portal-Bogenfenster-Foto (kb-komfortzimmer) hell re-graden.
+- [x] `#rpDocView`: Backdrop frosted HELL, Papier unangetastet (Papier-Guard), QR s/w bleibt.
+- [x] App-weite Foto-Momente (Team-Band kb-haus, Netzwerk kb-header, DB kb-garten, Reha kb-suite, MeinTag kb-komfort-wall, System forest-sun): `.au-photo`-Overlay von Ink-Duotone auf hellen warmen Grade (`linear-gradient(rgba(250,248,242,.05),rgba(250,248,242,.16))` + `filter:saturate(1.06) brightness(1.02)`); System-Tafel bleibt grayscale.
+- [x] Commit `feat(lichtung): Portal + Dokument-Backdrop + Foto-Grades hell (Stufe 4.1)`
 
 ### Task 15: QA-Pass — verifier + Kontrast + Anti-Slop
-- [ ] Fresh-context `verifier`-Subagent gegen Spec §2–§5 + §9 (statisch): Token-Vollständigkeit, Glas-Budget-Zählung, Funnel-Gates, RM-Basis-opacity-Scan, Papier-Guard, Tilt-Guards.
-- [ ] Kontrast-Audit numerisch: alle Text-auf-Flächen-Paare ≥4.5:1 (--muted auf --cream prüfen! ggf. --muted abdunkeln auf #7A7768); Ocker nie als Fließtext.
-- [ ] Anti-Slop-Sichtpass @1440: keine Emoji-Icons neu entstanden, Rhythmus-Variation, kein Karten-Einheitsbrei; Befunde fixen.
-- [ ] Commit `fix(lichtung): QA-Pass — Kontrast/Budget/RM-Befunde`
+- [x] Fresh-context `verifier`-Subagent gegen Spec §2–§5 + §9 (statisch): Token-Vollständigkeit, Glas-Budget-Zählung, Funnel-Gates, RM-Basis-opacity-Scan, Papier-Guard, Tilt-Guards.
+- [x] Kontrast-Audit numerisch: alle Text-auf-Flächen-Paare ≥4.5:1 (--muted auf --cream prüfen! ggf. --muted abdunkeln auf #7A7768); Ocker nie als Fließtext.
+- [x] Anti-Slop-Sichtpass @1440: keine Emoji-Icons neu entstanden, Rhythmus-Variation, kein Karten-Einheitsbrei; Befunde fixen.
+- [x] Commit `fix(lichtung): QA-Pass — Kontrast/Budget/RM-Befunde`
 
 ### Task 16: Doku + Abschluss
-- [ ] CLAUDE.md „Identität wahren"-Absatz: Lichtung-Palette/Regeln ersetzen Aurora (hell #FAF8F2, Kacheln/Schatten-Stack, Glas-Budget, Tilt-Regeln, Referenz `design-lab/e3-lichtung.html`).
-- [ ] HANDOVER.md §3: Token-Spiegel auf v3-Werte (Warnhinweis „Werte HELL seit Lichtung 07/2026").
-- [ ] state.md: Programm-Abschluss; session-log `[saved]`-Eintrag.
-- [ ] Commit `docs(lichtung): CLAUDE.md-Identität + HANDOVER-Token-Spiegel + state`
+- [x] CLAUDE.md „Identität wahren"-Absatz: Lichtung-Palette/Regeln ersetzen Aurora (hell #FAF8F2, Kacheln/Schatten-Stack, Glas-Budget, Tilt-Regeln, Referenz `design-lab/e3-lichtung.html`).
+- [x] HANDOVER.md §3: Token-Spiegel auf v3-Werte (Warnhinweis „Werte HELL seit Lichtung 07/2026").
+- [x] state.md: Programm-Abschluss; session-log `[saved]`-Eintrag.
+- [x] Commit `docs(lichtung): CLAUDE.md-Identität + HANDOVER-Token-Spiegel + state`
 
 **STUFEN-GATE 4 (Abnahme):** V1–V6 komplett + Live-URL-Sichtprüfung @1440 + QR-Hinweis an User.
 
