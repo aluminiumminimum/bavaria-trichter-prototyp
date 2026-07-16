@@ -472,8 +472,8 @@
   .tier-filter button{font:600 12px/1 Inter;padding:8px 12px;border-radius:99px;border:1px solid var(--hair);background:var(--paper2);color:var(--ink);min-height:36px}
   .tier-filter button.on{background:var(--brass-soft);color:var(--brass-deep);border-color:var(--brass)}
   .tier-group{margin-bottom:6px}
-  .tier-group>h4{font:600 12px/1.3 Inter;color:#9B8573;letter-spacing:.04em;margin:16px 0 8px;text-transform:uppercase}
-  .tier-group>h4 span{display:block;text-transform:none;letter-spacing:0;font-weight:400;color:#b1a89f;font-size:11.5px;margin-top:2px}
+  .tier-group>h4{font:600 12px/1.3 Inter;color:var(--muted);letter-spacing:.04em;margin:16px 0 8px;text-transform:uppercase}
+  .tier-group>h4 span{display:block;text-transform:none;letter-spacing:0;font-weight:400;color:var(--faint);font-size:11.5px;margin-top:2px}
   .stufe-badge{font:700 11px/1 Inter;padding:3px 7px;border-radius:99px;margin-left:auto}
   .stufe-badge.s5{background:#e7f0e7;color:#5d7f60}.stufe-badge.s4{background:#eaf0e9;color:#6f8f72}.stufe-badge.s3{background:#f6ecd9;color:#b58a3e}.stufe-badge.s2{background:#efedea;color:#8a837d}.stufe-badge.s1{background:#f3eeea;color:#a08f7e}
   .tr-auto{font:400 12px/1.3 Inter;color:#6f8f72;margin:6px 0 0}
@@ -690,8 +690,8 @@
 .mp-row:last-child{border-bottom:none}.mp-row b{font:600 14px/1.2 Inter}.mp-row small{display:block;font:400 12px/1.3 Inter;color:var(--muted);margin-top:1px}
 .mp-link{background:var(--brass-soft);color:var(--ink);border:none;border-radius:99px;padding:8px 12px;font:600 12px/1 Inter;min-height:36px;white-space:nowrap}
 /* --- iter2 gaps: age-aware automation + portal cooperation --- */
-.db-auto{font:400 11px/1.3 Inter;color:#6f8f72;margin:6px 0 2px}
-.db-auto.blocked{color:#a8543f}
+.db-auto{font:400 11px/1.3 Inter;color:var(--sage);margin:6px 0 2px}
+.db-auto.blocked{color:var(--terra)}
   /* ===== Datenbank · Grading (ruhig, Apple-clean) ===== */
   .db-intro{font:400 14.5px/1.55 Inter;color:var(--ink-soft);max-width:54ch;margin:0 0 18px}
   .db-foot{font:400 12px/1.4 Inter;color:var(--faint);margin:18px 2px 0}
@@ -839,7 +839,7 @@
   .db-insp{display:flex;flex-direction:column;gap:14px}
   .di-auto{background:var(--brass-soft);border:1px solid var(--brass-line);border-radius:12px;padding:12px 14px;
     font-size:14px;font-weight:500;color:var(--brass-deep);line-height:1.4}
-  .di-auto.blocked{background:#eeeae0;border-color:#ddd6ca;color:#8a8076}
+  .di-auto.blocked{background:var(--cream2);border-color:var(--hair);color:var(--muted)}
   .di-rows{display:flex;flex-direction:column}
   .di-row{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-top:1px solid var(--hair2);font-size:14px}
   .di-row:first-child{border-top:0}
@@ -935,7 +935,7 @@ label{font-size:12px;letter-spacing:.08em}
 .hairline{border-top-color:var(--brass-line);opacity:.8}
 .patient-card,.zcard{position:relative}
 .patient-card::after,.zcard::after{content:"";position:absolute;top:0;left:20px;right:20px;height:2px;
-  border-radius:0 0 3px 3px;background:linear-gradient(90deg,transparent,#cdb083 30%,#cdb083 70%,transparent);
+  border-radius:0 0 3px 3px;background:linear-gradient(90deg,transparent,var(--brass-line) 30%,var(--brass-line) 70%,transparent);
   opacity:.45;pointer-events:none}
 .db-lead{border:1px solid var(--brass-line)}
 .card{box-shadow:0 1px 2px rgba(40,35,30,.05),0 12px 30px rgba(40,35,30,.06)}
@@ -1190,7 +1190,7 @@ label{font-size:12px;letter-spacing:.08em}
   .radar-head{display:flex;gap:10px;margin:0 0 14px}
   .radar-kpi{flex:1;background:var(--paper2);border:1px solid var(--hair);border-radius:13px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi);padding:11px 15px;position:relative;overflow:hidden}
   .radar-kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
-  .radar-kpi.jetzt::before{background:var(--terra)}.radar-kpi.bald::before{background:#b58a3e}.radar-kpi.beob::before{background:var(--sage)}
+  .radar-kpi.jetzt::before{background:var(--terra)}.radar-kpi.bald::before{background:var(--brass)}.radar-kpi.beob::before{background:var(--sage)}
   .radar-kpi .rk-n{font:700 23px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
   .radar-kpi.jetzt .rk-n{color:var(--terra)}.radar-kpi.bald .rk-n{color:var(--brass-deep)}.radar-kpi.beob .rk-n{color:var(--sage-deep)}
   .radar-kpi .rk-l{font:600 11px/1.1 Inter;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:3px}
@@ -2596,6 +2596,156 @@ body{accent-color:var(--brass)}
   backdrop-filter:none;-webkit-backdrop-filter:none;
   font-family:"Cormorant Garamond",Georgia,serif;font-size:10px;font-weight:600;
   letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+
+/* ============================================================
+   JADE · J5 MEIN TAG + NETZWERK + DATENBANK (Stufe 3) — e5d-Parität
+   Mein Tag = geführtes Arbeitsblatt (Wachssiegel-CTA) · Netzwerk-Etiketten ·
+   Datenbank als Apotheker-Schrank (5★-Lade = Lack). Additiv (Source-Order),
+   keine neuen Keyframes (Siegel-Druck = Transition), kein neues Blur
+   (mt-panel/kp-panel werden SOLIDE Elfenbein-Blätter — Blur-Budget −2).
+   ============================================================ */
+
+/* — (J5.1) MEIN TAG · Kopf: Gruß in Tinte, Jade-Kursiv-Akzent (Gradient-Text abgelöst);
+   Fortschritt = Gold auf Gold-Soft (Basis) + Cormorant-Numeral etwas größer. — */
+#view-meintag .mt-greet{background:none;-webkit-background-clip:border-box;background-clip:border-box;
+  color:var(--ink);font-weight:600;letter-spacing:-.02em}
+#view-meintag .mt-greet em{font-style:italic;color:var(--sage-deep)}
+#view-meintag .mt-prognum{font-size:22px;font-weight:600;color:var(--brass-deep)}
+/* Termin-Strip + Kapitel = Etiketten (paper · Jade-Linie · Gold-Doppelring · Eckwinkel) */
+.mt-termine{background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+.mt-termine .rk{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;
+  letter-spacing:.12em;color:var(--brass-deep)}
+#view-meintag .chap{position:relative;background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;
+  padding:20px;box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow)}
+#view-meintag .chap::before,#view-meintag .chap::after{
+  content:"";position:absolute;width:9px;height:9px;pointer-events:none;z-index:2;opacity:.6}
+#view-meintag .chap::before{top:10px;left:10px;border-top:1px solid var(--brass);border-left:1px solid var(--brass)}
+#view-meintag .chap::after{bottom:10px;right:10px;border-bottom:1px solid var(--brass);border-right:1px solid var(--brass)}
+/* Block-Kicker: Cormorant-Kapitälchen mit Gold-Strich (schlägt auch den Petrol-Override) */
+#view-meintag .chap .kicker{color:var(--brass-deep);letter-spacing:.2em}
+#view-meintag .chap .kicker::before{content:"";display:inline-block;width:18px;height:1px;
+  background:var(--brass);vertical-align:middle;margin-right:9px}
+/* Rollen-Menü: Elfenbein-Platte, Jade-Haarlinie, Gold-Hover (Basis) */
+.mt-rollmenu{background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;
+  box-shadow:var(--shadow),inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint)}
+.mt-rollitem{border-radius:3px}
+
+/* — (J5.2) MEIN TAG · Arbeitsblatt (mt-panel): SOLIDES Elfenbein-Blatt statt Glas
+   (Blur-Budget −1), Jade-Haarlinien-Rahmen + innerer Gold-Pinstripe (Etikett im Blattmaß). — */
+.mt-panel{background:var(--paper);backdrop-filter:none;-webkit-backdrop-filter:none;
+  border-left:1px solid var(--jade-line);
+  box-shadow:-18px 0 50px rgba(18,59,51,.22),inset 0 0 0 1px var(--gold-faint)}
+.mt-shead{box-shadow:inset 0 -1px 0 var(--gold-soft);border-bottom:0;padding-bottom:17px}
+.mt-stitle{color:var(--sage-deep)}
+.mt-ssub{font-family:"Fragment Mono",ui-monospace,monospace;letter-spacing:.12em;color:var(--brass-deep)}
+/* Arbeitskarten-Abschnitte: Papier-Sektionen mit Haarlinien, Kicker Kapitälchen in Gold-Tiefe */
+.mt-panel .mt-sbody .radar-prog{border-top:1px solid var(--hair2);padding-top:13px;margin-top:13px}
+.mt-panel .mt-sbody .radar-prog:first-child{border-top:0;margin-top:0;padding-top:0}
+.mt-panel .mt-sbody .radar-prog .rk{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;
+  letter-spacing:.14em;color:var(--brass-deep)}
+/* Leitfaden: Papier-Einzug mit Jade-Haarlinie; Schritt-Numerale Cormorant-Gold */
+.mt-sleitfaden{background:var(--paper2);border:1px solid var(--hair2);border-left:2px solid var(--jade-hair);
+  border-radius:0 3px 3px 0;padding:12px 14px}
+.mt-ssteps li::marker{font-family:"Cormorant Garamond",Georgia,serif;color:var(--brass);font-weight:600}
+/* WACHSSIEGEL-CTA: Jade-Lack mit Gold-Pinstripe; Druck = schnelle Scale-Transition (kein Keyframe) */
+.mt-sfoot{border-top:0;box-shadow:inset 0 1px 0 var(--gold-soft)}
+.mt-sfoot .btn-brass{border-radius:4px;
+  box-shadow:inset 0 0 0 1px rgba(185,145,73,.4),inset 0 0 0 3px var(--sage-deep),0 2px 8px rgba(18,59,51,.25)}
+.mt-sfoot .btn-brass:active{transform:scale(.96)}
+/* Erledigt-Meldung liest als gesiegelt: Zinnober-Siegelpunkt (DER Zinnober-Moment in Mein Tag) */
+.mt-sdonemsg::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;
+  background:var(--terra);box-shadow:0 0 0 2px var(--terra-soft);margin-right:9px;vertical-align:0}
+
+/* — (J5.3) FOTO-BÄNDER → Präparate-Tafeln (Doppelrahmen, Caption UNTER dem Foto, Sepia-Grade):
+   Mein Tag (Komfort) · Netzwerk-Zuweiser (Luftbild) · Datenbank (Garten-Quadrat). — */
+#view-meintag>.au-photo,#sub-netzwerk-zuweiser>.au-photo,#sub-netzwerk-bestand>.au-photo{
+  height:auto;background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;padding:9px;
+  box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft)}
+#view-meintag>.au-photo img{height:110px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
+#sub-netzwerk-zuweiser>.au-photo img{height:120px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
+#sub-netzwerk-bestand>.au-photo{width:170px}
+#sub-netzwerk-bestand>.au-photo img{height:130px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
+#view-meintag>.au-photo::after,#sub-netzwerk-zuweiser>.au-photo::after,#sub-netzwerk-bestand>.au-photo::after{display:none}
+#view-meintag>.au-photo figcaption,#sub-netzwerk-zuweiser>.au-photo figcaption,#sub-netzwerk-bestand>.au-photo figcaption{
+  position:static;left:auto;bottom:auto;margin:8px 2px 0;padding:0;
+  background:none;border:0;border-radius:0;box-shadow:none;text-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  font-family:"Cormorant Garamond",Georgia,serif;font-size:10px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+
+/* — (J5.4) NETZWERK · Zuweiser-Karten = Etiketten: Creme-Grund, Jade-Haarlinie, Gold-Doppelring;
+   die frühere Gold-Gradient-Oberkante weicht der Etiketten-Sprache. Kontakt-/Ledger-Zeilen
+   in der 4px-Familie, Portal-Geste = goldgerahmter Ghost (nur Farben/Fläche — Markup Cofounder). — */
+.zcard{background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+.zcard::after{display:none}
+.zcard.ziel{border-style:dashed;background:var(--paper)}
+@media(hover:hover){.zcard:hover{box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),var(--shadow)}}
+.zstat{border-radius:2px}
+.zcontact a,.zcontact span{border-radius:3px;background:var(--paper2)}
+.znext{border-radius:3px;background:var(--paper2)}
+.zw-portal{background:transparent;border:1px solid var(--gold-soft);color:var(--brass-deep);border-radius:3px}
+@media(hover:hover){.zw-portal:hover{background:var(--brass-soft)}}
+.zcat{border-radius:4px}
+.kp-cta{background:transparent;border:1px solid var(--gold-soft);color:var(--brass-deep);border-radius:3px;box-shadow:none}
+
+/* — (J5.5) DATENBANK · Der Apotheker-Schrank: Stern-Etagen = Etiketten (J2-Basis),
+   Etagen-Kopf = Elfenbein-Schubladen-Etikett (Cormorant-Kapitälchen · Gold-★ · Cormorant-Zahl);
+   NUR die 5★-Lade trägt einen Jade-Lack-Streifen (oberste Schublade — Hierarchie durch Material,
+   via :has auf den 5. Gold-Stern; ohne :has-Support bleibt sie Elfenbein). — */
+.stg-h{background:var(--paper2);border:1px solid var(--jade-hair);border-radius:3px;
+  border-bottom:1px solid var(--jade-hair);margin:0 0 12px;padding:13px 16px 12px}
+.stg-t{font-size:14px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--sage-deep)}
+.stg-n{font:600 17px/1 "Cormorant Garamond",Georgia,serif;color:var(--brass-deep);background:transparent;padding:0}
+.stg-auto{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;letter-spacing:.06em;border-radius:2px}
+.db-group:has(.stg-row .st-row .st:nth-child(5).on) .stg-h{
+  background:var(--espresso-grad);border-color:var(--sage-deep);
+  box-shadow:inset 0 0 0 1px var(--gold-faint)}
+.db-group:has(.stg-row .st-row .st:nth-child(5).on) .stg-t{color:var(--ivory-tx)}
+.db-group:has(.stg-row .st-row .st:nth-child(5).on) .stg-n{color:var(--brass)}
+.db-group:has(.stg-row .st-row .st:nth-child(5).on) .stg-note{color:var(--ivory-mut)}
+.db-group:has(.stg-row .st-row .st:nth-child(5).on) .stg-auto{background:rgba(255,255,255,.08);color:var(--brass)}
+.db-group:has(.stg-row .st-row .st:nth-child(5).on) .st-row .st{color:var(--gold-soft)}
+.db-group:has(.stg-row .st-row .st:nth-child(5).on) .st-row .st.on{color:var(--brass)}
+/* Kartei-Zeilen: Haarlinien + Zebra-Papier, Initialen als Elfenbein-Plaketten, Kicker in Mono */
+.db-list{border:1px solid var(--hair2);box-shadow:none}
+.db-list .db-c:nth-child(even){background:var(--paper2)}
+.db-list .db-c:hover{background:var(--brass-soft)}
+.db-c .ava{border-radius:3px;background:var(--paper);color:var(--sage-deep);
+  border:1px solid var(--gold-soft);box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint)}
+.db-c-cell .rk{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;letter-spacing:.12em;color:var(--muted)}
+.db-c-ctx,.db-c-lkv{color:var(--muted)}
+.db-c-lkv b{color:var(--ink-soft)}
+.db-pill{border-radius:2px}
+/* Gesperrt-Lade: Schiefer-Text + stumme Plakette */
+.db-group.is-locked .stg-t{color:var(--slate)}
+.db-ico.gesperrt{background:var(--cream2);color:var(--slate)}
+.db-pill.lock{background:var(--cream2);color:var(--slate)}
+/* Kontakte/Radar-Umschalter: aktiv = Jade-Lack mit Gold-Pinstripe (eine CTA-Sprache) */
+.db-toggle{background:var(--cream2);border:1px solid var(--hair2);border-radius:4px;padding:3px}
+.db-toggle button{border-radius:3px}
+.db-toggle button.on{background:var(--espresso-grad);color:var(--ivory-tx);
+  box-shadow:inset 0 0 0 1px var(--gold-faint)}
+
+/* — (J5.6) KAMPAGNEN-BLATT (kp-panel): SOLIDES Elfenbein-Blatt (Blur-Budget −1),
+   Jade-Rahmen + Gold-Pinstripe; Regler auf paper2 mit Jade-Fokus; Senden = Jade-Lack.
+   Die Mail-Vorschau (.kp-mail) ist Papier-Guard-Insel — unangetastet. — */
+.kp-panel{background:var(--paper);backdrop-filter:none;-webkit-backdrop-filter:none;
+  border-left:1px solid var(--jade-line);
+  box-shadow:-18px 0 50px rgba(18,59,51,.22),inset 0 0 0 1px var(--gold-faint)}
+.kp-head{box-shadow:inset 0 -1px 0 var(--gold-soft);border-bottom:0;padding-bottom:17px}
+.kp-title{color:var(--sage-deep)}
+.kp-k{color:var(--brass-deep)}
+.kp-row select,.kp-betreff{background:var(--paper2);border-radius:3px}
+.kp-row select:focus,.kp-betreff:focus{outline:none;border-color:var(--sage-deep);box-shadow:0 0 0 2px var(--sage-soft)}
+.kp-check{border-radius:3px}
+.kp-check:has(input:checked){border-color:var(--gold-soft)}
+.kp-foot{border-top:0;box-shadow:inset 0 1px 0 var(--gold-soft)}
+.kp-foot .btn-brass{background:var(--sage-deep);border-color:#0D2E28;color:var(--ivory-tx);border-radius:4px;
+  box-shadow:inset 0 0 0 1px rgba(185,145,73,.4),inset 0 0 0 3px var(--sage-deep),0 2px 8px rgba(18,59,51,.25);
+  text-shadow:none}
+.kp-foot .btn-ghost{background:transparent;border-color:var(--gold-soft);color:var(--brass-deep)}
 </style>
 </head>
 <body>
@@ -4554,7 +4704,7 @@ function setZFilter(id){zFilter=id;renderZuweiser();}
 function mapOrt(o){return String(o||"").replace(/\s*\(.*/,"").replace("überregional","überreg.");}
 function networkDot(z,i){
   const pos=[[136,154],[282,111],[382,148],[474,100],[472,182],[220,185],[204,118],[330,188],[104,116],[250,158],[430,140]][i%11];
-  const color=z.status==="aktiv"?"#56745a":z.status==="aufbau"?"#9b8573":"#8d877c";
+  const color=z.status==="aktiv"?"#2E5C4F":z.status==="aufbau"?"#B99149":"#A19C8C";
   const r=8+Math.min(5,z.faelle)*2;
   return "<g><circle cx='"+pos[0]+"' cy='"+pos[1]+"' r='"+(r+9)+"' fill='"+color+"' opacity='.09'/>"
     +"<circle cx='"+pos[0]+"' cy='"+pos[1]+"' r='"+r+"' fill='"+color+"' opacity='.9'/>"
@@ -4581,7 +4731,7 @@ function renderZuweiser(){
    +"<path d='M78,154 C126,74 205,54 286,84 C348,107 386,62 458,95 C514,121 501,179 433,191 C351,206 315,154 240,178 C167,202 114,204 78,154Z' fill='#f3eddf' stroke='#ddcfb8'/>"
    +"<path d='M132,142 C214,120 297,120 421,112' fill='none' stroke='#d8c49e' stroke-width='1.2' stroke-dasharray='4 6' opacity='.75'/>"
    +(filtered.length?filtered.map(networkDot).join(""):"<text x='280' y='126' text-anchor='middle' font-family='Inter' font-size='14' fill='#847c71'>Noch keine Kontakte in dieser Kategorie</text>")
-   +"</svg><div class='map-legend'><span><i style='background:#56745a'></i>aktiv</span><span><i style='background:#9b8573'></i>im Aufbau</span><span><i style='background:#8d877c'></i>Zielkontakt</span><span>Punktgröße = Fälle</span></div>"
+   +"</svg><div class='map-legend'><span><i style='background:#2E5C4F'></i>aktiv</span><span><i style='background:#B99149'></i>im Aufbau</span><span><i style='background:#A19C8C'></i>Zielkontakt</span><span>Punktgröße = Fälle</span></div>"
    +(filtered.length?"<div class='map-index'>"+filtered.map((z,i)=>"<span><b>"+(i+1)+"</b><em>"+escapeHtml(z.name)+" · "+escapeHtml(mapOrt(z.ort))+"</em></span>").join("")+"</div>":"")
    +"</div>"
    +"<div class='zsummary'><h3>"+escapeHtml(cat.label)+"</h3><p>"+escapeHtml(cat.note)+". Die Karte zeigt, welche Beziehungen bereits tragen, welche aufgebaut werden und wo der nächste Kontakt entstehen soll.</p>"
@@ -5475,7 +5625,7 @@ function renderMeinTag(){
  const h=heute.getHours();
  const gruss=h<11?"Guten Morgen":h<18?"Guten Tag":"Guten Abend";
  const sumTxt=total===0?"Keine offenen Aufgaben.":(doneCount===total?"Alles erledigt für heute!":total+" "+(total===1?"Aufgabe":"Aufgaben")+" · "+heuteFaellig+" heute fällig");
- document.getElementById("mtGreet").textContent=gruss+", S. Koordination.";
+ document.getElementById("mtGreet").innerHTML=escapeHtml(gruss)+", <em>S.&nbsp;Koordination</em>.";
  document.getElementById("mtDate").textContent=heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});
  document.getElementById("mtSum").textContent=sumTxt;
  document.getElementById("mtProgFill").style.width=(total?Math.round(doneCount/total*100):0)+"%";
