@@ -1789,7 +1789,7 @@ body.ma-mode #view-meintag{display:block}
 .typ-chip.passiv{background:var(--petrol-soft);color:var(--petrol);border:1px solid rgba(87,160,143,.35)}
 .zstat.ziel{background:var(--petrol-soft);color:var(--petrol)}
 #sub-netzwerk-bestand .kicker{color:var(--petrol)}
-#view-system .kicker{color:var(--petrol)}
+#view-konzept .kicker,#view-auswertung .kicker{color:var(--petrol)}
 #mtGutChap .kicker{color:var(--petrol)}
 
 /* (5) ROSÉ = menschlich/Beziehung: Akte-Beziehungsverlauf + Geburtstags-Anlass. */
@@ -2266,18 +2266,18 @@ body{accent-color:var(--brass)}
    HTML von renderX() ersetzt wird, der Container selbst überlebt → kein Replay-Glitch.
    Replay nur beim View-Eintritt via .active-Toggle in go(). — */
 #view-faelle.view.active>*,#view-netzwerk.view.active>*,
-#view-matrix.view.active>*,#view-system.view.active>*{
+#view-auswertung.view.active>*,#view-konzept.view.active>*{
   animation:lift .42s cubic-bezier(.22,1,.36,1) both}
 #view-faelle.view.active>*:nth-child(2),
-#view-netzwerk.view.active>*:nth-child(2),#view-matrix.view.active>*:nth-child(2),
-#view-system.view.active>*:nth-child(2){animation-delay:.06s}
+#view-netzwerk.view.active>*:nth-child(2),#view-auswertung.view.active>*:nth-child(2),
+#view-konzept.view.active>*:nth-child(2){animation-delay:.06s}
 #view-faelle.view.active>*:nth-child(3),
-#view-netzwerk.view.active>*:nth-child(3),#view-matrix.view.active>*:nth-child(3),
-#view-system.view.active>*:nth-child(3){animation-delay:.12s}
-#view-faelle.view.active>*:nth-child(4),
-#view-netzwerk.view.active>*:nth-child(4),#view-system.view.active>*:nth-child(4){animation-delay:.18s}
-#view-faelle.view.active>*:nth-child(n+5),
-#view-netzwerk.view.active>*:nth-child(n+5),#view-system.view.active>*:nth-child(n+5){animation-delay:.22s}
+#view-netzwerk.view.active>*:nth-child(3),#view-auswertung.view.active>*:nth-child(3),
+#view-konzept.view.active>*:nth-child(3){animation-delay:.12s}
+#view-faelle.view.active>*:nth-child(4),#view-auswertung.view.active>*:nth-child(4),
+#view-netzwerk.view.active>*:nth-child(4),#view-konzept.view.active>*:nth-child(4){animation-delay:.18s}
+#view-faelle.view.active>*:nth-child(n+5),#view-auswertung.view.active>*:nth-child(n+5),
+#view-netzwerk.view.active>*:nth-child(n+5),#view-konzept.view.active>*:nth-child(n+5){animation-delay:.22s}
 
 /* — 3 · FUNNEL-PREMIUM — */
 /* (a) Hub „EIN EINGANG": weicher Aussen-Glow (Kern animiert KEIN transform → drop-shadow ok);
@@ -2762,26 +2762,27 @@ body{accent-color:var(--brass)}
 .rs-track{background:var(--brass-soft)}
 .rs-fill{background:var(--brass)}
 
-/* — (J6.3) SYSTEM · Karten in die Etiketten-Sprache (4px · Jade-Haarlinie · Gold-Pinstripe) — */
-#view-system .chart,#view-system .module-card,#view-system .idea-block,#view-system .hub-box,
-#view-system .process-card,#view-system .flow-card,#view-system .faq-card,
-#view-system .help-contact,#view-system .template-card{border-radius:4px;border-color:var(--jade-hair);
+/* — (J6.3) KONZEPT/AUSWERTUNG (ex SYSTEM) · Karten in die Etiketten-Sprache (4px · Jade-Haarlinie · Gold-Pinstripe) — */
+#view-konzept .chart,#view-konzept .module-card,#view-konzept .idea-block,#view-konzept .hub-box,
+#view-konzept .process-card,#view-konzept .flow-card,#view-konzept .faq-card,
+#view-konzept .help-contact,#view-konzept .template-card,
+#view-auswertung .chart,#view-auswertung .module-card{border-radius:4px;border-color:var(--jade-hair);
   box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
-#view-system .hub-box.hub{border-color:var(--brass-line)}
-#view-system .pstep,#view-system .flow-node{border-radius:3px}
+#view-konzept .hub-box.hub{border-color:var(--brass-line)}
+#view-konzept .pstep,#view-konzept .flow-node{border-radius:3px}
 /* Balkendiagramme: Jade-Lack mit Gold-Spitze auf Creme-Spur; Achsentext Kapitälchen;
    warm (Verlust/Engpass) behält die Zinnober-/Amber-Warnfamilie. */
-#view-system .bar .track{background:var(--cream2);border-radius:2px}
-#view-system .bar .fill{border-radius:1px;background:linear-gradient(90deg,var(--sage),var(--sage-deep));
+#view-auswertung .bar .track{background:var(--cream2);border-radius:2px}
+#view-auswertung .bar .fill{border-radius:1px;background:linear-gradient(90deg,var(--sage),var(--sage-deep));
   box-shadow:inset -2px 0 0 var(--brass)}
-#view-system .bar.warm .fill{box-shadow:none}
-#view-system .bar .blbl{font-variant:all-small-caps;letter-spacing:.05em}
+#view-auswertung .bar.warm .fill{box-shadow:none}
+#view-auswertung .bar .blbl{font-variant:all-small-caps;letter-spacing:.05em}
 /* Takeaway-Zeilen: Serif-Kursiv mit Gold-Strich */
-#view-system .lblline{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;
+#view-konzept .lblline,#view-auswertung .lblline{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;
   font-size:16px;color:var(--ink-soft)}
-#view-system .lblline::before{content:"";display:inline-block;width:18px;height:1px;
+#view-konzept .lblline::before,#view-auswertung .lblline::before{content:"";display:inline-block;width:18px;height:1px;
   background:var(--brass);vertical-align:middle;margin-right:9px}
-#view-system .loop-note{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:15px}
+#view-konzept .loop-note{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:15px}
 /* Editorial-Tafel (forest-sun, bleibt Grauwert): Präparate-Doppelrahmen, Caption UNTER
    dem Bild in Serif-Kursiv */
 .au-plate{background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;padding:9px;
@@ -2954,8 +2955,8 @@ body{accent-color:var(--brass)}
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg><span>Fälle</span></button>
     <button data-nav="inreha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M2 18h20"/><path d="M7 10h4v4H7z"/></svg><span>In Reha</span></button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg><span>Netzwerk</span></button>
-    <button data-nav="matrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 12h17M9.5 4v16M15.5 4v16"/></svg><span>Matrix</span></button>
-    <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg><span>System</span></button>
+    <button data-nav="auswertung"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Auswertung</span></button>
+    <button data-nav="konzept"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg><span>Konzept</span></button>
     <div class="ds-sep"></div>
     <button class="ds-gold" onclick="openReferrer('portal','Leopoldina-Krankenhaus')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h5.5v16H14"/><path d="M3.5 12h10.5M10.5 8l3.5 4-3.5 4"/></svg><span>Zuweiserportal</span><span class="ds-ext">↗</span></button>
   </nav>
@@ -3133,7 +3134,7 @@ body{accent-color:var(--brass)}
     <div class="chap hb-12 hb-trichter">
       <div class="hd-row">
         <div class="kicker"><span class="au-chapnum">01</span>Der Trichter · heute</div>
-        <button class="hd-link" onclick="go('system','idee')">Die ganze Idee ›</button>
+        <button class="hd-link" onclick="go('konzept','idee')">Die ganze Idee ›</button>
       </div>
       <div class="card strom strom-d">
         <svg id="strom" viewBox="0 0 1180 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der Trichter, Ergebnis">
@@ -3391,7 +3392,7 @@ body{accent-color:var(--brass)}
             <path class="link" d="M195,476 L195,516"/>
             <path class="link" d="M195,476 C202,494 278,506 314,516"/>
 
-            <g class="tap" onclick="go('system','auswertung')">
+            <g class="tap" onclick="go('auswertung')">
               <title>Auswertung: Aufnahmen</title>
               <rect x="12" y="520" width="116" height="64" rx="13" fill="rgba(255,248,234,.04)" stroke="rgba(215,185,138,.22)" stroke-width="1"/>
               <rect x="22" y="519.4" width="96" height="2" rx="1" fill="url(#tileTop)"/>
@@ -3399,7 +3400,7 @@ body{accent-color:var(--brass)}
               <text class="tile-sub" x="70" y="572" text-anchor="middle">Aufnahmen</text>
               <rect class="hit" x="12" y="520" width="116" height="64" rx="13"/>
             </g>
-            <g class="tap" onclick="go('system','auswertung')">
+            <g class="tap" onclick="go('auswertung')">
               <title>Auswertung: Privatauslastung</title>
               <rect x="137" y="520" width="116" height="64" rx="13" fill="rgba(255,248,234,.04)" stroke="rgba(215,185,138,.22)" stroke-width="1"/>
               <rect x="147" y="519.4" width="96" height="2" rx="1" fill="url(#tileTop)"/>
@@ -3407,7 +3408,7 @@ body{accent-color:var(--brass)}
               <text class="tile-sub" x="195" y="572" text-anchor="middle">Privatauslastung</text>
               <rect class="hit" x="137" y="520" width="116" height="64" rx="13"/>
             </g>
-            <g class="tap" onclick="go('system','auswertung')">
+            <g class="tap" onclick="go('auswertung')">
               <title>Auswertung: Verloren und gelernt</title>
               <rect x="262" y="520" width="116" height="64" rx="13" fill="rgba(255,248,234,.04)" stroke="rgba(215,185,138,.22)" stroke-width="1"/>
               <rect x="272" y="519.4" width="96" height="2" rx="1" fill="url(#tileTop)"/>
@@ -3592,49 +3593,11 @@ body{accent-color:var(--brass)}
     </div>
   </section>
 
-  <!-- ============ MATRIX ============ -->
-  <section id="view-matrix" class="view">
-    <header class="vhead"><div class="kicker">Die ganze Maschine</div><h1>Matrix</h1>
-      <p class="lblline">B2B · B2C  ×  vor · in · nach der Reha. Jede Zelle ist ein Bereich der Software.</p>
-    </header>
-    <div id="matrixGrid"></div>
-    <p class="db-foot">Tippen öffnet den jeweiligen Bereich · aktiv · im Aufbau · geplant · synthetische Demo-Daten.</p>
-  </section>
-
-  <!-- ============ SYSTEM ============ -->
-  <section id="view-system" class="view">
-    <header class="vhead">
-      <div class="kicker">Steuerung</div>
-      <h1>System</h1>
-      <div class="segments" role="tablist" aria-label="System-Bereiche">
-        <button class="seg active" data-seg="idee" role="tab">Idee</button>
-        <button class="seg" data-seg="auswertung" role="tab">Auswertung</button>
-        <button class="seg" data-seg="sops" role="tab">SOPs</button>
-      </div>
-    </header>
-
-    <div class="sub active" id="sub-system-idee">
-      <div class="kicker">Die Logik der Software</div>
-      <h2 class="idea-h2">Eine Drehscheibe für Privatpatienten.</h2>
-      <p class="chap-intro dcap">Die Software verbindet Markt, Klinikalltag und Belegung. Sie macht sichtbar, wo Patienten entstehen, wer sie führt und was aus jedem Fall gelernt wird.</p>
-      <div class="hub-stack">
-        <div class="hub-box"><div class="kicker">Aussen</div><b>Quellen aktivieren</b><span>Zuweiser-Netzwerk · Altpatienten-Bestand · Premium-Kanäle</span></div>
-        <div class="hub-arrow" aria-hidden="true">↓</div>
-        <div class="hub-box hub"><div class="kicker">Die Software</div><b>Der Trichter</b><span>erfassen · führen · lernen</span><small>Aus jedem Signal wird Steuerung.</small></div>
-        <div class="hub-arrow" aria-hidden="true">↓</div>
-        <div class="hub-box"><div class="kicker">Innen</div><b>Klinik steuerbar machen</b><span>Prozesse · Belegung · SalutoCare-Routing</span></div>
-        <p class="loop-note">↺ Gelerntes fließt zurück in die Quellen.</p>
-      </div>
-      <div class="idea-grid">
-        <div class="idea-block"><h3>Mehr Fälle</h3><p>Alle Quellen laufen in einen Eingang. Zuweiser, Direktanfragen, Altpatienten und Premium-Kanäle werden nicht getrennt gedacht.</p></div>
-        <div class="idea-block"><h3>Verlässlichkeit</h3><p>Jeder Fall hat eine zuständige Person, einen nächsten Schritt und eine Frist. Verlustgründe sind Pflicht, damit nichts still verschwindet.</p></div>
-        <div class="idea-block"><h3>Planbarkeit</h3><p>Der Belegungsvorlauf wird sichtbar und steigt mit jeder geplanten Aufnahme. Rückmeldungen fließen in Quellen und Prozesse zurück.</p></div>
-      </div>
-      <div class="legal" style="margin-top:14px"><b>Kontaktfreigabe &amp; Datenschutz:</b> Aktive Ansprache, Newsletter und automatisierte E-Mails sind erst nach dokumentierter Freigabe vorgesehen. Der Prototyp nutzt ausschließlich synthetische Demo-Daten und zeigt die Systemlogik.</div>
-    </div>
-
-    <div class="sub" id="sub-system-auswertung">
+  <!-- ============ AUSWERTUNG ============ -->
+  <section id="view-auswertung" class="view">
+    <header class="vhead"><div class="kicker">Beweis</div><h1>Auswertung</h1>
       <p class="lblline">Auswertung · Quellen, Engpässe, Team und Fachbereiche.</p>
+    </header>
       <div class="chart"><h3>Von Anfrage zu Aufnahme</h3><div class="donut-wrap"><svg id="donut" width="116" height="116" viewBox="0 0 120 120"></svg><div class="donut-leg" id="donutLeg"></div></div></div>
       <div class="chart"><h3>Woher kommen Patienten?</h3><div id="chartQuelle"></div></div>
       <div class="chart"><h3>Warum gehen Fälle verloren?</h3><div id="chartVerlust"></div></div>
@@ -3670,9 +3633,47 @@ body{accent-color:var(--brass)}
           </div>
         </div>
       </div>
+  </section>
+
+  <!-- ============ KONZEPT ============ -->
+  <section id="view-konzept" class="view">
+    <header class="vhead">
+      <div class="kicker">Die ganze Maschine</div>
+      <h1>Konzept</h1>
+      <div class="segments" role="tablist" aria-label="Konzept-Bereiche">
+        <button class="seg active" data-seg="idee" role="tab">Idee</button>
+        <button class="seg" data-seg="matrix" role="tab">Matrix</button>
+        <button class="seg" data-seg="sops" role="tab">SOPs</button>
+      </div>
+    </header>
+
+    <div class="sub active" id="sub-konzept-idee">
+      <div class="kicker">Die Logik der Software</div>
+      <h2 class="idea-h2">Eine Drehscheibe für Privatpatienten.</h2>
+      <p class="chap-intro dcap">Die Software verbindet Markt, Klinikalltag und Belegung. Sie macht sichtbar, wo Patienten entstehen, wer sie führt und was aus jedem Fall gelernt wird.</p>
+      <div class="hub-stack">
+        <div class="hub-box"><div class="kicker">Aussen</div><b>Quellen aktivieren</b><span>Zuweiser-Netzwerk · Altpatienten-Bestand · Premium-Kanäle</span></div>
+        <div class="hub-arrow" aria-hidden="true">↓</div>
+        <div class="hub-box hub"><div class="kicker">Die Software</div><b>Der Trichter</b><span>erfassen · führen · lernen</span><small>Aus jedem Signal wird Steuerung.</small></div>
+        <div class="hub-arrow" aria-hidden="true">↓</div>
+        <div class="hub-box"><div class="kicker">Innen</div><b>Klinik steuerbar machen</b><span>Prozesse · Belegung · SalutoCare-Routing</span></div>
+        <p class="loop-note">↺ Gelerntes fließt zurück in die Quellen.</p>
+      </div>
+      <div class="idea-grid">
+        <div class="idea-block"><h3>Mehr Fälle</h3><p>Alle Quellen laufen in einen Eingang. Zuweiser, Direktanfragen, Altpatienten und Premium-Kanäle werden nicht getrennt gedacht.</p></div>
+        <div class="idea-block"><h3>Verlässlichkeit</h3><p>Jeder Fall hat eine zuständige Person, einen nächsten Schritt und eine Frist. Verlustgründe sind Pflicht, damit nichts still verschwindet.</p></div>
+        <div class="idea-block"><h3>Planbarkeit</h3><p>Der Belegungsvorlauf wird sichtbar und steigt mit jeder geplanten Aufnahme. Rückmeldungen fließen in Quellen und Prozesse zurück.</p></div>
+      </div>
+      <div class="legal" style="margin-top:14px"><b>Kontaktfreigabe &amp; Datenschutz:</b> Aktive Ansprache, Newsletter und automatisierte E-Mails sind erst nach dokumentierter Freigabe vorgesehen. Der Prototyp nutzt ausschließlich synthetische Demo-Daten und zeigt die Systemlogik.</div>
     </div>
 
-    <div class="sub" id="sub-system-sops">
+    <div class="sub" id="sub-konzept-matrix">
+      <p class="lblline">B2B · B2C  ×  vor · in · nach der Reha. Jede Zelle ist ein Bereich der Software.</p>
+      <div id="matrixGrid"></div>
+      <p class="db-foot">Tippen öffnet den jeweiligen Bereich · aktiv · im Aufbau · geplant · synthetische Demo-Daten.</p>
+    </div>
+
+    <div class="sub" id="sub-konzept-sops">
       <p class="lblline">Prozesse / SOPs · interner Hilfe- und Nachschlagebereich.</p>
       <div class="legal"><b>Demo-Logik:</b> Dieser Bereich zeigt Prozesswissen, Ansprechpartner und Vorlagen. Er ist als interne Hilfe gedacht, nicht als echte Versandsoftware. Jede aktive Kommunikation bleibt an Kontaktfreigabe und Zweckbindung gebunden.</div>
       <div class="process-card">
@@ -3808,8 +3809,8 @@ body{accent-color:var(--brass)}
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg>Fälle<span class="nbadge num" id="navBadgeFaelle"></span></button>
     <button data-nav="inreha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M2 18h20"/><path d="M7 10h4v4H7z"/></svg>Reha</button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg>Netzwerk</button>
-    <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg>System</button>
-    <button data-nav="matrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 12h17M9.5 4v16M15.5 4v16"/></svg>Matrix</button>
+    <button data-nav="auswertung"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Zahlen</button>
+    <button data-nav="konzept"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg>Konzept</button>
   </div>
 </nav>
 
@@ -5883,8 +5884,8 @@ function mtExit(){
 }
 
 /* ---------- Navigation ---------- */
-const SEGS={faelle:["anfragen","board","team"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
-let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",system:"idee"}};
+const SEGS={faelle:["anfragen","board","team"],netzwerk:["zuweiser","bestand"],konzept:["idee","matrix","sops"]};
+let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",konzept:"idee"}};
 function go(dest,seg){
   const _run=function(){
     if(!document.getElementById("view-"+dest))dest="heute";
@@ -5893,7 +5894,7 @@ function go(dest,seg){
     if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
     document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
     document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
-    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],system:["System","Idee · Auswertung · SOPs"],matrix:["Matrix","Patienten-Reise B2B / B2C"]};
+    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],auswertung:["Auswertung","Quellen · Engpässe · Team · Fachbereiche"],konzept:["Konzept","Idee · Matrix · SOPs"]};
     const _t=TITLES[dest]||TITLES.heute;
     const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
     const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
@@ -5917,8 +5918,8 @@ function switchTab(t){
   if(t==="neu"){openSheetNeu();return;}
   const map={cockpit:["heute"],heute:["heute"],eingang:["faelle","anfragen"],faelle:["faelle","board"],
     inreha:["inreha"],team:["faelle","team"],
-    zuweiser:["netzwerk","zuweiser"],bestand:["netzwerk","bestand"],idee:["system","idee"],
-    intelligenz:["system","auswertung"],kommunikation:["system","sops"]};
+    zuweiser:["netzwerk","zuweiser"],bestand:["netzwerk","bestand"],idee:["konzept","idee"],
+    intelligenz:["auswertung"],kommunikation:["konzept","sops"]};
   const m=map[t]||["heute"];
   go(m[0],m[1]);
 }
@@ -5939,6 +5940,8 @@ function applyHash(){
   if(parts.length===1&&oldNames[parts[0]]&&!document.getElementById("view-"+parts[0])){switchTab(parts[0]);return;}
   if(parts[0]==="faelle"&&parts[1]==="inreha"){go("inreha");return;}
   if(parts[0]==="team"){go("faelle","team");return;}
+  if(parts[0]==="system"){if(parts[1]==="auswertung"){go("auswertung");}else{go("konzept",parts[1]);}return;}
+  if(parts[0]==="matrix"){go("konzept","matrix");return;}
   go(parts[0],parts[1]);
 }
 
