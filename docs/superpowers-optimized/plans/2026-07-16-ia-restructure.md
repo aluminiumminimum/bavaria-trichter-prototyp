@@ -236,9 +236,9 @@ vm.Script-Check. Browser: alle Alt-Hashes (`#system/auswertung` → Auswertung, 
 
 **Does NOT cover:** Anlässe-Umzug von Heute (Task 5). renderRadar/renderBestand-Logik (nur Container/Einstieg).
 
-- [ ] **Step 1: Ist-Mechanik lesen** — `setDbView` (~4506 ff.), `renderBestand`, `renderRadar`: WOHIN rendert Radar aktuell (welche Container-IDs innerhalb `sub-netzwerk-bestand`)? Erst danach schneiden.
+- [x] **Step 1: Ist-Mechanik lesen** — `setDbView` (~4506 ff.), `renderBestand`, `renderRadar`: WOHIN rendert Radar aktuell (welche Container-IDs innerhalb `sub-netzwerk-bestand`)? Erst danach schneiden.
 
-- [ ] **Step 2: Segment-Split**
+- [x] **Step 2: Segment-Split**
 
 Tablist Netzwerk (~3625): drei Segmente:
 
@@ -252,7 +252,7 @@ Tablist Netzwerk (~3625): drei Segmente:
 `sub-netzwerk-bestand` → umbenennen in `sub-netzwerk-kontakte`; darin den `db-toggle` (~3639) restlos entfernen; Kicker „Datenbank" → „Kontakte".
 Neues `<div class="sub" id="sub-netzwerk-radar">` zwischen zuweiser und kontakte: dorthin ziehen alle Radar-Container, die `renderRadar()` befüllt (in Step 1 identifiziert), plus eigener Kicker „Radar &amp; Anlässe" und die bisherige Radar-Intro-Zeile, falls vorhanden. Wenn Radar bisher in DENSELBEN Container wie Kontakte rendert (dbView-Umschaltung): dedizierten Container `<div id="radarHost"></div>` anlegen und `renderRadar()` NUR im Ziel-Selektor anpassen (kleinstmöglicher Eingriff, Signatur bleibt).
 
-- [ ] **Step 3: Router/Aliase**
+- [x] **Step 3: Router/Aliase**
 
 `SEGS`: `netzwerk:["zuweiser","radar","kontakte"]`; `navState.segs.netzwerk` bleibt `"zuweiser"`.
 `TITLES.netzwerk`: `["Netzwerk","Zuweiser · Radar · Kontakte"]`.
@@ -267,9 +267,9 @@ Falls `setDbView` bisher zusätzlich rendert: Rendering an den Segment-Wechsel h
 `applyHash()`-Alias: `if(parts[0]==="netzwerk"&&parts[1]==="bestand"){go("netzwerk","kontakte");return;}`.
 Callsite Heute „Alle Anlässe ›" (~3499): `onclick="go('netzwerk','bestand');setDbView('radar')"` → `onclick="go('netzwerk','radar')"`.
 
-- [ ] **Step 4: Verifikation** — vm.Script; `grep -c 'sub-netzwerk-bestand\|db-toggle' index.html` → 0; Browser: Netzwerk zeigt 3 Segmente; Radar-Segment zeigt KPIs + Fällig-Liste; Kontakte zeigt tierFilter+btable; Desktop `openDbDetail` (Rail) öffnet aus Kontakte; `#netzwerk/bestand` landet auf Kontakte; `arAktion`-Buttons im Radar funktionieren.
+- [x] **Step 4: Verifikation** — vm.Script; `grep -c 'sub-netzwerk-bestand\|db-toggle' index.html` → 0; Browser: Netzwerk zeigt 3 Segmente; Radar-Segment zeigt KPIs + Fällig-Liste; Kontakte zeigt tierFilter+btable; Desktop `openDbDetail` (Rail) öffnet aus Kontakte; `#netzwerk/bestand` landet auf Kontakte; `arAktion`-Buttons im Radar funktionieren.
 
-- [ ] **Step 5: Commit** `feat(ia): T4 — Netzwerk: Radar eigenes Segment, Datenbank→Kontakte, setDbView delegiert`
+- [x] **Step 5: Commit** `feat(ia): T4 — Netzwerk: Radar eigenes Segment, Datenbank→Kontakte, setDbView delegiert`
 
 ---
 
