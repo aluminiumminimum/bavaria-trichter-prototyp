@@ -29,6 +29,10 @@
     --rose:#9E5A50; --rose-soft:#F5E6E0; --petrol:#2E5C4F; --petrol-soft:#E7EEE8;
     --aurora-grad:linear-gradient(110deg,#123B33,#2E5C4F 45%,#B99149 80%,#96692A);
     --azzurro:#5E7B8C; --slate:#7A7265;
+    /* J2 · Etiketten-Sprache (e5d): Jade-Haarlinien + Gold-Ring + Elfenbein-auf-Lack */
+    --jade-line:#2C5A4E; --jade-hair:rgba(18,59,51,.30);
+    --gold-faint:rgba(185,145,73,.28); --gold-soft:rgba(185,145,73,.5);
+    --ivory-tx:#EFE9D8; --ivory-mut:rgba(239,233,216,.66);
     --glass:rgba(246,242,230,.72); --glass-border:rgba(34,30,21,.08); --glass-hi:rgba(251,248,239,.85);
   }
   *{box-sizing:border-box}
@@ -58,7 +62,7 @@
   .sub{display:none}
   .sub.active{display:block}
 
-  .kicker{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#8f7448;font-weight:700;margin:0 0 10px}
+  .kicker{font-family:"Cormorant Garamond",Georgia,serif;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 10px}
   .chap{margin-top:34px}
   .chap-h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:26px;font-weight:700;line-height:1.15;margin:0 0 8px;color:var(--ink)}
   .chap-intro{font-size:14.5px;color:var(--ink-soft);margin:0 0 16px;max-width:46ch}
@@ -66,8 +70,7 @@
     font-size:46px;line-height:.82;padding:4px 8px 0 0;color:var(--brass-deep)}
   .hairline{border:0;border-top:1px solid var(--hair);margin:26px 0}
   .card{background:var(--paper);border:1px solid var(--hair);border-radius:18px;box-shadow:var(--shadow-soft);padding:18px;position:relative}
-  .card::before{content:"";position:absolute;top:0;left:22px;right:22px;height:2px;border-radius:0 0 3px 3px;
-    background:linear-gradient(90deg,transparent,#cdb083 30%,#cdb083 70%,transparent);opacity:.5;pointer-events:none}
+  /* J2: der alte Messing-Tick (::before-Gradient) ist der Etiketten-Sprache gewichen (JADE · ETIKETTEN). */
   .empty{color:var(--muted);font-size:14px;margin:6px 0}
 
   /* ===== Schaltflächen — gravierte Messingplaketten ===== */
@@ -778,10 +781,10 @@
     padding:22px 16px calc(18px + env(safe-area-inset-bottom));border-right:1px solid #322c28}
   .ds-brand{display:flex;align-items:center;gap:11px;padding:2px 6px 16px;margin-bottom:8px;border-bottom:1px solid rgba(188,163,125,.18)}
   .ds-mono{width:40px;height:40px;flex-shrink:0;border-radius:11px;background:radial-gradient(circle at 35% 30%,#3a332e,#262220);
-    border:1px solid #8f7448;color:#d3b78a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;letter-spacing:.05em}
+    border:1px solid var(--gold-soft);color:var(--brass);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;letter-spacing:.05em}
   .ds-brandtxt{display:flex;flex-direction:column;line-height:1.2}
   .ds-brandtxt b{font-size:18px;color:#f4eee3;font-weight:700}
-  .ds-brandtxt small{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#b29a76}
+  .ds-brandtxt small{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass)}
   .ds-nav{display:flex;flex-direction:column;gap:3px;margin-top:2px}
   .ds-nav button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 12px;border-radius:11px;
     color:#cbbfae;font-size:14.5px;font-weight:600;letter-spacing:.02em;position:relative;
@@ -789,12 +792,12 @@
   .ds-nav button svg{width:22px;height:22px;stroke-width:1.9;opacity:.82;flex-shrink:0}
   .ds-nav button:hover{background:rgba(188,163,125,.10);color:#f1e7d6;transform:translateX(2px)}
   .ds-nav button.active{background:linear-gradient(90deg,rgba(188,163,125,.22),rgba(188,163,125,.05));color:#f6edda}
-  .ds-nav button.active svg{opacity:1;color:#d3b78a}
+  .ds-nav button.active svg{opacity:1;color:var(--brass)}
   .ds-nav button.active::before{content:"";position:absolute;left:-16px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--brass-grad)}
   .ds-sep{height:1px;margin:9px 6px;background:linear-gradient(90deg,rgba(188,163,125,.28),transparent)}
-  .ds-nav button.ds-gold{color:#d3b78a}
-  .ds-nav button.ds-gold svg{color:#cdb083;opacity:.95}
-  .ds-nav button.ds-gold:hover{background:rgba(205,176,131,.14);color:#ecdcbc}
+  .ds-nav button.ds-gold{color:var(--brass)}
+  .ds-nav button.ds-gold svg{color:var(--brass);opacity:.95}
+  .ds-nav button.ds-gold:hover{background:var(--gold-faint);color:var(--ivory-tx)}
   .ds-ext{margin-left:auto;font-size:13px;opacity:.55}
   .ds-cta{margin-top:auto;width:100%}
   .dtopbar{display:flex;align-items:center;justify-content:space-between;gap:16px;position:fixed;top:0;left:248px;right:0;height:64px;z-index:70;
@@ -805,8 +808,8 @@
   .dt-titles span{font-size:12px;letter-spacing:.04em;color:var(--muted)}
   .dt-actions{display:flex;align-items:center;gap:16px}
   .dt-date{font-size:13px;color:var(--muted);letter-spacing:.03em;text-transform:capitalize}
-  .dt-ava{width:38px;height:38px;flex-shrink:0;border-radius:50%;background:var(--espresso-grad);color:#d3b78a;
-    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;border:1px solid #8f7448}
+  .dt-ava{width:38px;height:38px;flex-shrink:0;border-radius:50%;background:var(--espresso-grad);color:var(--brass);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;border:1px solid var(--gold-soft)}
   .app{max-width:none;margin-left:248px}
   .content{max-width:1240px;margin:0 auto;padding:calc(64px + 26px) 40px 64px}
   .tabbar{display:none}
@@ -884,8 +887,8 @@
   .strom-d .fn-link{stroke-width:1.7;opacity:.95;stroke-dasharray:5 9}
   .strom-d .fn-dot{fill:#c79a52;opacity:.95;filter:drop-shadow(0 0 3px rgba(201,163,95,.85))}
 }
-/* ===== DESIGN-V2 A1 — Eyebrow/Micro-Labels lesbarer ===== */
-.kicker{font-size:13px;letter-spacing:.16em}
+/* ===== DESIGN-V2 A1 — Eyebrow/Micro-Labels lesbarer (J2: auf e5d-Duktus harmonisiert) ===== */
+.kicker{font-size:13px;letter-spacing:.22em}
 .hub-box .kicker{font-size:12.5px}
 .g-stat span{font-size:12px;letter-spacing:.06em}
 .ns-l{font-size:12.5px;letter-spacing:.12em}
@@ -1197,7 +1200,7 @@ label{font-size:12px;letter-spacing:.08em}
   @media(min-width:900px){#inrehaGrid{grid-template-columns:1fr 1fr}}
   @media(min-width:1320px){#inrehaGrid{grid-template-columns:1fr 1fr 1fr}}
   .ir-card{display:block;width:100%;text-align:left;cursor:pointer;background:var(--paper);border:1px solid var(--hair);border-left:3px solid var(--acol,var(--brass-line));border-radius:16px;box-shadow:var(--shadow-soft);padding:16px 18px;transition:transform .16s ease,box-shadow .16s ease}
-  @media(hover:hover){.ir-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}}
+  @media(hover:hover){.ir-card:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),var(--shadow)}}
   .ir-card.hot{background:linear-gradient(180deg,var(--paper),var(--brass-soft))}
   .ir-head{display:flex;align-items:center;gap:11px;margin-bottom:14px}
   .ir-head .ava{width:40px;height:40px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font:600 14px/1 Inter}
@@ -1296,7 +1299,7 @@ label{font-size:12px;letter-spacing:.08em}
   .tm-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
   @media(min-width:1100px){.tm-cards{grid-template-columns:repeat(4,1fr)}}
   .tm-card{text-align:left;background:var(--paper);border:1px solid var(--hair);border-radius:14px;box-shadow:var(--shadow-soft);padding:13px 15px;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
-  @media(hover:hover){.tm-card:hover{transform:translateY(-2px);box-shadow:var(--shadow),0 8px 40px -12px rgba(214,183,126,.25)}}
+  @media(hover:hover){.tm-card:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),var(--shadow)}}
   .tm-card.on{border-color:var(--brass);box-shadow:0 0 0 2px var(--brass-soft)}
   .tm-h{display:flex;align-items:center;gap:9px;margin-bottom:10px}
   .tm-h .ava{width:34px;height:34px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font:600 12px/1 Inter}
@@ -1699,44 +1702,48 @@ body.ma-mode #view-meintag{display:block}
 .mt-sletzter{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
 @media(max-width:520px){.mt-panel{width:100%}}
 
-/* ===== LICHTUNG · CHROME ===== */
-/* Glass-Budget-Gesetz: NUR diese drei Chrome-Flächen tragen backdrop-filter
-   (Sidebar · Topbar · Tabbar). Sonst nirgends, NIE filter:blur. Reine
-   Source-Order-Overrides — Original-.dsidebar/.dtopbar/.tabbar-Regeln bleiben
-   unangetastet; Layout (position/width/left/right/z-index/height) unverändert.
-   Helle Elfenbein-Chrome: ruhige Fläche über der Ambient-Wäsche, Tinte-Text,
-   aktives Item = weißes Pill mit Waldgrün + 3px Ocker-Kante links. Kein Dunkel. */
+/* ===== JADE · CHROME — Lack-Kabinett · Elfenbein-Topbar · Elfenbein-Tabbar (e5d .side/.nav) ===== */
+/* Lack ist SOLIDE: kein backdrop-filter mehr auf Sidebar/Topbar/Tabbar (Basis-Blur wird
+   explizit abgeschaltet — Glass-Budget sinkt). Layout (position/width/left/right/z-index/
+   height) unverändert. Sidebar = lackiertes Jade-Kabinett: Elfenbein-Text, Gold-Haarlinien,
+   aktives Item = e5d-exakt (transluzent + Gold-Text + Gold-Inset-Ring + Gold-Kante links).
+   CTA = goldgerahmter Elfenbein-Knopf. Topbar/Tabbar = solides Elfenbein, warme Haarlinie. */
 @media(min-width:1024px){
-  .dsidebar{background:var(--glass);
-    backdrop-filter:blur(14px) saturate(1.1);-webkit-backdrop-filter:blur(14px) saturate(1.1);
-    border-right:1px solid var(--hair);color:var(--ink)}
-  .ds-brand{gap:11px;border-bottom:1px solid var(--hair)}
-  .ds-wordmark{height:32px;width:32px;object-fit:contain;display:block;filter:brightness(0);opacity:.82}
-  .ds-brandtxt b{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;letter-spacing:.01em;color:var(--ink)}
-  .ds-sub{font-family:"Fragment Mono",ui-monospace,monospace;font-size:9px;letter-spacing:.2em;color:var(--brass-deep);margin-top:3px;display:block}
-  .ds-nav button{color:#63614F}
-  .ds-nav button svg{color:#8A877A}
-  .ds-nav button:hover{background:rgba(27,27,22,.045);color:var(--ink)}
-  .ds-nav button:hover svg{color:var(--ink)}
-  .ds-nav button.active{background:var(--paper);color:var(--sage-deep);border:none;
-    box-shadow:0 1px 2px rgba(27,27,22,.06),0 0 0 1px rgba(27,27,22,.05)}
-  .ds-nav button.active svg{color:var(--sage-deep);opacity:1}
+  .dsidebar{background:var(--espresso-grad);color:var(--ivory-tx);
+    border-right:1px solid var(--jade-line);box-shadow:inset -1px 0 0 var(--gold-faint)}
+  .ds-brand{gap:11px;border-bottom:1px solid var(--gold-faint)}
+  .ds-wordmark{height:36px;width:36px;padding:7px;border-radius:50%;object-fit:contain;display:block;
+    background:rgba(255,255,255,.05);border:1px solid var(--gold-soft);
+    filter:brightness(0) invert(1);opacity:.92}
+  .ds-brandtxt b{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;letter-spacing:.01em;color:var(--ivory-tx)}
+  .ds-sub{font-family:"Cormorant Garamond",Georgia,serif;font-size:10px;font-weight:600;
+    letter-spacing:.26em;text-transform:uppercase;color:var(--brass);margin-top:3px;display:block}
+  .ds-nav button{color:var(--ivory-mut)}
+  .ds-nav button svg{color:var(--ivory-mut)}
+  .ds-nav button:hover{background:rgba(255,255,255,.05);color:var(--ivory-tx)}
+  .ds-nav button:hover svg{color:var(--ivory-tx)}
+  .ds-nav button.active{background:rgba(255,255,255,.06);color:var(--brass);border:none;
+    box-shadow:inset 0 0 0 1px var(--gold-faint)}
+  .ds-nav button.active svg{color:var(--brass);opacity:1}
   .ds-nav button.active::before{background:var(--brass)}
-  .ds-nav button.ds-gold{color:var(--brass-deep)}
-  .ds-nav button.ds-gold svg{color:var(--brass-deep)}
-  .ds-cta{background:var(--sage-deep);color:#F5F2E8;border:none;font-weight:600;text-shadow:none}
-  .dtopbar{background:var(--glass);
-    backdrop-filter:blur(14px) saturate(1.1);-webkit-backdrop-filter:blur(14px) saturate(1.1);
-    border-bottom:1px solid var(--hair)}
+  .ds-sep{background:var(--gold-faint)}
+  .ds-cta{background:var(--paper);color:var(--sage-deep);border:1px solid var(--gold-soft);border-radius:4px;
+    box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint);
+    font-weight:600;text-shadow:none}
+  .dtopbar{background:var(--cream);
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+    border-bottom:1px solid var(--gold-faint)}
   .dt-titles span{font-family:"Fragment Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-  .dt-actions .btn-ghost{background:var(--sage-deep);color:#F5F2E8;border:none}
-  .dt-ava{background:var(--brass);color:#2A2413;border:none}
+  .dt-actions .btn-ghost{background:var(--sage-deep);color:var(--ivory-tx);border:none;border-radius:4px;
+    box-shadow:inset 0 0 0 1px rgba(185,145,73,.4),inset 0 0 0 3px var(--sage-deep)}
+  .dt-ava{background:var(--brass);color:var(--sage-deep);border:1px solid rgba(18,59,51,.15)}
 }
-.tabbar{background:var(--glass);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-top:1px solid var(--hair)}
+.tabbar{background:var(--cream);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  border-top:1px solid var(--gold-faint)}
 .tabbar [data-nav]{--tabc:var(--muted);color:var(--muted)}
 .tabbar [data-nav].active{--tabc:var(--sage-deep);--tabsoft:var(--sage-soft);color:var(--sage-deep)}
+.nbadge{background:var(--brass);color:var(--sage-deep)}
 
 /* ===== AURORA · VIVID MOTION =====
    Premium-Motion-Layer: 4 dezente Dauer-Animationen (Shimmer · Puls · Breathe · Ken-Burns)
@@ -1760,7 +1767,7 @@ body.ma-mode #view-meintag{display:block}
    .zcard/.tm-card/.mx-cell bekommen den Glow surgical an ihre bestehende Hover-box-shadow. */
 @media(hover:hover){
   .karte:hover{box-shadow:var(--shadow-soft),0 8px 40px -12px rgba(214,183,126,.25)}
-  .radar-card:hover{box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi),0 8px 40px -12px rgba(214,183,126,.25)}
+  .radar-card:hover{box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-soft),var(--shadow)}
 }
 
 /* (6) SIDEBAR-BREATHE — entfernt: die animierte box-shadow überschrieb das
@@ -1806,13 +1813,10 @@ body.ma-mode #view-meintag{display:block}
   .mt-greet{background:var(--aurora-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 }
 
-/* (2) Heute-KPI-Kacheln: je Kachel eine andere Akzent-Haarlinie oben (statisch). */
+/* (2) Heute-KPI-Kacheln: farbige Akzent-Haarlinien entfernt (J2 — die Daten-Hues lasen
+   off-palette in der Jade-Welt); ::before/::after tragen jetzt die Gold-Eckwinkel
+   (JADE · ETIKETTEN). */
 #view-heute .ns-m{position:relative}
-#view-heute .ns-m::before{content:"";position:absolute;top:0;left:16px;right:16px;height:3px;
-  border-radius:0 0 3px 3px;opacity:.9;pointer-events:none}
-#view-heute .ns-m:nth-child(1)::before{background:var(--sage-deep)}
-#view-heute .ns-m:nth-child(2)::before{background:var(--azzurro)}
-#view-heute .ns-m:nth-child(3)::before{background:var(--terra)}
 
 /* (3) SAGE = positiv: Chips bekommen einen 1px-Salbei-Rand für mehr Präsenz. */
 .typ-chip.qual{border:1px solid rgba(143,185,150,.35)}
@@ -1866,7 +1870,7 @@ body.ma-mode #view-meintag{display:block}
 #donut text{fill:var(--ink)}
 /* (d) Matrix: Mono-Zeilenlabels + Hover-Anhebung mit Messing-Kante */
 .mx-side-t{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--muted)}
-@media(hover:hover){.mx-cell:hover{transform:translateY(-2px);border-color:var(--brass-line);box-shadow:var(--shadow),inset 0 1px 0 var(--glass-hi),0 8px 40px -12px rgba(214,183,126,.25)}}
+@media(hover:hover){.mx-cell:hover{transform:translateY(-2px);border-color:var(--brass-line);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),var(--shadow)}}
 
 /* ===== AURORA · NETZWERK & DATENBANK ===== */
 /* Netzwerk-Landkarte: SVG-Präsentationsattribute (in JS hell hardcodiert) auf Dunkel überschreiben.
@@ -1897,8 +1901,9 @@ body.ma-mode #view-meintag{display:block}
 .mt-termine .mt-termzeit{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--brass-deep)}
 .mt-term-past{opacity:.55}
 
-/* — Mein Tag: To-do-Karten (radar-Anatomie) als Elevationsflächen, Fristen-Pillen + Kicker in Mono — */
-.mt-grid .radar-card{background:var(--paper2);border-radius:18px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi)}
+/* — Mein Tag: To-do-Karten erben das Etikett (JADE · ETIKETTEN — der frühere
+   paper2/18px-Elevations-Override würde per Spezifität gewinnen und ist entfernt);
+   Fristen-Pillen + Kicker in Mono — */
 .mt-grid .radar-due{font-family:"Fragment Mono",ui-monospace,monospace}
 .mt-grid .radar-due.bald{background:var(--brass-soft);color:var(--brass-deep)}
 .mt-grid .radar-due.jetzt{background:var(--terra-soft);color:var(--alert)}
@@ -1995,42 +2000,73 @@ body{background:
   body{background:var(--cream)}
 }
 /* Craft-Details */
-::selection{background:var(--sage-deep);color:#F5F2E8}
+::selection{background:var(--sage-deep);color:var(--ivory-tx)}
 :focus-visible{outline:2px solid var(--sage-deep);outline-offset:2px}
 html{scrollbar-color:var(--brass-line) transparent}
 body{accent-color:var(--brass)}
 
-/* ===== LICHTUNG · KACHELN (lx) ===== */
-/* Weiße Kacheln: Papier-Grund, Haarlinie, 20px Radius, weicher Schatten, 1px Inset-Highlight
-   oben. Rein additiv (Source-Order gewinnt). Familien mit farbigem Funktions-Rand
-   (ir/ar/radar/db-group border-left|top, mx-cell) bekommen KEIN border-Shorthand — sonst
-   ginge die jetzt/bald/B2B-Farbcodierung verloren; dort nur Grund/Radius/Schatten. */
-.card,.tm-card,.tm-list,.radar-kpi,.db-cockpit{
-  background:var(--paper);border:1px solid var(--hair2);border-radius:20px;box-shadow:var(--shadow-soft)}
-.radar-card,.ar-card,.ir-card,.mx-cell{
-  background:var(--paper);border-radius:20px;box-shadow:var(--shadow-soft)}
-.db-group{background:var(--paper);border-radius:24px;box-shadow:var(--shadow-soft);position:relative}
-/* 1px Inset-Highlight oben — nur wo kein funktionales ::before und kein Oberkanten-Akzent */
+/* ===== JADE · ETIKETTEN (e5d .bt) — Apotheken-Etiketten app-weit ===== */
+/* Etikett: Creme-Grund (--paper), 1px Jade-Haarlinie, innerer Gold-Ring als Doppel-Inset
+   (e5d-Technik: inset 0 0 0 Np paper + inset 0 0 0 (N+1)p gold-faint), warmer Schatten,
+   moderater 4px-Radius. Majors (Ticks/Siegel): 4/5px-Ring + volle Jade-Linie; Standard:
+   3/4px-Ring + weiche Jade-Haarlinie. Familien mit farbigem Funktions-Rand (ar-card
+   border-top, mx-cell border-top, radar-kpi/db-cockpit ::before-Balken) behalten ihre
+   Codierung — dort kein border-Shorthand. Cofounder .rp-*/.rpd-*/.rsp-* bleiben unberührt. */
+.card,.tm-card,.tm-list,.radar-kpi,.db-cockpit,.ir-card{
+  background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+.ar-card,.mx-cell{
+  background:var(--paper);border-radius:4px;
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+.radar-card{
+  background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;
+  box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft)}
+.db-group{
+  background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;
+  box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft);
+  padding:16px 16px 14px;position:relative}
+.db-list{border-radius:4px}
 .tm-card,.tm-list,.radar-card,.ir-card{position:relative}
-.tm-card::before,.tm-list::before,.radar-card::before,.ir-card::before{
-  content:"";position:absolute;inset:0 0 auto 0;height:1px;background:var(--glass-hi);border-radius:20px 20px 0 0;pointer-events:none}
-.db-group::before{
-  content:"";position:absolute;inset:0 0 auto 0;height:1px;background:var(--glass-hi);border-radius:24px 24px 0 0;pointer-events:none}
 
-/* ===== LICHTUNG · HEUTE-KAPITEL — Bento: Ghost-Nummern · Bogen-Anlässe · Eingang hell ===== */
-/* (1) Ghost-Katalognummern: großes Fraunces-Numeral in der Kapitel-Ecke (Whisper, opacity .05).
-   Container relativ; das Numeral ist eingerückt (right:18px) und schmaler als der Container
-   → kein horizontaler/vertikaler Overflow, daher bewusst KEIN overflow:hidden (das würde
-   Karten-Schatten bzw. das Trichter-SVG innerhalb des Kapitels beschneiden). */
-#view-heute>.hb-trichter,#anlassChap,#belegungChap{position:relative}
+/* ===== JADE · HEUTE-KAPITEL — Etiketten-Kapitel · Gold-Eckwinkel · Siegel (e5d) ===== */
+/* (1) Kapitel-Container werden zu großen Etiketten (e5d .t-eingang/.t-forecast): Creme-Grund,
+   Jade-Linie, 4/5px-Gold-Ring, voller Schatten. Innere Primärkarten (Trichter-.card.strom,
+   „Heute wichtig"-.list-card) liegen FLACH auf dem Etikett — kein Karte-auf-Karte. */
+#view-heute>.chap{position:relative;background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;
+  padding:22px;box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow)}
+#view-heute>.chap>.card{background:transparent;border:0;box-shadow:none}
+/* (2) Gold-Eckwinkel (e5d L-Marken, 9px, opacity .6) — NUR Majors: Kapitel (nur oben-links,
+   ::after trägt das Siegel), Radar-Karten, KPI-Zellen (.ns-m), Datenbank-Gruppen.
+   ::before-Konflikte geprüft: .card (Tick entfernt), .ns-m (Farb-Haarlinie entfernt),
+   radar-kpi/db-cockpit (funktionaler Balken → KEINE Ticks, bewusst übersprungen). */
+#view-heute>.chap::before,
+#view-heute .ns-m::before,#view-heute .ns-m::after,
+.radar-card::before,.radar-card::after,
+.db-group::before,.db-group::after{
+  content:"";position:absolute;width:9px;height:9px;pointer-events:none;z-index:2;opacity:.6}
+#view-heute>.chap::before,#view-heute .ns-m::before,.radar-card::before,.db-group::before{
+  top:10px;left:10px;border-top:1px solid var(--brass);border-left:1px solid var(--brass)}
+#view-heute .ns-m::after,.radar-card::after,.db-group::after{
+  bottom:10px;right:10px;border-bottom:1px solid var(--brass);border-right:1px solid var(--brass)}
+/* (3) Siegel statt Ghost-Numerale (e5d .bt-num): 44px-Kreis oben rechts, Cormorant-Numeral.
+   Kapitel 01 = Zinnober-Siegel (gefüllt, Elfenbein-Ziffer — e5d-Wachssiegel), 02/03 = Gold-Ring. */
 #view-heute>.hb-trichter::after{content:"01"}
 #anlassChap::after{content:"02"}
 #belegungChap::after{content:"03"}
 #view-heute>.hb-trichter::after,#anlassChap::after,#belegungChap::after{
-  position:absolute;top:8px;right:18px;font-family:"Cormorant Garamond",Georgia,serif;font-size:88px;
-  font-weight:600;color:var(--ink);opacity:.05;line-height:1;pointer-events:none}
-/* (5) Kapitel-Kicker auf Token-Brass (Mono-Nummer .au-chapnum bleibt via eigener Regel Champagner) */
-#view-heute .kicker{color:var(--brass-deep)}
+  position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;z-index:3;
+  display:grid;place-items:center;pointer-events:none;user-select:none;
+  font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:18px;line-height:1;
+  color:var(--brass);background:var(--paper);border:1px solid var(--gold-soft);
+  box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint)}
+#view-heute>.hb-trichter::after{
+  color:var(--ivory-tx);background:var(--terra);border-color:var(--terra);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.16),0 2px 6px rgba(168,52,31,.35)}
+/* Kopfzeilen weichen dem Siegel aus (44px + 16px Kante) */
+#view-heute>.hb-trichter .hd-row,#anlassChap .ar-head,#belegungChap .lxfc-top{padding-right:64px}
+/* (4) Forecast-Knockouts (Ziel-Label/Dot-Ringe) liegen jetzt auf Etiketten-Creme statt Canvas */
+#belegungChap .lxfc-tlabel{background:var(--paper)}
+#belegungChap .lxfc-dot{box-shadow:0 0 0 3px var(--paper)}
 /* (2) Anlass-Bogen: der Foto-Strip am Kartenkopf (.ar-rc, margin -16px) wird zum Bogen und
    bekommt eine helle, warme Aufhellung statt des dunklen Duotones — die globalen .au-photo-
    Duotone-Overlays (Team/Netzwerk/Meintag/System) bleiben unberührt (höhere Spezifität scoped). */
@@ -2058,16 +2094,18 @@ body{accent-color:var(--brass)}
 /* (a) Heute-KPI-Band (Nordstern): dunkle paper2-Kacheln, Fraunces-Glow-Zahlen, Mono-Labels/Einheiten */
 #view-heute .ns-card{background:var(--paper)}
 #view-heute .ns-row{border-top:0;padding-top:6px;gap:10px}
-#view-heute .ns-m{background:var(--paper2);border:1px solid var(--hair);border-radius:18px;
-  padding:12px 8px 11px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi)}
+#view-heute .ns-m{background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;
+  padding:12px 10px 11px;box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
 #view-heute .ns-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);font-weight:400}
 #view-heute .ns-v{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;letter-spacing:-.02em;color:var(--ink);
   text-shadow:none}
 #view-heute .ns-v small,#view-heute .ns-v span{font-family:"Fragment Mono",ui-monospace,monospace;
   font-size:12px;font-weight:400;letter-spacing:.06em;color:var(--muted);text-shadow:none}
-/* (c) Kapitel-Katalognummern */
-.au-chapnum{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.15em;color:var(--brass);margin-right:10px}
+/* (c) Kapitel-Katalognummern — e5d-Muster „№ 01 — …": Cormorant-Numeral mit №-Präfix */
+.au-chapnum{font-family:"Cormorant Garamond",Georgia,serif;font-size:12px;font-weight:600;letter-spacing:.2em;color:var(--brass-deep);margin-right:10px}
+.au-chapnum::before{content:"№ "}
+.au-chapnum::after{content:" —";margin-left:2px}
 /* (d) Forecast-Balken → in den Signatur-Block `SIGNATURE · FORECAST` (.lxfc-*) verlegt. */
 @keyframes auGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
@@ -2171,12 +2209,12 @@ body{accent-color:var(--brass)}
      Fraunces 500, 11px, .14em, uppercase, muted + 34px-Gradient-Strich davor.
      Nur editoriale Fokuspunkte: Heute-Kapitel + Per-View-Header. — */
 #view-heute .kicker,.vhead .kicker{
-  font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;
-  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;
+  font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
   display:inline-flex;align-items:center;gap:10px}
+/* J2: Gradient-Tick → schlichte Gold-Haarlinie (e5d .bt-eyebrow .ln) */
 #view-heute .kicker::before,.vhead .kicker::before{
-  content:"";height:1px;width:34px;flex:none;
-  background:linear-gradient(90deg,var(--sage-deep),var(--brass) 60%,var(--terra));opacity:.9}
+  content:"";height:1px;width:34px;flex:none;background:var(--brass);opacity:.9}
 
 /* — Per-View-Titel (.vhead h1): E3 hero-h1-Duktus — Fraunces 300, enger Satz,
      clamp gegen 1024–1280-Umbruch & 390-Overflow — */
@@ -2213,16 +2251,15 @@ body{accent-color:var(--brass)}
      weicherer Radius (E3 .bt: 22px + inset 0 1px 0 #fff). Mail-Listen behalten
      ihre Dichte (:not(.list-card)); dichte Board-/Ledger-Views (Fälle/Datenbank)
      liegen außerhalb #view-heute und bleiben unberührt. — */
-#view-heute .card:not(.list-card){
-  padding:22px;border-radius:22px;
-  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.9)}
+/* J2: der frühere Hero-Schattenstack auf #view-heute .card (22px/inset-weiß) ist der
+   Etiketten-Sprache gewichen — Karten in Kapiteln liegen flach (JADE · HEUTE-KAPITEL). */
 #view-heute>.greet{box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.9)}
 
 /* — 390px: editoriale Zahlen nicht überziehen, 0-Overflow halten — */
 @media(max-width:430px){
   .chap{margin-top:34px}
   .chap-h2{font-size:26px}
-  #view-heute .card:not(.list-card){padding:18px}
+  #view-heute>.chap{padding:18px}
 }
 /* ===== W2 · Heute-Bento — gestaffelter Kachel-Auftritt (nur beim View-Eintritt).
    Läuft auf den ÄUSSEREN Grid-Kacheln (nie von renderHeute neu gebaut), replayt beim
