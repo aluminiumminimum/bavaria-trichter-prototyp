@@ -781,8 +781,6 @@
   .dt-titles span{font-size:12px;letter-spacing:.04em;color:var(--muted)}
   .dt-actions{display:flex;align-items:center;gap:16px}
   .dt-date{font-size:13px;color:var(--muted);letter-spacing:.03em;text-transform:capitalize}
-  .dt-ava{width:38px;height:38px;flex-shrink:0;border-radius:50%;background:var(--espresso-grad);color:var(--brass);
-    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;border:1px solid var(--gold-soft)}
   .app{max-width:none;margin-left:248px}
   .content{max-width:1240px;margin:0 auto;padding:calc(64px + 26px) 40px 64px}
   .tabbar{display:none}
@@ -1611,12 +1609,6 @@ body.ma-mode .dsidebar,body.ma-mode header.dtopbar,body.ma-mode nav.tabbar,body.
 body.ma-mode .view:not(#view-meintag){display:none}
 body.ma-mode #view-meintag{display:block}
 @media(min-width:1024px){body.ma-mode .app{margin-left:0}}
-.mt-avawrap{position:relative}
-.mt-rollmenu{position:absolute;right:0;top:calc(100% + 10px);min-width:230px;background:var(--paper);border:1px solid var(--hair);
-  border-radius:14px;box-shadow:var(--shadow);padding:6px;display:none;z-index:90}
-.mt-rollmenu.open{display:block}
-.mt-rollitem{display:block;width:100%;text-align:left;padding:11px 12px;border-radius:9px;font:500 14px/1.3 Inter;color:var(--ink-soft)}
-.mt-rollitem:hover{background:var(--brass-soft);color:var(--brass-deep)}
 #view-meintag{max-width:880px;margin:0 auto}
 .mt-head{margin:4px 0 8px}
 .mt-exit{margin-bottom:14px}
@@ -1698,7 +1690,6 @@ body.ma-mode #view-meintag{display:block}
   .dt-titles span{font-family:"Fragment Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
   .dt-actions .btn-ghost{background:var(--sage-deep);color:var(--ivory-tx);border:none;border-radius:4px;
     box-shadow:inset 0 0 0 1px rgba(185,145,73,.4),inset 0 0 0 3px var(--sage-deep)}
-  .dt-ava{background:var(--brass);color:var(--sage-deep);border:1px solid rgba(18,59,51,.15)}
 }
 .tabbar{background:var(--cream);
   backdrop-filter:none;-webkit-backdrop-filter:none;
@@ -1858,7 +1849,6 @@ body.ma-mode #view-meintag{display:block}
 /* — Mein Tag: Kopf-Meta in Mono, Fortschritt/Termine ruhig — */
 .mt-date{font-family:"Fragment Mono",ui-monospace,monospace}
 .mt-sum{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--muted)}
-.mt-rollmenu{background:var(--raised)}
 .mt-termine .mt-termzeit{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--brass-deep)}
 .mt-term-past{opacity:.55}
 
@@ -2255,8 +2245,6 @@ body{accent-color:var(--brass)}
 .au-photo figcaption{left:12px;bottom:12px;padding:5px 11px;border-radius:999px;
   background:rgba(18,24,18,.34);border:1px solid rgba(255,255,255,.18);
   backdrop-filter:blur(9px) saturate(1.25);-webkit-backdrop-filter:blur(9px) saturate(1.25)}
-/* Avatar-Rollmenü (Dropdown über Content) frosten */
-.mt-rollmenu{backdrop-filter:blur(14px) saturate(1.1);-webkit-backdrop-filter:blur(14px) saturate(1.1)}
 
 /* — 2 · VIEW-ENTRANCE CHOREOGRAFIE app-weit (lift-Muster auf die 5 übrigen Views).
    Ziel sind die STABILEN direkten Kinder (header/.sub/Grid-Container) — deren Innen-
@@ -2590,10 +2578,6 @@ body{accent-color:var(--brass)}
 #view-meintag .chap .kicker{color:var(--brass-deep);letter-spacing:.2em}
 #view-meintag .chap .kicker::before{content:"";display:inline-block;width:18px;height:1px;
   background:var(--brass);vertical-align:middle;margin-right:9px}
-/* Rollen-Menü: Elfenbein-Platte, Jade-Haarlinie, Gold-Hover (Basis) */
-.mt-rollmenu{background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;
-  box-shadow:var(--shadow),inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint)}
-.mt-rollitem{border-radius:3px}
 
 /* — (J5.2) MEIN TAG · Arbeitsblatt (mt-panel): SOLIDES Elfenbein-Blatt statt Glas
    (Blur-Budget −1), Jade-Haarlinien-Rahmen + innerer Gold-Pinstripe (Etikett im Blattmaß). — */
@@ -2951,6 +2935,32 @@ body{accent-color:var(--brass)}
 #radarLine{align-self:start}
 /* .hb-tfoot: eigener Flex-Kontext (rechtsbündig, ohne Siegel-Ausweich-Padding der Kopfzeile). */
 #view-heute>.hb-trichter .hd-row.hb-tfoot{display:flex;padding-right:0;justify-content:flex-end;margin:12px 0 0}
+/* ===== ROLLEN-SCHALTER „Leitung ⇄ Koordination" (.ds-role*) — T6 07/2026
+   Ersetzt den versteckten Avatar-Dropdown (#mtAvaBtn/#mtRollmenu) durch einen sichtbaren
+   Zwei-Segment-Schalter. Desktop: Ivory-Platte auf Lack, unter der Sidebar-Brand.
+   Mobil: kompaktes Chip-Paar im Greet (Jade-Hairline auf Elfenbein-Canvas).
+   Rein deklarativ (onclick → mtEnter/mtExit); im ma-mode ohnehin unsichtbar, da die
+   Sidebar UND alle Views außer #view-meintag per CSS ausgeblendet sind (Z.~1604ff) —
+   der statische „Leitung on"-Zustand genügt daher. Keine neuen Keyframes. ===== */
+.ds-role{display:none}
+.ds-role-btn{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;border-radius:3px;
+  transition:background .18s ease,color .18s ease}
+@media(min-width:1024px){
+  .dsidebar .ds-role{display:grid;grid-template-columns:1fr 1fr;width:100%;margin:0 0 8px;
+    padding:3px;border-radius:4px;background:rgba(246,242,230,.06);
+    box-shadow:inset 0 0 0 1px var(--gold-faint)}
+  .dsidebar .ds-role-btn{padding:7px 4px;text-align:center;color:var(--ivory-mut)}
+  .dsidebar .ds-role-btn:hover{color:var(--ivory-tx)}
+  .dsidebar .ds-role-btn.on{background:var(--paper);color:var(--sage-deep)}
+  /* Global-Fokusring (Jade) wäre auf Lack unsichtbar → Gold auf dunklem Grund */
+  .dsidebar .ds-role-btn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+}
+.ds-role--mobile{display:inline-flex;margin-top:12px;padding:3px;border-radius:4px;
+  background:var(--paper);border:1px solid var(--jade-hair)}
+.ds-role--mobile .ds-role-btn{padding:6px 13px;color:var(--sage-deep)}
+.ds-role--mobile .ds-role-btn.on{background:var(--sage-deep);color:var(--ivory-tx)}
+@media(min-width:1024px){.ds-role--mobile{display:none}}
 </style>
 </head>
 <body>
@@ -2960,6 +2970,10 @@ body{accent-color:var(--brass)}
 <!-- ============ DESKTOP SHELL (≥1024px) ============ -->
 <aside class="dsidebar" aria-label="Desktop-Navigation">
   <div class="ds-brand"><img src="assets/kb-logo-weiss.webp" alt="" class="ds-wordmark"><div class="ds-brandtxt"><b>Klinik Bavaria</b><span class="ds-sub">CONCIERGE OS</span></div></div>
+  <div class="ds-role" role="group" aria-label="Perspektive">
+    <button class="ds-role-btn on" id="roleBoss" onclick="mtExit()">Leitung</button>
+    <button class="ds-role-btn" id="roleKoord" onclick="mtEnter()">Koordination</button>
+  </div>
   <nav class="ds-nav">
     <button data-nav="heute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.2 12 4l9 7.2"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M10 20v-5h4v5"/></svg><span>Heute</span></button>
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg><span>Fälle</span></button>
@@ -2974,7 +2988,7 @@ body{accent-color:var(--brass)}
 </aside>
 <header class="dtopbar">
   <div class="dt-titles"><h2 id="dtopTitle" class="serif">Heute</h2><span id="dtopSub"></span></div>
-  <div class="dt-actions"><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button><div class="mt-avawrap"><button class="dt-ava serif" id="mtAvaBtn" onclick="mtRollToggle()" aria-haspopup="true" aria-expanded="false">KB</button><div class="mt-rollmenu" id="mtRollmenu"><button class="mt-rollitem" onclick="mtEnter()">Ansicht als S. Koordination</button></div></div></div>
+  <div class="dt-actions"><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button></div>
 </header>
 <div class="app">
 <main class="content">
@@ -2987,6 +3001,10 @@ body{accent-color:var(--brass)}
           <h1 id="greetTitle">Aus Quellen wird <em>planbare Belegung.</em></h1>
           <div class="lx-rule" aria-hidden="true"></div>
           <div class="g-date" id="greetDate"></div>
+          <div class="ds-role ds-role--mobile" role="group" aria-label="Perspektive">
+            <button class="ds-role-btn on" onclick="mtExit()">Leitung</button>
+            <button class="ds-role-btn" onclick="mtEnter()">Koordination</button>
+          </div>
         </div>
         <div class="au-arch" aria-hidden="true"><img src="assets/kb-suite.webp" alt="" loading="eager"><span>Panorama-Suite — Komfort-Kategorie</span></div>
       </div>
