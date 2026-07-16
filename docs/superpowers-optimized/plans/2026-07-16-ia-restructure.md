@@ -391,9 +391,9 @@ Den alten `kp-cta`-Button (~3632) entfernen (ersetzt durch die Karte). CSS addit
 
 **Files:** Modify: `index.html` (nur Fixes), `CLAUDE.md`, `HANDOVER.md`, `state.md`, `.workflow/jade-baseline.txt` (final bestätigen)
 
-- [ ] **Step 1: verifier (frisch, adversarial)** — Orchestrator dispatcht `verifier`-Agent gegen den feat/ia-Diff mit Prüfauftrag: (a) alle Alt-Routen-Aliase (`#team`, `#matrix`, `#system/auswertung`, `#system/sops`, `#faelle/inreha`, `#netzwerk/bestand`, alte `switchTab`-Namen `intelligenz`/`kommunikation`/`bestand`/`idee`), (b) Parity-Inventare, (c) Jade-Regeln (Keyframes ==9, opacity:0 nur in Keyframes, Inseln unberührt), (d) tote Selektoren/Container nach den Umzügen.
+- [x] **Step 1: verifier (frisch, adversarial)** — Orchestrator dispatcht `verifier`-Agent gegen den feat/ia-Diff mit Prüfauftrag: (a) alle Alt-Routen-Aliase (`#team`, `#matrix`, `#system/auswertung`, `#system/sops`, `#faelle/inreha`, `#netzwerk/bestand`, alte `switchTab`-Namen `intelligenz`/`kommunikation`/`bestand`/`idee`), (b) Parity-Inventare, (c) Jade-Regeln (Keyframes ==9, opacity:0 nur in Keyframes, Inseln unberührt), (d) tote Selektoren/Container nach den Umzügen.
 
-- [ ] **Step 2: Parity-Inventar**
+- [x] **Step 2: Parity-Inventar**
 
 ```bash
 grep -o 'function [a-zA-Z_][a-zA-Z0-9_]*' index.html | sort -u > /tmp/ia-fns.txt
@@ -402,13 +402,13 @@ comm -23 .workflow/jade-fns.txt /tmp/ia-fns.txt   # erwartet: LEER (0 verlorene 
 
 Analog consts/ids/onclicks gegen `.workflow/jade-{consts,ids,onclicks}.txt`. Erlaubte, im Commit dokumentierte Deltas NUR: entfallene Markup-IDs des cv-Duplikats/Avatar-Dropdowns, neue IDs (`view-inreha`, `view-auswertung`, `view-konzept`, `sub-*` neu, `roleBoss`, `roleKoord`, `rlCount`, `radarHost` falls angelegt), geänderte onclick-Ziele. JEDER andere Fehlbestand = Fix, kein Whitelisting.
 
-- [ ] **Step 3: V-Protokoll komplett** — V1 vm.Script · V2 @1440+@390 (0 Errors, 0 Overflow, Tabbar-Labels lesbar) · V3 Sweep: 6 Views + alle 8 Segmente + `openDetail`/`openDbDetail`/`openRsDetail`/`openSheetNeu`/`kpOpen`/`openReferrer`(mobil UND Desktop)+`rpTab`+`rpDoc` + Rollen-Schalter-Roundtrip beide Breiten + `simulateInbound`-Toast-Route · V4 Funnel gegen NEUE Baseline (dot-path===path-d script) · V5 `opacity:0`-Audit + Keyframe-Zählung ==9 · V6 Kontrast-Stichproben neue Elemente (Rollen-Schalter, Radar-Zeile, nx-Karten ≥4.5:1 Text).
+- [x] **Step 3: V-Protokoll komplett** — V1 vm.Script · V2 @1440+@390 (0 Errors, 0 Overflow, Tabbar-Labels lesbar) · V3 Sweep: 6 Views + alle 8 Segmente + `openDetail`/`openDbDetail`/`openRsDetail`/`openSheetNeu`/`kpOpen`/`openReferrer`(mobil UND Desktop)+`rpTab`+`rpDoc` + Rollen-Schalter-Roundtrip beide Breiten + `simulateInbound`-Toast-Route · V4 Funnel gegen NEUE Baseline (dot-path===path-d script) · V5 `opacity:0`-Audit + Keyframe-Zählung ==9 · V6 Kontrast-Stichproben neue Elemente (Rollen-Schalter, Radar-Zeile, nx-Karten ≥4.5:1 Text).
 
-- [ ] **Step 4: Doku** — `CLAUDE.md`: Funnel-Contract-Zeile aktualisieren (neue Zahlen, „1 cv-Instanz-Paar auf Heute"), Nav-Nennung in Konventionen prüfen (`.ds-*`-Beschreibung). `HANDOVER.md`: §Nav/Token-Spiegel auf neue Struktur. `state.md`: Programm-Abschluss. Session-log via context-management (macht der Orchestrator).
+- [x] **Step 4: Doku** — `CLAUDE.md`: Funnel-Contract-Zeile aktualisieren (neue Zahlen, „1 cv-Instanz-Paar auf Heute"), Nav-Nennung in Konventionen prüfen (`.ds-*`-Beschreibung). `HANDOVER.md`: §Nav/Token-Spiegel auf neue Struktur. `state.md`: Programm-Abschluss. Session-log via context-management (macht der Orchestrator).
 
-- [ ] **Step 5: Merge** — `git pull` → `feat/ia` ff-merge auf `main` → Push → `gh api repos/{owner}/{repo}/pages/builds` Build grün → Live-Stichprobe.
+- [x] **Step 5: Merge** — `git pull` → `feat/ia` ff-merge auf `main` → Push → `gh api repos/{owner}/{repo}/pages/builds` Build grün → Live-Stichprobe.
 
-- [ ] **Step 6: Commit/Abschluss** `feat(ia): T8 — QA-Gate: Parity 0 Verluste, V-Protokoll, Doku (CLAUDE/HANDOVER/state)`
+- [x] **Step 6: Commit/Abschluss** `feat(ia): T8 — QA-Gate: Parity 0 Verluste, V-Protokoll, Doku (CLAUDE/HANDOVER/state)`
 
 ---
 
