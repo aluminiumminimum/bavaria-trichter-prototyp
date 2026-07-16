@@ -101,7 +101,7 @@ Browser (Orchestrator): `#inreha` lädt rsCockpit+inrehaGrid, `openRsDetail` öf
 
 **Does NOT cover:** Änderungen an der Heute-cv-Instanz (bleibt byte-identisch!), renderTeam-Logik (signaturgleich).
 
-- [ ] **Step 1: Team-Inhalt als Segment umziehen, cv-Duplikat streichen**
+- [x] **Step 1: Team-Inhalt als Segment umziehen, cv-Duplikat streichen**
 
 Aus `#view-team` (~3550–3619) übernehmen: die `lblline`-Zeile, `<figure class="au-photo au-photo--sage">…kb-haus…</figure>`, `<div id="teamGrid"></div>`. Das komplette `<div class="cv tm-cv">…</div>` (beide SVGs, ~3554–3616) wird ERSATZLOS GELÖSCHT. Danach `#view-team` samt Section-Kommentar restlos entfernen.
 
@@ -117,7 +117,7 @@ In `#view-faelle` nach `sub-faelle-board` neues Segment:
 
 Tablist Fälle: `<button class="seg" data-seg="team" role="tab">Team</button>` als dritter Tab.
 
-- [ ] **Step 2: Router/Nav**
+- [x] **Step 2: Router/Nav**
 
 `SEGS`: `faelle:["anfragen","board","team"]`. `TITLES.faelle`: `["Fälle","Anfragen · Board · Team"]`; `TITLES.team` entfernen.
 `switchTab()`-map ergänzen: `team:["faelle","team"]`.
@@ -129,7 +129,7 @@ Tablist Fälle: `<button class="seg" data-seg="team" role="tab">Team</button>` a
 
 Sidebar-Button `data-nav="team"` (~2947) und Tabbar-Item `data-nav="team"` entfernen. `renderTeam()`/`setTeamFilter()` bleiben unverändert (Ziel-Container `#teamGrid` existiert weiter). Callsite ~5120 (`Team inbound indicator`) prüfen: liegt im teamGrid-Rendering, bleibt gültig. MATRIX-Routen auf `team` → `["faelle","team"]`.
 
-- [ ] **Step 3: Funnel-Contract NEU einfrieren**
+- [x] **Step 3: Funnel-Contract NEU einfrieren**
 
 ```bash
 grep -c 'offset-path' index.html     # erwartet: 12 (vorher 24)
@@ -141,9 +141,9 @@ node -e 'const fs=require("fs");const h=fs.readFileSync("index.html","utf8");con
 
 `.workflow/jade-baseline.txt` mit den GEMESSENEN neuen Werten überschreiben (offset-path / cv-travel / data-sync) + Kommentarzeile `# neu eingefroren 2026-07-16 T2: Team-cv-Duplikat entfernt (Spec ia-restructure)`.
 
-- [ ] **Step 4: Verifikation** — vm.Script-Check wie T1; `grep -c 'id="view-team"' index.html` → 0; `grep -c 'tm-cv' index.html` → 0 (auch CSS-Regeln `.tm-cv` entfernen, falls dadurch verwaist — NUR die, die ausschließlich `.tm-cv` adressieren). Browser: Fälle→Team zeigt teamGrid + Filter klickbar; Heute-Funnel-Animation läuft unverändert; `#team` (Alt-Hash) landet auf Fälle/Team; `set()`-Sync wirft keine Errors (Konsole 0).
+- [x] **Step 4: Verifikation** — vm.Script-Check wie T1; `grep -c 'id="view-team"' index.html` → 0; `grep -c 'tm-cv' index.html` → 0 (auch CSS-Regeln `.tm-cv` entfernen, falls dadurch verwaist — NUR die, die ausschließlich `.tm-cv` adressieren). Browser: Fälle→Team zeigt teamGrid + Filter klickbar; Heute-Funnel-Animation läuft unverändert; `#team` (Alt-Hash) landet auf Fälle/Team; `set()`-Sync wirft keine Errors (Konsole 0).
 
-- [ ] **Step 5: Commit** `feat(ia): T2 — Team als Fälle-Segment, cv-Duplikat entfernt, Funnel-Baseline neu eingefroren (24→12)`
+- [x] **Step 5: Commit** `feat(ia): T2 — Team als Fälle-Segment, cv-Duplikat entfernt, Funnel-Baseline neu eingefroren (24→12)`
 
 ---
 
