@@ -1762,7 +1762,7 @@ body.ma-mode #view-meintag{display:block}
 #view-team>.au-photo{height:140px;margin:0 0 16px}
 #sub-netzwerk-zuweiser>.au-photo{height:120px;margin:12px 0}
 #sub-netzwerk-bestand>.au-photo{width:120px;height:120px;margin:0 0 14px}
-#sub-faelle-inreha>.au-photo{height:130px;margin:0 0 14px}
+#view-inreha>.au-photo{height:130px;margin:0 0 14px}
 #view-meintag>.au-photo{height:110px;margin:0 0 10px}
 .ar-rc>.au-photo{height:64px;border-radius:12px;margin:-16px -16px 12px}
 /* Portal-Hero: bogenmaskiertes Foto rechts, nur auf breitem Desktop */
@@ -2932,6 +2932,19 @@ body{accent-color:var(--brass)}
 }
 /* Kanalzeilen-Haarlinien im größeren Panel (e5d-Detail) */
 .cv-sep{stroke:rgba(185,145,73,.22);stroke-width:1}
+
+/* ===== IN REHA als Top-Level-View (T1) =====
+   (a) View-Entrance: gleiches lift-Stagger-Muster wie die übrigen Views (kein neuer Keyframe).
+   (b) Tabbar trägt jetzt 7 Items — auf schmalen Breiten Gap/Schrift minimal verdichten,
+       damit „Netzwerk" bei 390px nicht überläuft (flex-Items dürfen schrumpfen: min-width:0). */
+#view-inreha.view.active>*{animation:lift .42s cubic-bezier(.22,1,.36,1) both}
+#view-inreha.view.active>*:nth-child(2){animation-delay:.06s}
+#view-inreha.view.active>*:nth-child(3){animation-delay:.12s}
+#view-inreha.view.active>*:nth-child(4){animation-delay:.18s}
+@media(max-width:479px){
+  .tabbar-inner{gap:2px;padding-left:4px;padding-right:4px}
+  .tabbar [data-nav]{min-width:0;font-size:10.5px;letter-spacing:.02em}
+}
 </style>
 </head>
 <body>
@@ -2944,6 +2957,7 @@ body{accent-color:var(--brass)}
   <nav class="ds-nav">
     <button data-nav="heute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.2 12 4l9 7.2"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M10 20v-5h4v5"/></svg><span>Heute</span></button>
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg><span>Fälle</span></button>
+    <button data-nav="inreha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M2 18h20"/><path d="M7 10h4v4H7z"/></svg><span>In Reha</span></button>
     <button data-nav="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6l2-8z"/></svg><span>Team</span></button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg><span>Netzwerk</span></button>
     <button data-nav="matrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 12h17M9.5 4v16M15.5 4v16"/></svg><span>Matrix</span></button>
@@ -3524,7 +3538,6 @@ body{accent-color:var(--brass)}
       <div class="segments" role="tablist" aria-label="Fälle-Bereiche">
         <button class="seg active" data-seg="anfragen" role="tab">Anfragen <b class="segn num" id="segCntAnfragen"></b></button>
         <button class="seg" data-seg="board" role="tab">Board <b class="segn num" id="segCntBoard"></b></button>
-        <button class="seg" data-seg="inreha" role="tab">In Reha</button>
       </div>
       <button class="sim-cta" onclick="simulateInbound()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Anfrage simulieren (Demo)</button>
     </header>
@@ -3537,12 +3550,16 @@ body{accent-color:var(--brass)}
       <div class="bf" id="boardFocus"></div>
       <div class="board" id="board"></div>
     </div>
-      <div class="sub" id="sub-faelle-inreha">
-        <p class="lblline">Patienten aktuell in Behandlung — Erfolg &amp; Wirtschaftlichkeit auf einen Blick.</p>
-        <figure class="au-photo au-photo--gold"><img src="assets/kb-komfort-band.jpg" alt="" loading="lazy"><figcaption>Komfort · Klinik Bavaria</figcaption></figure>
-        <div id="rsCockpit"></div>
-        <div id="inrehaGrid"></div>
-      </div>
+  </section>
+
+  <!-- ============ IN REHA ============ -->
+  <section id="view-inreha" class="view">
+    <header class="vhead"><div class="kicker">Qualität &amp; Steuerung</div><h1>In Reha</h1>
+      <p class="lblline">Patienten aktuell in Behandlung — Erfolg &amp; Wirtschaftlichkeit auf einen Blick.</p>
+    </header>
+    <figure class="au-photo au-photo--gold"><img src="assets/kb-komfort-band.jpg" alt="" loading="lazy"><figcaption>Komfort · Klinik Bavaria</figcaption></figure>
+    <div id="rsCockpit"></div>
+    <div id="inrehaGrid"></div>
   </section>
 
   <!-- ============ NETZWERK ============ -->
@@ -3861,6 +3878,7 @@ body{accent-color:var(--brass)}
   <div class="tabbar-inner">
     <button data-nav="heute" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.2 12 4l9 7.2"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M10 20v-5h4v5"/></svg>Heute</button>
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg>Fälle<span class="nbadge num" id="navBadgeFaelle"></span></button>
+    <button data-nav="inreha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M2 18h20"/><path d="M7 10h4v4H7z"/></svg>Reha</button>
     <button data-nav="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6l2-8z"/></svg>Team</button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg>Netzwerk</button>
     <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg>System</button>
@@ -4073,7 +4091,7 @@ const MATRIX=[
  {row:"B2B",col:"in", titel:"Behandlungs-Einblick",zweck:"Kurzbericht, Laborwerte, Kontakt",metricId:"mxBBin", status:"aufbau",route:["ref","einblick"]},
  {row:"B2B",col:"nach",titel:"Abschlusspaket",zweck:"Arztbrief, Empfehlungen, Rücksprache",metricId:"mxBBnach",status:"aufbau",route:["ref","abschluss"]},
  {row:"B2C",col:"vor",titel:"Anfrage & Aufnahme",zweck:"Eingang aller Kanäle → Fall-Board",metricId:"mxBCvor",status:"aktiv",route:["faelle","board"]},
- {row:"B2C",col:"in", titel:"Reha-Steuerung",zweck:"Verweildauer, Barthel, FIM, Ziel",metricId:"mxBCin", status:"aktiv",route:["faelle","inreha"]},
+ {row:"B2C",col:"in", titel:"Reha-Steuerung",zweck:"Verweildauer, Barthel, FIM, Ziel",metricId:"mxBCin", status:"aktiv",route:["inreha"]},
  {row:"B2C",col:"nach",titel:"Nachsorge & Radar",zweck:"Wiedervorlagen, Datenbank-Pflege",metricId:"mxBCnach",status:"aufbau",route:["netzwerk","bestand"]}
 ];
 /* ----- Belegung je Achse × Woche (freie Plätze) — für Portal ----- */
@@ -5938,7 +5956,7 @@ function mtExit(){
 }
 
 /* ---------- Navigation ---------- */
-const SEGS={faelle:["anfragen","board","inreha"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
+const SEGS={faelle:["anfragen","board"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
 let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",system:"idee"}};
 function go(dest,seg){
   const _run=function(){
@@ -5948,7 +5966,7 @@ function go(dest,seg){
     if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
     document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
     document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
-    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · In Reha"],team:["Team","Zentraler Eingang · Zuordnung · Aufgaben"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],system:["System","Idee · Auswertung · SOPs"],matrix:["Matrix","Patienten-Reise B2B / B2C"]};
+    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],team:["Team","Zentraler Eingang · Zuordnung · Aufgaben"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],system:["System","Idee · Auswertung · SOPs"],matrix:["Matrix","Patienten-Reise B2B / B2C"]};
     const _t=TITLES[dest]||TITLES.heute;
     const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
     const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
@@ -5971,6 +5989,7 @@ function go(dest,seg){
 function switchTab(t){
   if(t==="neu"){openSheetNeu();return;}
   const map={cockpit:["heute"],heute:["heute"],eingang:["faelle","anfragen"],faelle:["faelle","board"],
+    inreha:["inreha"],
     zuweiser:["netzwerk","zuweiser"],bestand:["netzwerk","bestand"],idee:["system","idee"],
     intelligenz:["system","auswertung"],kommunikation:["system","sops"]};
   const m=map[t]||["heute"];
@@ -5991,6 +6010,7 @@ function applyHash(){
   const parts=h.split("/");
   const oldNames={cockpit:1,eingang:1,faelle:1,zuweiser:1,bestand:1,idee:1,intelligenz:1,kommunikation:1,neu:1};
   if(parts.length===1&&oldNames[parts[0]]&&!document.getElementById("view-"+parts[0])){switchTab(parts[0]);return;}
+  if(parts[0]==="faelle"&&parts[1]==="inreha"){go("inreha");return;}
   go(parts[0],parts[1]);
 }
 
