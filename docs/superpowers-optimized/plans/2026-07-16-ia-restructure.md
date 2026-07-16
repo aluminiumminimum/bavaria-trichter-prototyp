@@ -279,11 +279,11 @@ Callsite Heute „Alle Anlässe ›" (~3499): `onclick="go('netzwerk','bestand')
 
 **Does NOT cover:** Löschen von Funktionen/Daten (alles zieht um oder wird retargetet).
 
-- [ ] **Step 1: Anlässe-Block umziehen**
+- [x] **Step 1: Anlässe-Block umziehen**
 
 `<div class="chap hb-8" id="anlassChap">…</div>` (~3497–3501, inkl. `ar-head`, `#anlassSum`, `#anlassList`) wholesale in `sub-netzwerk-radar` (aus Task 4) verschieben — dort ANS ENDE, nach den Radar-Containern; Klasse `hb-8` entfernen (Netzwerk-Subs sind nicht im hb-Grid), `au-chapnum`-Span „02" entfernen (Kapitel-Siegel gehören zur Heute-Bühne). Der „Alle Anlässe ›"-Button im `ar-head` entfällt dort (man IST am Ziel) — Button-Markup löschen, `renderAnlaesse()` bleibt unverändert (IDs identisch).
 
-- [ ] **Step 2: Radar-Siegel-Zeile auf Heute**
+- [x] **Step 2: Radar-Siegel-Zeile auf Heute**
 
 An der alten Stelle von `anlassChap` (Row C, neben „Heute wichtig" hb-4) neue schlanke Zeile:
 
@@ -297,18 +297,18 @@ An der alten Stelle von `anlassChap` (Row C, neben „Heute wichtig" hb-4) neue 
 JS: in `renderHeute()` (dort, wo bisher `anlassSum` auf Heute befüllt wurde bzw. am Ende) `rlCount` mit derselben Zahl befüllen, die bisher `#anlassSum` auf Heute speiste (gleiche Ableitung aus `anlaesse()` — Betrag übernehmen, Quelle nicht neu erfinden). Guard `if(el)` wie im Bestand üblich.
 CSS additiv vor `</style>` (Namespace `.rl-*`): `.rl-strip` = volle Breite, Etiketten-Karte (bestehende `.card`/`.lx-live`-Optik erbt), `cursor:pointer`, Hover = Gold-Hairline-Verstärkung. Keine neuen Keyframes.
 
-- [ ] **Step 3: Auswertungs-Verweis bündeln**
+- [x] **Step 3: Auswertungs-Verweis bündeln**
 
 Die 3 Trichter-Tap-Flächen behalten ihre (in T3 bereits auf `go('auswertung')` umgestellten) onclicks. ZUSÄTZLICH sichtbare Affordanz: in der Trichter-Karte (`hb-trichter`) unter dem SVG eine Verweis-Zeile im Stil des bestehenden „Die ganze Idee ›"-Links (~3128 als Vorbild kopieren): Text „Zur Auswertung ›", `onclick="go('auswertung')"`. Der „Die ganze Idee ›"-Link zeigt ab jetzt auf `go('konzept','idee')` (T3 hat das erledigt — verifizieren).
 
-- [ ] **Step 4: Foto-Diät + Grid-Rebalance + Siegel**
+- [x] **Step 4: Foto-Diät + Grid-Rebalance + Siegel**
 
 Küche-Figure (~3510, `assets/kb-kueche.webp`) restlos entfernen (Asset bleibt im Repo). Panorama-Suite-Figure (~3514, `hb-4 hb-photo`) rückt als Partner NEBEN Belegung (Row D: `belegungChap` hb-8 + Suite hb-4). Campus-Figure: Klasse `hb-8` → `hb-12` (volle Breite als Schlussband).
 Kapitel-Siegel neu zählen: Trichter bleibt `01` (Zinnober via CSS `#view-heute>.hb-trichter::after` — unverändert), `radarLine` trägt `02`, `belegungChap` bleibt `03` → auf `03` prüfen und beibehalten ODER auf 02/03 harmonisieren so, dass GENAU die Regel gilt: 01 Zinnober, 02/03 Gold-Ring, lückenlos aufsteigend in DOM-Reihenfolge.
 
-- [ ] **Step 5: Verifikation** — vm.Script; `grep -c 'anlassChap' index.html` → 1 (jetzt im Radar-Segment); `grep -c 'kb-kueche' index.html` → 0; Browser @1440: Heute-Grid ohne Loch (Rows: Hero / Trichter / NS-Band / wichtig+radarLine / belegung+suite / campus), @390 kein Overflow; Klick auf Radar-Zeile landet im Radar-Segment mit Anlässe-Grid; `rlCount` zeigt Zahl >0.
+- [x] **Step 5: Verifikation** — vm.Script; `grep -c 'anlassChap' index.html` → 1 (jetzt im Radar-Segment); `grep -c 'kb-kueche' index.html` → 0; Browser @1440: Heute-Grid ohne Loch (Rows: Hero / Trichter / NS-Band / wichtig+radarLine / belegung+suite / campus), @390 kein Overflow; Klick auf Radar-Zeile landet im Radar-Segment mit Anlässe-Grid; `rlCount` zeigt Zahl >0.
 
-- [ ] **Step 6: Commit** `feat(ia): T5 — Heute entschlackt: Anlässe→Radar-Segment, Radar-Siegel-Zeile, Verweis Auswertung, Foto-Diät`
+- [x] **Step 6: Commit** `feat(ia): T5 — Heute entschlackt: Anlässe→Radar-Segment, Radar-Siegel-Zeile, Verweis Auswertung, Foto-Diät`
 
 ---
 
