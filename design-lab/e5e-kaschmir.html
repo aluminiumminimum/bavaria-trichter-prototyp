@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#EAE6DF">
+<title>Klinik Bavaria · Concierge OS — Kaschmir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* KASCHMIR — layered greige monochrome. NO accent colour but ink itself. */
+  --ground:#EAE6DF;      /* page */
+  --panel:#F2EFE9;       /* cards */
+  --panel-hi:#F6F3EE;    /* card hover (barely lighter) */
+  --deep:#E0DBD2;        /* deepest surface */
+  --ink:#26231E;         /* the only "accent": max-contrast ink on greige */
+  --sec:#6E6961;         /* secondary text */
+  --whisper:#A39D93;     /* labels / hairlines */
+  --moss:#7A7D6A;        /* the single point of colour — the boutonnière */
+  --hair:rgba(38,35,30,.10);
+  --hair-soft:rgba(38,35,30,.06);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --gutter:clamp(20px,5vw,88px);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:15px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--ink);color:var(--ground)}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--ground)}
+::-webkit-scrollbar-thumb{background:rgba(38,35,30,.16);border-radius:20px;border:3px solid var(--ground)}
+::-webkit-scrollbar-thumb:hover{background:rgba(38,35,30,.28)}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
+
+.serif{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto}
+/* labels: widely-tracked uppercase Inter, whisper tone */
+.mlabel{
+  font-family:'Inter',sans-serif;
+  font-size:10px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--whisper);
+}
+
+/* ============ ONLY 3 KEYFRAMES ============ */
+@keyframes lift{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+/* ============ TOP NAV (mobile ≤1023px) ============ */
+.nav{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:24px;
+  padding:16px var(--gutter);
+  background:var(--ground);
+  border-bottom:1px solid var(--hair-soft);
+}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand-mark{
+  width:26px;height:26px;flex:none;border-radius:50%;
+  background:var(--ink);
+  display:grid;place-items:center;
+}
+.brand-mark img{width:14px;height:14px;filter:brightness(0) invert(1);opacity:.9}
+.brand-txt{font-family:'Fraunces',serif;font-weight:400;font-size:15px;letter-spacing:.01em;white-space:nowrap}
+.brand-txt .dot{color:var(--whisper);padding:0 5px}
+.brand-txt .os{color:var(--sec)}
+.nav-links{display:flex;gap:2px;align-items:center}
+.nav-links a{
+  font-size:13px;font-weight:400;color:var(--sec);
+  padding:7px 13px;border-radius:20px;
+  transition:color .18s var(--ease);
+}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a.active{color:var(--ink);font-weight:500}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-date{font-size:12px;color:var(--whisper);white-space:nowrap;letter-spacing:.02em}
+.nav-ava{
+  width:32px;height:32px;border-radius:50%;flex:none;
+  background:var(--deep);color:var(--ink);
+  display:grid;place-items:center;
+  font-family:'Fraunces',serif;font-weight:400;font-size:13px;
+}
+.nav-burger{display:none}
+
+/* ============ HERO — full editorial screen ============ */
+.hero{
+  display:grid;
+  grid-template-columns:1fr;
+  align-items:stretch;
+  padding:clamp(28px,5vh,56px) var(--gutter) clamp(40px,7vh,80px);
+  gap:clamp(28px,4vh,48px);
+}
+.hero-copy{
+  display:flex;flex-direction:column;justify-content:center;
+  animation:lift .6s var(--ease) both;
+}
+.hero-greet{display:flex;align-items:center;gap:16px;margin-bottom:34px}
+.hero-greet .line{height:1px;width:52px;background:var(--whisper)}
+.hero-greet .txt{font-size:13px;color:var(--sec);letter-spacing:.01em}
+.hero-greet .txt b{font-weight:500;color:var(--ink)}
+.hero-h1{
+  font-family:'Fraunces',serif;font-optical-sizing:auto;
+  font-weight:300;
+  font-size:clamp(42px,8.4vw,110px);
+  line-height:.95;letter-spacing:-.022em;
+  color:var(--ink);
+  max-width:14ch;
+}
+.hero-h1 .em{font-style:italic;font-weight:300}
+.hero-rule{height:1px;width:min(320px,60%);margin:34px 0 0;background:var(--whisper)}
+.hero-sub{
+  margin-top:26px;max-width:38ch;
+  font-size:15px;line-height:1.75;color:var(--sec);
+}
+.hero-cta{margin-top:38px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn{
+  font-family:'Inter';font-size:13px;font-weight:500;letter-spacing:.02em;
+  padding:13px 24px;border-radius:30px;cursor:pointer;border:1px solid var(--ink);
+  display:inline-flex;align-items:center;gap:9px;
+  transition:background .2s var(--ease),color .2s var(--ease),opacity .2s var(--ease);
+}
+.btn-p{background:var(--ink);color:var(--ground)}
+.btn-p:hover{background:#33302A}
+.btn-g{background:transparent;color:var(--ink);border-color:var(--hair)}
+.btn-g:hover{background:var(--deep)}
+.btn svg{width:15px;height:15px}
+
+/* the ONE photo on the page — softly desaturated */
+.hero-photo{
+  position:relative;overflow:hidden;
+  border-radius:18px;
+  min-height:clamp(300px,42vh,560px);
+  background:var(--deep);
+  animation:lift .6s var(--ease) .1s both;
+}
+.hero-photo img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:50% 42%;filter:saturate(.7) contrast(.98);
+}
+.hero-photo .grade{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(20,18,14,.10) 0%,rgba(20,18,14,0) 32%,rgba(20,18,14,.42) 100%);
+}
+.hero-photo .cap{
+  position:absolute;left:26px;bottom:24px;right:26px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+  color:var(--ground);z-index:2;
+}
+.hero-photo .cap .place{font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:18px}
+.hero-photo .cap .co{font-size:10px;letter-spacing:.22em;text-transform:uppercase;opacity:.85;font-weight:500}
+
+/* ============ SHARED atoms ============ */
+/* convergence svg atoms — monochrome pencil-drawing */
+.chan-lbl{font-family:'Inter';font-size:12px;font-weight:400;fill:var(--sec)}
+.chan-num{font-family:'Fraunces',serif;font-size:13px;font-weight:400;fill:var(--ink)}
+.flowline{fill:none;stroke:var(--ink);stroke-width:1;opacity:.24}
+.hub-ring{fill:none;stroke:var(--ink);stroke-width:1}
+.conv-legend{
+  display:flex;flex-wrap:wrap;gap:8px 22px;
+  margin:6px 2px 0;padding-top:16px;border-top:1px solid var(--hair-soft);
+}
+.conv-legend span{display:inline-flex;align-items:center;gap:8px;font-size:11px;color:var(--sec)}
+.conv-legend i{width:5px;height:5px;border-radius:50%;flex:none;background:var(--ink)}
+.stepper{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-top:20px;padding-top:20px;border-top:1px solid var(--hair-soft)}
+.step{display:flex;align-items:center;gap:11px;color:var(--whisper);font-size:12.5px;letter-spacing:.02em}
+.step .b{width:6px;height:6px;border-radius:50%;background:transparent;border:1px solid var(--whisper)}
+.step.on{color:var(--ink);font-weight:500}
+.step.on .b{background:var(--ink);border-color:var(--ink)}
+.step .arw{width:30px;height:1px;background:var(--hair);margin:0 14px}
+
+/* tags (Eingang) — tonal, no colour */
+.tag{font-size:9.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:5px 11px;border-radius:20px;white-space:nowrap}
+.tag.neu{background:var(--ink);color:var(--ground)}
+.tag.wait{background:transparent;color:var(--sec);border:1px solid var(--hair)}
+.tag.mid{background:var(--deep);color:var(--sec)}
+
+/* forecast bars — ink stems, pencil feel */
+.chart{position:relative}
+.chart-grid{position:relative;height:clamp(200px,26vh,300px);margin-bottom:30px;display:flex;align-items:flex-end;gap:clamp(8px,1.4vw,20px)}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative}
+.bar{
+  width:100%;max-width:42px;border-radius:6px 6px 2px 2px;
+  background:var(--whisper);
+  transform-origin:bottom;
+  animation:grow .8s var(--ease) both;animation-delay:var(--d,0s);
+  position:relative;
+}
+.bar-col.peak .bar{background:var(--ink)}
+.bar .cap{
+  position:absolute;top:-26px;left:50%;transform:translateX(-50%);
+  font-family:'Fraunces',serif;font-weight:400;font-size:14px;color:var(--ink);white-space:nowrap;
+}
+.bar .dotcap{
+  position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+  width:7px;height:7px;border-radius:50%;background:var(--ink);
+  box-shadow:0 0 0 3px var(--panel);
+}
+.bar-col.peak .bar .dotcap{background:var(--ink)}
+.bar-col .wk{position:absolute;bottom:-24px;font-size:10.5px;color:var(--whisper);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.target-line{position:absolute;left:0;right:0;height:0;border-top:1px dashed var(--whisper);z-index:3;pointer-events:none}
+.target-line .t{position:absolute;right:0;top:-9px;background:var(--panel);padding:0 8px;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--sec)}
+
+/* ============ CLOSING — typographic, no photo ============ */
+.closing{
+  position:relative;
+  min-height:56vh;display:grid;place-items:center;text-align:center;
+  padding:clamp(64px,12vh,140px) var(--gutter);
+  background:var(--deep);
+}
+.closing .inner{position:relative;z-index:2;color:var(--ink);max-width:24ch}
+.closing .mlabel{color:var(--whisper)}
+.closing h2{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(32px,6vw,72px);line-height:1.0;letter-spacing:-.02em;margin-top:22px}
+.closing h2 .em{font-style:italic;font-weight:300}
+.closing .btn-p{margin-top:36px}
+
+/* footer */
+.foot{padding:30px var(--gutter);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--hair-soft);font-size:11.5px;color:var(--whisper);letter-spacing:.02em}
+.foot .l{display:flex;gap:8px;align-items:center}
+.foot b{color:var(--sec);font-weight:500}
+
+/* ============ LEFT SIDEBAR (desktop) — greige, no border ============ */
+.side{
+  position:fixed;left:0;top:0;bottom:0;width:250px;z-index:70;
+  display:none;flex-direction:column;
+  padding:34px 22px 26px;
+  background:var(--ground);
+  color:var(--ink);
+}
+.side-brand{display:flex;align-items:center;gap:12px;padding:0 6px}
+.side-mark{
+  width:34px;height:34px;flex:none;border-radius:50%;
+  background:var(--ink);
+  display:grid;place-items:center;
+}
+.side-mark img{width:18px;height:18px;filter:brightness(0) invert(1);opacity:.9}
+.side-brand-tx{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.side-brand-tx .nm{font-family:'Fraunces',serif;font-weight:400;font-size:16px;letter-spacing:.01em;color:var(--ink)}
+.side-brand-tx .os{
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--whisper);margin-top:4px;
+}
+.side-nav{display:flex;flex-direction:column;gap:1px;margin-top:44px}
+.side-nav a{
+  position:relative;display:flex;align-items:center;gap:14px;
+  padding:11px 14px;border-radius:11px;
+  font-size:13.5px;font-weight:400;color:var(--whisper);
+  transition:color .16s var(--ease),background .16s var(--ease);
+}
+.side-nav a svg{width:17px;height:17px;flex:none;fill:none;stroke:var(--whisper);stroke-width:1.5;transition:stroke .16s var(--ease)}
+.side-nav a:hover{color:var(--ink)}
+.side-nav a:hover svg{stroke:var(--ink)}
+.side-nav a.active{color:var(--ink);font-weight:500}
+.side-nav a.active svg{stroke:var(--ink)}
+.side-nav a.active::before{
+  content:"";position:absolute;left:-6px;top:50%;transform:translateY(-50%);
+  width:5px;height:5px;border-radius:50%;background:var(--ink);
+}
+.side-foot{margin-top:auto;padding:0 6px}
+.side-date{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:.22em;color:var(--whisper);white-space:nowrap;text-transform:uppercase}
+.side-div{height:1px;background:var(--hair);margin:16px 0}
+.side-user{display:flex;align-items:center;gap:12px}
+.side-ava{
+  width:34px;height:34px;flex:none;border-radius:50%;background:var(--deep);color:var(--ink);
+  display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:400;font-size:13px;
+}
+.side-user-tx{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.side-user-tx .nm{font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-user-tx .rl{font-size:10.5px;color:var(--whisper);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(min-width:1024px){
+  .nav{display:none}
+  body{padding-left:250px}
+  .side{display:flex}
+  .hero{
+    grid-template-columns:1.15fr .85fr;
+    min-height:100vh;align-items:center;
+    gap:clamp(40px,5vw,80px);
+    padding:clamp(48px,8vh,96px) var(--gutter);
+  }
+  .hero-photo{min-height:min(72vh,620px)}
+}
+
+/* ============ BENTO — separation through tone + generous space ============ */
+.bento{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:clamp(18px,2.6vw,32px);grid-auto-flow:dense;
+  padding:0 var(--gutter) clamp(48px,9vh,110px);
+}
+@media(min-width:1024px){ .bento{padding-top:clamp(20px,4vh,48px)} }
+
+/* tile base: barely-there tonal card, NO border, NO shadow */
+.bt{
+  position:relative;overflow:hidden;
+  background:var(--panel);
+  border-radius:14px;
+  padding:28px;
+  transition:background .25s var(--ease);
+  animation:lift .6s var(--ease) both;
+}
+.bt:nth-child(1){animation-delay:.04s}
+.bt:nth-child(2){animation-delay:.08s}
+.bt:nth-child(3){animation-delay:.12s}
+.bt:nth-child(4){animation-delay:.16s}
+.bt:nth-child(5){animation-delay:.20s}
+.bt:nth-child(6){animation-delay:.24s}
+.bt:nth-child(7){animation-delay:.28s}
+.bt:nth-child(8){animation-delay:.30s}
+.bt:nth-child(9){animation-delay:.32s}
+.bt:nth-child(10){animation-delay:.34s}
+.bt:nth-child(11){animation-delay:.36s}
+.bt:nth-child(12){animation-delay:.38s}
+.bt:nth-child(13){animation-delay:.40s}
+.bt:nth-child(14){animation-delay:.42s}
+
+/* spans */
+.t-kpi{grid-column:span 1}
+.t-live{grid-column:span 4}
+.t-conv{grid-column:span 3;min-height:340px}
+.t-stat{grid-column:span 1}
+.t-eingang{grid-column:span 2}
+.t-anlass{grid-column:span 1}
+.t-anlass.wide{grid-column:span 2}
+.t-quote{grid-column:span 2}
+.t-forecast{grid-column:span 3}
+
+/* ghost chapter numeral — type as ornament */
+.bt-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:16px;position:relative;z-index:2}
+.bt-eyebrow .ln{height:1px;width:30px;background:var(--whisper)}
+.bt-num{
+  position:absolute;right:6px;top:-6px;z-index:1;pointer-events:none;user-select:none;
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:96px;line-height:.8;color:rgba(38,35,30,.05);
+}
+.bt-h{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(21px,2.3vw,30px);letter-spacing:-.012em;line-height:1.06;color:var(--ink)}
+.bt-h .em{font-style:italic;font-weight:300}
+.bt-lede{margin-top:10px;font-size:12.5px;color:var(--sec);max-width:46ch;line-height:1.6}
+
+/* --- KPI tile: type carries everything --- */
+.t-kpi{display:flex;flex-direction:column;padding:28px}
+.kpi .lab{display:block;margin-bottom:auto}
+.kpi .val{
+  display:inline-block;margin-top:30px;
+  font-family:'Fraunces',serif;font-weight:300;
+  font-size:clamp(52px,6vw,80px);line-height:.92;letter-spacing:-.03em;color:var(--ink);
+  border-bottom:1px solid var(--whisper);padding-bottom:12px;
+}
+.kpi .val small{font-size:.26em;color:var(--whisper);font-weight:400;letter-spacing:0}
+.kpi .val .count{color:var(--ink)}
+.kpi .delta{margin-top:14px;font-size:12px;color:var(--sec);letter-spacing:.01em}
+
+/* --- LIVE strip --- */
+.t-live{
+  display:flex;align-items:center;gap:16px;
+  padding:18px 26px;
+  background:var(--deep);
+}
+.t-live .pulse{width:9px;height:9px;flex:none;border-radius:50%;background:var(--moss)}
+.t-live .tx{font-size:13.5px;color:var(--sec)}
+.t-live .tx b{color:var(--ink);font-weight:500}
+.t-live .badge{margin-left:auto;font-family:'Inter';font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--whisper);font-weight:500;white-space:nowrap}
+
+/* --- CONVERGENCE tile --- */
+.t-conv{padding:28px}
+.stage-wrap{position:relative;margin-top:6px}
+.stage-wrap svg.stage{display:block;width:100%;height:auto}
+
+/* --- STAT moment (spacious single number) --- */
+.t-stat{display:flex;flex-direction:column;padding:28px}
+.t-stat .mlabel{margin-bottom:auto}
+.stat-val{
+  margin-top:30px;
+  font-family:'Fraunces',serif;font-weight:300;
+  font-size:clamp(52px,6vw,84px);line-height:.9;letter-spacing:-.03em;color:var(--ink);
+}
+.stat-val small{font-size:.26em;color:var(--whisper);font-weight:400}
+.stat-cap{margin-top:18px;font-size:12.5px;color:var(--sec);line-height:1.6;max-width:30ch}
+
+/* --- QUOTE moment --- */
+.t-quote{display:flex;flex-direction:column;justify-content:center;padding:36px 32px}
+.t-quote .q{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:clamp(21px,2.6vw,32px);line-height:1.3;letter-spacing:-.01em;color:var(--ink);
+  max-width:24ch;
+}
+.t-quote .q-by{margin-top:22px;font-family:'Inter';font-size:10px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--whisper)}
+
+/* --- EINGANG rows --- */
+.t-eingang{padding:28px}
+.eg-list{margin-top:8px}
+.eg-row{
+  display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:16px;
+  padding:16px 4px;border-top:1px solid var(--hair-soft);cursor:pointer;
+  transition:background .2s var(--ease);
+}
+.eg-row:first-child{border-top:none}
+.eg-row:hover{background:var(--panel-hi)}
+.eg-ava{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:400;font-size:15px;background:var(--deep);color:var(--ink)}
+.eg-main{min-width:0;display:flex;flex-direction:column;gap:3px}
+.eg-nm{font-weight:500;font-size:14px;color:var(--ink)}
+.eg-sub{font-family:'Fraunces',serif;font-weight:300;font-size:14px;color:var(--sec);line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eg-ch{font-size:11px;color:var(--whisper);display:inline-flex;align-items:center;gap:6px}
+.eg-ch svg{width:12px;height:12px;stroke:var(--whisper);fill:none;stroke-width:1.5}
+
+/* --- ANLASS text cards (initial-letter avatars, no photo) --- */
+.t-anlass{display:flex;flex-direction:column;padding:28px}
+.an-kind{align-self:flex-start;font-family:'Inter';font-size:9.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--whisper);margin-bottom:22px}
+.an-row{display:flex;align-items:center;gap:16px}
+.an-ava{
+  width:52px;height:52px;flex:none;border-radius:50%;
+  display:grid;place-items:center;
+  font-family:'Fraunces',serif;font-weight:300;font-size:26px;
+  background:var(--deep);color:var(--ink);
+}
+.an-tx{min-width:0}
+.an-nm{font-family:'Fraunces',serif;font-weight:400;font-size:19px;line-height:1.15;color:var(--ink)}
+.an-meta{margin-top:6px;font-size:12px;color:var(--sec);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.an-meta .star{color:var(--sec);letter-spacing:.08em}
+.an-meta .sep{width:3px;height:3px;border-radius:50%;background:var(--whisper)}
+.an-act{margin-top:auto;padding-top:22px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--hair-soft)}
+.an-act .lbl{font-size:12.5px;font-style:italic;font-family:'Fraunces',serif;color:var(--sec)}
+.an-do{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--hair);display:grid;place-items:center;color:var(--ink);cursor:pointer;background:transparent;transition:background .2s var(--ease),color .2s var(--ease)}
+.an-do:hover{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.an-do svg{width:15px;height:15px}
+
+/* --- FORECAST --- */
+.t-forecast{padding:28px;display:flex;flex-direction:column}
+.fc-top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:8px}
+.fc-big{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(40px,4.4vw,64px);line-height:.9;letter-spacing:-.03em;color:var(--ink)}
+.fc-big small{font-size:.32em;color:var(--whisper);font-weight:400}
+.fc-cap{font-size:12.5px;color:var(--sec);margin-top:8px;max-width:34ch}
+.fc-note{font-size:12px;color:var(--sec);max-width:32ch;text-align:right;line-height:1.6}
+.fc-note b{color:var(--ink);font-weight:500}
+.t-forecast .chart{margin-top:26px}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:1023px){
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .t-live,.t-conv,.t-eingang,.t-quote,.t-forecast{grid-column:1/-1}
+  .t-stat{grid-column:span 1}
+  .t-anlass,.t-anlass.wide{grid-column:span 1}
+  .t-conv{min-height:0}
+}
+@media(max-width:760px){
+  .nav-links{
+    position:absolute;top:100%;right:var(--gutter);
+    flex-direction:column;align-items:stretch;gap:2px;
+    background:var(--panel);border-radius:14px;
+    padding:8px;min-width:180px;
+    opacity:0;visibility:hidden;transform:translateY(-8px);
+    transition:opacity .2s var(--ease),transform .2s var(--ease),visibility .2s;
+  }
+  .nav-links.open{opacity:1;visibility:visible;transform:translateY(6px)}
+  .nav-links a{padding:11px 14px;border-radius:9px}
+  .nav-links a:hover{background:var(--deep)}
+  .nav-date{display:none}
+  .nav-burger{
+    display:grid;place-items:center;width:38px;height:38px;
+    border:1px solid var(--hair);border-radius:10px;background:var(--panel);cursor:pointer;
+  }
+  .nav-burger svg{width:18px;height:18px;stroke:var(--ink)}
+}
+@media(max-width:640px){
+  .bento{grid-template-columns:repeat(2,1fr);gap:14px}
+  .t-kpi{grid-column:span 1}
+  .t-live,.t-conv,.t-stat,.t-eingang,.t-anlass,.t-anlass.wide,.t-quote,.t-forecast{grid-column:1/-1}
+  .bt-num{font-size:72px}
+  .fc-note{text-align:left}
+  .chart-grid{gap:5px}
+  .bar .cap{font-size:11px;top:-22px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .bar{transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LEFT SIDEBAR (desktop chrome) ============ -->
+<aside class="side" aria-label="Hauptnavigation">
+  <div class="side-brand">
+    <span class="side-mark"><img src="../assets/kb-logo-weiss.webp" alt=""></span>
+    <span class="side-brand-tx">
+      <span class="nm">Klinik Bavaria</span>
+      <span class="os">Concierge OS</span>
+    </span>
+  </div>
+  <nav class="side-nav">
+    <a href="#top" class="active">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke-linecap="round"/></svg>Heute
+    </a>
+    <a href="#eingang">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke-linejoin="round"/></svg>Fälle
+    </a>
+    <a href="#anlaesse">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0111 0" stroke-linecap="round"/><path d="M16 5.5a3 3 0 010 5.8M17 19a5.5 5.5 0 00-2-4.3" stroke-linecap="round"/></svg>Team
+    </a>
+    <a href="#eingang">
+      <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="5.5" r="2.4"/><circle cx="18" cy="18.5" r="2.4"/><path d="M8.2 11L15.8 6.6M8.2 13l7.6 4.4"/></svg>Netzwerk
+    </a>
+    <a href="#belegung">
+      <svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6M5 12v6c0 1.66 3.13 3 7 3s7-1.34 7-3v-6"/></svg>Datenbank
+    </a>
+    <a href="#top">
+      <svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10" stroke-linecap="round"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg>System
+    </a>
+  </nav>
+  <div class="side-foot">
+    <div class="side-date">Di · 15. Juli 2026</div>
+    <div class="side-div"></div>
+    <div class="side-user">
+      <span class="side-ava">SB</span>
+      <span class="side-user-tx">
+        <span class="nm">Sabine Berger</span>
+        <span class="rl">Belegungsmanagement</span>
+      </span>
+    </div>
+  </div>
+</aside>
+
+<!-- ============ NAV (mobile top-bar ≤1023px) ============ -->
+<nav class="nav">
+  <div class="brand">
+    <span class="brand-mark"><img src="../assets/kb-logo-weiss.webp" alt=""></span>
+    <span class="brand-txt">Klinik Bavaria<span class="dot">·</span><span class="os">Concierge OS</span></span>
+  </div>
+  <div class="nav-links" id="navlinks">
+    <a href="#top" class="active">Heute</a>
+    <a href="#eingang">Fälle</a>
+    <a href="#anlaesse">Team</a>
+    <a href="#eingang">Netzwerk</a>
+    <a href="#belegung">Datenbank</a>
+    <a href="#top">System</a>
+  </div>
+  <div class="nav-right">
+    <span class="nav-date">Di · 15. Juli 2026</span>
+    <span class="nav-ava" title="Sabine">SB</span>
+    <button class="nav-burger" id="burger" aria-label="Menü">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</nav>
+
+<span id="top"></span>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-copy">
+    <div class="hero-greet">
+      <span class="line"></span>
+      <span class="txt">Guten Morgen, <b>Sabine</b> — 5 neue Anfragen warten.</span>
+    </div>
+    <h1 class="hero-h1">Aus Quellen wird<br><span class="em">planbare</span> Belegung.</h1>
+    <div class="hero-rule" aria-hidden="true"></div>
+    <p class="hero-sub">Jede E-Mail, jeder Anruf, jedes Fax, jede Portal-Meldung — an einem Ort gebündelt, priorisiert und in Bewegung Richtung belegtes Bett.</p>
+    <div class="hero-cta">
+      <a href="#eingang" class="btn btn-p">Eingang öffnen
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#belegung" class="btn btn-g">Belegung ansehen</a>
+    </div>
+  </div>
+  <div class="hero-photo">
+    <img src="img/kb-header.jpg" alt="Luftbild der Klinik Bavaria in Bad Kissingen">
+    <div class="grade"></div>
+    <div class="cap">
+      <span class="place">Klinik Bavaria — <em>im Licht der Rhön</em></span>
+      <span class="co">Bad Kissingen</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============ BENTO ============ -->
+<main class="bento">
+
+  <!-- Row A · KPI tiles -->
+  <div class="bt t-kpi kpi" id="anchor-kpis">
+    <span class="mlabel lab">Offene Fälle</span>
+    <div class="val"><span class="count" data-count="14">0</span></div>
+    <span class="delta">+3 diese Woche</span>
+  </div>
+  <div class="bt t-kpi kpi">
+    <span class="mlabel lab">Neue Anfragen heute</span>
+    <div class="val"><span class="count" data-count="5">0</span></div>
+    <span class="delta">seit 00:00 Uhr</span>
+  </div>
+  <div class="bt t-kpi kpi">
+    <span class="mlabel lab">Conversion</span>
+    <div class="val"><span class="count" data-count="67">0</span><small>%</small></div>
+    <span class="delta">Anfrage → Fall</span>
+  </div>
+  <div class="bt t-kpi kpi">
+    <span class="mlabel lab">Belegung</span>
+    <div class="val"><span class="count" data-count="31">0</span><small>/38 Betten</small></div>
+    <span class="delta">82 % ausgelastet</span>
+  </div>
+
+  <!-- live status strip -->
+  <div class="bt t-live">
+    <span class="pulse"></span>
+    <span class="tx"><b>5 neue Anfragen</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.</span>
+    <span class="badge">Echtzeit</span>
+  </div>
+
+  <!-- Row B · convergence + stat -->
+  <section class="bt t-conv" id="eingang">
+    <div class="c-head">
+      <div class="bt-eyebrow"><span class="ln"></span><span class="mlabel">Konvergenz — sechs Quellen</span></div>
+      <h2 class="bt-h">Sechs Quellen, <span class="em">ein</span> Eingang.</h2>
+      <p class="bt-lede">41 Signale heute morgen — automatisch zusammengeführt, 14 wurden bereits zum Fall.</p>
+    </div>
+    <div class="stage-wrap">
+      <svg class="stage" viewBox="0 0 1000 260" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Sechs Kanäle laufen in einen Eingang und werden zum Fall">
+        <g id="chans"></g>
+        <g id="hub">
+          <circle class="hub-ring" cx="640" cy="130" r="54"/>
+          <text x="640" y="122" text-anchor="middle" fill="#26231E" font-family="Fraunces,serif" font-weight="300" font-size="30">41</text>
+          <text x="640" y="146" text-anchor="middle" fill="#6E6961" font-family="Inter" font-size="9" letter-spacing="2">EIN EINGANG</text>
+        </g>
+        <path d="M698 130 H812" fill="none" stroke="#26231E" stroke-width="1" opacity=".4"/>
+        <path d="M804 124 l10 6 -10 6" fill="none" stroke="#26231E" stroke-width="1" opacity=".4"/>
+        <g>
+          <rect x="832" y="104" width="128" height="52" rx="12" fill="none" stroke="#A39D93" stroke-width="1"/>
+          <text x="896" y="127" text-anchor="middle" fill="#26231E" font-family="Fraunces,serif" font-weight="300" font-size="26">14</text>
+          <text x="896" y="145" text-anchor="middle" fill="#A39D93" font-family="Inter" font-size="9" letter-spacing="1.6">FÄLLE</text>
+        </g>
+      </svg>
+    </div>
+    <div class="conv-legend" id="convlegend"></div>
+    <div class="stepper">
+      <div class="step on"><span class="b"></span>Eingang</div>
+      <span class="arw"></span>
+      <div class="step"><span class="b"></span>Zuteilung</div>
+      <span class="arw"></span>
+      <div class="step"><span class="b"></span>Antwort</div>
+      <span class="arw"></span>
+      <div class="step"><span class="b"></span>Fall</div>
+    </div>
+  </section>
+
+  <section class="bt t-stat">
+    <span class="mlabel">Weiterempfehlung</span>
+    <div class="stat-val">98<small>%</small></div>
+    <p class="stat-cap">Gäste, die Klinik Bavaria weiterempfehlen — über alle Fachbereiche.</p>
+  </section>
+
+  <!-- Row C · Eingang rows + two Anlässe -->
+  <section class="bt t-eingang">
+    <span class="bt-num">01</span>
+    <div class="bt-eyebrow"><span class="ln"></span><span class="mlabel">Kapitel Eins — Eingang</span></div>
+    <h2 class="bt-h">Alles kommt hier <span class="em">zuerst</span> an.</h2>
+    <div class="eg-list">
+      <a class="eg-row">
+        <span class="eg-ava">W</span>
+        <span class="eg-main">
+          <span class="eg-nm">Werner Aumann</span>
+          <span class="eg-sub">„Anfrage Anschlussheilbehandlung nach Hüft-OP"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 9l9 6 9-6"/></svg>Website · vor 12 Min</span>
+        </span>
+        <span class="tag neu">Neu</span>
+      </a>
+      <a class="eg-row">
+        <span class="eg-ava">S</span>
+        <span class="eg-main">
+          <span class="eg-nm">Dr. med. H. Sailer</span>
+          <span class="eg-sub">„Verlegung Kardio-Reha, privat"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7z"/></svg>Zuweiser-Portal · vor 38 Min</span>
+        </span>
+        <span class="tag mid">Zuweiser</span>
+      </a>
+      <a class="eg-row">
+        <span class="eg-ava">B</span>
+        <span class="eg-main">
+          <span class="eg-nm">Familie Brenner</span>
+          <span class="eg-sub">„Rückfrage Komfortzimmer & Kostenübernahme"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2a12 12 0 006 6l2-3 5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>Telefon · vor 1 Std</span>
+        </span>
+        <span class="tag mid">Anruf</span>
+      </a>
+      <a class="eg-row">
+        <span class="eg-ava">O</span>
+        <span class="eg-main">
+          <span class="eg-nm">M. Ostheimer</span>
+          <span class="eg-sub">„Unterlagen nachgereicht — Kostenzusage?"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 9l9 6 9-6"/></svg>E-Mail · vor 2 Std</span>
+        </span>
+        <span class="tag wait">Wartet</span>
+      </a>
+    </div>
+  </section>
+
+  <article class="bt t-anlass" id="anlaesse">
+    <span class="an-kind">Geburtstag</span>
+    <span class="bt-num">02</span>
+    <div class="an-row">
+      <span class="an-ava">M</span>
+      <div class="an-tx">
+        <div class="an-nm">Margarete Brandl wird 74</div>
+        <div class="an-meta"><span class="star">★★★★★</span><span class="sep"></span>Stammgast seit 2019</div>
+      </div>
+    </div>
+    <div class="an-act"><span class="lbl">Persönliche Karte + Anruf</span>
+      <button class="an-do" aria-label="Aktion starten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </article>
+
+  <article class="bt t-anlass">
+    <span class="an-kind">Wiederbedarf</span>
+    <div class="an-row">
+      <span class="an-ava">K</span>
+      <div class="an-tx">
+        <div class="an-nm">Klaus Hofreiter</div>
+        <div class="an-meta">Entlassung vor 11 Monaten<span class="sep"></span>Orthopädie</div>
+      </div>
+    </div>
+    <div class="an-act"><span class="lbl">Nachsorge-Angebot</span>
+      <button class="an-do" aria-label="Aktion starten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </article>
+
+  <!-- Row D · third Anlass (wide) + quote -->
+  <article class="bt t-anlass wide">
+    <span class="an-kind">Zuweiser-Rhythmus</span>
+    <div class="an-row">
+      <span class="an-ava">W</span>
+      <div class="an-tx">
+        <div class="an-nm">Praxis Dr. Wagenknecht</div>
+        <div class="an-meta">Letzter Kontakt vor 6 Wochen</div>
+      </div>
+    </div>
+    <div class="an-act"><span class="lbl">Quartalsgespräch anbieten</span>
+      <button class="an-do" aria-label="Aktion starten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </article>
+
+  <section class="bt t-quote">
+    <p class="q">„Jede Anfrage ist ein Mensch, der auf eine Antwort wartet."</p>
+    <span class="q-by">Belegungsmanagement · Klinik Bavaria</span>
+  </section>
+
+  <!-- Row E · forecast + heritage stat -->
+  <section class="bt t-forecast" id="belegung">
+    <span class="bt-num">03</span>
+    <div class="bt-eyebrow"><span class="ln"></span><span class="mlabel">Kapitel Drei — Belegung</span></div>
+    <div class="fc-top">
+      <div>
+        <div class="fc-big">38<small>/38</small></div>
+        <div class="fc-cap">Prognose KW36 — Vollbelegung erstmals erreicht.</div>
+      </div>
+      <div class="fc-note">Von <b>29</b> auf <b>38</b> Betten in acht Wochen. Ziel-Linie bei <b>34</b> seit KW34 durchbrochen.</div>
+    </div>
+    <div class="chart" id="chart">
+      <div class="chart-grid" id="bars">
+        <div class="target-line" style="bottom:calc((34/38) * 92%)"><span class="t">Ziel 34</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bt t-stat">
+    <span class="mlabel">Gegründet</span>
+    <div class="stat-val">1951</div>
+    <p class="stat-cap">Bad Kissingen — Rehabilitation im Licht der Rhön.</p>
+  </section>
+
+</main>
+
+<!-- ============ CLOSING ============ -->
+<section class="closing">
+  <div class="inner">
+    <span class="mlabel">Klinik Bavaria · Concierge OS</span>
+    <h2 class="serif">Ruhe im <span class="em">Betrieb</span>,<br>Klarheit in der Belegung.</h2>
+    <a href="#top" class="btn btn-p">Zum Tagesüberblick
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 19V5M6 11l6-6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<footer class="foot">
+  <span class="l"><b>Klinik Bavaria</b> · Concierge OS — Prototyp „Kaschmir"</span>
+  <span>Synthetische Demo-Daten · Bad Kissingen · 2026</span>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var INK = '#26231E';
+
+  /* ---- burger menu ---- */
+  var burger = document.getElementById('burger');
+  var navlinks = document.getElementById('navlinks');
+  if(burger){
+    burger.addEventListener('click', function(e){ e.stopPropagation(); navlinks.classList.toggle('open'); });
+    document.addEventListener('click', function(){ navlinks.classList.remove('open'); });
+    navlinks.addEventListener('click', function(){ navlinks.classList.remove('open'); });
+  }
+
+  /* ---- build convergence channels (monochrome ink threads) ---- */
+  var chans = [
+    {n:'E-Mail',   v:12},
+    {n:'Telefon',  v:7},
+    {n:'Fax',      v:3},
+    {n:'Website',  v:9},
+    {n:'Zuweiser', v:6},
+    {n:'Portale',  v:4}
+  ];
+  var g = document.getElementById('chans');
+  var hubX = 640, hubY = 130, startX = 60, colX = 200;
+  var frag = '';
+  chans.forEach(function(c, i){
+    var y = 30 + i * 40;
+    var path = 'M'+colX+' '+y+' C '+(colX+180)+' '+y+', '+(hubX-170)+' '+hubY+', '+(hubX-58)+' '+hubY;
+    frag += '<path class="flowline" d="'+path+'" id="fp'+i+'"/>';
+    frag += '<text class="chan-lbl" x="'+startX+'" y="'+(y+4)+'">'+c.n+'</text>';
+    frag += '<text class="chan-num" x="'+(colX-14)+'" y="'+(y+4)+'" text-anchor="end">'+c.v+'</text>';
+    frag += '<circle cx="'+(colX-4)+'" cy="'+y+'" r="2.2" fill="'+INK+'"/>';
+  });
+  g.innerHTML = frag;
+
+  /* colour-less legend beneath the stage */
+  var legend = document.getElementById('convlegend');
+  if(legend){
+    legend.innerHTML = chans.map(function(c){
+      return '<span><i></i>'+c.n+'</span>';
+    }).join('');
+  }
+
+  /* traveling ink dots — THE signature (skipped in reduced-motion) */
+  if(!reduce){
+    chans.forEach(function(c, i){
+      var pathEl = document.getElementById('fp'+i);
+      if(!pathEl) return;
+      var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('r','2.6');
+      dot.setAttribute('fill', INK);
+      var am = document.createElementNS('http://www.w3.org/2000/svg','animateMotion');
+      am.setAttribute('dur', (3.4 + i*0.55)+'s');
+      am.setAttribute('repeatCount','indefinite');
+      am.setAttribute('begin', (i*0.5)+'s');
+      am.setAttribute('rotate','auto');
+      var mp = document.createElementNS('http://www.w3.org/2000/svg','mpath');
+      mp.setAttributeNS('http://www.w3.org/1999/xlink','href','#fp'+i);
+      am.appendChild(mp); dot.appendChild(am);
+      g.appendChild(dot);
+    });
+  }
+
+  /* ---- KPI count-up (no glint) ---- */
+  function countUp(el){
+    if(el.dataset.done) return; el.dataset.done = '1';
+    var end = +el.getAttribute('data-count');
+    if(reduce){ el.textContent = end; return; }
+    var start = null, dur = 1400;
+    requestAnimationFrame(function step(t){
+      if(!start) start = t;
+      var k = Math.min((t-start)/dur, 1);
+      var e = 1 - Math.pow(1-k, 3);
+      el.textContent = Math.round(end * e);
+      if(k<1){ requestAnimationFrame(step); }
+      else { el.textContent = end; }
+    });
+  }
+  document.querySelectorAll('.count').forEach(countUp);
+
+  /* ---- belegung bars (CSS grow-keyframe drives the reveal) ---- */
+  var data = [
+    {wk:'KW29', v:29}, {wk:'KW30', v:31}, {wk:'KW31', v:33}, {wk:'KW32', v:34},
+    {wk:'KW33', v:36}, {wk:'KW34', v:35}, {wk:'KW35', v:37}, {wk:'KW36', v:38}
+  ];
+  var max = 38;
+  var bars = document.getElementById('bars');
+  var bhtml = '';
+  data.forEach(function(d, i){
+    var pct = (d.v / max) * 92;
+    var peak = d.v === 38 ? ' peak' : '';
+    var delay = (i * 0.07).toFixed(2) + 's';
+    bhtml += '<div class="bar-col'+peak+'" style="--d:'+delay+'"><div class="bar" style="height:'+pct.toFixed(1)+'%"><span class="cap">'+d.v+'</span><span class="dotcap"></span></div><span class="wk">'+d.wk+'</span></div>';
+  });
+  bars.insertAdjacentHTML('beforeend', bhtml);
+
+})();
+</script>
+</body>
+</html>

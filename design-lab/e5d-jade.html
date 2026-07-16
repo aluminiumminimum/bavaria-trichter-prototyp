@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123B33">
+<title>Klinik Bavaria · Concierge OS — Jade-Apotheke</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* JADE-APOTHEKE — lacquered jade & ivory */
+  --canvas:#F6F2E6;      /* ivory ground */
+  --paper:#FBF8EF;       /* label-card cream */
+  --ink:#20302B;         /* body ink (deep jade-charcoal) */
+  --ink-soft:#4A5A52;
+  --muted:#7E8B82;
+  --jade:#123B33;        /* lacquered jade panels */
+  --jade-deep:#0D2E28;
+  --jade-line:#2C5A4E;   /* soft jade hairline */
+  --moss:#3E6B5C;
+  --gold:#B99149;        /* gold leaf */
+  --gold-soft:rgba(185,145,73,.5);
+  --gold-faint:rgba(185,145,73,.28);
+  --cinnabar:#A8341F;    /* red wax — used exactly twice */
+  --ivory-tx:#EFE9D8;    /* text on jade */
+  --ivory-mut:rgba(239,233,216,.66);
+  /* forest/ochre/terra kept as token NAMES the base JS/CSS reference — remapped to jade world */
+  --forest:#123B33;
+  --ochre:#B99149;
+  --terra:#A8341F;
+  --azzurro:#4E7CA8;
+  --slate:#6E7580;
+  --hair:rgba(32,48,43,.14);
+  --hair-soft:rgba(32,48,43,.08);
+  --shadow:0 1px 2px rgba(18,59,51,.05), 0 16px 40px rgba(18,59,51,.08);
+  --shadow-hi:0 2px 6px rgba(18,59,51,.07), 0 28px 64px rgba(18,59,51,.14);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --gutter:clamp(20px,5vw,84px);
+  --mono:ui-monospace,"SFMono-Regular",Menlo,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--canvas);
+  color:var(--ink);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--jade);color:var(--ivory-tx)}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--canvas)}
+::-webkit-scrollbar-thumb{background:rgba(18,59,51,.22);border-radius:20px;border:3px solid var(--canvas)}
+::-webkit-scrollbar-thumb:hover{background:rgba(18,59,51,.4)}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--jade);outline-offset:3px;border-radius:2px}
+
+.serif{font-family:'Cormorant Garamond',Georgia,serif}
+.mlabel{
+  font-family:'Cormorant Garamond',serif;
+  font-size:13px;font-weight:600;
+  letter-spacing:.24em;text-transform:uppercase;
+  color:var(--muted);
+}
+.mono-num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ============ TOP NAV (mobile ≤1023px) ============ */
+.nav{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:24px;
+  padding:15px var(--gutter);
+  background:var(--canvas);
+  border-bottom:1px solid var(--gold-faint);
+}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand-mark{
+  width:28px;height:28px;flex:none;border-radius:50%;
+  background:var(--jade);
+  display:grid;place-items:center;
+  border:1px solid var(--gold-soft);
+}
+.brand-mark img{width:15px;height:15px;filter:brightness(0) invert(1);opacity:.94}
+.brand-txt{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;letter-spacing:.02em;white-space:nowrap;color:var(--jade)}
+.brand-txt .dot{color:var(--gold);font-weight:600;padding:0 4px}
+.brand-txt .os{color:var(--muted);font-size:.82em;letter-spacing:.1em;text-transform:uppercase}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{
+  position:relative;
+  font-size:13px;font-weight:400;color:var(--ink-soft);
+  padding:7px 13px;border-radius:4px;
+  transition:color .15s var(--ease);
+}
+.nav-links a::after{
+  content:"";position:absolute;left:13px;right:13px;bottom:3px;height:1px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;
+  transition:transform .32s var(--ease);
+}
+.nav-links a:hover{color:var(--jade)}
+.nav-links a:hover::after{transform:scaleX(1)}
+.nav-links a.active{color:var(--jade);font-weight:500}
+.nav-links a.active::after{transform:scaleX(1)}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-date{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);white-space:nowrap}
+.nav-ava{
+  width:32px;height:32px;border-radius:50%;flex:none;
+  background:var(--gold);color:var(--jade-deep);
+  display:grid;place-items:center;
+  font-family:'Cormorant Garamond',serif;font-weight:600;font-size:14px;
+  border:1px solid rgba(18,59,51,.15);
+}
+.nav-burger{display:none}
+
+/* ============ HERO ============ */
+.hero{
+  display:grid;
+  grid-template-columns:1.02fr .98fr;
+  min-height:calc(100vh - 58px);
+  align-items:stretch;
+}
+.hero-copy{
+  padding:clamp(36px,6vh,76px) var(--gutter) clamp(36px,5vh,60px);
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;
+}
+.hero-greet{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.hero-greet .line{height:1px;width:44px;background:var(--gold)}
+.hero-greet .txt{font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase}
+.hero-greet .txt b{font-weight:600;color:var(--jade)}
+.hero-h1{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:600;
+  font-size:clamp(42px,6.6vw,96px);
+  line-height:.98;letter-spacing:-.01em;
+  color:var(--jade);
+}
+.hero-h1 .em{font-style:italic;font-weight:600;color:var(--gold)}
+/* gilded double-rule under the headline (static, ruled) */
+.hero-rule{position:relative;height:6px;max-width:340px;margin:26px 0 2px}
+.hero-rule::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),rgba(185,145,73,.35));
+}
+.hero-rule::after{
+  content:"";position:absolute;left:0;right:0;top:5px;height:1px;
+  background:rgba(185,145,73,.4);
+}
+.hero-sub{
+  margin-top:20px;max-width:36ch;
+  font-size:16px;line-height:1.7;color:var(--ink-soft);
+}
+.hero-cta{margin-top:34px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn{
+  font-family:'Inter';font-size:13.5px;font-weight:500;letter-spacing:.02em;
+  padding:12px 24px;border-radius:3px;cursor:pointer;border:1px solid var(--jade);
+  display:inline-flex;align-items:center;gap:9px;
+  transition:transform .15s var(--ease),background .2s var(--ease),color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.btn-p{background:var(--jade);color:var(--ivory-tx);box-shadow:inset 0 0 0 1px rgba(185,145,73,.4),inset 0 0 0 3px var(--jade)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px rgba(185,145,73,.65),inset 0 0 0 3px var(--jade),0 12px 26px rgba(18,59,51,.28)}
+.btn-g{background:transparent;color:var(--jade)}
+.btn-g:hover{background:rgba(18,59,51,.06);transform:translateY(-2px)}
+.btn svg{width:15px;height:15px}
+
+/* hero photo — specimen plate: double frame + faded warmth */
+.hero-photo{
+  position:relative;overflow:hidden;
+  min-height:340px;
+  margin:clamp(18px,3vh,34px) var(--gutter) clamp(18px,3vh,34px) 0;
+  border:1px solid var(--jade);
+  box-shadow:inset 0 0 0 4px var(--canvas),inset 0 0 0 5px var(--gold-faint),var(--shadow);
+}
+.hero-photo .kb{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:50% 42%;
+  filter:saturate(.85) sepia(.08);
+}
+.hero-photo .grade{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(13,46,40,.12) 0%,rgba(13,46,40,0) 34%,rgba(13,46,40,.06) 68%,rgba(13,46,40,.42) 100%);
+}
+.hero-photo .gchip{position:absolute;z-index:3}
+.gc1{top:20px;left:20px}
+.gc2{bottom:64px;right:20px}
+.gchip-f{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:9px 15px;
+  background:var(--canvas);
+  border:1px solid var(--jade);
+  box-shadow:inset 0 0 0 3px var(--canvas),inset 0 0 0 4px var(--gold-faint);
+  color:var(--jade);font-size:12.5px;white-space:nowrap;
+}
+.gchip-f b{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:20px;color:var(--jade)}
+.gchip-f .gc-sm{color:var(--muted);font-size:12px}
+.gchip-f .gc-dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.hero-photo .cap{
+  position:absolute;left:24px;bottom:20px;right:24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  color:var(--ivory-tx);z-index:4;
+}
+.hero-photo .cap .place{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:19px;text-shadow:0 1px 12px rgba(0,0,0,.5)}
+.hero-photo .cap .co{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.9;text-shadow:0 1px 10px rgba(0,0,0,.5)}
+
+/* ============ SHARED atoms reused inside bento ============ */
+/* KPI label-card: centered serif numeral, gold rule, smallcaps caption */
+.kpi{text-align:center;display:flex;flex-direction:column;align-items:center;gap:0}
+.kpi .kpi-cap{
+  font-family:'Cormorant Garamond',serif;font-weight:600;
+  font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+}
+.kpi .kpi-rule{display:block;width:34px;height:1px;background:var(--gold);margin:12px auto 16px}
+.kpi .val{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(38px,4.4vw,58px);line-height:1;letter-spacing:-.01em;color:var(--jade)}
+.kpi .val small{font-size:.34em;color:var(--muted);font-weight:500;letter-spacing:0}
+.kpi .val .count{color:var(--jade)}
+.kpi .delta{margin-top:14px;font-size:12px;letter-spacing:.02em;color:var(--moss);display:inline-flex;align-items:center;gap:6px}
+.kpi .delta.flat{color:var(--muted)}
+.kpi .delta .arw{color:var(--gold);font-size:11px}
+
+/* convergence svg atoms (engraving on lacquer) */
+.chan-lbl{font-family:'Inter';font-size:12px;font-weight:400;fill:var(--ivory-mut)}
+.chan-num{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;fill:var(--gold)}
+.flowline{fill:none;stroke-width:1.2;opacity:.6}
+.hub-ring{fill:none;stroke:var(--gold);stroke-width:1;opacity:.45}
+.conv-legend{
+  display:flex;flex-wrap:wrap;gap:7px 18px;
+  margin:8px 2px 0;padding-top:14px;border-top:1px solid var(--jade-line);
+}
+.conv-legend span{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ivory-mut)}
+.conv-legend i{width:7px;height:7px;flex:none;background:var(--gold);transform:rotate(45deg)}
+.stepper{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--jade-line)}
+.step{display:flex;align-items:center;gap:12px;color:var(--ivory-mut);font-size:13px}
+.step .b{width:8px;height:8px;border-radius:50%;background:transparent;border:1px solid var(--ivory-mut)}
+.step.on{color:var(--gold);font-weight:500}
+.step.on .b{background:var(--gold);border-color:var(--gold)}
+.step .arw{width:34px;height:1px;background:var(--jade-line);margin:0 14px;position:relative}
+.step .arw::after{content:"";position:absolute;right:0;top:-2px;width:5px;height:5px;border-top:1px solid var(--ivory-mut);border-right:1px solid var(--ivory-mut);transform:rotate(45deg)}
+
+/* tags (Eingang) */
+.tag{font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:2px;white-space:nowrap}
+.tag.neu{background:var(--jade);color:var(--ivory-tx)}
+.tag.wait{background:transparent;color:var(--brass-deep,#8A6B3A);border:1px solid var(--gold-soft)}
+.tag.mid{background:transparent;color:var(--moss);border:1px solid rgba(62,107,92,.4)}
+
+/* belegung bars (static; jade fills, gold peak) */
+.chart{position:relative}
+.chart-grid{position:relative;height:clamp(200px,26vh,300px);margin-bottom:30px;display:flex;align-items:flex-end;gap:clamp(8px,1.4vw,20px)}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative}
+.bar{
+  width:100%;max-width:48px;border-radius:2px 2px 0 0;
+  background:linear-gradient(180deg,var(--moss),var(--jade));
+  position:relative;
+}
+.bar-col.peak .bar{background:linear-gradient(180deg,var(--gold),#9A7638)}
+.bar .cap{
+  position:absolute;top:-26px;left:50%;transform:translateX(-50%);
+  font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;color:var(--jade);white-space:nowrap;
+}
+.bar .dotcap{
+  position:absolute;top:-7px;left:50%;transform:translateX(-50%);
+  width:8px;height:8px;border-radius:50%;background:var(--jade);
+  box-shadow:0 0 0 3px var(--paper);
+}
+.bar-col.peak .bar .dotcap{background:var(--gold)}
+.bar-col .wk{position:absolute;bottom:-24px;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.02em}
+.target-line{position:absolute;left:0;right:0;height:0;border-top:1.5px dashed var(--gold-soft);z-index:3;pointer-events:none}
+.target-line .t{position:absolute;right:0;top:-9px;background:var(--paper);padding:0 8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-deep,#8A6B3A)}
+
+/* ============ CLOSING ============ */
+.closing{
+  position:relative;overflow:hidden;
+  min-height:66vh;display:grid;place-items:center;text-align:center;
+  padding:clamp(60px,10vh,120px) var(--gutter);
+}
+.closing img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;filter:saturate(.85) sepia(.08)}
+.closing .grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,46,40,.62),rgba(13,46,40,.78))}
+.closing .inner{position:relative;z-index:2;color:var(--ivory-tx);max-width:24ch;border:1px solid var(--gold-soft);padding:clamp(32px,5vh,56px) clamp(28px,5vw,64px);box-shadow:inset 0 0 0 4px transparent,inset 0 0 0 5px rgba(185,145,73,.22)}
+.closing .mlabel{color:rgba(239,233,216,.7)}
+.closing h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(32px,5vw,66px);line-height:1.02;letter-spacing:-.01em;margin-top:18px}
+.closing h2 .em{font-style:italic;color:var(--gold)}
+.closing .btn-p{margin-top:32px;background:var(--ivory-tx);color:var(--jade);border-color:var(--ivory-tx);box-shadow:none}
+.closing .btn-p:hover{box-shadow:0 12px 30px rgba(0,0,0,.35)}
+
+/* footer */
+.foot{padding:26px var(--gutter);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--gold-faint);font-size:12px;color:var(--muted)}
+.foot .l{display:flex;gap:8px;align-items:center}
+.foot b{color:var(--ink-soft);font-weight:500}
+
+/* entrance — single keyframe, auto-play with stagger */
+.enter.go{animation:lift .6s var(--ease) both}
+@keyframes lift{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.e1{animation-delay:.05s}.e2{animation-delay:.18s}.e3{animation-delay:.32s}.e4{animation-delay:.46s}
+
+/* ============ LEFT SIDEBAR — lacquered jade cabinet ============ */
+.side{
+  position:fixed;left:0;top:0;bottom:0;width:236px;z-index:70;
+  display:none;flex-direction:column;
+  padding:26px 16px 20px;
+  background:var(--jade);
+  color:var(--ivory-tx);
+  border-right:1px solid var(--jade-line);
+  box-shadow:inset -1px 0 0 rgba(185,145,73,.22);
+}
+.side-brand{display:flex;align-items:center;gap:11px;padding:2px 8px 0}
+.side-mark{
+  width:36px;height:36px;flex:none;border-radius:50%;
+  background:rgba(255,255,255,.05);border:1px solid var(--gold-soft);
+  display:grid;place-items:center;
+}
+.side-mark img{width:20px;height:20px;filter:brightness(0) invert(1);opacity:.9}
+.side-brand-tx{display:flex;flex-direction:column;min-width:0;line-height:1.12}
+.side-brand-tx .nm{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;letter-spacing:.01em;color:var(--ivory-tx)}
+.side-brand-tx .os{
+  font-family:'Cormorant Garamond',serif;font-size:10px;font-weight:600;
+  letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-top:4px;
+}
+.side-nav{display:flex;flex-direction:column;gap:2px;margin-top:34px}
+.side-nav a{
+  position:relative;display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:3px;
+  font-size:13.5px;font-weight:400;color:var(--ivory-mut);
+  transition:background .14s var(--ease),color .14s var(--ease);
+}
+.side-nav a svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--ivory-mut);stroke-width:1.5;transition:stroke .14s var(--ease)}
+.side-nav a:hover{background:rgba(255,255,255,.05);color:var(--ivory-tx)}
+.side-nav a:hover svg{stroke:var(--ivory-tx)}
+.side-nav a.active{background:rgba(255,255,255,.06);color:var(--gold);font-weight:500;box-shadow:inset 0 0 0 1px var(--gold-faint)}
+.side-nav a.active svg{stroke:var(--gold)}
+.side-nav a.active::before{
+  content:"";position:absolute;left:-16px;top:50%;transform:translateY(-50%);
+  width:3px;height:24px;border-radius:0 3px 3px 0;background:var(--gold);
+}
+.side-foot{margin-top:auto;padding:0 6px}
+.side-date{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ivory-mut);white-space:nowrap}
+.side-div{height:1px;background:var(--gold-faint);margin:14px 0}
+.side-user{display:flex;align-items:center;gap:11px}
+.side-ava{
+  width:34px;height:34px;flex:none;border-radius:50%;background:var(--gold);color:var(--jade-deep);
+  display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:14px;
+}
+.side-user-tx{display:flex;flex-direction:column;min-width:0;line-height:1.22}
+.side-user-tx .nm{font-size:13px;font-weight:500;color:var(--ivory-tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-user-tx .rl{font-size:10.5px;color:var(--ivory-mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ≥1024px: sidebar replaces the top bar, content shifts right */
+@media(min-width:1024px){
+  .nav{display:none}
+  body{padding-left:236px}
+  .side{display:flex}
+  .hero{min-height:100vh;grid-template-columns:1.2fr .8fr}
+}
+
+/* ============================================================
+   e5d — JADE-APOTHEKE · label-card bento / lacquer panels
+   ============================================================ */
+
+/* --- BENTO GRID --- */
+.bento{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:18px;grid-auto-flow:dense;
+  padding:clamp(24px,5vh,54px) var(--gutter) clamp(34px,7vh,80px);
+}
+
+/* --- tile base: ivory label-card, double border, ruled corner marks --- */
+.bt{
+  position:relative;overflow:hidden;
+  background:var(--paper);
+  border-radius:4px;
+  border:1px solid var(--jade-line);
+  box-shadow:
+    inset 0 0 0 4px var(--paper),
+    inset 0 0 0 5px var(--gold-faint),
+    var(--shadow);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+  padding:26px;
+  animation:lift .6s var(--ease) both;
+}
+/* uniform hover: lift + deepen */
+.bt:hover{
+  transform:translateY(-3px);
+  box-shadow:
+    inset 0 0 0 4px var(--paper),
+    inset 0 0 0 5px var(--gold-soft),
+    var(--shadow-hi);
+}
+/* ruled corner ornaments (label cards only) */
+:is(.t-kpi,.t-live,.t-conv,.t-eingang,.t-forecast)::before,
+:is(.t-kpi,.t-live,.t-conv,.t-eingang,.t-forecast)::after{
+  content:"";position:absolute;width:9px;height:9px;pointer-events:none;z-index:2;opacity:.6;
+}
+:is(.t-kpi,.t-live,.t-conv,.t-eingang,.t-forecast)::before{top:12px;left:12px;border-top:1px solid var(--gold);border-left:1px solid var(--gold)}
+:is(.t-kpi,.t-live,.t-conv,.t-eingang,.t-forecast)::after{bottom:12px;right:12px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold)}
+
+/* nth-child entrance stagger */
+.bento .bt:nth-child(1){animation-delay:.04s}
+.bento .bt:nth-child(2){animation-delay:.08s}
+.bento .bt:nth-child(3){animation-delay:.12s}
+.bento .bt:nth-child(4){animation-delay:.16s}
+.bento .bt:nth-child(5){animation-delay:.20s}
+.bento .bt:nth-child(6){animation-delay:.24s}
+.bento .bt:nth-child(7){animation-delay:.28s}
+.bento .bt:nth-child(8){animation-delay:.32s}
+.bento .bt:nth-child(9){animation-delay:.34s}
+.bento .bt:nth-child(10){animation-delay:.36s}
+.bento .bt:nth-child(11){animation-delay:.38s}
+.bento .bt:nth-child(n+12){animation-delay:.40s}
+
+/* spans */
+.t-kpi{grid-column:span 1}
+.t-live{grid-column:span 4}
+.t-conv{grid-column:span 3;min-height:344px}
+.t-suite{grid-column:span 1}
+.t-eingang{grid-column:span 2}
+.t-anlass{grid-column:span 1}
+.t-anlass.wide{grid-column:span 2}
+.t-kueche{grid-column:span 2}
+.t-forecast{grid-column:span 3}
+.t-header{grid-column:span 1}
+
+/* embossed seal numeral (chapter marks) */
+.bt-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px;position:relative;z-index:2}
+.bt-eyebrow .ln{height:1px;width:34px;background:var(--gold)}
+.bt-num{
+  position:absolute;right:16px;top:16px;z-index:3;pointer-events:none;user-select:none;
+  width:42px;height:42px;border-radius:50%;
+  display:grid;place-items:center;
+  font-family:'Cormorant Garamond',serif;font-weight:600;font-style:normal;
+  font-size:18px;line-height:1;
+  color:var(--gold);border:1px solid var(--gold-soft);
+  box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint);
+  background:var(--paper);
+}
+/* the ONE wax seal — chapter Eins gets cinnabar (cinnabar use #2) */
+.t-eingang .bt-num{
+  color:var(--ivory-tx);background:var(--cinnabar);border-color:var(--cinnabar);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.16),0 2px 6px rgba(168,52,31,.35);
+}
+.bt-h{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(22px,2.4vw,30px);letter-spacing:-.01em;line-height:1.05;color:var(--jade)}
+.bt-h .em{font-style:italic;color:var(--gold);font-weight:600}
+.bt-lede{margin-top:8px;font-size:12.5px;color:var(--muted);max-width:44ch}
+
+/* --- LIVE tile (label strip w/ cinnabar wax seal) --- */
+.t-live{
+  display:flex;align-items:center;gap:16px;
+  padding:18px 24px;
+}
+.t-live .pulse{position:relative;width:12px;height:12px;flex:none}
+.t-live .pulse i{position:absolute;inset:0;border-radius:50%;background:var(--cinnabar);box-shadow:0 0 0 3px rgba(168,52,31,.22)}
+.t-live .tx{font-size:14px;color:var(--ink-soft)}
+.t-live .tx b{color:var(--jade);font-weight:600}
+.t-live .badge{margin-left:auto;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+
+/* --- CONVERGENCE tile: lacquered jade panel --- */
+.t-conv{
+  padding:26px;
+  background:var(--jade);
+  border-color:var(--jade-deep);
+  box-shadow:inset 0 0 0 4px var(--jade),inset 0 0 0 5px var(--gold-faint),var(--shadow-hi);
+}
+.t-conv:hover{box-shadow:inset 0 0 0 4px var(--jade),inset 0 0 0 5px var(--gold-soft),var(--shadow-hi)}
+.t-conv::before{top:12px;left:12px;border-color:var(--gold)!important}
+.t-conv::after{bottom:12px;right:12px;border-color:var(--gold)!important}
+.t-conv .mlabel{color:var(--gold)}
+.t-conv .bt-eyebrow .ln{background:var(--gold)}
+.t-conv .bt-h{color:var(--ivory-tx)}
+.t-conv .bt-h .em{color:var(--gold)}
+.t-conv .bt-lede{color:var(--ivory-mut)}
+.stage-wrap{position:relative;margin-top:4px}
+.stage-wrap svg.stage{display:block;width:100%;height:auto}
+
+/* --- PHOTO tiles — specimen plates, caption beneath --- */
+.t-photo{
+  padding:10px;display:flex;flex-direction:column;gap:10px;min-height:210px;
+  background:var(--paper);
+}
+.t-photo .ph{position:relative;flex:1;min-height:150px;overflow:hidden;border:1px solid var(--jade-line);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint)}
+.t-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.85) sepia(.08)}
+.t-photo .scrim,.t-photo .kb-grade{display:none}
+.gcap{display:flex;flex-direction:column;gap:1px;padding:2px 4px 4px;color:var(--jade)}
+.gcap .t{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:17px;color:var(--jade)}
+.gcap .s{font-family:'Cormorant Garamond',serif;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+
+/* --- EINGANG tile (ledger rows) --- */
+.t-eingang{padding:26px}
+.eg-list{margin-top:6px}
+.eg-row{
+  display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:14px;
+  padding:13px 6px;border-top:1px solid var(--hair-soft);cursor:pointer;position:relative;
+  transition:background .2s var(--ease),padding-left .25s var(--ease);
+}
+.eg-row:first-child{border-top:none}
+.eg-row::before{content:"";position:absolute;left:-6px;top:0;bottom:0;width:2px;background:var(--gold);transform:scaleY(0);transform-origin:top;transition:transform .3s var(--ease)}
+.eg-row:hover{background:rgba(18,59,51,.04);padding-left:12px}
+.eg-row:hover::before{transform:scaleY(1)}
+.eg-ava{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;background:rgba(18,59,51,.07);color:var(--jade);border:1px solid var(--gold-faint)}
+.eg-main{min-width:0;display:flex;flex-direction:column;gap:2px}
+.eg-nm{font-weight:600;font-size:14px;color:var(--ink)}
+.eg-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:15px;color:var(--ink-soft);line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eg-ch{font-family:var(--mono);font-size:10.5px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.eg-ch svg{width:12px;height:12px;stroke:var(--moss);fill:none;stroke-width:1.6}
+
+/* --- ANLASS tiles (specimen photo top + label body) --- */
+.t-anlass{padding:0;display:flex;flex-direction:column;box-shadow:var(--shadow);border:1px solid var(--jade-line)}
+.t-anlass:hover{box-shadow:var(--shadow-hi);transform:translateY(-3px)}
+.an-ph{position:relative;overflow:hidden;aspect-ratio:16/10;margin:8px 8px 0;border:1px solid var(--jade-line);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint)}
+.t-anlass.wide .an-ph{aspect-ratio:16/8}
+.an-ph img{width:100%;height:100%;object-fit:cover;filter:saturate(.85) sepia(.08)}
+.an-ph .g{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,248,234,.04),rgba(18,59,51,.12))}
+.an-kind{position:absolute;left:12px;top:12px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:2px;background:var(--canvas);color:var(--jade);border:1px solid var(--gold-faint)}
+.an-bd{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.an-nm{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:20px;line-height:1.12;color:var(--jade)}
+.an-meta{margin-top:7px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.an-meta .star{color:var(--gold);letter-spacing:.05em}
+.an-meta .sep{width:3px;height:3px;border-radius:50%;background:var(--muted);opacity:.6}
+.an-act{margin-top:auto;padding-top:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--hair-soft)}
+.an-act .lbl{font-size:12.5px;font-style:italic;font-family:'Cormorant Garamond',serif;font-weight:500;color:var(--ink-soft)}
+.an-do{flex:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--jade);display:grid;place-items:center;color:var(--jade);cursor:pointer;transition:background .2s var(--ease),color .2s var(--ease)}
+.an-do:hover{background:var(--jade);color:var(--ivory-tx)}
+.an-do svg{width:15px;height:15px}
+/* one Anlass highlight — lacquered jade card */
+.t-anlass.jade .an-bd{background:var(--jade);margin:8px;border:1px solid var(--jade-deep);box-shadow:inset 0 0 0 1px var(--gold-faint)}
+.t-anlass.jade .an-nm{color:var(--ivory-tx)}
+.t-anlass.jade .an-meta{color:var(--ivory-mut)}
+.t-anlass.jade .an-meta .sep{background:var(--ivory-mut)}
+.t-anlass.jade .an-act{border-top-color:var(--jade-line)}
+.t-anlass.jade .an-act .lbl{color:var(--ivory-mut)}
+.t-anlass.jade .an-do{border-color:var(--gold);color:var(--gold)}
+.t-anlass.jade .an-do:hover{background:var(--gold);color:var(--jade-deep)}
+.t-anlass.jade .bt-num{color:var(--gold);background:var(--jade);border-color:var(--gold-soft);box-shadow:inset 0 0 0 2px var(--jade),inset 0 0 0 3px var(--gold-faint)}
+
+/* --- FORECAST tile (double-border label panel) --- */
+.t-forecast{padding:26px;display:flex;flex-direction:column}
+.fc-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.fc-big{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(38px,4.4vw,58px);line-height:.9;letter-spacing:-.02em;color:var(--jade)}
+.fc-big small{font-size:.34em;color:var(--muted);font-weight:500}
+.fc-cap{font-size:12.5px;color:var(--ink-soft);margin-top:6px}
+.fc-note{font-size:12px;color:var(--muted);max-width:32ch;text-align:right;line-height:1.5}
+.fc-note b{color:var(--jade);font-weight:600}
+.t-forecast .chart{margin-top:22px}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr;min-height:auto}
+  .hero-photo{min-height:44vh;order:-1;margin:clamp(16px,3vh,28px) var(--gutter)}
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .t-live,.t-conv,.t-eingang,.t-kueche,.t-forecast{grid-column:1/-1}
+  .t-suite,.t-header{grid-column:span 1}
+  .t-anlass,.t-anlass.wide{grid-column:span 1}
+  .t-conv{min-height:0}
+  .gc2{bottom:22px}
+}
+@media(max-width:760px){
+  .nav-links{
+    position:absolute;top:100%;right:var(--gutter);
+    flex-direction:column;align-items:stretch;gap:2px;
+    background:var(--paper);border:1px solid var(--gold-faint);border-radius:4px;
+    padding:8px;box-shadow:var(--shadow-hi);min-width:180px;
+    opacity:0;visibility:hidden;transform:translateY(-8px);
+    transition:opacity .2s var(--ease),transform .2s var(--ease),visibility .2s;
+  }
+  .nav-links.open{opacity:1;visibility:visible;transform:translateY(6px)}
+  .nav-links a{padding:11px 14px;border-radius:3px}
+  .nav-links a::after{display:none}
+  .nav-links a:hover{background:rgba(18,59,51,.06)}
+  .nav-date{display:none}
+  .nav-burger{
+    display:grid;place-items:center;width:38px;height:38px;
+    border:1px solid var(--gold-faint);border-radius:3px;background:var(--paper);cursor:pointer;
+  }
+  .nav-burger svg{width:18px;height:18px;stroke:var(--jade)}
+}
+@media(max-width:640px){
+  .bento{grid-template-columns:repeat(2,1fr);gap:12px}
+  .t-kpi{grid-column:span 1}
+  .t-live,.t-conv,.t-suite,.t-eingang,.t-anlass,.t-anlass.wide,.t-kueche,.t-forecast,.t-header{grid-column:1/-1}
+  .fc-note{text-align:left}
+  .chart-grid{gap:5px}
+  .bar .cap{font-size:12px;top:-22px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .enter.go,.bt{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LEFT SIDEBAR (desktop chrome — jade cabinet) ============ -->
+<aside class="side" aria-label="Hauptnavigation">
+  <div class="side-brand">
+    <span class="side-mark"><img src="../assets/kb-logo-weiss.webp" alt=""></span>
+    <span class="side-brand-tx">
+      <span class="nm">Klinik Bavaria</span>
+      <span class="os">Concierge OS</span>
+    </span>
+  </div>
+  <nav class="side-nav">
+    <a href="#top" class="active">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke-linecap="round"/></svg>Heute
+    </a>
+    <a href="#eingang">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke-linejoin="round"/></svg>Fälle
+    </a>
+    <a href="#anlaesse">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0111 0" stroke-linecap="round"/><path d="M16 5.5a3 3 0 010 5.8M17 19a5.5 5.5 0 00-2-4.3" stroke-linecap="round"/></svg>Team
+    </a>
+    <a href="#eingang">
+      <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="5.5" r="2.4"/><circle cx="18" cy="18.5" r="2.4"/><path d="M8.2 11L15.8 6.6M8.2 13l7.6 4.4"/></svg>Netzwerk
+    </a>
+    <a href="#belegung">
+      <svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6M5 12v6c0 1.66 3.13 3 7 3s7-1.34 7-3v-6"/></svg>Datenbank
+    </a>
+    <a href="#top">
+      <svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10" stroke-linecap="round"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg>System
+    </a>
+  </nav>
+  <div class="side-foot">
+    <div class="side-date">DI · 15. JULI 2026</div>
+    <div class="side-div"></div>
+    <div class="side-user">
+      <span class="side-ava">SB</span>
+      <span class="side-user-tx">
+        <span class="nm">Sabine Berger</span>
+        <span class="rl">Belegungsmanagement</span>
+      </span>
+    </div>
+  </div>
+</aside>
+
+<!-- ============ NAV (mobile top-bar ≤1023px) ============ -->
+<nav class="nav enter go">
+  <div class="brand">
+    <span class="brand-mark"><img src="../assets/kb-logo-weiss.webp" alt=""></span>
+    <span class="brand-txt">Klinik Bavaria<span class="dot">·</span><span class="os">Concierge OS</span></span>
+  </div>
+  <div class="nav-links" id="navlinks">
+    <a href="#top" class="active">Heute</a>
+    <a href="#eingang">Fälle</a>
+    <a href="#anlaesse">Team</a>
+    <a href="#eingang">Netzwerk</a>
+    <a href="#belegung">Datenbank</a>
+    <a href="#top">System</a>
+  </div>
+  <div class="nav-right">
+    <span class="nav-date">DI · 15. JULI 2026</span>
+    <span class="nav-ava" title="Sabine">SB</span>
+    <button class="nav-burger" id="burger" aria-label="Menü">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</nav>
+
+<span id="top"></span>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-copy">
+    <div class="hero-greet enter go e1">
+      <span class="line"></span>
+      <span class="txt">Guten Morgen, <b>Sabine</b> — 5 neue Anfragen warten.</span>
+    </div>
+    <h1 class="hero-h1 enter go e2">Aus Quellen wird<br><span class="em">planbare</span> Belegung.</h1>
+    <div class="hero-rule enter go e2" aria-hidden="true"></div>
+    <p class="hero-sub enter go e3">Jede E-Mail, jeder Anruf, jedes Fax, jede Portal-Meldung — an einem Ort gebündelt, priorisiert und in Bewegung Richtung belegtes Bett.</p>
+    <div class="hero-cta enter go e4">
+      <a href="#eingang" class="btn btn-p">Eingang öffnen
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#belegung" class="btn btn-g">Belegung ansehen</a>
+    </div>
+  </div>
+  <div class="hero-photo enter go e2">
+    <img class="kb" src="img/kb-header.jpg" alt="Luftbild der Klinik Bavaria in Bad Kissingen">
+    <div class="grade"></div>
+    <div class="gchip gc1"><span class="gchip-f"><span class="gc-dot"></span><b>41</b>&nbsp;Anfragen heute</span></div>
+    <div class="gchip gc2"><span class="gchip-f"><b>31</b><span class="gc-sm">/38 Betten belegt</span></span></div>
+    <div class="cap">
+      <span class="place">Klinik Bavaria — <em>im Licht der Rhön</em></span>
+      <span class="co">Bad Kissingen</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============ BENTO ============ -->
+<main class="bento">
+
+  <!-- Row A · KPI label-cards -->
+  <div class="bt t-kpi kpi" id="anchor-kpis">
+    <span class="kpi-cap">Offene Fälle</span>
+    <span class="kpi-rule"></span>
+    <div class="val"><span class="count" data-count="14">0</span></div>
+    <span class="delta"><span class="arw">▲</span>+3 diese Woche</span>
+  </div>
+  <div class="bt t-kpi kpi">
+    <span class="kpi-cap">Neue Anfragen heute</span>
+    <span class="kpi-rule"></span>
+    <div class="val"><span class="count" data-count="5">0</span></div>
+    <span class="delta flat">seit 00:00 Uhr</span>
+  </div>
+  <div class="bt t-kpi kpi">
+    <span class="kpi-cap">Conversion</span>
+    <span class="kpi-rule"></span>
+    <div class="val"><span class="count" data-count="67">0</span><small>%</small></div>
+    <span class="delta"><span class="arw">▲</span>Anfrage → Fall</span>
+  </div>
+  <div class="bt t-kpi kpi">
+    <span class="kpi-cap">Belegung</span>
+    <span class="kpi-rule"></span>
+    <div class="val"><span class="count" data-count="31">0</span><small>/38 Betten</small></div>
+    <span class="delta flat">82 % ausgelastet</span>
+  </div>
+
+  <!-- live status strip -->
+  <div class="bt t-live">
+    <span class="pulse"><i></i></span>
+    <span class="tx"><b>5 neue Anfragen</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.</span>
+    <span class="badge">Echtzeit</span>
+  </div>
+
+  <!-- Row B · convergence (lacquered jade) + suite photo -->
+  <section class="bt t-conv" id="eingang">
+    <div class="c-head">
+      <div class="bt-eyebrow"><span class="ln"></span><span class="mlabel">Konvergenz — sechs Quellen</span></div>
+      <h2 class="bt-h">Sechs Quellen, <span class="em">ein</span> Eingang.</h2>
+      <p class="bt-lede">41 Signale heute morgen — automatisch zusammengeführt, 14 wurden bereits zum Fall.</p>
+    </div>
+    <div class="stage-wrap">
+      <svg class="stage" viewBox="0 0 1000 260" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Sechs Kanäle laufen in einen Eingang und werden zum Fall">
+        <defs>
+          <radialGradient id="hubg" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#F6F2E6"/><stop offset="100%" stop-color="#E5DCC4"/>
+          </radialGradient>
+        </defs>
+        <g id="chans"></g>
+        <g id="hub">
+          <circle class="hub-ring" cx="640" cy="130" r="62"/>
+          <circle cx="640" cy="130" r="50" fill="url(#hubg)" stroke="#B99149" stroke-width="1"/>
+          <text x="640" y="122" text-anchor="middle" fill="#123B33" font-family="Cormorant Garamond,serif" font-weight="600" font-size="28">41</text>
+          <text x="640" y="146" text-anchor="middle" fill="#7E8B82" font-family="Inter" font-size="9" letter-spacing="1.6">EIN EINGANG</text>
+        </g>
+        <path d="M702 130 H812" fill="none" stroke="#B99149" stroke-width="1.4" opacity=".8"/>
+        <path d="M804 124 l10 6 -10 6" fill="none" stroke="#B99149" stroke-width="1.4" opacity=".8"/>
+        <g>
+          <rect x="832" y="104" width="128" height="52" rx="3" fill="none" stroke="#B99149" stroke-width="1.4"/>
+          <text x="896" y="127" text-anchor="middle" fill="#EFE9D8" font-family="Cormorant Garamond,serif" font-weight="600" font-size="26">14</text>
+          <text x="896" y="145" text-anchor="middle" fill="rgba(239,233,216,.7)" font-family="Inter" font-size="9" letter-spacing="1.4">FÄLLE</text>
+        </g>
+      </svg>
+    </div>
+    <div class="conv-legend" id="convlegend"></div>
+    <div class="stepper">
+      <div class="step on"><span class="b"></span>Eingang</div>
+      <span class="arw"></span>
+      <div class="step"><span class="b"></span>Zuteilung</div>
+      <span class="arw"></span>
+      <div class="step"><span class="b"></span>Antwort</div>
+      <span class="arw"></span>
+      <div class="step"><span class="b"></span>Fall</div>
+    </div>
+  </section>
+
+  <a class="bt t-photo t-suite" href="#belegung">
+    <div class="ph"><img src="img/kb-suite.webp" alt="Panorama-Suite der Klinik Bavaria" style="object-position:center 55%"></div>
+    <div class="gcap"><span class="t">Panorama-Suite</span><span class="s">Komfort-Kategorie</span></div>
+  </a>
+
+  <!-- Row C · Eingang rows + two Anlässe -->
+  <section class="bt t-eingang">
+    <span class="bt-num">01</span>
+    <div class="bt-eyebrow"><span class="ln"></span><span class="mlabel">№ 01 — Der Eingang</span></div>
+    <h2 class="bt-h">Alles kommt hier <span class="em">zuerst</span> an.</h2>
+    <div class="eg-list">
+      <a class="eg-row">
+        <span class="eg-ava">WA</span>
+        <span class="eg-main">
+          <span class="eg-nm">Werner Aumann</span>
+          <span class="eg-sub">„Anfrage Anschlussheilbehandlung nach Hüft-OP"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 9l9 6 9-6"/></svg>Website · vor 12 Min</span>
+        </span>
+        <span class="tag neu">Neu</span>
+      </a>
+      <a class="eg-row">
+        <span class="eg-ava">HS</span>
+        <span class="eg-main">
+          <span class="eg-nm">Dr. med. H. Sailer</span>
+          <span class="eg-sub">„Verlegung Kardio-Reha, privat"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7z"/></svg>Zuweiser-Portal · vor 38 Min</span>
+        </span>
+        <span class="tag mid">Zuweiser</span>
+      </a>
+      <a class="eg-row">
+        <span class="eg-ava">FB</span>
+        <span class="eg-main">
+          <span class="eg-nm">Familie Brenner</span>
+          <span class="eg-sub">„Rückfrage Komfortzimmer & Kostenübernahme"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2a12 12 0 006 6l2-3 5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>Telefon · vor 1 Std</span>
+        </span>
+        <span class="tag mid">Anruf</span>
+      </a>
+      <a class="eg-row">
+        <span class="eg-ava">MO</span>
+        <span class="eg-main">
+          <span class="eg-nm">M. Ostheimer</span>
+          <span class="eg-sub">„Unterlagen nachgereicht — Kostenzusage?"</span>
+          <span class="eg-ch"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 9l9 6 9-6"/></svg>E-Mail · vor 2 Std</span>
+        </span>
+        <span class="tag wait">Wartet</span>
+      </a>
+    </div>
+  </section>
+
+  <article class="bt t-anlass jade" id="anlaesse">
+    <div class="an-ph"><img src="../assets/kb-garten.webp" alt="Feingebäck im Klinikgarten" style="object-position:50% 55%"><div class="g"></div><span class="an-kind">Geburtstag</span></div>
+    <div class="an-bd">
+      <span class="bt-num">02</span>
+      <div class="an-nm">Margarete Brandl wird 74</div>
+      <div class="an-meta"><span class="star">★★★★★</span><span class="sep"></span>Stammgast seit 2019</div>
+      <div class="an-act"><span class="lbl">Persönliche Karte + Anruf</span>
+        <button class="an-do" aria-label="Aktion starten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </article>
+
+  <article class="bt t-anlass">
+    <div class="an-ph"><img src="../assets/kb-fach-1.webp" alt="Behandlungsszene" style="object-position:50% 50%"><div class="g"></div><span class="an-kind">Wiederbedarf</span></div>
+    <div class="an-bd">
+      <div class="an-nm">Klaus Hofreiter</div>
+      <div class="an-meta">Entlassung vor 11 Monaten<span class="sep"></span>Orthopädie</div>
+      <div class="an-act"><span class="lbl">Nachsorge-Angebot</span>
+        <button class="an-do" aria-label="Aktion starten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Row D · third Anlass (wide) + Küche photo -->
+  <article class="bt t-anlass wide">
+    <div class="an-ph"><img src="../assets/kb-haus.webp" alt="Therapie-Szene" style="object-position:50% 45%"><div class="g"></div><span class="an-kind">Zuweiser-Rhythmus</span></div>
+    <div class="an-bd">
+      <div class="an-nm">Praxis Dr. Wagenknecht</div>
+      <div class="an-meta">Letzter Kontakt vor 6 Wochen</div>
+      <div class="an-act"><span class="lbl">Quartalsgespräch anbieten</span>
+        <button class="an-do" aria-label="Aktion starten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </article>
+
+  <a class="bt t-photo t-kueche" href="#anlaesse">
+    <div class="ph"><img src="img/kb-kueche.webp" alt="Klinikküche mit Blick ins Grüne" style="object-position:center 50%"></div>
+    <div class="gcap"><span class="t">Kulinarik</span><span class="s">Küche mit Blick ins Grüne</span></div>
+  </a>
+
+  <!-- Row E · forecast + campus photo -->
+  <section class="bt t-forecast" id="belegung">
+    <span class="bt-num">03</span>
+    <div class="bt-eyebrow"><span class="ln"></span><span class="mlabel">№ 03 — Die Belegung</span></div>
+    <div class="fc-top">
+      <div>
+        <div class="fc-big">38<small>/38</small></div>
+        <div class="fc-cap">Prognose KW36 — Vollbelegung erstmals erreicht.</div>
+      </div>
+      <div class="fc-note">Von <b>29</b> auf <b>38</b> Betten in acht Wochen. Ziel-Linie bei <b>34</b> seit KW34 durchbrochen.</div>
+    </div>
+    <div class="chart" id="chart">
+      <div class="chart-grid" id="bars">
+        <div class="target-line" style="bottom:calc((34/38) * 92%)"><span class="t">Ziel 34</span></div>
+      </div>
+    </div>
+  </section>
+
+  <a class="bt t-photo t-header" href="#top">
+    <div class="ph"><img src="img/kb-header.jpg" alt="Campus der Klinik in Kurpark-Lage" style="object-position:center 45%"></div>
+    <div class="gcap"><span class="t">Campus</span><span class="s">Kurpark-Lage</span></div>
+  </a>
+
+</main>
+
+<!-- ============ CLOSING ============ -->
+<section class="closing">
+  <img class="bg" src="img/forest-light.jpg" alt="Lichtung im Wald bei Bad Kissingen">
+  <div class="grade"></div>
+  <div class="inner">
+    <span class="mlabel">Klinik Bavaria · Concierge OS</span>
+    <h2 class="serif">Ruhe im <span class="em">Betrieb</span>,<br>Klarheit in der Belegung.</h2>
+    <a href="#top" class="btn btn-p">Zum Tagesüberblick
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 19V5M6 11l6-6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<footer class="foot">
+  <span class="l"><b>Klinik Bavaria</b> · Concierge OS — Prototyp „Jade-Apotheke"</span>
+  <span>Synthetische Demo-Daten · Bad Kissingen · 2026</span>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- burger menu ---- */
+  var burger = document.getElementById('burger');
+  var navlinks = document.getElementById('navlinks');
+  if(burger){
+    burger.addEventListener('click', function(e){ e.stopPropagation(); navlinks.classList.toggle('open'); });
+    document.addEventListener('click', function(){ navlinks.classList.remove('open'); });
+    navlinks.addEventListener('click', function(){ navlinks.classList.remove('open'); });
+  }
+
+  /* ---- build convergence channels — ivory paths, gold engraving ---- */
+  var GOLD = '#B99149', IVORY = 'rgba(239,233,216,.5)';
+  var chans = [
+    {n:'E-Mail',   v:12},
+    {n:'Telefon',  v:7 },
+    {n:'Fax',      v:3 },
+    {n:'Website',  v:9 },
+    {n:'Zuweiser', v:6 },
+    {n:'Portale',  v:4 }
+  ];
+  var g = document.getElementById('chans');
+  var hubX = 640, hubY = 130, startX = 60, colX = 200;
+  var frag = '';
+  chans.forEach(function(c, i){
+    var y = 30 + i * 40;
+    var path = 'M'+colX+' '+y+' C '+(colX+180)+' '+y+', '+(hubX-170)+' '+hubY+', '+(hubX-52)+' '+hubY;
+    frag += '<path class="flowline" d="'+path+'" id="fp'+i+'" stroke="'+IVORY+'"/>';
+    frag += '<text class="chan-lbl" x="'+startX+'" y="'+(y+4)+'">'+c.n+'</text>';
+    frag += '<text class="chan-num" x="'+(colX-14)+'" y="'+(y+4)+'" text-anchor="end">'+c.v+'</text>';
+    frag += '<circle cx="'+(colX-4)+'" cy="'+y+'" r="2.4" fill="'+GOLD+'"/>';
+  });
+  g.innerHTML = frag;
+
+  /* colour legend beneath the stage */
+  var legend = document.getElementById('convlegend');
+  if(legend){
+    legend.innerHTML = chans.map(function(c){
+      return '<span><i></i>'+c.n+'</span>';
+    }).join('');
+  }
+
+  /* signature: gold dots traveling the threads (SMIL, skipped in reduced-motion) */
+  if(!reduce){
+    chans.forEach(function(c, i){
+      var pathEl = document.getElementById('fp'+i);
+      if(!pathEl) return;
+      var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('r','3');
+      dot.setAttribute('fill', GOLD);
+      var am = document.createElementNS('http://www.w3.org/2000/svg','animateMotion');
+      am.setAttribute('dur', (3.4 + i*0.55)+'s');
+      am.setAttribute('repeatCount','indefinite');
+      am.setAttribute('begin', (i*0.5)+'s');
+      am.setAttribute('rotate','auto');
+      var mp = document.createElementNS('http://www.w3.org/2000/svg','mpath');
+      mp.setAttributeNS('http://www.w3.org/1999/xlink','href','#fp'+i);
+      am.appendChild(mp); dot.appendChild(am);
+      g.appendChild(dot);
+    });
+  }
+
+  /* ---- KPI count-up ---- */
+  function countUp(el){
+    if(el.dataset.done) return; el.dataset.done = '1';
+    var end = +el.getAttribute('data-count');
+    if(reduce){ el.textContent = end; return; }
+    var start = null, dur = 1400;
+    requestAnimationFrame(function step(t){
+      if(!start) start = t;
+      var k = Math.min((t-start)/dur, 1);
+      var e = 1 - Math.pow(1-k, 3);
+      el.textContent = Math.round(end * e);
+      if(k<1){ requestAnimationFrame(step); }
+      else { el.textContent = end; }
+    });
+  }
+  document.querySelectorAll('.count').forEach(countUp);
+
+  /* ---- belegung bars (static stems + cap dots) ---- */
+  var data = [
+    {wk:'KW29', v:29}, {wk:'KW30', v:31}, {wk:'KW31', v:33}, {wk:'KW32', v:34},
+    {wk:'KW33', v:36}, {wk:'KW34', v:35}, {wk:'KW35', v:37}, {wk:'KW36', v:38}
+  ];
+  var max = 38;
+  var bars = document.getElementById('bars');
+  var bhtml = '';
+  data.forEach(function(d){
+    var pct = (d.v / max) * 92;
+    var peak = d.v === 38 ? ' peak' : '';
+    bhtml += '<div class="bar-col'+peak+'"><div class="bar" style="height:'+pct.toFixed(1)+'%"><span class="cap">'+d.v+'</span><span class="dotcap"></span></div><span class="wk">'+d.wk+'</span></div>';
+  });
+  bars.insertAdjacentHTML('beforeend', bhtml);
+
+})();
+</script>
+</body>
+</html>
