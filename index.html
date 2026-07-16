@@ -1342,7 +1342,7 @@ label{font-size:12px;letter-spacing:.08em}
 /* ============================================================
    DESIGN-UPGRADE (Fable-Audit) — Klarheit, weniger Überladung
    Namespaces: .hd-* Heute-Header · .cv-* Konvergenz-Hero
-   Gescopt auf eigene Views; keine .rp-*/.rpd-*/.rsp-*/.mx-* Selektoren.
+   Gescopt auf eigene Views; keine .rp- / .rpd- / .rsp- / .mx- Selektoren.
    ============================================================ */
 /* --- Phase 1: Heute entrümpelt --- */
 .hd-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
@@ -2948,10 +2948,8 @@ body{accent-color:var(--brass)}
 #radarLine .card.rl-strip:hover{border-color:var(--gold-soft);
   box-shadow:inset 0 0 0 1px var(--gold-faint)}
 #radarLine .card.rl-strip .lx-rt{color:var(--brass-deep)}
-/* display:flex hier selbst setzen — die Basisregel .hd-row (display:flex, Z.~1348) wird vom
-   Parser verschluckt: vorbestehender Bug, der Kommentar davor (Z.~1345, "keine .rp-Stern-Slash…")
-   enthält die Kommentar-Ende-Sequenz Stern+Slash und beendet sich vorzeitig; die
-   Fehler-Recovery frisst die .hd-row-Folgeregel. */
+#radarLine{align-self:start}
+/* .hb-tfoot: eigener Flex-Kontext (rechtsbündig, ohne Siegel-Ausweich-Padding der Kopfzeile). */
 #view-heute>.hb-trichter .hd-row.hb-tfoot{display:flex;padding-right:0;justify-content:flex-end;margin:12px 0 0}
 </style>
 </head>
