@@ -360,7 +360,7 @@ JS: `mtEnter()`/`mtExit()` NICHT anfassen — der „on"-Zustand wird rein per C
 
 **Does NOT cover:** Portal-Inhalte (`renderPortal` etc.), `kpOpen`-Mechanik — nur Einstiege.
 
-- [ ] **Step 1: Portal-Karte im Zuweiser-Segment**
+- [x] **Step 1: Portal-Karte im Zuweiser-Segment**
 
 In `sub-netzwerk-zuweiser` (~3630), nach der `lblline`, eine Etiketten-Doppelkarte (2-spaltig ab 760px, gestapelt mobil), Namespace `.nx-entry`:
 
@@ -381,9 +381,9 @@ In `sub-netzwerk-zuweiser` (~3630), nach der `lblline`, eine Etiketten-Doppelkar
 
 Den alten `kp-cta`-Button (~3632) entfernen (ersetzt durch die Karte). CSS additiv `.nx-entry`/`.nx-card`: Etiketten-Karte (Doppelrahmen-Familie erben via `.card`), linksbündiger Textblock, Gold-Eck-Winkel NUR falls `.card` sie nicht schon mitbringt — Bestandsoptik prüfen, nichts doppeln. Sichtbar auf ALLEN Breiten.
 
-- [ ] **Step 2: Verifikation** — vm.Script; Browser @390: Netzwerk→Zuweiser zeigt beide Karten, Tap „Zuweiserportal" öffnet `#refOverlay` (Overlay bedienbar: rpTab-Wechsel, `rpDoc('arztbrief')` öffnet Papier, Schließen via ‹); Tap Kampagne öffnet kpSheet, 3 Schritte durchklickbar, `.kp-marke` bleibt `#b29a76` (Insel!); @1440 identisch + Sidebar-Gold-Button weiterhin funktional.
+- [x] **Step 2: Verifikation** — vm.Script; Browser @390: Netzwerk→Zuweiser zeigt beide Karten, Tap „Zuweiserportal" öffnet `#refOverlay` (Overlay bedienbar: rpTab-Wechsel, `rpDoc('arztbrief')` öffnet Papier, Schließen via ‹); Tap Kampagne öffnet kpSheet, 3 Schritte durchklickbar, `.kp-marke` bleibt `#b29a76` (Insel!); @1440 identisch + Sidebar-Gold-Button weiterhin funktional.
 
-- [ ] **Step 3: Commit** `feat(ia): T7 — Zuweiserportal mobil erreichbar + Kampagnen-Karte im Zuweiser-Segment`
+- [x] **Step 3: Commit** `feat(ia): T7 — Zuweiserportal mobil erreichbar + Kampagnen-Karte im Zuweiser-Segment`
 
 ---
 
