@@ -1364,7 +1364,7 @@ label{font-size:12px;letter-spacing:.08em}
   .cv .cv-narrow{display:block;max-width:420px;margin:0 auto}
 }
 /* cv: Quellen-Chips — J3: Elfenbein-Etiketten auf Lack (Papier-Füllung, Jade-Text, Gold-Numeral).
-   Ein Block deckt alle 4 Instanzen (Heute breit/schmal, Team breit/schmal). */
+   Ein Block deckt beide Instanzen (Heute breit/schmal). */
 .cv-chip rect{fill:none;stroke:none;stroke-width:1}
 .cv-chip .cv-chip-bg{fill:var(--paper);stroke:rgba(185,145,73,.45);stroke-width:1}
 .cv-chip-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;font-weight:500;letter-spacing:.02em;fill:var(--sage)}
@@ -1422,10 +1422,6 @@ label{font-size:12px;letter-spacing:.08em}
 .cv-copy{font:italic 500 16px "Cormorant Garamond",Georgia,serif;fill:var(--ivory-tx);text-anchor:middle}
 .cv-copy-b{fill:var(--brass)}
 .cv-narrow .cv-copy{font-size:12.5px}
-/* cv: Team-Variante — dunkle Karte (gleiche Konvergenz-Story wie Heute-Hero) */
-.tm-cv{background:var(--paper);border:1px solid var(--hair2);border-radius:24px;
-  padding:18px 22px 6px;margin:0 0 20px;box-shadow:var(--shadow)}
-.tm-cv.cv{margin-top:0}
 /* --- Phase 4: kompakte Eingangs-Zeilen (aufklappbar) + eine CTA --- */
 #inbox .mail{display:block;padding:0;overflow:hidden}
 .mrow{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:transparent;border:0;
@@ -1759,7 +1755,6 @@ body.ma-mode #view-meintag{display:block}
 .au-photo--rose::after{background:linear-gradient(180deg, rgba(255,248,234,.06), rgba(185,145,73,.08))}
 .au-photo--gold::after{background:linear-gradient(180deg, rgba(255,248,234,.06), rgba(185,145,73,.12))}
 /* Kontext-Größen (je Platzierung) */
-#view-team>.au-photo{height:140px;margin:0 0 16px}
 #sub-netzwerk-zuweiser>.au-photo{height:120px;margin:12px 0}
 #sub-netzwerk-bestand>.au-photo{width:120px;height:120px;margin:0 0 14px}
 #view-inreha>.au-photo{height:130px;margin:0 0 14px}
@@ -2082,7 +2077,7 @@ body{accent-color:var(--brass)}
    Panel/Foto/Typo werden in den Basisregeln hell gestellt; hier NUR additive Deko:
    vergoldete Doppel-Linie mit wanderndem Schimmer, zwei Glas-Chips über dem Foto,
    und der Leitsatz im Konvergenz-SVG lesbar auf Weiß — strikt auf #view-heute
-   gescopet, damit das dunkle Team-Panel (.tm-cv, gleiche .cv-* Klassen) unberührt bleibt. */
+   gescopet. */
 .lx-rule{height:3px;border-top:1px solid var(--brass-line);border-bottom:1px solid var(--brass-line);width:min(280px,38%);position:relative;overflow:hidden;margin:14px 0 4px}
 .lx-rule::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(185,145,73,.75),transparent);transform:translateX(-110%);animation:lxSweep 7s ease-in-out infinite}
 @keyframes lxSweep{0%,55%{transform:translateX(-110%)}75%,100%{transform:translateX(110%)}}
@@ -2096,7 +2091,7 @@ body{accent-color:var(--brass)}
 .lx-chip--in{top:14px;right:110px}
 .lx-chip--stock{bottom:30px;right:128px;color:var(--alert)}
 .lx-chip--stock b{color:var(--alert)}
-/* Konvergenz-Leitsatz jetzt global hell (Basisregel .cv-copy) — Team-Panel ist nun ebenfalls hell,
+/* Konvergenz-Leitsatz jetzt global hell (Basisregel .cv-copy) —
    die frühere #view-heute-Scope-Überschreibung ist damit redundant und entfernt. */
 
 /* T7 · Count-up-Glint — CSS entfernt (JADE-Konsolidierung); der rpCount-JS-Hook bleibt
@@ -2270,18 +2265,18 @@ body{accent-color:var(--brass)}
    Ziel sind die STABILEN direkten Kinder (header/.sub/Grid-Container) — deren Innen-
    HTML von renderX() ersetzt wird, der Container selbst überlebt → kein Replay-Glitch.
    Replay nur beim View-Eintritt via .active-Toggle in go(). — */
-#view-faelle.view.active>*,#view-team.view.active>*,#view-netzwerk.view.active>*,
+#view-faelle.view.active>*,#view-netzwerk.view.active>*,
 #view-matrix.view.active>*,#view-system.view.active>*{
   animation:lift .42s cubic-bezier(.22,1,.36,1) both}
-#view-faelle.view.active>*:nth-child(2),#view-team.view.active>*:nth-child(2),
+#view-faelle.view.active>*:nth-child(2),
 #view-netzwerk.view.active>*:nth-child(2),#view-matrix.view.active>*:nth-child(2),
 #view-system.view.active>*:nth-child(2){animation-delay:.06s}
-#view-faelle.view.active>*:nth-child(3),#view-team.view.active>*:nth-child(3),
+#view-faelle.view.active>*:nth-child(3),
 #view-netzwerk.view.active>*:nth-child(3),#view-matrix.view.active>*:nth-child(3),
 #view-system.view.active>*:nth-child(3){animation-delay:.12s}
-#view-faelle.view.active>*:nth-child(4),#view-team.view.active>*:nth-child(4),
+#view-faelle.view.active>*:nth-child(4),
 #view-netzwerk.view.active>*:nth-child(4),#view-system.view.active>*:nth-child(4){animation-delay:.18s}
-#view-faelle.view.active>*:nth-child(n+5),#view-team.view.active>*:nth-child(n+5),
+#view-faelle.view.active>*:nth-child(n+5),
 #view-netzwerk.view.active>*:nth-child(n+5),#view-system.view.active>*:nth-child(n+5){animation-delay:.22s}
 
 /* — 3 · FUNNEL-PREMIUM — */
@@ -2412,8 +2407,8 @@ body{accent-color:var(--brass)}
   box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint),var(--shadow-soft)}
 
 /* — (J3.2) KONVERGENZ = GOLD-GRAVUR AUF LACK — das Lack-Panel (e5d .t-conv).
-   Gemeinsame .cv-Hülle → alle 4 Instanzen (Heute breit/schmal, Team breit/schmal)
-   können nicht auseinanderdriften; .tm-cv (Z. ~1457) wird hier bewusst überstimmt. — */
+   Gemeinsame .cv-Hülle → beide Instanzen (Heute breit/schmal)
+   können nicht auseinanderdriften. — */
 .cv{background:var(--espresso-grad);border:1px solid #0D2E28;border-radius:4px;
   padding:16px 18px 8px;
   box-shadow:inset 0 0 0 4px #123B33,inset 0 0 0 5px var(--gold-faint),var(--shadow)}
@@ -2558,12 +2553,12 @@ body{accent-color:var(--brass)}
   box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),0 0 0 2px var(--sage-soft)}
 .tm-intake{background:var(--paper);border:1px solid var(--gold-soft);border-left:3px solid var(--brass);border-radius:4px}
 .tm-intake .num{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:19px}
-#view-team>.au-photo{height:auto;margin:6px 0 20px;background:var(--paper);border:1px solid var(--jade-line);
+#sub-faelle-team>.au-photo{height:auto;margin:6px 0 20px;background:var(--paper);border:1px solid var(--jade-line);
   border-radius:4px;padding:9px;
   box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft)}
-#view-team>.au-photo img{height:140px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
-#view-team>.au-photo::after{display:none}
-#view-team>.au-photo figcaption{position:static;left:auto;bottom:auto;margin:8px 2px 0;padding:0;
+#sub-faelle-team>.au-photo img{height:140px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
+#sub-faelle-team>.au-photo::after{display:none}
+#sub-faelle-team>.au-photo figcaption{position:static;left:auto;bottom:auto;margin:8px 2px 0;padding:0;
   background:none;border:0;border-radius:0;box-shadow:none;text-shadow:none;
   backdrop-filter:none;-webkit-backdrop-filter:none;
   font-family:"Cormorant Garamond",Georgia,serif;font-size:10px;font-weight:600;
@@ -2958,7 +2953,6 @@ body{accent-color:var(--brass)}
     <button data-nav="heute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.2 12 4l9 7.2"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M10 20v-5h4v5"/></svg><span>Heute</span></button>
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg><span>Fälle</span></button>
     <button data-nav="inreha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M2 18h20"/><path d="M7 10h4v4H7z"/></svg><span>In Reha</span></button>
-    <button data-nav="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6l2-8z"/></svg><span>Team</span></button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg><span>Netzwerk</span></button>
     <button data-nav="matrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 12h17M9.5 4v16M15.5 4v16"/></svg><span>Matrix</span></button>
     <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg><span>System</span></button>
@@ -3538,6 +3532,7 @@ body{accent-color:var(--brass)}
       <div class="segments" role="tablist" aria-label="Fälle-Bereiche">
         <button class="seg active" data-seg="anfragen" role="tab">Anfragen <b class="segn num" id="segCntAnfragen"></b></button>
         <button class="seg" data-seg="board" role="tab">Board <b class="segn num" id="segCntBoard"></b></button>
+        <button class="seg" data-seg="team" role="tab">Team</button>
       </div>
       <button class="sim-cta" onclick="simulateInbound()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Anfrage simulieren (Demo)</button>
     </header>
@@ -3549,6 +3544,11 @@ body{accent-color:var(--brass)}
       <p class="lblline">Fall-Board · Karte antippen zum Öffnen.</p>
       <div class="bf" id="boardFocus"></div>
       <div class="board" id="board"></div>
+    </div>
+    <div class="sub" id="sub-faelle-team">
+      <p class="lblline">Alle Anfragen aus allen Kanälen — an einem Ort gebündelt, klar zugeteilt, zügig beantwortet.</p>
+      <figure class="au-photo au-photo--sage"><img src="assets/kb-haus.webp" alt="" loading="lazy"><figcaption>Das Team · Klinik Bavaria</figcaption></figure>
+      <div id="teamGrid"></div>
     </div>
   </section>
 
@@ -3563,78 +3563,6 @@ body{accent-color:var(--brass)}
   </section>
 
   <!-- ============ NETZWERK ============ -->
-  <!-- ============ TEAM · Mitarbeitercockpit ============ -->
-  <section id="view-team" class="view">
-    <header class="vhead"><div class="kicker">Zentrale Steuerung</div><h1>Team</h1>
-      <p class="lblline">Alle Anfragen aus allen Kanälen — an einem Ort gebündelt, klar zugeteilt, zügig beantwortet.</p>
-    </header>
-    <div class="cv tm-cv">
-      <svg class="cv-wide" viewBox="0 0 980 362" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="cvGoldT" cx="36%" cy="28%" r="85%"><stop offset="0" stop-color="#F6F2E6"/><stop offset=".55" stop-color="#EFE9D8"/><stop offset="1" stop-color="#E5DCC4"/></radialGradient>
-          <radialGradient id="cvGlowT"><stop offset="0" stop-color="#B99149" stop-opacity=".32"/><stop offset="1" stop-color="#B99149" stop-opacity="0"/></radialGradient>
-        </defs>
-        <path class="cv-path" d="M228,44 C420,44 470,169 578,169"/><path class="cv-path" d="M228,94 C420,94 470,169 578,169"/>
-        <path class="cv-path" d="M228,144 C420,144 470,169 578,169"/><path class="cv-path" d="M228,194 C420,194 470,169 578,169"/>
-        <path class="cv-path" d="M228,244 C420,244 470,169 578,169"/><path class="cv-path" d="M228,294 C420,294 470,169 578,169"/>
-        <circle class="cv-dot" r="2.8" style="offset-path:path('M228,44 C420,44 470,169 578,169')"/>
-        <circle class="cv-dot cv-t2" r="2.8" style="offset-path:path('M228,94 C420,94 470,169 578,169')"/>
-        <circle class="cv-dot cv-t3" r="2.8" style="offset-path:path('M228,144 C420,144 470,169 578,169')"/>
-        <circle class="cv-dot cv-t4" r="2.8" style="offset-path:path('M228,194 C420,194 470,169 578,169')"/>
-        <circle class="cv-dot cv-t5" r="2.8" style="offset-path:path('M228,244 C420,244 470,169 578,169')"/>
-        <circle class="cv-dot cv-t6" r="2.8" style="offset-path:path('M228,294 C420,294 470,169 578,169')"/>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="23" width="220" height="42" rx="3"/><rect x="8" y="23" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="48">E-MAIL</text><text class="cv-chip-n" x="214" y="51" text-anchor="end" data-sync="cvEmail">1</text></g>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="73" width="220" height="42" rx="3"/><rect x="8" y="73" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="98">TELEFON</text><text class="cv-chip-n" x="214" y="101" text-anchor="end" data-sync="cvTelefon">1</text></g>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="123" width="220" height="42" rx="3"/><rect x="8" y="123" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="148">FAX</text><text class="cv-chip-n" x="214" y="151" text-anchor="end" data-sync="cvFax">1</text></g>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="173" width="220" height="42" rx="3"/><rect x="8" y="173" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="198">WEBSITE</text><text class="cv-chip-n" x="214" y="201" text-anchor="end" data-sync="cvWebsite">2</text></g>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="223" width="220" height="42" rx="3"/><rect x="8" y="223" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="248">ZUWEISER</text><text class="cv-chip-n" x="214" y="251" text-anchor="end" data-sync="cvZuweiser">0</text></g>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="273" width="220" height="42" rx="3"/><rect x="8" y="273" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="298">PORTALE</text><text class="cv-chip-n" x="214" y="301" text-anchor="end" data-sync="cvPortale">0</text></g>
-        <line class="cv-sep" x1="8" y1="69" x2="228" y2="69"/><line class="cv-sep" x1="8" y1="119" x2="228" y2="119"/><line class="cv-sep" x1="8" y1="169" x2="228" y2="169"/><line class="cv-sep" x1="8" y1="219" x2="228" y2="219"/><line class="cv-sep" x1="8" y1="269" x2="228" y2="269"/>
-        <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen" onclick="go('faelle','anfragen')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
-          <circle cx="640" cy="169" r="100" fill="url(#cvGlowT)"/><circle class="cv-halo" cx="640" cy="169" r="70"/><circle class="cv-core" cx="640" cy="169" r="62" fill="url(#cvGoldT)"/><circle class="cv-pulse" cx="640" cy="169" r="62"/>
-          <text class="cv-total" x="640" y="165" data-sync="cvTotal">5</text><text class="cv-node-l" x="640" y="185">EIN EINGANG</text><text class="cv-node-s" x="640" y="201">heute</text>
-        </g>
-        <g class="cv-stockt" data-sync-wrap="cvStockWrap"><line x1="688" y1="124" x2="703" y2="112"/><circle cx="709" cy="107" r="3"/><text x="717" y="111"><tspan data-sync="cvStock">1</tspan> stockt</text></g>
-        <path class="cv-out-thick" d="M702,169 H744"/><path class="cv-out-line" d="M744,169 H950"/>
-        <circle class="cv-step-dot" cx="766" cy="169" r="4"/><circle class="cv-step-dot" cx="870" cy="169" r="4"/><circle class="cv-step-end" cx="950" cy="169" r="7"/>
-        <text class="cv-step-l" x="766" y="193">ZUGETEILT</text><text class="cv-step-l" x="870" y="193">BEANTWORTET</text><text class="cv-step-l cv-step-l-end" x="950" y="193">FALL</text>
-        <text class="cv-copy" x="490" y="350">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
-      </svg>
-      <svg class="cv-narrow" viewBox="0 0 340 372" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="cvGoldTN" cx="36%" cy="28%" r="85%"><stop offset="0" stop-color="#F6F2E6"/><stop offset=".55" stop-color="#EFE9D8"/><stop offset="1" stop-color="#E5DCC4"/></radialGradient>
-          <radialGradient id="cvGlowTN"><stop offset="0" stop-color="#B99149" stop-opacity=".32"/><stop offset="1" stop-color="#B99149" stop-opacity="0"/></radialGradient>
-        </defs>
-        <path class="cv-path" d="M146,28 C186,28 182,133 202,133"/><path class="cv-path" d="M146,70 C186,70 182,133 202,133"/><path class="cv-path" d="M146,112 C186,112 182,133 202,133"/>
-        <path class="cv-path" d="M146,154 C186,154 182,133 202,133"/><path class="cv-path" d="M146,196 C186,196 182,133 202,133"/><path class="cv-path" d="M146,238 C186,238 182,133 202,133"/>
-        <circle class="cv-dot" r="2.4" style="offset-path:path('M146,28 C186,28 182,133 202,133')"/>
-        <circle class="cv-dot cv-t2" r="2.4" style="offset-path:path('M146,70 C186,70 182,133 202,133')"/>
-        <circle class="cv-dot cv-t3" r="2.4" style="offset-path:path('M146,112 C186,112 182,133 202,133')"/>
-        <circle class="cv-dot cv-t4" r="2.4" style="offset-path:path('M146,154 C186,154 182,133 202,133')"/>
-        <circle class="cv-dot cv-t5" r="2.4" style="offset-path:path('M146,196 C186,196 182,133 202,133')"/>
-        <circle class="cv-dot cv-t6" r="2.4" style="offset-path:path('M146,238 C186,238 182,133 202,133')"/>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="10" width="142" height="36" rx="3"/><rect x="4" y="10" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="31">E-MAIL</text><text class="cv-chip-n" x="134" y="34" text-anchor="end" data-sync="cvEmail">1</text></g>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="52" width="142" height="36" rx="3"/><rect x="4" y="52" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="73">TELEFON</text><text class="cv-chip-n" x="134" y="76" text-anchor="end" data-sync="cvTelefon">1</text></g>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="94" width="142" height="36" rx="3"/><rect x="4" y="94" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="115">FAX</text><text class="cv-chip-n" x="134" y="118" text-anchor="end" data-sync="cvFax">1</text></g>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="136" width="142" height="36" rx="3"/><rect x="4" y="136" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="157">WEBSITE</text><text class="cv-chip-n" x="134" y="160" text-anchor="end" data-sync="cvWebsite">2</text></g>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="178" width="142" height="36" rx="3"/><rect x="4" y="178" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="199">ZUWEISER</text><text class="cv-chip-n" x="134" y="202" text-anchor="end" data-sync="cvZuweiser">0</text></g>
-        <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="220" width="142" height="36" rx="3"/><rect x="4" y="220" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="241">PORTALE</text><text class="cv-chip-n" x="134" y="244" text-anchor="end" data-sync="cvPortale">0</text></g>
-        <line class="cv-sep" x1="4" y1="49" x2="146" y2="49"/><line class="cv-sep" x1="4" y1="91" x2="146" y2="91"/><line class="cv-sep" x1="4" y1="133" x2="146" y2="133"/><line class="cv-sep" x1="4" y1="175" x2="146" y2="175"/><line class="cv-sep" x1="4" y1="217" x2="146" y2="217"/>
-        <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen" onclick="go('faelle','anfragen')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
-          <circle cx="248" cy="133" r="76" fill="url(#cvGlowTN)"/><circle class="cv-halo" cx="248" cy="133" r="53"/><circle class="cv-core" cx="248" cy="133" r="46" fill="url(#cvGoldTN)"/><circle class="cv-pulse" cx="248" cy="133" r="46"/>
-          <text class="cv-total" x="248" y="129" data-sync="cvTotal">5</text><text class="cv-node-l" x="248" y="147">EIN EINGANG</text><text class="cv-node-s" x="248" y="161">heute</text>
-        </g>
-        <g class="cv-stockt" data-sync-wrap="cvStockWrap"><line x1="215" y1="166" x2="203" y2="178"/><circle cx="198" cy="182" r="2.5"/><text x="190" y="196" style="text-anchor:end"><tspan data-sync="cvStock">1</tspan> stockt</text></g>
-        <path class="cv-out-thick" d="M248,179 V212"/><path class="cv-out-line" d="M248,212 V320"/>
-        <circle class="cv-step-dot" cx="248" cy="244" r="4"/><circle class="cv-step-dot" cx="248" cy="282" r="4"/><circle class="cv-step-end" cx="248" cy="320" r="7"/>
-        <text class="cv-step-l" x="232" y="248" style="text-anchor:end">ZUGETEILT</text><text class="cv-step-l" x="232" y="286" style="text-anchor:end">BEANTWORTET</text><text class="cv-step-l cv-step-l-end" x="232" y="324" style="text-anchor:end">FALL</text>
-        <text class="cv-copy" x="170" y="356">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
-      </svg>
-    </div>
-    <figure class="au-photo au-photo--sage"><img src="assets/kb-haus.webp" alt="" loading="lazy"><figcaption>Das Team · Klinik Bavaria</figcaption></figure>
-    <div id="teamGrid"></div>
-  </section>
-
   <section id="view-netzwerk" class="view">
     <header class="vhead">
       <div class="kicker">Beziehungen</div>
@@ -3879,7 +3807,6 @@ body{accent-color:var(--brass)}
     <button data-nav="heute" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.2 12 4l9 7.2"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M10 20v-5h4v5"/></svg>Heute</button>
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg>Fälle<span class="nbadge num" id="navBadgeFaelle"></span></button>
     <button data-nav="inreha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M2 18h20"/><path d="M7 10h4v4H7z"/></svg>Reha</button>
-    <button data-nav="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6l2-8z"/></svg>Team</button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg>Netzwerk</button>
     <button data-nav="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg>System</button>
     <button data-nav="matrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 12h17M9.5 4v16M15.5 4v16"/></svg>Matrix</button>
@@ -5009,7 +4936,7 @@ function renderWichtig(k){
   });
   items.sort((a,b)=>a.p-b.p);
   const top=items.slice(0,3);
-  const alle=items.length>3?"<button class='wrow wrow-all' onclick='go(\"team\")'>"
+  const alle=items.length>3?"<button class='wrow wrow-all' onclick='go(\"faelle\",\"team\")'>"
    +"<span class='wtxt'><span class='wtit' style='display:block'>Alle Aufgaben im Team ›</span><span class='wsub' style='display:block'>"+items.length+" offene Punkte insgesamt</span></span>"
    +"<span class='chev'>›</span></button>":"";
   document.getElementById("wichtigList").innerHTML=top.length?(top.map(it=>
@@ -5956,7 +5883,7 @@ function mtExit(){
 }
 
 /* ---------- Navigation ---------- */
-const SEGS={faelle:["anfragen","board"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
+const SEGS={faelle:["anfragen","board","team"],netzwerk:["zuweiser","bestand"],system:["idee","auswertung","sops"]};
 let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",system:"idee"}};
 function go(dest,seg){
   const _run=function(){
@@ -5966,7 +5893,7 @@ function go(dest,seg){
     if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
     document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
     document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
-    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],team:["Team","Zentraler Eingang · Zuordnung · Aufgaben"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],system:["System","Idee · Auswertung · SOPs"],matrix:["Matrix","Patienten-Reise B2B / B2C"]};
+    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],system:["System","Idee · Auswertung · SOPs"],matrix:["Matrix","Patienten-Reise B2B / B2C"]};
     const _t=TITLES[dest]||TITLES.heute;
     const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
     const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
@@ -5989,7 +5916,7 @@ function go(dest,seg){
 function switchTab(t){
   if(t==="neu"){openSheetNeu();return;}
   const map={cockpit:["heute"],heute:["heute"],eingang:["faelle","anfragen"],faelle:["faelle","board"],
-    inreha:["inreha"],
+    inreha:["inreha"],team:["faelle","team"],
     zuweiser:["netzwerk","zuweiser"],bestand:["netzwerk","bestand"],idee:["system","idee"],
     intelligenz:["system","auswertung"],kommunikation:["system","sops"]};
   const m=map[t]||["heute"];
@@ -6011,6 +5938,7 @@ function applyHash(){
   const oldNames={cockpit:1,eingang:1,faelle:1,zuweiser:1,bestand:1,idee:1,intelligenz:1,kommunikation:1,neu:1};
   if(parts.length===1&&oldNames[parts[0]]&&!document.getElementById("view-"+parts[0])){switchTab(parts[0]);return;}
   if(parts[0]==="faelle"&&parts[1]==="inreha"){go("inreha");return;}
+  if(parts[0]==="team"){go("faelle","team");return;}
   go(parts[0],parts[1]);
 }
 

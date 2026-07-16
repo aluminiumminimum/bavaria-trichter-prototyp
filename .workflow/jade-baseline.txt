@@ -1,0 +1,6 @@
+# Jade-Baseline feat/ia T2 (nach 3df80ee)
+# neu eingefroren 2026-07-16 T2: Team-cv-Duplikat entfernt (Spec ia-restructure)
+offset-path=12
+cv-travel=2
+data-sync=30
+keyframes=9
