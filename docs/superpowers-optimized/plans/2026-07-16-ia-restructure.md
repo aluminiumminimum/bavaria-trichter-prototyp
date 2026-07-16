@@ -153,7 +153,7 @@ node -e 'const fs=require("fs");const h=fs.readFileSync("index.html","utf8");con
 
 **Does NOT cover:** Inhaltliche Änderungen an Charts/Idee/SOPs/Matrix-Grid (nur Verortung). Heute-Chart-Verweise (Task 5).
 
-- [ ] **Step 1: Auswertung extrahieren**
+- [x] **Step 1: Auswertung extrahieren**
 
 Kompletten Inhalt von `<div class="sub" id="sub-system-auswertung">…</div>` (~3691 ff.: lblline, 6 `.chart`-Blöcke, Modul-`.chap`) in neuen View DIREKT NACH `#view-netzwerk`s `</section>`:
 
@@ -169,7 +169,7 @@ Kompletten Inhalt von `<div class="sub" id="sub-system-auswertung">…</div>` (~
 
 Die alte lblline im Sub entfällt (wandert in den Header). Leeres Sub entfernen.
 
-- [ ] **Step 2: System → Konzept umbenennen, Matrix eingliedern**
+- [x] **Step 2: System → Konzept umbenennen, Matrix eingliedern**
 
 `<section id="view-system">` → `<section id="view-konzept">`; Kicker „Steuerung" → „Die ganze Maschine"; `<h1>System</h1>` → `<h1>Konzept</h1>`. Tablist neu:
 
@@ -193,7 +193,7 @@ Die alte lblline im Sub entfällt (wandert in den Header). Leeres Sub entfernen.
 
 `#view-matrix` samt Kommentar restlos entfernen.
 
-- [ ] **Step 3: Router/Nav/Callsites**
+- [x] **Step 3: Router/Nav/Callsites**
 
 `SEGS`: `system`-Eintrag ersetzen durch `konzept:["idee","matrix","sops"]`. `navState.segs`: `system:"idee"` → `konzept:"idee"`.
 `TITLES`: `system`- und `matrix`-Einträge ersetzen durch `auswertung:["Auswertung","Quellen · Engpässe · Team · Fachbereiche"]` und `konzept:["Konzept","Idee · Matrix · SOPs"]`.
@@ -215,7 +215,7 @@ Sidebar: Button `data-nav="matrix"` entfernen; `data-nav="system"` ersetzen durc
 
 Tabbar analog: `matrix`/`system`-Items ersetzen durch `auswertung` (Kurzlabel **„Zahlen"**) und `konzept` (Label „Konzept"). Endstand Sidebar-Reihenfolge: heute · faelle · inreha · netzwerk · auswertung · konzept (Tabbar identisch).
 
-- [ ] **Step 4: Verifikation**
+- [x] **Step 4: Verifikation**
 
 ```bash
 grep -c 'view-system\|view-matrix\|sub-system-' index.html   # erwartet: 0
@@ -226,7 +226,7 @@ grep -c 'data-nav="konzept"' index.html                       # 2
 
 vm.Script-Check. Browser: alle Alt-Hashes (`#system/auswertung` → Auswertung, `#system/sops` → Konzept/SOPs, `#matrix` → Konzept/Matrix) + `renderCharts`/`renderMatrix` rendern in neuen Containern; Matrix-Zellen navigieren korrekt (mxGo).
 
-- [ ] **Step 5: Commit** `feat(ia): T3 — Auswertung Top-Level, System+Matrix zu Konzept (Idee·Matrix·SOPs), Alias-Schicht`
+- [x] **Step 5: Commit** `feat(ia): T3 — Auswertung Top-Level, System+Matrix zu Konzept (Idee·Matrix·SOPs), Alias-Schicht`
 
 ---
 
