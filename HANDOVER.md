@@ -32,7 +32,7 @@ Interaktiver **Investor-Pitch-Prototyp** einer „Privatpatienten-Maschine" für
 ---
 
 ## 3. Architektur-Landkarte (index.html)
-**Views** schalten über `go(view[, sub])`; Sidebar/Tabbar-Buttons tragen `data-nav`. 6 Top-Level-Views: `heute`, `faelle`, `team`, `netzwerk`, `matrix` (Cofounder), `system`. `renderAll()` ruft alle Render-Funktionen. Hash-Routing via `applyHash()`.
+**Views** schalten über `go(view[, sub])`; Sidebar/Tabbar-Buttons tragen `data-nav`. 6 Top-Level-Views (IA „Prozess-Achse" seit 16.07.2026): `heute`, `faelle` (anfragen/board/team), `inreha`, `netzwerk` (zuweiser/radar/kontakte), `auswertung`, `konzept` (idee/matrix/sops — Matrix-Grid ist Cofounder-Code, nur verschoben). Alt-Routen (`team`, `matrix`, `system/*`, `faelle/inreha`, `netzwerk/bestand`) laufen über Aliase in `switchTab()`/`applyHash()`. Rollen-Schalter `.ds-role` (Sidebar + mobiler Greet-Chip) = Einstieg in `ma-mode`/Mein Tag. `renderAll()` ruft alle Render-Funktionen. Hash-Routing via `applyHash()`. Funnel-Contract seit IA-Umbau: offset-path 12 · cv-travel 2 · data-sync 30 (Team-cv-Duplikat entfernt, `.workflow/jade-baseline.txt`).
 
 **Detail-Overlays** hängen im Browser-Verlauf (WS1): `pushDetailState()` beim Öffnen, `dismissDetail()` (→ `history.back()` wenn gepusht, sonst `_rawCloseDetails()`), Escape/Backdrop führen dorthin. IDs: `ovDetail` (Fall-Schublade), `dbDetail` (Datenbank-Inspektor), `rsDetail` (Reha-Steuerung).
 

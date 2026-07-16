@@ -23,8 +23,8 @@ Interaktiver Produkt-Prototyp („Privatpatienten-Maschine") für einen Investor
   Daten-Hues Steel/Taupe nie als Fläche. Token-NAMEN historisch (`--cream` = Elfenbein-Canvas,
   `--sage-deep` = LACK-JADE, `--brass` = GOLD!), Werte in `:root`. **Etiketten-System:** Karten =
   Doppelrahmen (Jade-Hairline + Gold-Inset-Ring) + Gold-Eck-Winkel auf Majors, Radius-Familie 4px,
-  Kapitel-Siegel (Zinnober 01 gefüllt, Gold-Ring 02/03). **Funnel = Gold-Gravur auf Lack** (alle 4
-  cv-Instanzen via shared CSS; Contract: offset-path 24 · cv-travel 2 · data-sync 46).
+  Kapitel-Siegel (Zinnober 01 gefüllt, Gold-Ring 02/03). **Funnel = Gold-Gravur auf Lack** (1 cv-Instanz-Paar
+  wide+narrow auf Heute; Contract seit IA-Umbau 07/2026: offset-path 12 · cv-travel 2 · data-sync 30).
   **Motion-Welt-Set:** exakt 9 Keyframes (lift · cv-travel · lxSweep · lxPulse · auGrow ·
   rpDrawC/rpDrawP/rpRing/rpGrow); opacity:0 NUR in Keyframes, NIE `filter:blur` auf Animiertem,
   Seite rendert ohne JS. **Papier-Inseln:** `.rpd-paper`/`.kp-mail` (Internals tabu), `@media print`.
@@ -41,8 +41,12 @@ Interaktiver Produkt-Prototyp („Privatpatienten-Maschine") für einen Investor
 - CSS additiv per **kommentierten Blöcken vor `</style>`** + klaren Namespaces:
   `.rp-*` Zuweiser-Suite · `.rpd-*` Dokument-Viewer · `.rsp-*` Reha-Charts · `.mx-*` Matrix ·
   `.ds-*` Desktop-Sidebar · `.rs-*`/`.ir-*` Reha-Steuerung · `.db-*` Datenbank · `.tabbar` Mobil-Nav.
-- Views schalten via `go(view[,sub])`; Sidebar/Tabbar-Buttons tragen `data-nav`.
-  Das Zuweiser-Portal ist ein **Overlay** (`#refOverlay`, kein View) — bewusst KEIN `data-nav`.
+- Views schalten via `go(view[,sub])`; Sidebar/Tabbar-Buttons tragen `data-nav`. **IA (seit 07/2026,
+  Prozess-Achse):** `heute` · `faelle`(anfragen/board/team) · `inreha` · `netzwerk`(zuweiser/radar/kontakte) ·
+  `auswertung` · `konzept`(idee/matrix/sops). Alt-Routen (team/matrix/system/…) laufen über Aliase in
+  `switchTab()`/`applyHash()`. Rollen-Schalter Leitung⇄Koordination (`.ds-role`) = Einstieg in `ma-mode`.
+  Das Zuweiser-Portal ist ein **Overlay** (`#refOverlay`, kein View) — bewusst KEIN `data-nav`;
+  mobiler Einstieg über die `.nx-entry`-Karten in Netzwerk→Zuweiser.
 - Wiederverwenden statt duplizieren: `escapeHtml`, `initialen`, `kpiRing`, `rpPersona`, `dstr`.
 - Fremden Code (anderer Mitwirkender) nur **chirurgisch** anfassen (1-Zeilen-Einfügungen),
   eigene Namespaces nutzen — Source-Order-Overrides können fremdes Rendering unbemerkt kaputtmachen.
