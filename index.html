@@ -1557,8 +1557,6 @@ label{font-size:12px;letter-spacing:.08em}
 .ar-cardstars{margin:2px 0 4px}
 @media(max-width:520px){.ar-grid{grid-template-columns:1fr}}
 /* ---------- Baustein B · Kampagnen (.kp-*) ---------- */
-.kp-cta{display:inline-flex;align-items:center;gap:7px;background:var(--paper);border:1px solid var(--brass-line);color:var(--brass-deep);font:600 12.5px/1 Inter;letter-spacing:.03em;padding:10px 16px;border-radius:999px;cursor:pointer;margin:0 0 14px;box-shadow:var(--shadow-soft)}
-.kp-cta:hover{background:var(--brass-soft)}
 .kp-sheet{position:fixed;inset:0;z-index:80;display:none}
 .kp-sheet.open{display:block}
 .kp-back{position:absolute;inset:0;background:rgba(31,28,28,.42)}
@@ -2636,7 +2634,6 @@ body{accent-color:var(--brass)}
 .zw-portal{background:transparent;border:1px solid var(--gold-soft);color:var(--brass-deep);border-radius:3px}
 @media(hover:hover){.zw-portal:hover{background:var(--brass-soft)}}
 .zcat{border-radius:4px}
-.kp-cta{background:transparent;border:1px solid var(--gold-soft);color:var(--brass-deep);border-radius:3px;box-shadow:none}
 
 /* — (J5.5) DATENBANK · Der Apotheker-Schrank: Stern-Etagen = Etiketten (J2-Basis),
    Etagen-Kopf = Elfenbein-Schubladen-Etikett (Cormorant-Kapitälchen · Gold-★ · Cormorant-Zahl);
@@ -2961,6 +2958,23 @@ body{accent-color:var(--brass)}
 .ds-role--mobile .ds-role-btn{padding:6px 13px;color:var(--sage-deep)}
 .ds-role--mobile .ds-role-btn.on{background:var(--sage-deep);color:var(--ivory-tx)}
 @media(min-width:1024px){.ds-role--mobile{display:none}}
+
+/* ===== NX · NETZWERK-EINSTIEG — Zuweiserportal + Kampagne als Etiketten-Karten =====
+   Zwei Button-Karten direkt unter der lblline; mobil der EINZIGE Portal-Einstieg
+   (Desktop-Sidebar-Gold-Button bleibt unberührt). .card liefert bereits die Etiketten-
+   Optik (Papier, Jade-Haarlinie, 3/4px-Gold-Inset-Ring, 4px-Radius, Padding 18px) und
+   der globale button-Reset (Z.52) Font/Border/Background — hier nur Layout, Typo und
+   Hover-Verstärkung des Gold-Rings (Transition, KEIN Keyframe). Sichtbar auf allen Breiten. */
+.nx-entry{display:grid;grid-template-columns:1fr;gap:12px;margin:0 0 16px}
+@media(min-width:760px){.nx-entry{grid-template-columns:1fr 1fr;gap:14px}}
+.nx-card{display:block;width:100%;text-align:left;color:var(--ink);cursor:pointer;padding:16px 18px}
+.nx-card .kicker{margin:0 0 6px}
+.nx-card b{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;
+  font-size:19.5px;line-height:1.25;color:var(--ink)}
+.nx-card span{display:block;margin-top:5px;font:400 13px/1.5 Inter,sans-serif;color:var(--muted)}
+@media(hover:hover){.nx-card:hover{border-color:var(--gold-soft);
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),var(--shadow-soft)}}
+.nx-card:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -3604,7 +3618,18 @@ body{accent-color:var(--brass)}
     </header>
     <div class="sub active" id="sub-netzwerk-zuweiser">
       <p class="lblline">Zuweiser-Netzwerk · zuerst Kategorien, dann Kontakte und nächste Aktion.</p>
-      <button class="kp-cta" onclick="kpOpen()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Newsletter erstellen</button>
+      <div class="nx-entry">
+        <button class="card nx-card" onclick="openReferrer('portal','Leopoldina-Krankenhaus')">
+          <div class="kicker">Für Zuweiser</div>
+          <b>Zuweiserportal öffnen&nbsp;↗</b>
+          <span>Freie Plätze, Anmeldung, Verlauf &amp; Entlassbrief — die Sicht des zuweisenden Arztes.</span>
+        </button>
+        <button class="card nx-card" onclick="kpOpen()">
+          <div class="kicker">Kampagne</div>
+          <b>Newsletter an Segment senden</b>
+          <span>Zielgruppe wählen, Bausteine setzen, Vorschau prüfen — Versand als Demo.</span>
+        </button>
+      </div>
       <div class="zcat-strip" id="zcatgrid"></div>
       <div class="zmap" id="zmap"></div>
       <figure class="au-photo au-photo--petrol"><img src="assets/kb-header.jpg" alt="" loading="lazy"><figcaption>Bad Kissingen · Luftbild</figcaption></figure>
