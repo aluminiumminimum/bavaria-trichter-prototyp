@@ -1239,7 +1239,7 @@ label{font-size:12px;letter-spacing:.08em}
   .rs-devbar .dv-lbl{display:flex;justify-content:space-between;font:600 12px/1.2 Inter;color:var(--ink-soft);margin-bottom:5px}
   .rs-devbar .dv-lbl .num{color:var(--sage-deep);font-weight:700}
   .rs-devbar .dv-track{position:relative;height:8px;border-radius:99px;background:var(--raised);overflow:hidden}
-  .rs-devbar .dv-base{position:absolute;left:0;top:0;height:100%;background:rgba(196,169,125,.3)}
+  .rs-devbar .dv-base{position:absolute;left:0;top:0;height:100%;background:var(--gold-faint)}
   .rs-devbar .dv-gain{position:absolute;top:0;height:100%;background:linear-gradient(90deg,var(--sage),var(--sage-deep))}
   .rs-report{font:400 13.5px/1.5 Inter;color:var(--ink-soft);margin-bottom:14px}
   .rs-report .rk,.rs-empf .rk{display:block;font:700 10.5px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:5px}
@@ -1366,7 +1366,7 @@ label{font-size:12px;letter-spacing:.08em}
 .rsp-legend{display:flex;gap:14px;margin-top:6px;font:600 11px/1 Inter}
 .rsp-legend span{display:inline-flex;align-items:center;gap:5px;color:var(--muted)}
 .rsp-legend i{width:14px;height:3px;border-radius:2px}
-.rsp-legend .b i{background:var(--brass)}.rsp-legend .f i{background:var(--sage-deep)}
+.rsp-legend .b i{background:var(--sage)}.rsp-legend .f i{background:var(--azzurro)}
 .rsp-chart path.line{stroke-dasharray:1}
 @media(min-width:900px){.rpd-paper{padding:44px 52px 36px}}
 
@@ -1849,21 +1849,22 @@ body.ma-mode #view-meintag{display:block}
    Reha-Verlaufscharts (.rsp-*) + Auswertungs-Donut (#donut) sind Cofounder-/JS-SVGs:
    nur per Präsentationsattribut-Selektoren auf Dunkel gehoben (kein Markup-Eingriff).
    Plus: Matrix-Hover & Mono-Zeilenlabels (.mx-*). */
-/* (a) Reha-Sparkline auf Board-Karten (rsSpark) */
-.rsp-spark path[stroke="#bca37d"]{stroke:var(--brass)}
-.rsp-spark stop{stop-color:var(--brass)}
-.rsp-spark circle{fill:var(--brass-deep)}
-/* (b) Barthel/FIM-Liniendiagramm im Detail (rsChart) */
+/* (a) Reha-Sparkline auf Board-Karten (rsSpark) — J6: Jade-Linie, Gold-Endpunkt */
+.rsp-spark path[stroke="#bca37d"]{stroke:var(--sage)}
+.rsp-spark stop{stop-color:var(--sage)}
+.rsp-spark circle{fill:var(--brass)}
+/* (b) Barthel/FIM-Liniendiagramm im Detail (rsChart) — J6: Barthel Jade, FIM Stahlblau,
+   Raster warme Haarlinien, Endwerte Tinte */
 .rsp-chart line{stroke:var(--hair)}
-.rsp-chart path[stroke="#bca37d"]{stroke:var(--brass)}
-.rsp-chart path[stroke="#9B8573"]{stroke:var(--petrol)}
+.rsp-chart path[stroke="#bca37d"]{stroke:var(--sage)}
+.rsp-chart path[stroke="#9B8573"]{stroke:var(--azzurro)}
 .rsp-chart text[fill="#948c80"]{fill:var(--muted)}
-.rsp-chart text[fill="#8f7448"]{fill:var(--brass-deep)}
-.rsp-chart text[fill="#9B8573"]{fill:var(--petrol)}
-/* (c) Auswertungs-Donut (renderCharts) */
-#donut circle[stroke="#efe8d8"]{stroke:var(--hair)}
-#donut stop[stop-color="#bca37d"]{stop-color:var(--brass)}
-#donut stop[stop-color="#6e5d4e"]{stop-color:var(--brass-deep)}
+.rsp-chart text[fill="#8f7448"]{fill:var(--ink)}
+.rsp-chart text[fill="#9B8573"]{fill:var(--ink)}
+/* (c) Auswertungs-Donut (renderCharts) — J6: Creme-Spur, Bogen Jade→Gold, Numeral Tinte */
+#donut circle[stroke="#efe8d8"]{stroke:var(--cream2)}
+#donut stop[stop-color="#bca37d"]{stop-color:var(--sage)}
+#donut stop[stop-color="#6e5d4e"]{stop-color:var(--brass)}
 #donut text{fill:var(--ink)}
 /* (d) Matrix: Mono-Zeilenlabels + Hover-Anhebung mit Messing-Kante */
 .mx-side-t{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--muted)}
@@ -2746,6 +2747,91 @@ body{accent-color:var(--brass)}
   box-shadow:inset 0 0 0 1px rgba(185,145,73,.4),inset 0 0 0 3px var(--sage-deep),0 2px 8px rgba(18,59,51,.25);
   text-shadow:none}
 .kp-foot .btn-ghost{background:transparent;border-color:var(--gold-soft);color:var(--brass-deep)}
+
+/* ============================================================
+   JADE · J6 REHA-STEUERUNG + SYSTEM + MATRIX (Stufe 3, Abschluss) — e5d-Parität
+   Reha-Cockpit + Patienten-Etiketten · rsDetail als SOLIDES Elfenbein-Blatt
+   (Jade-Rahmen + Gold-Pinstripe, Blur-Budget −1) · System-Auswertung als
+   Apotheken-Diagramme (Jade-Balken, Gold-Spitze) · Editorial als Präparate-Tafel ·
+   Toasts als Elfenbein-Etiketten. Additiv (Source-Order), keine neuen Keyframes.
+   .mx-*: bewusst UNANGETASTET (J2-Basis: paper/4px/Pinstripe; Akzent-Oberkanten
+   B2B/B2C + Inter-Typo bleiben — Typo/Padding auf .mx-* ist tabu). — */
+
+/* — (J6.1) REHA · BWL-Cockpit: Etikett trägt J2-Basis (.db-cockpit); Lack-Balken → Jade,
+   Beschriftung Mono-Kapitälchen, „offene Kostenzusagen" (hot) = Zinnober statt Gold. — */
+.rs-cockpit.db-cockpit::before{background:linear-gradient(180deg,var(--sage),var(--sage-deep))}
+.rs-cockpit .dbc-lbl{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;letter-spacing:.1em}
+.rs-cockpit .dbc-stat.hot .dbc-num{color:var(--terra)}
+
+/* — REHA · Patienten-Etiketten (.ir-card, J2-Basis steht): Metrik-Plaketten in der
+   3px-Familie; Verweildauer = Gold auf Gold-Soft-Spur; Achsen-Codierung (.ach-dot)
+   und SalutoCare-„hot"-Gold-Hinterlegung bleiben funktional. — */
+.ir-m{border-radius:3px;border:1px solid var(--hair2)}
+.ir-stay .track{background:var(--brass-soft)}
+.ir-stay .track .fill{background:var(--brass)}
+
+/* — (J6.2) rsDetail: SOLIDES Elfenbein-Blatt (Blur-Budget −1) — Jade-Rahmen +
+   Gold-Pinstripe; Kopf mit Gold-Haarlinie; Schließen = goldgerahmter Ghost;
+   Spalten-Titel = Cormorant-Kapitälchen mit Gold-Strich (e5d). — */
+.rs-overlay{background:rgba(18,30,26,.44);backdrop-filter:none;-webkit-backdrop-filter:none}
+.rs-modal{background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;
+  box-shadow:0 24px 70px rgba(18,59,51,.3),inset 0 0 0 1px var(--gold-faint)}
+.rs-head{border-bottom:0;box-shadow:inset 0 -1px 0 var(--gold-soft)}
+.rs-close{border-radius:3px;border-color:var(--gold-soft);background:transparent}
+.rs-ctitle{font-family:"Cormorant Garamond",Georgia,serif;font-size:15px;font-weight:600;
+  letter-spacing:.16em;color:var(--sage-deep)}
+.rs-ctitle::before{content:"";display:inline-block;width:18px;height:1px;background:var(--brass);
+  vertical-align:middle;margin-right:9px}
+/* Entwicklungs-Balken: Numerale Cormorant (Basis-Spur = Gold-Hauch, in der Basisregel retuned) */
+.rs-devbar .dv-lbl .num{font-family:"Cormorant Garamond",Georgia,serif;font-size:15px;font-weight:600}
+/* Labor-Plaketten + Timeline in der Etiketten-Sprache */
+.rs-lab{border-radius:3px}
+.rs-te{border-left-color:var(--jade-hair)}
+/* BWL/Abrechnung: Kassenbuch — KPI-Plaketten auf Papier2 mit Haarlinie (Summen Cormorant, Basis),
+   Ledger-Zeilen behalten Haarlinien; Zusage = Jade-Plakette, offen/über Plan = Zinnober. */
+.rs-kpi{background:var(--paper2);border:1px solid var(--hair2);border-radius:3px}
+.rs-kpi .rk-l{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;letter-spacing:.08em;font-size:9px}
+.rs-pill{border-radius:2px}
+.rs-pill.ok{background:var(--sage-deep);color:var(--ivory-tx)}
+.rs-track{background:var(--brass-soft)}
+.rs-fill{background:var(--brass)}
+
+/* — (J6.3) SYSTEM · Karten in die Etiketten-Sprache (4px · Jade-Haarlinie · Gold-Pinstripe) — */
+#view-system .chart,#view-system .module-card,#view-system .idea-block,#view-system .hub-box,
+#view-system .process-card,#view-system .flow-card,#view-system .faq-card,
+#view-system .help-contact,#view-system .template-card{border-radius:4px;border-color:var(--jade-hair);
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+#view-system .hub-box.hub{border-color:var(--brass-line)}
+#view-system .pstep,#view-system .flow-node{border-radius:3px}
+/* Balkendiagramme: Jade-Lack mit Gold-Spitze auf Creme-Spur; Achsentext Kapitälchen;
+   warm (Verlust/Engpass) behält die Zinnober-/Amber-Warnfamilie. */
+#view-system .bar .track{background:var(--cream2);border-radius:2px}
+#view-system .bar .fill{border-radius:1px;background:linear-gradient(90deg,var(--sage),var(--sage-deep));
+  box-shadow:inset -2px 0 0 var(--brass)}
+#view-system .bar.warm .fill{box-shadow:none}
+#view-system .bar .blbl{font-variant:all-small-caps;letter-spacing:.05em}
+/* Takeaway-Zeilen: Serif-Kursiv mit Gold-Strich */
+#view-system .lblline{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;
+  font-size:16px;color:var(--ink-soft)}
+#view-system .lblline::before{content:"";display:inline-block;width:18px;height:1px;
+  background:var(--brass);vertical-align:middle;margin-right:9px}
+#view-system .loop-note{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:15px}
+/* Editorial-Tafel (forest-sun, bleibt Grauwert): Präparate-Doppelrahmen, Caption UNTER
+   dem Bild in Serif-Kursiv */
+.au-plate{background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;padding:9px;
+  box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft)}
+.au-plate img{border-radius:2px;border:1px solid var(--jade-line);height:280px}
+.au-plate figcaption{margin:8px 2px 2px;font-family:"Cormorant Garamond",Georgia,serif;
+  font-style:italic;font-size:12.5px;letter-spacing:.06em;color:var(--muted)}
+
+/* — (J6.4) TOASTS: Elfenbein-Etiketten — Jade-Haarlinie + Gold-Innenring, 4px-Familie. — */
+#rpToast{border-radius:4px;border-color:var(--jade-hair);
+  box-shadow:var(--shadow),inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint)}
+.inb-toast{border-radius:4px;border-color:var(--jade-hair);
+  box-shadow:var(--shadow),inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint)}
+.inb-toast .inb-ic{border-radius:3px}
+.inb-toast.done .inb-ic{color:var(--ivory-tx)}
+.inb-open{border-radius:3px;background:transparent;border-color:var(--gold-soft)}
 </style>
 </head>
 <body>
