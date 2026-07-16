@@ -35,7 +35,7 @@
 
 **Does NOT cover:** Team-Umzug (Task 2), inhaltliche Änderungen am Reha-Cockpit (keine).
 
-- [ ] **Step 1: Neuen View anlegen, Inhalt wholesale umziehen**
+- [x] **Step 1: Neuen View anlegen, Inhalt wholesale umziehen**
 
 Den kompletten Inhalt von `<div class="sub" id="sub-faelle-inreha">…</div>` (bei ~3540–3545: `lblline` + `au-photo` Komfort + `#rsCockpit` + `#inrehaGrid`) ausschneiden und direkt NACH `</section>` von `#view-faelle` als neuen View einfügen:
 
@@ -53,7 +53,7 @@ Den kompletten Inhalt von `<div class="sub" id="sub-faelle-inreha">…</div>` (b
 
 Die alte `lblline` wird zur Header-`lblline` (kein Duplikat behalten). Das leere `<div class="sub" id="sub-faelle-inreha">` restlos entfernen.
 
-- [ ] **Step 2: Fälle-Tablist und Router anpassen**
+- [x] **Step 2: Fälle-Tablist und Router anpassen**
 
 In der Fälle-Tablist (~3527) den Button `<button class="seg" data-seg="inreha" role="tab">In Reha</button>` entfernen.
 In `SEGS` (~5941): `faelle:["anfragen","board","inreha"]` → `faelle:["anfragen","board"]`.
@@ -65,7 +65,7 @@ In `applyHash()` (~5988) vor `go(parts[0],parts[1])` Alias einfügen:
   if(parts[0]==="faelle"&&parts[1]==="inreha"){go("inreha");return;}
 ```
 
-- [ ] **Step 3: Nav-Buttons ergänzen**
+- [x] **Step 3: Nav-Buttons ergänzen**
 
 Sidebar (`.ds-nav`, ~2944): nach dem `faelle`-Button neu einfügen:
 
@@ -75,11 +75,11 @@ Sidebar (`.ds-nav`, ~2944): nach dem `faelle`-Button neu einfügen:
 
 Tabbar (`.tabbar`, ~3862): nach dem `faelle`-Item ein Item mit `data-nav="inreha"`, Label **„Reha"** (Kurzlabel, Mobile), gleiche Markup-Struktur wie die Nachbarn (Icon + span).
 
-- [ ] **Step 4: Interne Callsites umstellen**
+- [x] **Step 4: Interne Callsites umstellen**
 
 Alle `go('faelle','inreha')` / `go("faelle","inreha")` Vorkommen (grep!) auf `go('inreha')` umstellen. MATRIX-Routen (~4071, `route:`-Felder): jede Route auf `faelle/inreha` → `["inreha"]` (Format an bestehende Routen-Struktur anpassen, `mxGo` prüfen).
 
-- [ ] **Step 5: Verifikation**
+- [x] **Step 5: Verifikation**
 
 ```bash
 node -e 'const fs=require("fs"),vm=require("vm");const h=fs.readFileSync("index.html","utf8");const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];m.forEach((s,i)=>new vm.Script(s[1],{filename:"blk"+i}));console.log("JS OK",m.length)'
@@ -91,7 +91,7 @@ grep -c 'data-nav="inreha"' index.html           # erwartet: 2 (Sidebar+Tabbar)
 
 Browser (Orchestrator): `#inreha` lädt rsCockpit+inrehaGrid, `openRsDetail` öffnet; Alt-Hash `#faelle/inreha` landet auf In Reha; Fälle zeigt nur noch 2 Segmente.
 
-- [ ] **Step 6: Commit** `feat(ia): T1 — In Reha als Top-Level-View (aus Fälle herausgelöst, Alias faelle/inreha)`
+- [x] **Step 6: Commit** `feat(ia): T1 — In Reha als Top-Level-View (aus Fälle herausgelöst, Alias faelle/inreha)`
 
 ---
 
