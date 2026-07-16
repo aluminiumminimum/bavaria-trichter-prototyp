@@ -666,9 +666,6 @@
 .ir-stay .lbl{font:600 10px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
 .ir-stay .track{position:relative;height:8px;background:#EFEAE3;border-radius:99px;margin-top:5px}
 .ir-stay .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--brass),var(--brass-deep));border-radius:99px}
-.db-toggle{display:inline-flex;gap:4px;background:var(--raised);border-radius:99px;padding:3px;margin-bottom:12px}
-.db-toggle button{font:600 12px/1 Inter;padding:7px 16px;border-radius:99px;border:none;background:transparent;color:var(--muted);min-height:34px}
-.db-toggle button.on{background:var(--brass-grad);color:#2A2413}
 /* --- iter2 gaps: age-aware automation + portal cooperation --- */
 .db-auto{font:400 11px/1.3 Inter;color:var(--sage);margin:6px 0 2px}
 .db-auto.blocked{color:var(--terra)}
@@ -1756,7 +1753,7 @@ body.ma-mode #view-meintag{display:block}
 .au-photo--gold::after{background:linear-gradient(180deg, rgba(255,248,234,.06), rgba(185,145,73,.12))}
 /* Kontext-Größen (je Platzierung) */
 #sub-netzwerk-zuweiser>.au-photo{height:120px;margin:12px 0}
-#sub-netzwerk-bestand>.au-photo{width:120px;height:120px;margin:0 0 14px}
+#sub-netzwerk-kontakte>.au-photo{width:120px;height:120px;margin:0 0 14px}
 #view-inreha>.au-photo{height:130px;margin:0 0 14px}
 #view-meintag>.au-photo{height:110px;margin:0 0 10px}
 .ar-rc>.au-photo{height:64px;border-radius:12px;margin:-16px -16px 12px}
@@ -1788,7 +1785,7 @@ body.ma-mode #view-meintag{display:block}
 /* (4) PETROL = informativ/strukturell. */
 .typ-chip.passiv{background:var(--petrol-soft);color:var(--petrol);border:1px solid rgba(87,160,143,.35)}
 .zstat.ziel{background:var(--petrol-soft);color:var(--petrol)}
-#sub-netzwerk-bestand .kicker{color:var(--petrol)}
+#sub-netzwerk-kontakte .kicker,#sub-netzwerk-radar .kicker{color:var(--petrol)}
 #view-konzept .kicker,#view-auswertung .kicker{color:var(--petrol)}
 #mtGutChap .kicker{color:var(--petrol)}
 
@@ -2626,15 +2623,15 @@ body{accent-color:var(--brass)}
 
 /* — (J5.3) FOTO-BÄNDER → Präparate-Tafeln (Doppelrahmen, Caption UNTER dem Foto, Sepia-Grade):
    Mein Tag (Komfort) · Netzwerk-Zuweiser (Luftbild) · Datenbank (Garten-Quadrat). — */
-#view-meintag>.au-photo,#sub-netzwerk-zuweiser>.au-photo,#sub-netzwerk-bestand>.au-photo{
+#view-meintag>.au-photo,#sub-netzwerk-zuweiser>.au-photo,#sub-netzwerk-kontakte>.au-photo{
   height:auto;background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;padding:9px;
   box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft)}
 #view-meintag>.au-photo img{height:110px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
 #sub-netzwerk-zuweiser>.au-photo img{height:120px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
-#sub-netzwerk-bestand>.au-photo{width:170px}
-#sub-netzwerk-bestand>.au-photo img{height:130px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
-#view-meintag>.au-photo::after,#sub-netzwerk-zuweiser>.au-photo::after,#sub-netzwerk-bestand>.au-photo::after{display:none}
-#view-meintag>.au-photo figcaption,#sub-netzwerk-zuweiser>.au-photo figcaption,#sub-netzwerk-bestand>.au-photo figcaption{
+#sub-netzwerk-kontakte>.au-photo{width:170px}
+#sub-netzwerk-kontakte>.au-photo img{height:130px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
+#view-meintag>.au-photo::after,#sub-netzwerk-zuweiser>.au-photo::after,#sub-netzwerk-kontakte>.au-photo::after{display:none}
+#view-meintag>.au-photo figcaption,#sub-netzwerk-zuweiser>.au-photo figcaption,#sub-netzwerk-kontakte>.au-photo figcaption{
   position:static;left:auto;bottom:auto;margin:8px 2px 0;padding:0;
   background:none;border:0;border-radius:0;box-shadow:none;text-shadow:none;
   backdrop-filter:none;-webkit-backdrop-filter:none;
@@ -2689,11 +2686,6 @@ body{accent-color:var(--brass)}
 .db-group.is-locked .stg-t{color:var(--slate)}
 .db-ico.gesperrt{background:var(--cream2);color:var(--slate)}
 .db-pill.lock{background:var(--cream2);color:var(--slate)}
-/* Kontakte/Radar-Umschalter: aktiv = Jade-Lack mit Gold-Pinstripe (eine CTA-Sprache) */
-.db-toggle{background:var(--cream2);border:1px solid var(--hair2);border-radius:4px;padding:3px}
-.db-toggle button{border-radius:3px}
-.db-toggle button.on{background:var(--espresso-grad);color:var(--ivory-tx);
-  box-shadow:inset 0 0 0 1px var(--gold-faint)}
 
 /* — (J5.6) KAMPAGNEN-BLATT (kp-panel): SOLIDES Elfenbein-Blatt (Blur-Budget −1),
    Jade-Rahmen + Gold-Pinstripe; Regler auf paper2 mit Jade-Fokus; Senden = Jade-Lack.
@@ -3505,7 +3497,7 @@ body{accent-color:var(--brass)}
 
     <div class="chap hb-8" id="anlassChap">
       <div class="kicker"><span class="au-chapnum">02</span>Anlässe · Beziehungen pflegen</div>
-      <div class="ar-head"><span class="ar-sum" id="anlassSum"></span><button class="ar-more" onclick="go('netzwerk','bestand');setDbView('radar')">Alle Anlässe ›</button></div>
+      <div class="ar-head"><span class="ar-sum" id="anlassSum"></span><button class="ar-more" onclick="go('netzwerk','radar')">Alle Anlässe ›</button></div>
       <div class="ar-grid" id="anlassList"></div>
     </div>
 
@@ -3570,7 +3562,8 @@ body{accent-color:var(--brass)}
       <h1>Netzwerk</h1>
       <div class="segments" role="tablist" aria-label="Netzwerk-Bereiche">
         <button class="seg active" data-seg="zuweiser" role="tab">Zuweiser <b class="segn num" id="segCntZuweiser"></b></button>
-        <button class="seg" data-seg="bestand" role="tab">Datenbank <b class="segn num" id="segCntBestand"></b></button>
+        <button class="seg" data-seg="radar" role="tab">Radar</button>
+        <button class="seg" data-seg="kontakte" role="tab">Kontakte <b class="segn num" id="segCntBestand"></b></button>
       </div>
     </header>
     <div class="sub active" id="sub-netzwerk-zuweiser">
@@ -3581,9 +3574,12 @@ body{accent-color:var(--brass)}
       <figure class="au-photo au-photo--petrol"><img src="assets/kb-header.jpg" alt="" loading="lazy"><figcaption>Bad Kissingen · Luftbild</figcaption></figure>
       <div class="zgrid" id="zgrid"></div>
     </div>
-    <div class="sub" id="sub-netzwerk-bestand">
-      <div class="db-toggle"><button id="dbKontakte" class="on" onclick="setDbView('kontakte')">Kontakte</button><button id="dbRadar" onclick="setDbView('radar')">Radar &amp; Anlässe</button></div>
-      <div class="kicker">Datenbank</div>
+    <div class="sub" id="sub-netzwerk-radar">
+      <div class="kicker">Radar &amp; Anlässe</div>
+      <div id="radarHost"></div>
+    </div>
+    <div class="sub" id="sub-netzwerk-kontakte">
+      <div class="kicker">Kontakte</div>
       <h2 class="hero-h2">Kontakte vor dem Fall.</h2>
       <p class="db-intro">Jeder Kontakt ist eingestuft und läuft automatisch in seiner Strecke. Wird er konkret, wird er zum Fall.</p>
       <figure class="au-photo au-photo--gold"><img src="assets/kb-garten.webp" alt="" loading="lazy"><figcaption>Genuss · Klinik Bavaria</figcaption></figure>
@@ -4020,7 +4016,7 @@ const MATRIX=[
  {row:"B2B",col:"nach",titel:"Abschlusspaket",zweck:"Arztbrief, Empfehlungen, Rücksprache",metricId:"mxBBnach",status:"aufbau",route:["ref","abschluss"]},
  {row:"B2C",col:"vor",titel:"Anfrage & Aufnahme",zweck:"Eingang aller Kanäle → Fall-Board",metricId:"mxBCvor",status:"aktiv",route:["faelle","board"]},
  {row:"B2C",col:"in", titel:"Reha-Steuerung",zweck:"Verweildauer, Barthel, FIM, Ziel",metricId:"mxBCin", status:"aktiv",route:["inreha"]},
- {row:"B2C",col:"nach",titel:"Nachsorge & Radar",zweck:"Wiedervorlagen, Datenbank-Pflege",metricId:"mxBCnach",status:"aufbau",route:["netzwerk","bestand"]}
+ {row:"B2C",col:"nach",titel:"Nachsorge & Radar",zweck:"Wiedervorlagen, Datenbank-Pflege",metricId:"mxBCnach",status:"aufbau",route:["netzwerk","radar"]}
 ];
 /* ----- Belegung je Achse × Woche (freie Plätze) — für Portal ----- */
 let belegung=[
@@ -4379,7 +4375,7 @@ function inDatenbank(id){
    consent:(m.tit+" "+m.txt).toLowerCase().includes("freigabe")?"ja":"nein",
    anlass:"Aus Eingang ("+m.kanal+"): "+m.txt,wv:false,stufe:2,quelle:"Broschüre-Download",
    auto:"1 Info-Mail nach 7 Tagen, dann ruhend",board:"neu",owner:"S. Koordination"});
- renderAll();go("netzwerk","bestand");
+ renderAll();go("netzwerk","kontakte");
 }
 
 /* ---------- Render: Board ---------- */
@@ -4449,11 +4445,7 @@ function renderBoard(){
 }
 
 /* ---------- Render: Altpatienten (Bestand) ---------- */
-let dbView="kontakte";
-function setDbView(v){dbView=v;
-  document.getElementById("dbKontakte").classList.toggle("on",v==="kontakte");
-  document.getElementById("dbRadar").classList.toggle("on",v==="radar");
-  renderBestand();}
+function setDbView(v){go("netzwerk",v==="radar"?"radar":"kontakte");}
 const STERNE={
  5:{label:"Heißester Lead — Wiederkehr / VIP",note:"War bereits da & begeistert · aktiver Selbstzahler/Privatpatient · hat aktiv weiterempfohlen",auto:"Persönliche Betreuung durch Recovery Manager · bevorzugte Terminvergabe",geste:"Geschenk (Stift, Visitenkarte, persönliche Note)"},
  4:{label:"Sehr qualifiziert — Selbstzahler mit Interesse",note:"Selbstzahler bestätigt · konkretes Gespräch, echter Bedarf · Angehöriger mit Entscheidungsauftrag",auto:"Persönlicher Rückruf + Wiedervorlage",geste:"Handgeschriebene Karte + persönlicher Anruf"},
@@ -4520,7 +4512,7 @@ function arAktion(key){
  _arDone.add(key);
  if(typeof inbToast==="function")inbToast("done","<b>"+escapeHtml(a.geste.cta)+"</b> (Demo)",escapeHtml(a.titel),null);
  renderAnlaesse();
- if(typeof dbView!=="undefined"&&dbView==="radar")renderBestand();
+ renderRadar();
 }
 const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf",zuweiser:"Zuweiser-Kontakt"};
 const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"],zuweiser:["kb-arzt.jpg","petrol"]};
@@ -4729,7 +4721,6 @@ function dbCockpit(){
 }
 function renderBestand(){
   const fil=document.getElementById("tierFilter");
-  if(dbView==="radar"){ if(fil)fil.innerHTML=""; renderRadar(); return; }
   const count=b=>bestand.filter(p=>bucketOf(p)===b).length;
   const chip=(key,lbl)=>"<button class='tchip"+(sterneFilter===key?" on":"")+"' onclick='sterneFilter=\""+key+"\";renderBestand()'>"+lbl+" <b class='num'>"+(key==="alle"?bestand.length:count(key))+"</b></button>";
   const chips="<div class='tier-chips'>"+chip("alle","Alle")+STERNE_ORDER.map(k=>chip(k,k+"★")).join("")+chip("gesperrt","Gesperrt")+"</div>";
@@ -4776,7 +4767,7 @@ function renderRadar(){
     +"<div class='radar-kpi bald'><div class='rk-n num'>"+cB+"</div><div class='rk-l'>Bald fällig</div></div>"
     +"<div class='radar-kpi beob'><div class='rk-n num'>"+cO+"</div><div class='rk-l'>Beobachten</div></div>"
   +"</div>";
-  document.getElementById("btable").innerHTML=
+  document.getElementById("radarHost").innerHTML=
     "<p class='db-intro'>Ehemalige Patienten mit Einwilligung, bei denen ein erneuter Reha-Bedarf absehbar ist — das System meldet sich rechtzeitig, nur bei gültiger Freigabe.</p>"
    +rhead
    +(function(){const oth=anlaesse().filter(a=>a.typ!=="wiederbedarf");return oth.length?"<div class='ar-feedhead'>Anlässe (Geburtstage & Zuweiser)</div><div class='ar-grid'>"+oth.map(arCard).join("")+"</div><div class='ar-feedhead'>Wiederbedarf (medizinische Prognose)</div>":"";})()
@@ -5441,7 +5432,7 @@ function renderInReha(){
    </button>`;
  }).join("")||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
 }
-function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();}
+function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ---------- */
 function celebratePlanned(){
@@ -5884,7 +5875,7 @@ function mtExit(){
 }
 
 /* ---------- Navigation ---------- */
-const SEGS={faelle:["anfragen","board","team"],netzwerk:["zuweiser","bestand"],konzept:["idee","matrix","sops"]};
+const SEGS={faelle:["anfragen","board","team"],netzwerk:["zuweiser","radar","kontakte"],konzept:["idee","matrix","sops"]};
 let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",konzept:"idee"}};
 function go(dest,seg){
   const _run=function(){
@@ -5894,7 +5885,7 @@ function go(dest,seg){
     if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
     document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
     document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
-    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Datenbank"],auswertung:["Auswertung","Quellen · Engpässe · Team · Fachbereiche"],konzept:["Konzept","Idee · Matrix · SOPs"]};
+    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Radar · Kontakte"],auswertung:["Auswertung","Quellen · Engpässe · Team · Fachbereiche"],konzept:["Konzept","Idee · Matrix · SOPs"]};
     const _t=TITLES[dest]||TITLES.heute;
     const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
     const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
@@ -5918,7 +5909,7 @@ function switchTab(t){
   if(t==="neu"){openSheetNeu();return;}
   const map={cockpit:["heute"],heute:["heute"],eingang:["faelle","anfragen"],faelle:["faelle","board"],
     inreha:["inreha"],team:["faelle","team"],
-    zuweiser:["netzwerk","zuweiser"],bestand:["netzwerk","bestand"],idee:["konzept","idee"],
+    zuweiser:["netzwerk","zuweiser"],bestand:["netzwerk","kontakte"],idee:["konzept","idee"],
     intelligenz:["auswertung"],kommunikation:["konzept","sops"]};
   const m=map[t]||["heute"];
   go(m[0],m[1]);
@@ -5938,6 +5929,7 @@ function applyHash(){
   const parts=h.split("/");
   const oldNames={cockpit:1,eingang:1,faelle:1,zuweiser:1,bestand:1,idee:1,intelligenz:1,kommunikation:1,neu:1};
   if(parts.length===1&&oldNames[parts[0]]&&!document.getElementById("view-"+parts[0])){switchTab(parts[0]);return;}
+  if(parts[0]==="netzwerk"&&parts[1]==="bestand"){go("netzwerk","kontakte");return;}
   if(parts[0]==="faelle"&&parts[1]==="inreha"){go("inreha");return;}
   if(parts[0]==="team"){go("faelle","team");return;}
   if(parts[0]==="system"){if(parts[1]==="auswertung"){go("auswertung");}else{go("konzept",parts[1]);}return;}
