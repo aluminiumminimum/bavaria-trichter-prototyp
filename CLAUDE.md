@@ -16,14 +16,19 @@ Interaktiver Produkt-Prototyp („Privatpatienten-Maschine") für einen Investor
 - **Animationen reduced-motion-safe:** Start-Zustand (opacity/transform 0) NUR im Keyframe-`from`,
   nie in der Basisregel — der globale `@media(prefers-reduced-motion)`-Block schaltet Animationen ab
   und der Endzustand muss dann sofort korrekt sein.
-- **Identität wahren (seit Lichtung-Overhaul 07/2026):** Fraunces (Display) + Inter (Body) + Fragment Mono
-  (Micro); Lichtung-Palette — Canvas HELL `#FAF8F2`, Papier-Kacheln m. Layer-Schatten, Ink `#1B1B16`,
-  Wald `#21402D` (DER Akzent), Ocker `#C9A45C` (Text: `--brass-deep` `#8A6B3A`), Terra `#C96F4A`
-  (nur stockt/überfällig), Daten-Hues Azzurro/Slate nie als Fläche. Token-NAMEN historisch
-  (`--cream` = Canvas hell!), Werte in `:root`. **Papier-Inseln:** `.rpd-paper`/`.kp-mail`
-  (Papier-Guard-Block), `@media print`. **Perf-Gesetz:** NIE `filter:blur` auf Animiertem;
-  `backdrop-filter` NUR Chrome + Overlay-Sheets + 2 Hero-Chips (Budget 13). Tilt/Parallax nur
-  hover+fine, RM-safe. Referenz-Prototyp: `design-lab/e3-lichtung.html`.
+- **Identität wahren (seit Jade-Apotheke-Overhaul 07/2026):** Cormorant Garamond (Display/Numerale) +
+  Inter (Body) + Fragment Mono (Micro); Jade-Apotheke-Palette — Elfenbein-Canvas `#F6F2E6`, Etiketten-Papier
+  `#FBF8EF`, Ink `#221E15`, Lack-Jade `#123B33` (DER strukturelle Dunkelton), Gold `#B99149` (NUR
+  Grafik/Gravur; Text: `--brass-deep` `#7E6230`), Zinnober `#A8341F` (Siegel + stockt/überfällig),
+  Daten-Hues Steel/Taupe nie als Fläche. Token-NAMEN historisch (`--cream` = Elfenbein-Canvas,
+  `--sage-deep` = LACK-JADE, `--brass` = GOLD!), Werte in `:root`. **Etiketten-System:** Karten =
+  Doppelrahmen (Jade-Hairline + Gold-Inset-Ring) + Gold-Eck-Winkel auf Majors, Radius-Familie 4px,
+  Kapitel-Siegel (Zinnober 01 gefüllt, Gold-Ring 02/03). **Funnel = Gold-Gravur auf Lack** (alle 4
+  cv-Instanzen via shared CSS; Contract: offset-path 24 · cv-travel 2 · data-sync 46).
+  **Motion-Welt-Set:** exakt 9 Keyframes (lift · cv-travel · lxSweep · lxPulse · auGrow ·
+  rpDrawC/rpDrawP/rpRing/rpGrow); opacity:0 NUR in Keyframes, NIE `filter:blur` auf Animiertem,
+  Seite rendert ohne JS. **Papier-Inseln:** `.rpd-paper`/`.kp-mail` (Internals tabu), `@media print`.
+  Referenz-Prototyp: `design-lab/e5d-jade.html`.
 
 ## Zusammenarbeit / Git
 - **Mehrere Leute pushen parallel auf `main`.** IMMER `git pull` vor eigenem Push.
