@@ -199,8 +199,8 @@
   .f2 .tap:focus-visible .hit{opacity:.07;stroke-opacity:.7;stroke-width:1.2}
   .f2 .glow{opacity:.45}
   .f2 .shimmer{display:none}
-  .f2 .fb-arc{stroke:#cfa86c;stroke-width:1.2;fill:none;stroke-linecap:round;stroke-dasharray:.1 7.1;opacity:.45}
-  .f2 .fb-tip{stroke:#cfa86c;stroke-width:1.3;fill:none;stroke-linecap:round;opacity:.55}
+  .f2 .fb-arc{stroke:var(--brass);stroke-width:1.2;fill:none;stroke-linecap:round;stroke-dasharray:.1 7.1;opacity:.45}
+  .f2 .fb-tip{stroke:var(--brass);stroke-width:1.3;fill:none;stroke-linecap:round;opacity:.55}
   @media (prefers-reduced-motion: reduce){
     .f2 .p-dot{display:none}
     .f2 .tap .hit{transition:none}
@@ -223,8 +223,8 @@
   .strom .fn-num{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;fill:var(--ink);font-variant-numeric:lining-nums tabular-nums}
   .strom .fn-chev{fill:var(--brass);font-size:19px;opacity:.8;transition:opacity .18s}
   .strom .fn-hair{stroke:var(--hair)}
-  .strom .fn-link{stroke:#c3a97f;stroke-width:1.35;fill:none;opacity:.9;stroke-linecap:round}
-  .strom .fn-dot{fill:#ab8d60;opacity:.5}
+  .strom .fn-link{stroke:var(--brass);stroke-width:1.35;fill:none;opacity:.6;stroke-linecap:round}
+  .strom .fn-dot{fill:var(--brass-deep);opacity:.5}
   .strom .fn-click{cursor:pointer;touch-action:manipulation}
   .strom .fn-click rect.pill{transition:fill .18s}
   .strom .fn-click:hover rect.pill{fill:rgba(155,133,115,.07)}
@@ -699,7 +699,7 @@
   .tchip{font:600 13px/1 Inter;padding:9px 14px;border-radius:99px;border:1px solid var(--hair);background:var(--paper);color:var(--ink-soft);min-height:38px;display:inline-flex;align-items:center;gap:7px;transition:background .15s ease,color .15s ease}
   .tchip .num{color:var(--brass-deep)}
   .tchip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .tchip.on .num{color:#d3b78a}
+  .tchip.on .num{color:#D4B679}
   .db-group{margin:0 0 26px}
   .db-group-h{display:flex;align-items:center;gap:12px;margin:0 0 2px}
   .tbadge{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font:700 14px/1 Inter}
@@ -1391,30 +1391,25 @@ label{font-size:12px;letter-spacing:.08em}
   .cv .cv-wide{display:none}
   .cv .cv-narrow{display:block;max-width:420px;margin:0 auto}
 }
-/* cv: Quellen-Chips */
-.cv-chip rect{fill:none;stroke:rgba(27,27,22,.06);stroke-width:1}
-.cv-chip .cv-chip-bg{fill:#FFFFFF;stroke:rgba(27,27,22,.10);stroke-width:1}
-.cv-chip-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;font-weight:500;letter-spacing:.02em;fill:var(--muted)}
-.cv-chip-n{font:700 21px "Cormorant Garamond",Georgia,serif;fill:var(--ink);font-variant-numeric:lining-nums tabular-nums}
-/* cv: Kanal-Farben je Chip-Zähler (Reihenfolge E-Mail/Telefon/Fax/Website/Zuweiser/Portale) —
-   ein Block deckt alle 4 Instanzen, da identische Struktur/Reihenfolge */
-.cv-chip:nth-of-type(1) .cv-chip-n{fill:var(--sage-deep)}
-.cv-chip:nth-of-type(2) .cv-chip-n{fill:#4C7355}
-.cv-chip:nth-of-type(3) .cv-chip-n{fill:var(--brass-deep)}
-.cv-chip:nth-of-type(4) .cv-chip-n{fill:var(--azzurro)}
-.cv-chip:nth-of-type(5) .cv-chip-n{fill:var(--terra)}
-.cv-chip:nth-of-type(6) .cv-chip-n{fill:var(--slate)}
+/* cv: Quellen-Chips — J3: Elfenbein-Etiketten auf Lack (Papier-Füllung, Jade-Text, Gold-Numeral).
+   Ein Block deckt alle 4 Instanzen (Heute breit/schmal, Team breit/schmal). */
+.cv-chip rect{fill:none;stroke:none;stroke-width:1}
+.cv-chip .cv-chip-bg{fill:var(--paper);stroke:rgba(185,145,73,.45);stroke-width:1}
+.cv-chip-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10px;font-weight:500;letter-spacing:.02em;fill:var(--sage)}
+.cv-chip-n{font:700 21px "Cormorant Garamond",Georgia,serif;fill:var(--brass-deep);font-variant-numeric:lining-nums tabular-nums}
+/* J3: die früheren Kanal-Hues je Chip-Zähler sind der EINEN Gold-Gravur gewichen (e5d chan-num). */
 .cv-narrow .cv-chip-l{font-size:8.5px;letter-spacing:.05em}
 .cv-narrow .cv-chip-n{font-size:17px}
-/* cv: Ströme + wandernde Punkte (reduced-motion: Ruhezustand = unsichtbar) */
-.cv-path{fill:none;stroke:#C4A97D;stroke-opacity:.55;stroke-width:1.1}
-.cv-path:nth-of-type(1){stroke:var(--sage-deep)}
-.cv-path:nth-of-type(2){stroke:var(--sage)}
-.cv-path:nth-of-type(3){stroke:var(--brass)}
-.cv-path:nth-of-type(4){stroke:var(--azzurro)}
-.cv-path:nth-of-type(5){stroke:var(--terra)}
-.cv-path:nth-of-type(6){stroke:var(--slate)}
-.cv-dot{fill:var(--brass-deep);opacity:0;offset-rotate:0deg;filter:drop-shadow(0 0 5px rgba(201,164,92,.5));
+/* cv: Ströme + wandernde Punkte (reduced-motion: Ruhezustand = unsichtbar)
+   J3: feine GOLD-Gravur-Fäden in gestaffelten Opazitäten (e5d flowline) statt Kanal-Hues */
+.cv-path{fill:none;stroke:var(--brass);stroke-opacity:.55;stroke-width:1.1}
+.cv-path:nth-of-type(1){stroke-opacity:.8}
+.cv-path:nth-of-type(2){stroke-opacity:.65}
+.cv-path:nth-of-type(3){stroke-opacity:.55}
+.cv-path:nth-of-type(4){stroke-opacity:.48}
+.cv-path:nth-of-type(5){stroke-opacity:.42}
+.cv-path:nth-of-type(6){stroke-opacity:.36}
+.cv-dot{fill:var(--brass);opacity:0;offset-rotate:0deg;filter:drop-shadow(0 0 5px rgba(185,145,73,.55));
   animation:cv-travel 3s cubic-bezier(.45,.1,.55,.9) infinite}
 .cv-t2{animation-delay:-.5s}.cv-t3{animation-delay:-1s}.cv-t4{animation-delay:-1.5s}
 .cv-t5{animation-delay:-2s}.cv-t6{animation-delay:-2.5s}
@@ -1426,32 +1421,34 @@ label{font-size:12px;letter-spacing:.08em}
 }
 /* cv: der eine Eingang (Knoten, klickbar) */
 .cv-node{cursor:pointer;outline:none}
-.cv-halo{fill:none;stroke:rgba(33,64,45,.28);stroke-width:1}
-.cv-core{fill:var(--sage-deep);stroke:var(--sage-deep);stroke-width:1.2}
-.cv-node:hover .cv-core{filter:brightness(1.15)}
-.cv-node:focus-visible .cv-halo{stroke:var(--brass-deep);stroke-width:1.5}
-.cv-total{font:700 44px "Cormorant Garamond",Georgia,serif;fill:#F5F2E8;text-anchor:middle;font-variant-numeric:lining-nums tabular-nums}
-.cv-node-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:9px;letter-spacing:.14em;fill:rgba(245,242,232,.75);text-anchor:middle}
-.cv-node-s{font:500 9.5px Inter,sans-serif;letter-spacing:.04em;fill:rgba(245,242,232,.75);text-anchor:middle}
+.cv-halo{fill:none;stroke:rgba(185,145,73,.5);stroke-width:1}
+/* J3 · Gravur-Logik invertiert: ELFENBEIN-Kreis (Instanz-Gradient via fill-Attribut) + JADE-Numeral,
+   feiner Gold-Doppelring (core-Stroke + halo) — hell auf dunkel, dunkel auf hell. */
+.cv-core{stroke:var(--brass);stroke-width:1}
+.cv-node:hover .cv-core{filter:brightness(1.03)}
+.cv-node:focus-visible .cv-halo{stroke:var(--brass);stroke-width:1.5}
+.cv-total{font:700 44px "Cormorant Garamond",Georgia,serif;fill:var(--sage-deep);text-anchor:middle;font-variant-numeric:lining-nums tabular-nums}
+.cv-node-l{font-family:"Fragment Mono",ui-monospace,monospace;font-size:9px;letter-spacing:.14em;fill:rgba(18,59,51,.72);text-anchor:middle}
+.cv-node-s{font:500 9.5px Inter,sans-serif;letter-spacing:.04em;fill:rgba(18,59,51,.72);text-anchor:middle}
 .cv-narrow .cv-total{font-size:34px}
 .cv-narrow .cv-node-l{font-size:9px}
 .cv-narrow .cv-node-s{font-size:8.5px}
-/* cv: stockt-Hinweis */
-.cv-stockt line{stroke:rgba(217,120,79,.5);stroke-width:1}
-.cv-stockt circle{fill:var(--alert)}
-.cv-stockt text{font:600 11px Inter,sans-serif;fill:var(--alert);letter-spacing:.02em}
+/* cv: stockt-Hinweis — J3: helleres Zinnober #E06845, liest auf Lack #123B33 mit 3.67:1 (≥3:1) */
+.cv-stockt line{stroke:rgba(224,104,69,.55);stroke-width:1}
+.cv-stockt circle{fill:#E06845}
+.cv-stockt text{font:600 11px Inter,sans-serif;fill:#E06845;letter-spacing:.02em}
 .cv-narrow .cv-stockt text{font-size:10px}
-/* cv: Ausgang → Stepper → Fall (Einsammel-Story endet beim Fall) */
+/* cv: Ausgang → Stepper → Fall — J3: Elfenbein-Stepper auf Lack, erreichter Punkt GOLD */
 .cv-out-thick{fill:none;stroke:var(--brass);stroke-width:3.5;stroke-linecap:round}
-.cv-out-line{fill:none;stroke:var(--brass-line);stroke-width:1}
-.cv-step-dot{fill:var(--brass-line)}
-.cv-step-l{font:600 10.5px Inter,sans-serif;letter-spacing:.06em;fill:var(--muted);text-anchor:middle}
-.cv-step-end{fill:var(--brass-deep);stroke:var(--brass-line);stroke-width:1}
-.cv-step-l-end{fill:var(--ink);font-weight:700}
+.cv-out-line{fill:none;stroke:rgba(239,233,216,.30);stroke-width:1}
+.cv-step-dot{fill:rgba(239,233,216,.45)}
+.cv-step-l{font:600 10.5px Inter,sans-serif;letter-spacing:.06em;fill:var(--ivory-mut);text-anchor:middle}
+.cv-step-end{fill:var(--brass);stroke:var(--gold-soft);stroke-width:1}
+.cv-step-l-end{fill:var(--ivory-tx);font-weight:700}
 .cv-narrow .cv-step-l{font-size:9.5px;text-anchor:start}
-/* cv: Leitsatz */
-.cv-copy{font:italic 500 16px "Cormorant Garamond",Georgia,serif;fill:var(--ink-soft);text-anchor:middle}
-.cv-copy-b{fill:var(--brass-deep)}
+/* cv: Leitsatz — J3: liegt im SVG (also AUF dem Lack-Panel) → Elfenbein, Gold-Betonung */
+.cv-copy{font:italic 500 16px "Cormorant Garamond",Georgia,serif;fill:var(--ivory-tx);text-anchor:middle}
+.cv-copy-b{fill:var(--brass)}
 .cv-narrow .cv-copy{font-size:12.5px}
 /* cv: Team-Variante — dunkle Karte (gleiche Konvergenz-Story wie Heute-Hero) */
 .tm-cv{background:var(--paper);border:1px solid var(--hair2);border-radius:24px;
@@ -1619,7 +1616,7 @@ label{font-size:12px;letter-spacing:.08em}
 .kp-betreff{width:100%;font:600 14px/1.3 Inter;color:var(--ink);padding:10px 12px;border:1px solid var(--hair);border-radius:9px;background:var(--paper2);margin-bottom:8px}
 .kp-mail{border:1px solid var(--hair);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-soft)}
 .kp-mhead{background:linear-gradient(140deg,#332d2a,#1f1c1c 55%,#282320);padding:18px 20px}
-.kp-marke{font:600 10px/1 Inter;letter-spacing:.14em;color:#b29a76}
+.kp-marke{font:600 10px/1 Inter;letter-spacing:.14em;color:var(--brass-deep)}
 .kp-mtitel{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:600;font-size:22px;color:#f4eee3;margin-top:7px}
 .kp-mbody{padding:16px 20px;background:var(--paper)}
 .kp-anrede{font:500 13.5px/1.5 Inter;color:var(--ink-soft);margin:0 0 12px}
@@ -2188,7 +2185,7 @@ body{accent-color:var(--brass)}
    Padding-Ring via mask-composite (wie e3 .t-conv::before). RM-safe: Basis = statischer
    sichtbarer Gradient, die Animation bewegt nur die Position. */
 .greet::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:3;pointer-events:none;
-  background:linear-gradient(120deg,var(--sage-deep),var(--brass),var(--azzurro),var(--terra),var(--sage-deep));
+  background:linear-gradient(120deg,var(--sage-deep),var(--brass),var(--sage-deep));
   background-size:300% 100%;opacity:.5;
   -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;
   mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude}
@@ -2322,15 +2319,10 @@ body{accent-color:var(--brass)}
 .cv-node:hover .cv-core{filter:brightness(1.12) drop-shadow(0 0 20px rgba(185,145,73,.65))}
 /* (b) wandernde Punkte: stärkere Präsenz — größerer drop-shadow-Radius (Position animiert, kein blur) */
 .cv-dot{filter:drop-shadow(0 0 9px rgba(185,145,73,.72))}
-/* (c) Kanal-Chips: Hover-Lift + kanalgefärbter Rahmen (nth-of-type wie der Farb-Block) */
+/* (c) Kanal-Chips: Hover-Lift + Gold-Rahmen (J3: eine Gravur-Farbe statt Kanal-Hues) */
 .cv-chip{transition:transform .22s cubic-bezier(.22,1,.36,1)}
 .cv-chip:hover{transform:translateY(-2px)}
-.cv-chip:nth-of-type(1):hover .cv-chip-bg{stroke:var(--sage-deep);stroke-width:1.6}
-.cv-chip:nth-of-type(2):hover .cv-chip-bg{stroke:#4C7355;stroke-width:1.6}
-.cv-chip:nth-of-type(3):hover .cv-chip-bg{stroke:var(--brass-deep);stroke-width:1.6}
-.cv-chip:nth-of-type(4):hover .cv-chip-bg{stroke:var(--azzurro);stroke-width:1.6}
-.cv-chip:nth-of-type(5):hover .cv-chip-bg{stroke:var(--terra);stroke-width:1.6}
-.cv-chip:nth-of-type(6):hover .cv-chip-bg{stroke:var(--slate);stroke-width:1.6}
+.cv-chip:hover .cv-chip-bg{stroke:var(--brass);stroke-width:1.6}
 /* (d) Trichter-Nähte statisch (JADE). */
 
 /* — 4 · MICRO-DELIGHT — */
@@ -2419,12 +2411,102 @@ body{accent-color:var(--brass)}
 .rp-outcome .v{font:700 37px/1.1 "Cormorant Garamond",serif;color:var(--brass-deep)}
 .lxfc-big{font-size:clamp(41px,4.8vw,61px)}
 .lxfc-num{font-size:15px;font-weight:600}
+
+/* ============================================================
+   JADE · J3 BÜHNE (Stufe 2) — Heute als Jade-Apotheke (e5d-Parität)
+   Hero-Etiketten · Lack-Panel für die Konvergenz (Gold-Gravur auf Lack) ·
+   KPI-Etiketten zentriert · Präparate-Tafeln (Fotos) · Forecast-Politur.
+   Additiv (Source-Order-Override), keine neuen Keyframes, kein neues Blur.
+   ============================================================ */
+
+/* — (J3.1) HERO: Datumszeile als Gold-Kapitälchen, Leitsatz bleibt Serif-Kursiv — */
+#view-heute .g-date{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:13px;
+  letter-spacing:.2em;color:var(--brass-deep)}
+
+/* Hero-Bogen → PRÄPARATE-TAFEL (e5d .t-photo): Papier-Passepartout, Jade-Haarlinie,
+   Gold-Innenring, Grade saturate(.85) sepia(.08), Cormorant-Kursiv-Caption UNTER dem Foto. */
+.au-arch{background:var(--paper);border:1px solid var(--jade-line);border-radius:3px;
+  padding:8px 8px 9px;
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+.au-arch img{border-radius:0;border:1px solid var(--jade-line);height:186px;
+  filter:saturate(.85) sepia(.08)}
+.au-arch::after{display:none} /* der Bogen-Schleier ist der Tafel gewichen */
+.au-arch span{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:600;
+  font-size:13.5px;letter-spacing:.02em;text-transform:none;color:var(--sage-deep);margin-top:7px}
+
+/* Glas-Chips → Elfenbein-Etiketten-Plaketten (Blur-Budget −2; Live-Spiegelung unangetastet) */
+.lx-chip{background:var(--paper);backdrop-filter:none;-webkit-backdrop-filter:none;
+  border:1px solid var(--jade-line);border-radius:3px;
+  box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint),var(--shadow-soft)}
+
+/* — (J3.2) KONVERGENZ = GOLD-GRAVUR AUF LACK — das Lack-Panel (e5d .t-conv).
+   Gemeinsame .cv-Hülle → alle 4 Instanzen (Heute breit/schmal, Team breit/schmal)
+   können nicht auseinanderdriften; .tm-cv (Z. ~1457) wird hier bewusst überstimmt. — */
+.cv{background:var(--espresso-grad);border:1px solid #0D2E28;border-radius:4px;
+  padding:16px 18px 8px;
+  box-shadow:inset 0 0 0 4px #123B33,inset 0 0 0 5px var(--gold-faint),var(--shadow)}
+.cv::before,.cv::after{content:"";position:absolute;width:9px;height:9px;pointer-events:none;z-index:2;opacity:.6}
+.cv::before{top:8px;left:8px;border-top:1px solid var(--brass);border-left:1px solid var(--brass)}
+.cv::after{bottom:8px;right:8px;border-bottom:1px solid var(--brass);border-right:1px solid var(--brass)}
+@media(max-width:759px){.cv{padding:12px 10px 6px}}
+@media(max-width:430px){.cv{padding:10px 8px 5px}}
+
+/* — (J3.3) KPI-ETIKETTEN (e5d .kpi): zentriert — Gold-Linie über dem Numeral,
+   Cormorant-Numeral, Kapitälchen-Caption darunter, Ring (jade) zentriert darunter. — */
+#view-heute .ns-m{flex-direction:column;align-items:center;justify-content:flex-start;gap:0;
+  text-align:center;padding:16px 10px 14px}
+#view-heute .ns-mtext{align-items:center;text-align:center}
+#view-heute .ns-mtext::before{content:"";order:0;width:34px;height:1px;background:var(--brass);margin:2px auto 12px}
+#view-heute .ns-mtext .ns-v{order:1}
+#view-heute .ns-mtext .ns-l{order:2;margin-top:9px;font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:12px;font-weight:600;letter-spacing:.22em;color:var(--muted)}
+#view-heute .ns-mtext .ns-t{order:3;margin-top:2px}
+#view-heute .ns-mtext #plusTagH{order:4}
+#view-heute .ns-ring{margin-top:10px}
+#view-heute .ns-betten{font-variant-caps:all-small-caps;letter-spacing:.08em;color:var(--muted)}
+.gauge .gziel{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;letter-spacing:.06em}
+
+/* Echtzeit-Strip → Elfenbein-Etikett mit ZINNOBER-Siegelpunkt (Zinnober-Moment Nr. 2;
+   Nr. 1 = Kapitelsiegel 01). Blur-Budget −1. */
+.lx-live{background:var(--paper);backdrop-filter:none;-webkit-backdrop-filter:none;
+  border:1px solid var(--jade-line);border-radius:4px;
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+.lx-pulse{background:var(--terra)}
+.lx-pulse::before{background:var(--terra)}
+
+/* — (J3.4) KAPITEL: Anlass-Fotostrips → Präparate-Tafeln (kein Bogen mehr),
+   Gesten-Buttons als goldgerahmte Ghosts, Kanal-Tags als Etiketten-Chips. — */
+.ar-rc>.au-photo{height:72px;border-radius:2px;margin:0 0 12px;
+  border:1px solid var(--jade-line);
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint)}
+.ar-rc>.au-photo::after{border-radius:0;background:linear-gradient(180deg,rgba(255,248,234,.04),rgba(18,59,51,.12))}
+.ar-rc>.au-photo img{filter:saturate(.85) sepia(.08)}
+#anlassChap .btn-ghost{background:transparent;border-color:var(--gold-soft);color:var(--brass-deep)}
+.chtag{background:transparent;border:1px solid var(--gold-soft);color:var(--brass-deep);border-radius:2px}
+.wrow{border-bottom-color:var(--hair2)}
+
+/* — (J3.5) FORECAST: Narrativ in Serif-Kursiv, Ziel-Label als kleine Gold-Plakette — */
+#belegungChap .lxfc-note{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;
+  font-size:15px;color:var(--ink-soft)}
+#belegungChap .lxfc-tlabel{border:1px solid var(--gold-faint);border-radius:2px}
+
+/* — (J3.6) FOTO-MOMENTE (lx-fen) → Präparate-Tafeln: Passepartout, Doppelrahmen,
+   Caption UNTER dem Foto (statisch, kein Glas — Blur-Budget −1), e5d-Grade. — */
+.lx-fen{background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;padding:10px;
+  box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft)}
+.lx-fen img{border:1px solid var(--jade-line);height:188px;filter:saturate(.85) sepia(.08)}
+.lx-fen figcaption{position:static;left:auto;bottom:auto;margin-top:9px;padding:0 4px 2px;gap:2px;
+  background:none;border:0;border-radius:0;box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none}
+.lx-fen-n{font-size:16px;font-weight:600;color:var(--sage-deep)}
+.lx-fen-s{font-family:"Cormorant Garamond",Georgia,serif;font-size:10px;font-weight:600;
+  letter-spacing:.18em;color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><i class="lxw lxw--moss"></i><i class="lxw lxw--ochre"></i><i class="lxw lxw--azz"></i></div>
 <div class="au-noise" aria-hidden="true"></div><div class="au-vignette" aria-hidden="true"></div>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="auroraRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#21402D"/><stop offset="1" stop-color="#C9A45C"/></linearGradient><linearGradient id="lxRingSage" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#21402D"/><stop offset="1" stop-color="#6B8F6E"/></linearGradient><linearGradient id="lxRingAzzurro" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#35597F"/><stop offset="1" stop-color="#4E7CA8"/></linearGradient><linearGradient id="lxRingTerra" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A8492A"/><stop offset="1" stop-color="#C96F4A"/></linearGradient><linearGradient id="lxRingBrass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A8854B"/><stop offset="1" stop-color="#C9A45C"/></linearGradient></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="auroraRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#123B33"/><stop offset="1" stop-color="#B99149"/></linearGradient><linearGradient id="lxRingSage" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#123B33"/><stop offset="1" stop-color="#2E5C4F"/></linearGradient><linearGradient id="lxRingAzzurro" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#123B33"/><stop offset="1" stop-color="#2E5C4F"/></linearGradient><linearGradient id="lxRingTerra" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#123B33"/><stop offset="1" stop-color="#2E5C4F"/></linearGradient><linearGradient id="lxRingBrass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B99149"/><stop offset="1" stop-color="#D4B679"/></linearGradient></defs></svg>
 <!-- ============ DESKTOP SHELL (≥1024px) ============ -->
 <aside class="dsidebar" aria-label="Desktop-Navigation">
   <div class="ds-brand"><img src="assets/kb-logo-weiss.webp" alt="" class="ds-wordmark"><div class="ds-brandtxt"><b>Klinik Bavaria</b><span class="ds-sub">CONCIERGE OS</span></div></div>
@@ -2456,7 +2538,7 @@ body{accent-color:var(--brass)}
           <div class="lx-rule" aria-hidden="true"></div>
           <div class="g-date" id="greetDate"></div>
         </div>
-        <div class="au-arch" aria-hidden="true"><img src="assets/kb-suite.webp" alt="" loading="eager"><span>KLINIK BAVARIA · BAD KISSINGEN</span><div class="lx-chip lx-chip--in"><b data-sync="cvTotal">5</b> Anfragen heute</div><div class="lx-chip lx-chip--stock" data-sync-wrap="cvStockWrap"><b data-sync="cvStock">1</b> stockt</div></div>
+        <div class="au-arch" aria-hidden="true"><img src="assets/kb-suite.webp" alt="" loading="eager"><span>Panorama-Suite — Komfort-Kategorie</span><div class="lx-chip lx-chip--in"><b data-sync="cvTotal">5</b> Anfragen heute</div><div class="lx-chip lx-chip--stock" data-sync-wrap="cvStockWrap"><b data-sync="cvStock">1</b> stockt</div></div>
       </div>
 <div class="cv">
 
@@ -2464,10 +2546,10 @@ body{accent-color:var(--brass)}
   <svg class="cv-wide" viewBox="0 0 980 212" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <radialGradient id="cvGoldW" cx="36%" cy="28%" r="85%">
-        <stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/>
+        <stop offset="0" stop-color="#F6F2E6"/><stop offset=".55" stop-color="#EFE9D8"/><stop offset="1" stop-color="#E5DCC4"/>
       </radialGradient>
       <radialGradient id="cvGlowW">
-        <stop offset="0" stop-color="#C4A97D" stop-opacity=".4"/><stop offset="1" stop-color="#C4A97D" stop-opacity="0"/>
+        <stop offset="0" stop-color="#B99149" stop-opacity=".32"/><stop offset="1" stop-color="#B99149" stop-opacity="0"/>
       </radialGradient>
     </defs>
 
@@ -2531,10 +2613,10 @@ body{accent-color:var(--brass)}
   <svg class="cv-narrow" viewBox="0 0 340 416" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <radialGradient id="cvGoldN" cx="36%" cy="28%" r="85%">
-        <stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/>
+        <stop offset="0" stop-color="#F6F2E6"/><stop offset=".55" stop-color="#EFE9D8"/><stop offset="1" stop-color="#E5DCC4"/>
       </radialGradient>
       <radialGradient id="cvGlowN">
-        <stop offset="0" stop-color="#C4A97D" stop-opacity=".4"/><stop offset="1" stop-color="#C4A97D" stop-opacity="0"/>
+        <stop offset="0" stop-color="#B99149" stop-opacity=".32"/><stop offset="1" stop-color="#B99149" stop-opacity="0"/>
       </radialGradient>
     </defs>
 
@@ -2600,7 +2682,7 @@ body{accent-color:var(--brass)}
       <div class="kicker">Nordstern · Privatauslastung</div>
       <svg class="gauge" viewBox="0 0 200 152" role="img" aria-label="Privatauslastung 78 Prozent, Ziel 90 Prozent">
         <defs><linearGradient id="gaugeGold" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#d6ba8c"/><stop offset=".55" stop-color="#bca37d"/><stop offset="1" stop-color="#8f7448"/>
+          <stop offset="0" stop-color="#D4B679"/><stop offset=".55" stop-color="#B99149"/><stop offset="1" stop-color="#7E6230"/>
         </linearGradient></defs>
         <path class="track" d="M34.2,134 A76,76 0 1 1 165.8,134"/>
         <path class="val" d="M34.2,134 A76,76 0 1 1 165.8,134" stroke-dasharray="248.3 318.3"/>
@@ -2650,12 +2732,12 @@ body{accent-color:var(--brass)}
         <svg id="strom" viewBox="0 0 1180 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trichter: Quellen, der Trichter, Ergebnis">
           <defs>
             <linearGradient id="funnelWash" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#7E9B84" stop-opacity=".18"/>
-              <stop offset=".55" stop-color="#C4A97D" stop-opacity=".24"/>
-              <stop offset="1" stop-color="#C4A97D" stop-opacity=".30"/>
+              <stop offset="0" stop-color="#2E5C4F" stop-opacity=".12"/>
+              <stop offset=".55" stop-color="#B99149" stop-opacity=".18"/>
+              <stop offset="1" stop-color="#B99149" stop-opacity=".26"/>
             </linearGradient>
             <linearGradient id="ggold" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#bca37d"/><stop offset="1" stop-color="#7e6a55"/>
+              <stop offset="0" stop-color="#B99149"/><stop offset="1" stop-color="#7E6230"/>
             </linearGradient>
             <clipPath id="trichterClip"><path d="M470,84 C600,92 720,132 812,156 L812,244 C720,268 600,308 470,316 Z"/></clipPath>
           </defs>
@@ -2707,15 +2789,15 @@ body{accent-color:var(--brass)}
           <path class="fn-link" d="M260,314 C326,314 382,274 468,288"/>
 
           <path d="M470,84 C600,92 720,132 812,156 L812,244 C720,268 600,308 470,316 Z"
-                fill="url(#funnelWash)" stroke="#C4A97D" stroke-opacity=".5" stroke-width="1.2"/>
-          <path d="M584,100 L584,300" stroke="#c0ae9b" stroke-width="1" opacity=".45"/>
-          <path d="M698,126 L698,274" stroke="#c0ae9b" stroke-width="1" opacity=".45"/>
+                fill="url(#funnelWash)" stroke="#B99149" stroke-opacity=".5" stroke-width="1.2"/>
+          <path d="M584,100 L584,300" stroke="#B99149" stroke-width="1" opacity=".45"/>
+          <path d="M698,126 L698,274" stroke="#B99149" stroke-width="1" opacity=".45"/>
           <text class="fn-num" x="527" y="178" text-anchor="middle" font-size="52" id="zc0"></text>
-          <text class="fn-stage" x="527" y="206" text-anchor="middle"><tspan x="527" dy="0">neu &amp;</tspan><tspan x="527" dy="17">kontaktiert <tspan fill="#C4A97D">›</tspan></tspan></text>
+          <text class="fn-stage" x="527" y="206" text-anchor="middle"><tspan x="527" dy="0">neu &amp;</tspan><tspan x="527" dy="17">kontaktiert <tspan fill="#7E6230">›</tspan></tspan></text>
           <text class="fn-num" x="641" y="178" text-anchor="middle" font-size="52" id="zc1"></text>
-          <text class="fn-stage" x="641" y="223" text-anchor="middle">in Klärung <tspan fill="#C4A97D">›</tspan></text>
+          <text class="fn-stage" x="641" y="223" text-anchor="middle">in Klärung <tspan fill="#7E6230">›</tspan></text>
           <text class="fn-num" x="755" y="178" text-anchor="middle" font-size="52" id="zc2"></text>
-          <text class="fn-stage" x="755" y="206" text-anchor="middle"><tspan x="755" dy="0">Aufnahme</tspan><tspan x="755" dy="17">geplant <tspan fill="#C4A97D">›</tspan></tspan></text>
+          <text class="fn-stage" x="755" y="206" text-anchor="middle"><tspan x="755" dy="0">Aufnahme</tspan><tspan x="755" dy="17">geplant <tspan fill="#7E6230">›</tspan></tspan></text>
           <g class="fn-click stage-hit" clip-path="url(#trichterClip)" onclick="openStage(0)">
             <rect class="pulse0" x="470" y="88" width="114" height="222"/>
             <title>Fälle: neu und kontaktiert anzeigen</title>
@@ -2752,14 +2834,14 @@ body{accent-color:var(--brass)}
             <text class="fn-chev" x="1164" y="292">›</text>
           </g>
 
-          <path d="M1052,326 C920,376 400,382 258,334" fill="none" stroke="#9b8573" stroke-width="1.1" stroke-dasharray="2 6" opacity=".45"/>
-          <path d="M269,328 L257,334 L268,341" fill="none" stroke="#c9b695" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M1052,326 C920,376 400,382 258,334" fill="none" stroke="#7E6230" stroke-width="1.1" stroke-dasharray="2 6" opacity=".45"/>
+          <path d="M269,328 L257,334 L268,341" fill="none" stroke="#B99149" stroke-width="1.3" stroke-linecap="round"/>
           <text class="fn-note" x="640" y="374" text-anchor="middle">Verlustgründe und Rückmeldungen fließen zurück in Quellen, Team und Prozesse.</text>
 
           <circle cx="260" cy="66" r="3.5" class="fn-dot"><animateMotion dur="7.5s" repeatCount="indefinite" path="M0,0 C76,0 130,40 208,46"/></circle>
           <circle cx="260" cy="190" r="3.5" class="fn-dot" opacity=".45"><animateMotion dur="10s" begin="2.5s" repeatCount="indefinite" path="M0,0 C76,0 130,0 208,10"/></circle>
           <circle cx="260" cy="314" r="3.5" class="fn-dot" opacity=".45"><animateMotion dur="9s" begin="5s" repeatCount="indefinite" path="M0,0 C76,0 130,-40 208,-26"/></circle>
-          <circle cx="812" cy="200" r="3.5" fill="#7e6a55" opacity=".5"><animateMotion dur="6s" begin="1s" repeatCount="indefinite" path="M0,0 C48,0 72,0 124,0"/></circle>
+          <circle cx="812" cy="200" r="3.5" fill="#7E6230" opacity=".5"><animateMotion dur="6s" begin="1s" repeatCount="indefinite" path="M0,0 C48,0 72,0 124,0"/></circle>
         </svg>
       </div>
       <div class="f2">
@@ -2777,14 +2859,14 @@ body{accent-color:var(--brass)}
               <stop offset="1" stop-color="#E7CFA0"/>
             </linearGradient>
             <linearGradient id="seamGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#A8854B" stop-opacity="0"/>
-              <stop offset=".5" stop-color="#A8854B" stop-opacity=".5"/>
-              <stop offset="1" stop-color="#A8854B" stop-opacity="0"/>
+              <stop offset="0" stop-color="#B99149" stop-opacity="0"/>
+              <stop offset=".5" stop-color="#B99149" stop-opacity=".5"/>
+              <stop offset="1" stop-color="#B99149" stop-opacity="0"/>
             </linearGradient>
             <linearGradient id="tileTop" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#dcc08c" stop-opacity="0"/>
-              <stop offset=".5" stop-color="#dcc08c" stop-opacity=".9"/>
-              <stop offset="1" stop-color="#dcc08c" stop-opacity="0"/>
+              <stop offset="0" stop-color="#D4B679" stop-opacity="0"/>
+              <stop offset=".5" stop-color="#D4B679" stop-opacity=".9"/>
+              <stop offset="1" stop-color="#D4B679" stop-opacity="0"/>
             </linearGradient>
             <linearGradient id="shimmerGrad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#f4e3bd" stop-opacity="0"/>
@@ -2811,35 +2893,35 @@ body{accent-color:var(--brass)}
 
             <g class="tap" onclick="switchTab('zuweiser')">
               <title>Zuweiser: Krankenhäuser</title>
-              <rect x="12" y="30" width="116" height="58" rx="13" fill="rgba(244,238,227,.035)" stroke="#8f7448" stroke-width="1"/>
+              <rect x="12" y="30" width="116" height="58" rx="13" fill="rgba(251,248,239,.65)" stroke="rgba(18,59,51,.35)" stroke-width="1"/>
               <text class="chip-lab" x="70" y="52" text-anchor="middle">Krankenhäuser</text>
               <text class="chip-num" x="70" y="79" text-anchor="middle" font-size="24" data-sync="q1"></text>
               <rect class="hit" x="12" y="30" width="116" height="58" rx="13"/>
             </g>
             <g class="tap" onclick="switchTab('zuweiser')">
               <title>Zuweiser: Privatpraxen</title>
-              <rect x="137" y="30" width="116" height="58" rx="13" fill="rgba(244,238,227,.035)" stroke="#8f7448" stroke-width="1"/>
+              <rect x="137" y="30" width="116" height="58" rx="13" fill="rgba(251,248,239,.65)" stroke="rgba(18,59,51,.35)" stroke-width="1"/>
               <text class="chip-lab" x="195" y="52" text-anchor="middle">Privatpraxen</text>
               <text class="chip-num" x="195" y="79" text-anchor="middle" font-size="24" data-sync="q2"></text>
               <rect class="hit" x="137" y="30" width="116" height="58" rx="13"/>
             </g>
             <g class="tap" onclick="switchTab('zuweiser')">
               <title>Zuweiser: Hausärzte</title>
-              <rect x="262" y="30" width="116" height="58" rx="13" fill="rgba(244,238,227,.035)" stroke="#8f7448" stroke-width="1"/>
+              <rect x="262" y="30" width="116" height="58" rx="13" fill="rgba(251,248,239,.65)" stroke="rgba(18,59,51,.35)" stroke-width="1"/>
               <text class="chip-lab" x="320" y="52" text-anchor="middle">Hausärzte</text>
               <text class="chip-num" x="320" y="79" text-anchor="middle" font-size="24" data-sync="q3"></text>
               <rect class="hit" x="262" y="30" width="116" height="58" rx="13"/>
             </g>
             <g class="tap" onclick="switchTab('bestand')">
               <title>Bestand: Altpatienten</title>
-              <rect x="46" y="96" width="142" height="58" rx="13" fill="rgba(244,238,227,.035)" stroke="#8f7448" stroke-width="1"/>
+              <rect x="46" y="96" width="142" height="58" rx="13" fill="rgba(251,248,239,.65)" stroke="rgba(18,59,51,.35)" stroke-width="1"/>
               <text class="chip-lab" x="117" y="118" text-anchor="middle">Altpatienten</text>
               <text class="chip-num" x="117" y="145" text-anchor="middle" font-size="24" data-sync="q4"></text>
               <rect class="hit" x="46" y="96" width="142" height="58" rx="13"/>
             </g>
             <g class="tap" onclick="switchTab('zuweiser')">
               <title>Zuweiser: Premium-Netzwerke</title>
-              <rect x="202" y="96" width="142" height="58" rx="13" fill="rgba(244,238,227,.035)" stroke="#8f7448" stroke-width="1"/>
+              <rect x="202" y="96" width="142" height="58" rx="13" fill="rgba(251,248,239,.65)" stroke="rgba(18,59,51,.35)" stroke-width="1"/>
               <text class="chip-lab" x="273" y="118" text-anchor="middle">Premium-Netzwerke</text>
               <text class="chip-num" x="273" y="145" text-anchor="middle" font-size="24" data-sync="q5"></text>
               <rect class="hit" x="202" y="96" width="142" height="58" rx="13"/>
@@ -2847,8 +2929,8 @@ body{accent-color:var(--brass)}
           </g>
 
           <g>
-            <path class="glow" d="M64,232 L326,232 L252,474 L138,474 Z" fill="#b8945c" filter="url(#softBlur)"/>
-            <path d="M64,232 L326,232 L252,474 L138,474 Z" fill="url(#goldFill)" stroke="#d7b98a" stroke-opacity=".55" stroke-width="1"/>
+            <path class="glow" d="M64,232 L326,232 L252,474 L138,474 Z" fill="#B99149" filter="url(#softBlur)"/>
+            <path d="M64,232 L326,232 L252,474 L138,474 Z" fill="url(#goldFill)" stroke="#B99149" stroke-opacity=".45" stroke-width="1"/>
             <g clip-path="url(#funClip)"><rect class="shimmer" x="-160" y="230" width="130" height="246" fill="url(#shimmerGrad)"/></g>
             <line class="f2-seam" x1="64" y1="232" x2="326" y2="232" stroke="url(#seamGrad)" stroke-width="1.4"/>
             <line x1="89" y1="312" x2="301" y2="312" stroke="url(#seamGrad)" stroke-width="3.4" opacity=".5" filter="url(#seamBlur)"/>
@@ -2859,27 +2941,27 @@ body{accent-color:var(--brass)}
             <text class="stage-num" x="152" y="278" text-anchor="end" font-size="44" data-sync="zc0"></text>
             <text class="stage-lab" x="164" y="274">neu &amp; kontaktiert <tspan class="chev" dy="1">›</tspan></text>
             <g data-badge>
-              <rect x="153" y="289" width="84" height="22" rx="11" fill="rgba(168,84,63,.20)" stroke="rgba(239,166,125,.35)" stroke-width="1"/>
-              <circle cx="167" cy="300" r="3" fill="#e6794f"/>
-              <circle class="ember" cx="167" cy="300" r="6.5" fill="#e6794f" opacity=".28" filter="url(#seamBlur)"/>
+              <rect x="153" y="289" width="84" height="22" rx="11" fill="rgba(168,52,31,.10)" stroke="rgba(168,52,31,.30)" stroke-width="1"/>
+              <circle cx="167" cy="300" r="3" fill="#A8341F"/>
+              <circle class="ember" cx="167" cy="300" r="6.5" fill="#A8341F" opacity=".28" filter="url(#seamBlur)"/>
               <text class="badge-t" x="177" y="304.5" data-sync="stock0"></text>
             </g>
 
             <text class="stage-num" x="138" y="368" text-anchor="end" font-size="44" data-sync="zc1"></text>
             <text class="stage-lab" x="150" y="364">in Klärung <tspan class="chev" dy="1">›</tspan></text>
             <g data-badge>
-              <rect x="139" y="373" width="84" height="22" rx="11" fill="rgba(168,84,63,.20)" stroke="rgba(239,166,125,.35)" stroke-width="1"/>
-              <circle cx="153" cy="384" r="3" fill="#e6794f"/>
-              <circle class="ember" cx="153" cy="384" r="6.5" fill="#e6794f" opacity=".28" filter="url(#seamBlur)"/>
+              <rect x="139" y="373" width="84" height="22" rx="11" fill="rgba(168,52,31,.10)" stroke="rgba(168,52,31,.30)" stroke-width="1"/>
+              <circle cx="153" cy="384" r="3" fill="#A8341F"/>
+              <circle class="ember" cx="153" cy="384" r="6.5" fill="#A8341F" opacity=".28" filter="url(#seamBlur)"/>
               <text class="badge-t" x="163" y="388.5" data-sync="stock1"></text>
             </g>
 
             <text class="stage-num" x="158" y="438" text-anchor="end" font-size="44" data-sync="zc2"></text>
             <text class="stage-lab" x="170" y="434">Aufnahme geplant <tspan class="chev" dy="1">›</tspan></text>
             <g data-badge>
-              <rect x="153" y="447" width="84" height="22" rx="11" fill="rgba(168,84,63,.20)" stroke="rgba(239,166,125,.35)" stroke-width="1"/>
-              <circle cx="167" cy="458" r="3" fill="#e6794f"/>
-              <circle class="ember" cx="167" cy="458" r="6.5" fill="#e6794f" opacity=".28" filter="url(#seamBlur)"/>
+              <rect x="153" y="447" width="84" height="22" rx="11" fill="rgba(168,52,31,.10)" stroke="rgba(168,52,31,.30)" stroke-width="1"/>
+              <circle cx="167" cy="458" r="3" fill="#A8341F"/>
+              <circle class="ember" cx="167" cy="458" r="6.5" fill="#A8341F" opacity=".28" filter="url(#seamBlur)"/>
               <text class="badge-t" x="177" y="462.5" data-sync="stock2"></text>
             </g>
 
@@ -2914,7 +2996,7 @@ body{accent-color:var(--brass)}
               <title>Auswertung: Privatauslastung</title>
               <rect x="137" y="520" width="116" height="64" rx="13" fill="rgba(244,238,227,.04)" stroke="rgba(215,185,138,.22)" stroke-width="1"/>
               <rect x="147" y="519.4" width="96" height="2" rx="1" fill="url(#tileTop)"/>
-              <text class="tile-num" x="195" y="552" text-anchor="middle" font-size="27">78<tspan font-size="16" fill="#c9ad7d" dx="3">%</tspan></text>
+              <text class="tile-num" x="195" y="552" text-anchor="middle" font-size="27">78<tspan font-size="16" fill="#7E6230" dx="3">%</tspan></text>
               <text class="tile-sub" x="195" y="572" text-anchor="middle">Privatauslastung</text>
               <rect class="hit" x="137" y="520" width="116" height="64" rx="13"/>
             </g>
@@ -3026,8 +3108,8 @@ body{accent-color:var(--brass)}
     <div class="cv tm-cv">
       <svg class="cv-wide" viewBox="0 0 980 212" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <radialGradient id="cvGoldT" cx="36%" cy="28%" r="85%"><stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/></radialGradient>
-          <radialGradient id="cvGlowT"><stop offset="0" stop-color="#C4A97D" stop-opacity=".4"/><stop offset="1" stop-color="#C4A97D" stop-opacity="0"/></radialGradient>
+          <radialGradient id="cvGoldT" cx="36%" cy="28%" r="85%"><stop offset="0" stop-color="#F6F2E6"/><stop offset=".55" stop-color="#EFE9D8"/><stop offset="1" stop-color="#E5DCC4"/></radialGradient>
+          <radialGradient id="cvGlowT"><stop offset="0" stop-color="#B99149" stop-opacity=".32"/><stop offset="1" stop-color="#B99149" stop-opacity="0"/></radialGradient>
         </defs>
         <path class="cv-path" d="M156,33 C300,33 460,52 586,76"/><path class="cv-path" d="M314,33 C430,36 500,58 584,83"/>
         <path class="cv-path" d="M156,89 C320,89 470,89 581,90"/><path class="cv-path" d="M314,89 C410,90 500,93 581,97"/>
@@ -3056,8 +3138,8 @@ body{accent-color:var(--brass)}
       </svg>
       <svg class="cv-narrow" viewBox="0 0 340 416" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <radialGradient id="cvGoldTN" cx="36%" cy="28%" r="85%"><stop offset="0" stop-color="#ecdfc8"/><stop offset=".55" stop-color="#d3b78a"/><stop offset="1" stop-color="#b29a76"/></radialGradient>
-          <radialGradient id="cvGlowTN"><stop offset="0" stop-color="#C4A97D" stop-opacity=".4"/><stop offset="1" stop-color="#C4A97D" stop-opacity="0"/></radialGradient>
+          <radialGradient id="cvGoldTN" cx="36%" cy="28%" r="85%"><stop offset="0" stop-color="#F6F2E6"/><stop offset=".55" stop-color="#EFE9D8"/><stop offset="1" stop-color="#E5DCC4"/></radialGradient>
+          <radialGradient id="cvGlowTN"><stop offset="0" stop-color="#B99149" stop-opacity=".32"/><stop offset="1" stop-color="#B99149" stop-opacity="0"/></radialGradient>
         </defs>
         <path class="cv-path" d="M57,46 C57,108 94,142 133,163"/><path class="cv-path" d="M170,46 C148,84 140,120 153,153"/><path class="cv-path" d="M283,46 C283,108 246,142 207,163"/>
         <path class="cv-path" d="M57,95 C60,130 98,150 139,158"/><path class="cv-path" d="M170,95 C184,114 190,132 181,151"/><path class="cv-path" d="M283,95 C280,130 242,150 201,158"/>
@@ -4821,7 +4903,7 @@ function kpiRing(val,max,label,sub,hue){
  const r=22,c=2*Math.PI*r,pct=Math.max(0,Math.min(1,val/max)),off=c*(1-pct);
  const grad={sage:"lxRingSage",azzurro:"lxRingAzzurro",terra:"lxRingTerra",brass:"lxRingBrass"}[hue]||"auroraRingGrad";
  return `<div class="ring"><svg width="56" height="56" viewBox="0 0 56 56">
-   <circle cx="28" cy="28" r="${r}" fill="none" stroke="rgba(27,27,22,.08)" stroke-width="5"/>
+   <circle cx="28" cy="28" r="${r}" fill="none" stroke="rgba(185,145,73,.22)" stroke-width="5"/>
    <circle cx="28" cy="28" r="${r}" fill="none" stroke="url(#${grad})" stroke-width="5" stroke-linecap="round"
      stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 28 28)"/>
    <text x="28" y="32" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="17" font-weight="600" fill="var(--ink)">${val}</text></svg>
