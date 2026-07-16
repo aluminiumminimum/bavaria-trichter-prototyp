@@ -2012,9 +2012,9 @@ body{accent-color:var(--brass)}
 /* (3) Siegel statt Ghost-Numerale (e5d .bt-num): 44px-Kreis oben rechts, Cormorant-Numeral.
    Kapitel 01 = Zinnober-Siegel (gefüllt, Elfenbein-Ziffer — e5d-Wachssiegel), 02/03 = Gold-Ring. */
 #view-heute>.hb-trichter::after{content:"01"}
-#anlassChap::after{content:"02"}
+#radarLine::after{content:"02"}
 #belegungChap::after{content:"03"}
-#view-heute>.hb-trichter::after,#anlassChap::after,#belegungChap::after{
+#view-heute>.hb-trichter::after,#radarLine::after,#belegungChap::after{
   position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;z-index:3;
   display:grid;place-items:center;pointer-events:none;user-select:none;
   font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:18px;line-height:1;
@@ -2024,7 +2024,7 @@ body{accent-color:var(--brass)}
   color:var(--ivory-tx);background:var(--terra);border-color:var(--terra);
   box-shadow:inset 0 0 0 2px rgba(255,255,255,.16),0 2px 6px rgba(168,52,31,.35)}
 /* Kopfzeilen weichen dem Siegel aus (44px + 16px Kante) */
-#view-heute>.hb-trichter .hd-row,#anlassChap .ar-head,#belegungChap .lxfc-top{padding-right:64px}
+#view-heute>.hb-trichter .hd-row,#radarLine .kicker,#belegungChap .lxfc-top{padding-right:64px}
 /* (4) Forecast-Knockouts (Ziel-Label/Dot-Ringe) liegen jetzt auf Etiketten-Creme statt Canvas */
 #belegungChap .lxfc-tlabel{background:var(--paper)}
 #belegungChap .lxfc-dot{box-shadow:0 0 0 3px var(--paper)}
@@ -2933,6 +2933,26 @@ body{accent-color:var(--brass)}
   .tabbar-inner{gap:2px;padding-left:4px;padding-right:4px}
   .tabbar [data-nav]{min-width:0;font-size:10.5px;letter-spacing:.02em}
 }
+
+/* ===== HEUTE ENTSCHLACKT (T5) — Radar-Siegel-Zeile (.rl-*) + Trichter-Fußverweis =====
+   (a) .rl-strip: Button-Reset auf die .card/.lx-live-Etiketten-Optik — voller Breite,
+       linksbündig, Inter 13px wie .lx-live; #radarLine-Scope schlägt den Chap-Flattener
+       (#view-heute>.chap>.card) per Source-Order bei gleicher Spezifität.
+   (b) Hover verstärkt die Gold-Haarlinie (kein neuer Keyframe, kein Blur).
+   (c) .hb-tfoot: Verweis-Zeile unter dem Trichter — rechtsbündig, ohne Siegel-Ausweich-Padding. */
+#radarLine .card.rl-strip{width:100%;text-align:left;cursor:pointer;
+  font-family:Inter,system-ui,sans-serif;font-size:13px;color:var(--ink-soft);
+  background:var(--paper2);border:1px solid var(--gold-faint);border-radius:4px;
+  box-shadow:none;padding:12px 18px;
+  transition:border-color .18s,box-shadow .18s}
+#radarLine .card.rl-strip:hover{border-color:var(--gold-soft);
+  box-shadow:inset 0 0 0 1px var(--gold-faint)}
+#radarLine .card.rl-strip .lx-rt{color:var(--brass-deep)}
+/* display:flex hier selbst setzen — die Basisregel .hd-row (display:flex, Z.~1348) wird vom
+   Parser verschluckt: vorbestehender Bug, der Kommentar davor (Z.~1345, "keine .rp-Stern-Slash…")
+   enthält die Kommentar-Ende-Sequenz Stern+Slash und beendet sich vorzeitig; die
+   Fehler-Recovery frisst die .hd-row-Folgeregel. */
+#view-heute>.hb-trichter .hd-row.hb-tfoot{display:flex;padding-right:0;justify-content:flex-end;margin:12px 0 0}
 </style>
 </head>
 <body>
@@ -3440,6 +3460,9 @@ body{accent-color:var(--brass)}
         </svg>
       </section>
       </div>
+      <div class="hd-row hb-tfoot">
+        <button class="hd-link" onclick="go('auswertung')">Zur Auswertung ›</button>
+      </div>
     </div>
 
 
@@ -3488,31 +3511,28 @@ body{accent-color:var(--brass)}
       <div class="lx-live" aria-live="polite"><i class="lx-pulse"></i><b><span data-sync="cvTotal">–</span> Anfragen heute</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.<span class="lx-rt">ECHTZEIT</span></div>
     </div>
 
-    <!-- Row B · Der Trichter (span 8) + Panorama-Suite (span 4, hoch) -->
-    <!-- Row C · Heute wichtig (span 4) + Anlässe (span 8) -->
+    <!-- Row C · Heute wichtig (span 4) + Radar-Siegel-Zeile (span 8) -->
     <div class="chap hb-4">
       <div class="kicker">Heute wichtig</div>
       <div class="card list-card" id="wichtigList"></div>
     </div>
 
-    <div class="chap hb-8" id="anlassChap">
-      <div class="kicker"><span class="au-chapnum">02</span>Anlässe · Beziehungen pflegen</div>
-      <div class="ar-head"><span class="ar-sum" id="anlassSum"></span><button class="ar-more" onclick="go('netzwerk','radar')">Alle Anlässe ›</button></div>
-      <div class="ar-grid" id="anlassList"></div>
+    <div class="chap hb-8" id="radarLine">
+      <div class="kicker"><span class="au-chapnum">02</span>Radar · Beziehungen pflegen</div>
+      <button class="card lx-live rl-strip" onclick="go('netzwerk','radar')"><i class="lx-pulse"></i><b><span id="rlCount">–</span> Anlässe fällig</b> · Geburtstage, Wiederbedarf, Zuweiser-Kontakte<span class="lx-rt">RADAR ›</span></button>
     </div>
 
-    <!-- Row D · Belegung (span 8) + Küche (span 4) -->
+    <!-- Row D · Belegung (span 8) + Panorama-Suite (span 4, hoch) -->
     <div class="chap hb-8" id="belegungChap">
       <div class="kicker"><span class="au-chapnum">03</span>Belegung · 8-Wochen-Forecast</div>
       <div class="lxfc-top" id="fcTop"></div>
       <div class="lxfc-chart" id="fcPlot"></div>
     </div>
 
-    <figure class="lx-fen hb-4 hb-photo"><img src="assets/kb-kueche.webp" alt="Klinikküche mit Blick ins Grüne" loading="lazy" style="object-position:center 50%"><figcaption><span class="lx-fen-n">Kulinarik</span><span class="lx-fen-s">Küche mit Blick ins Grüne</span></figcaption></figure>
+    <figure class="lx-fen hb-4 hb-photo"><img src="assets/kb-suite-neu.webp" alt="Panorama-Suite der Klinik Bavaria" loading="lazy" style="object-position:center 55%"><figcaption><span class="lx-fen-n">Panorama-Suite</span><span class="lx-fen-s">Komfort-Kategorie</span></figcaption></figure>
 
     <!-- Row E · Campus-Foto-Band (span 12) -->
-    <figure class="lx-fen hb-8"><img src="assets/kb-campus.jpg" alt="Campus der Klinik in Kurpark-Lage" loading="lazy" style="object-position:center 45%"><figcaption><span class="lx-fen-n">Campus</span><span class="lx-fen-s">Kurpark-Lage</span></figcaption></figure>
-    <figure class="lx-fen hb-4 hb-photo"><img src="assets/kb-suite-neu.webp" alt="Panorama-Suite der Klinik Bavaria" loading="lazy" style="object-position:center 55%"><figcaption><span class="lx-fen-n">Panorama-Suite</span><span class="lx-fen-s">Komfort-Kategorie</span></figcaption></figure>
+    <figure class="lx-fen hb-12"><img src="assets/kb-campus.jpg" alt="Campus der Klinik in Kurpark-Lage" loading="lazy" style="object-position:center 45%"><figcaption><span class="lx-fen-n">Campus</span><span class="lx-fen-s">Kurpark-Lage</span></figcaption></figure>
 
 
   </section>
@@ -3577,6 +3597,11 @@ body{accent-color:var(--brass)}
     <div class="sub" id="sub-netzwerk-radar">
       <div class="kicker">Radar &amp; Anlässe</div>
       <div id="radarHost"></div>
+      <div class="chap" id="anlassChap">
+        <div class="kicker">Anlässe · Beziehungen pflegen</div>
+        <div class="ar-head"><span class="ar-sum" id="anlassSum"></span></div>
+        <div class="ar-grid" id="anlassList"></div>
+      </div>
     </div>
     <div class="sub" id="sub-netzwerk-kontakte">
       <div class="kicker">Kontakte</div>
@@ -4539,6 +4564,7 @@ function renderAnlaesse(){
  const nG=list.filter(a=>a.typ==="geburtstag").length,nJ=list.filter(a=>a.typ==="jubilaeum").length,nW=list.filter(a=>a.typ==="wiederbedarf").length,nZ=list.filter(a=>a.typ==="zuweiser").length;
  const sum=document.getElementById("anlassSum");
  if(sum)sum.textContent=[nG?nG+(nG===1?" Geburtstag":" Geburtstage"):null,nJ?nJ+(nJ===1?" Jubiläum":" Jubiläen"):null,nW?nW+"× Wiederbedarf":null,nZ?nZ+(nZ===1?" Zuweiser wartet":" Zuweiser warten"):null].filter(Boolean).join(" · ")||"Keine offenen Anlässe";
+ const rl=document.getElementById("rlCount");if(rl)rl.textContent=list.length;
  el.innerHTML=list.slice(0,3).map(arCard).join("")||"<p class='empty'>Alles gepflegt — keine offenen Anlässe.</p>";
  /* Foto-Strip auf JEDER Karte mit AR_FOTO-Eintrag (geburtstag/wiederbedarf/zuweiser) */
 }
