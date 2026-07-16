@@ -318,7 +318,7 @@ Kapitel-Siegel neu zählen: Trichter bleibt `01` (Zinnober via CSS `#view-heute>
 
 **Does NOT cover:** Änderungen an `mtEnter`/`mtExit`/`renderMeinTag`/`mtTodos` (unantastbar). `mtRollToggle`-Funktion bleibt definiert (Parity), wird aber von keinem Markup mehr referenziert.
 
-- [ ] **Step 1: Desktop-Sidebar-Schalter**
+- [x] **Step 1: Desktop-Sidebar-Schalter**
 
 In `.dsidebar` direkt nach `.ds-brand` (~2943):
 
@@ -331,7 +331,7 @@ In `.dsidebar` direkt nach `.ds-brand` (~2943):
 
 Topbar (~2958): den kompletten `.mt-avawrap`-Block (Avatar-Button + `#mtRollmenu`) entfernen.
 
-- [ ] **Step 2: Mobiler Einstieg**
+- [x] **Step 2: Mobiler Einstieg**
 
 Es gibt KEINE mobile Topbar (`.dtopbar` ist Desktop-Shell). Mobiler Schalter kommt in den Heute-Greet-Header: in `.g-row` (~2966) als kompaktes Chip-Paar (gleiche IDs dürfen nicht doppelt vergeben werden → mobile Buttons OHNE id, nur `onclick="mtEnter()"`):
 
@@ -342,15 +342,15 @@ Es gibt KEINE mobile Topbar (`.dtopbar` ist Desktop-Shell). Mobiler Schalter kom
           </div>
 ```
 
-- [ ] **Step 3: CSS + Zustands-Sync**
+- [x] **Step 3: CSS + Zustands-Sync**
 
 CSS additiv (Namespace `.ds-role*`): Etiketten-Stil — Ivory-Plate `var(--paper)`, Jade-Hairline, aktiver Zustand Lack-Jade-Fläche mit Ivory-Text; Sidebar-Variante volle Breite unter Brand, `.ds-role--mobile` nur `<1024px` sichtbar (Desktop `display:none`), in der Sidebar umgekehrt. Fokus-Ring wie bestehende Buttons. Kein neuer Keyframe.
 JS: `mtEnter()`/`mtExit()` NICHT anfassen — der „on"-Zustand wird rein per CSS abgeleitet: `body.ma-mode .ds-role-btn` Regeln (in ma-mode ist die Sidebar ohnehin ausgeblendet — prüfen; falls ja, genügt statisches „Leitung on", weil der Schalter nur außerhalb ma-mode sichtbar ist; der Rückweg bleibt der bestehende „Zurück"-Button im Mein-Tag-Header, ~3827).
 `mtRollToggle()` bleibt im JS stehen; toten CSS-Block `.mt-avawrap`/`.mt-rollmenu`/`.dt-ava` entfernen, SOFERN er ausschließlich das entfernte Markup adressiert.
 
-- [ ] **Step 4: Verifikation** — vm.Script; `grep -c 'mtAvaBtn\|mtRollmenu' index.html` → nur noch in JS-Funktion `mtRollToggle` (Markup 0); Browser @1440: Schalter unter Brand sichtbar, „Koordination" → ma-mode (Mein Tag rendert, 9–10 Karten), Zurück-Button → Leitung; @390: Chip-Paar im Greet sichtbar, gleicher Roundtrip; 0 Console-Errors in beiden Richtungen.
+- [x] **Step 4: Verifikation** — vm.Script; `grep -c 'mtAvaBtn\|mtRollmenu' index.html` → nur noch in JS-Funktion `mtRollToggle` (Markup 0); Browser @1440: Schalter unter Brand sichtbar, „Koordination" → ma-mode (Mein Tag rendert, 9–10 Karten), Zurück-Button → Leitung; @390: Chip-Paar im Greet sichtbar, gleicher Roundtrip; 0 Console-Errors in beiden Richtungen.
 
-- [ ] **Step 5: Commit** `feat(ia): T6 — Rollen-Schalter Leitung⇄Koordination (Sidebar + mobil), Avatar-Dropdown ersetzt`
+- [x] **Step 5: Commit** `feat(ia): T6 — Rollen-Schalter Leitung⇄Koordination (Sidebar + mobil), Avatar-Dropdown ersetzt`
 
 ---
 
