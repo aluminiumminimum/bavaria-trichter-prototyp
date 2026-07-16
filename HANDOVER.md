@@ -1,7 +1,7 @@
 # HANDOVER — Klinik Bavaria · Concierge OS
 
 **Für:** neuer Thread mit Fable-als-Orchestrator (delegiert an `claude-implementer` / `claude-implementer-pro`, konsultiert `fable-advisor`) — **oder den Cofounder**, der die nächste Aufgabe (§7) direkt übernimmt.
-**Stand:** `main` = `dd4ff70`, live. Datum des Handovers: 2026-07-14 (ursprünglich 2026-07-09, §4b/§7 aktualisiert).
+**Stand:** `main` = `4488af1`, live. Datum des Handovers: 2026-07-16 (ursprünglich 2026-07-09; seither: Jade-Apotheke-Overhaul 16.07. + IA-Restrukturierung „Prozess-Achse" 16.07. — §3/§7 aktualisiert).
 
 Lies zusätzlich die **`CLAUDE.md`** im Repo-Root — das ist die verbindliche Konventions-Quelle. Dieses Dokument ergänzt sie um Projektstand, Architektur-Landkarte und Orchestrator-Spielregeln.
 
@@ -155,27 +155,23 @@ KPI-Kacheln = .radar-kpi. Dünne „Utility-Listen" fallen gegen den Rest der Ap
 
 ---
 
-## 7. NÄCHSTE AUFGABE (beauftragt & designt — bereit zur Umsetzung)
+## 7. NÄCHSTE AUFGABE
 
-**Mitarbeiter-Dashboard „Mein Tag"** — Perspektivenwechsel vom Manager-Cockpit zur
-geführten Arbeitsansicht für EINE Person (S. Koordination). Design ist vom User
-freigegeben, Spec ist gegen den echten Code reviewt (1 Runde, Befunde eingearbeitet):
+**Keine beauftragt.** Die zuletzt designte Aufgabe (Mitarbeiter-Dashboard „Mein Tag",
+Spec `docs/superpowers-optimized/specs/2026-07-14-mitarbeiter-dashboard-design.md`) ist
+UMGESETZT und seit der IA-Restrukturierung über den sichtbaren Rollen-Schalter
+`.ds-role` (Sidebar „Leitung ⇄ Koordination" + mobiler Chip im Heute-Greet) erreichbar —
+der frühere Topbar-Avatar-Einstieg (`.dt-ava`/`#mtRollmenu`) existiert nicht mehr,
+Mobile-Einstieg gibt es inzwischen bewusst DOCH.
 
-→ **`docs/superpowers-optimized/specs/2026-07-14-mitarbeiter-dashboard-design.md`**
+Abgeschlossene Programme (je Spec + Plan in `docs/superpowers-optimized/`):
+Aurora (14.07.) → Lichtung (15.07.) → Jade-Apotheke (16.07., `2026-07-16-jade-apotheke-overhaul.md`)
+→ IA-Restrukturierung „Prozess-Achse" (16.07., Spec `2026-07-16-ia-restructure-design.md`,
+Plan `2026-07-16-ia-restructure.md` mit Commit-Map).
 
-Kern in drei Sätzen: (1) Rollen-Umschalter am Topbar-Avatar (`.dt-ava`) setzt
-`body.ma-mode`; additives CSS blendet dsidebar/tabbar/dtopbar/alle Views aus, nur
-neue View `#view-meintag` (.mt-*) bleibt — Desktop-Feature, Mobile-Einstieg bewusst
-nicht. (2) `mtTodos()` leitet To-Dos zur Laufzeit ab (SK-Fall-Aufgaben, Kostenklärung,
-qualifizierter Eingang) — Blöcke JETZT / HEUTE / GUT ZU WISSEN, Fortschrittsleiste;
-ein zusätzlicher Seed-Fall (Werner Aumann, Unterlagen, kosten offen) macht den Typ
-„Kostenklärung" real. (3) Jedes To-Do öffnet eine geführte Arbeitskarte
-(WARUM JETZT · SO GEHST DU VOR · LEITFADEN aus `MT_LEITFAEDEN` · Abschluss-Button,
-der echt mutiert: log/kosten/aufgabe) mit „Weiter zur nächsten →".
-
-Erwartete Abnahme-Zahlen (nach Auto-Inbound, ~5 s nach Laden): JETZT = 2,
-HEUTE/WOCHE = 5, GUT ZU WISSEN = 1, Fortschrittsnenner 7. Details + Optik-Mandate
-(radar-card-Familie etc.) stehen in der Spec §5–6.
+Bekannte offene Kleinigkeiten: Radar-Segment trägt redaktionell doppelte Anlässe
+(Teaser-Grid + Feed — bewusst, Null-Verlust); echter Lighthouse-Pass offen;
+`#E06845` stockt-Ton auf Lack (3.67:1) beobachten.
 
 ### Danach denkbar (nichts zugesagt)
 - Weitere Personas als Varianten desselben Mein-Tag-Musters (Recovery Manager, M. Belegung).

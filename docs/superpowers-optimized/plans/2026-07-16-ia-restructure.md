@@ -417,3 +417,29 @@ Analog consts/ids/onclicks gegen `.workflow/jade-{consts,ids,onclicks}.txt`. Erl
 - **Spec-Coverage:** Nav-Neuordnung T1–T4 ✓ · Rollen-Schalter T6 ✓ · Portal mobil/Kampagnen T7 ✓ · Heute-Entschlackung T5 ✓ · Alias-Schicht T1–T4 ✓ · Baseline-Neueinfrieren T2 ✓ · V-Protokoll/Parity T8 ✓ · Siegel-Neuzählung T5 ✓. Keine Lücke gefunden.
 - **Platzhalter:** keine TBDs; wo Ist-Zustand entscheidet (Radar-Container T4.1, `.tm-cv`-CSS T2, ma-mode-Sidebar-Sichtbarkeit T6.3), ist das Nachschauen als expliziter Schritt formuliert, nicht als Lücke.
 - **Konsistenz:** `data-seg`-Namen (`team`/`radar`/`kontakte`/`matrix`) stimmen zwischen Tablist-Markup, SEGS, Aliassen und Callsites überein; `segCntBestand`-ID bewusst behalten; Tabbar-Kurzlabels „Reha"/„Zahlen" nur mobil, `data-nav` bleibt `inreha`/`auswertung`.
+
+---
+
+## Ergebnis & Commit-Map (nachgetragen bei Abschluss, 2026-07-16)
+
+Programm komplett: 8/8 Tasks, verifier CONFIRMED (79/79 Checks), Parity 0 verlorene
+Funktionen/Konstanten (ID-/onclick-Deltas = exakt die oben dokumentierten erlaubten),
+ff-Merge auf `main`, Pages-Build grün.
+
+| Commit | Inhalt |
+|---|---|
+| `8c66cda` | Spec „IA-Restrukturierung Prozess-Achse" |
+| `04f513e` | dieser Plan |
+| `3df80ee` | **T1** In Reha als Top-Level-View (Alias `faelle/inreha`) |
+| `eaa482c` | **T2** Team als Fälle-Segment, cv-Duplikat entfernt, Funnel-Baseline NEU: offset-path 12 · cv-travel 2 · data-sync 30 |
+| `008f3d5` | **T3** Auswertung Top-Level; System+Matrix → „Konzept" (idee/matrix/sops); Alias-Schicht system/matrix |
+| `ceaf722` | **T4** Netzwerk: Radar eigenes Segment, „Datenbank"→„Kontakte", `setDbView` delegiert; Matrix-Kachel Nachsorge→Radar |
+| `49db0a8` | **T5** Heute entschlackt: Anlässe→Radar-Segment, Radar-Siegel-Zeile (`#radarLine`), „Zur Auswertung ›", Foto-Diät, Siegel 01/02/03 |
+| `8d4584f` | **Fix** (Beifang T5): CSS-Kommentar `.rp-*/` beendete Kommentar vorzeitig → `.hd-row`-Flexregel wurde app-weit verschluckt (Fehlerklasse wie `</style>`-Bug ca56053); + `#radarLine{align-self:start}` |
+| `8d41f8b` | **T6** Rollen-Schalter Leitung⇄Koordination (`.ds-role` Sidebar + mobiler Greet-Chip); Avatar-Dropdown ersetzt |
+| `9092974` | **T7** Zuweiserportal mobil erreichbar + Kampagnen-Karte (`.nx-entry`) |
+| `39df9ae` | **T8** Doku: CLAUDE.md/HANDOVER auf neue IA (Contract 12/2/30, Aliase, Rollen-Schalter) |
+
+Bewusste Rest-Punkte: redaktionelle Anlässe-Dublette im Radar-Segment (Teaser-Grid +
+renderRadar-Feed; Feed-Karten tragen eigene arAktion-Buttons → Null-Verlust-Entscheid);
+toter, null-geguardeter `mtRollToggle`-Code (Parity); Lighthouse-Pass offen.
