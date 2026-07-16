@@ -2962,213 +2962,7 @@ body{accent-color:var(--brass)}
 
   <!-- ============ HEUTE ============ -->
   <section id="view-heute" class="view active">
-    <header class="greet">
-<div class="cv">
-
-  <!-- ===== cv: Konvergenz-Panel · Desktop / breit (≥760px) — die Daten-IDs leben hier.
-       R1 (07/2026): Kanäle GESTAPELT (e5d-Geometrie) — sechs Zeilen links, lange Bögen
-       konvergieren rechts in den Eingang, Ausgang → Stepper → FALL. ===== -->
-  <svg class="cv-wide" viewBox="0 0 980 362" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="cvGoldW" cx="36%" cy="28%" r="85%">
-        <stop offset="0" stop-color="#F6F2E6"/><stop offset=".55" stop-color="#EFE9D8"/><stop offset="1" stop-color="#E5DCC4"/>
-      </radialGradient>
-      <radialGradient id="cvGlowW">
-        <stop offset="0" stop-color="#B99149" stop-opacity=".32"/><stop offset="1" stop-color="#B99149" stop-opacity="0"/>
-      </radialGradient>
-    </defs>
-
-    <!-- Ströme: sechs gestapelte Kanäle laufen in langen Bögen in den einen Eingang -->
-    <path class="cv-path" d="M228,44 C420,44 470,169 578,169"/>
-    <path class="cv-path" d="M228,94 C420,94 470,169 578,169"/>
-    <path class="cv-path" d="M228,144 C420,144 470,169 578,169"/>
-    <path class="cv-path" d="M228,194 C420,194 470,169 578,169"/>
-    <path class="cv-path" d="M228,244 C420,244 470,169 578,169"/>
-    <path class="cv-path" d="M228,294 C420,294 470,169 578,169"/>
-    <circle class="cv-dot"       r="2.8" style="offset-path:path('M228,44 C420,44 470,169 578,169')"/>
-    <circle class="cv-dot cv-t2" r="2.8" style="offset-path:path('M228,94 C420,94 470,169 578,169')"/>
-    <circle class="cv-dot cv-t3" r="2.8" style="offset-path:path('M228,144 C420,144 470,169 578,169')"/>
-    <circle class="cv-dot cv-t4" r="2.8" style="offset-path:path('M228,194 C420,194 470,169 578,169')"/>
-    <circle class="cv-dot cv-t5" r="2.8" style="offset-path:path('M228,244 C420,244 470,169 578,169')"/>
-    <circle class="cv-dot cv-t6" r="2.8" style="offset-path:path('M228,294 C420,294 470,169 578,169')"/>
-
-    <!-- Quellen: sechs Zeilen untereinander — Etikett links, Gold-Numeral rechts, Haarlinien dazwischen -->
-    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="23"  width="220" height="42" rx="3"/><rect x="8" y="23"  width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="48">E-MAIL</text>   <text class="cv-chip-n" x="214" y="51"  text-anchor="end" id="cvEmail">1</text></g>
-    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="73"  width="220" height="42" rx="3"/><rect x="8" y="73"  width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="98">TELEFON</text>  <text class="cv-chip-n" x="214" y="101" text-anchor="end" id="cvTelefon">1</text></g>
-    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="123" width="220" height="42" rx="3"/><rect x="8" y="123" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="148">FAX</text>      <text class="cv-chip-n" x="214" y="151" text-anchor="end" id="cvFax">1</text></g>
-    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="173" width="220" height="42" rx="3"/><rect x="8" y="173" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="198">WEBSITE</text>  <text class="cv-chip-n" x="214" y="201" text-anchor="end" id="cvWebsite">2</text></g>
-    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="223" width="220" height="42" rx="3"/><rect x="8" y="223" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="248">ZUWEISER</text><text class="cv-chip-n" x="214" y="251" text-anchor="end" id="cvZuweiser">0</text></g>
-    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="273" width="220" height="42" rx="3"/><rect x="8" y="273" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="298">PORTALE</text> <text class="cv-chip-n" x="214" y="301" text-anchor="end" id="cvPortale">0</text></g>
-    <line class="cv-sep" x1="8" y1="69"  x2="228" y2="69"/>
-    <line class="cv-sep" x1="8" y1="119" x2="228" y2="119"/>
-    <line class="cv-sep" x1="8" y1="169" x2="228" y2="169"/>
-    <line class="cv-sep" x1="8" y1="219" x2="228" y2="219"/>
-    <line class="cv-sep" x1="8" y1="269" x2="228" y2="269"/>
-
-    <!-- Der eine Eingang -->
-    <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen"
-       onclick="go('faelle','anfragen')"
-       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
-      <circle cx="640" cy="169" r="100" fill="url(#cvGlowW)"/>
-      <circle class="cv-halo" cx="640" cy="169" r="70"/>
-      <circle class="cv-core" cx="640" cy="169" r="62" fill="url(#cvGoldW)"/>
-      <circle class="cv-pulse" cx="640" cy="169" r="62"/>
-      <text class="cv-total" x="640" y="165" id="cvTotal">5</text>
-      <text class="cv-node-l" x="640" y="185">EIN EINGANG</text>
-      <text class="cv-node-s" x="640" y="201">heute</text>
-    </g>
-
-    <!-- stockt-Hinweis -->
-    <g class="cv-stockt" id="cvStockWrap">
-      <line x1="688" y1="124" x2="703" y2="112"/>
-      <circle cx="709" cy="107" r="3"/>
-      <text x="717" y="111"><tspan id="cvStock">1</tspan> stockt</text>
-    </g>
-
-    <!-- Ausgang: ein Fall, ein Weg, planbare Belegung -->
-    <path class="cv-out-thick" d="M702,169 H744"/>
-    <path class="cv-out-line" d="M744,169 H950"/>
-    <circle class="cv-step-dot" cx="766" cy="169" r="4"/>
-    <circle class="cv-step-dot" cx="870" cy="169" r="4"/>
-    <circle class="cv-step-end" cx="950" cy="169" r="7"/>
-    <text class="cv-step-l" x="766" y="193">ZUGETEILT</text>
-    <text class="cv-step-l" x="870" y="193">BEANTWORTET</text>
-    <text class="cv-step-l cv-step-l-end" x="950" y="193">FALL</text>
-
-    <!-- Leitsatz -->
-    <text class="cv-copy" x="490" y="350">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
-  </svg>
-
-  <!-- ===== cv: Mobil / schmal (<760px) — Werte gespiegelt über data-sync.
-       R1: gleicher Stapel wie breit — sechs Zeilen links, Eingang rechts, Stepper darunter. ===== -->
-  <svg class="cv-narrow" viewBox="0 0 340 372" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="cvGoldN" cx="36%" cy="28%" r="85%">
-        <stop offset="0" stop-color="#F6F2E6"/><stop offset=".55" stop-color="#EFE9D8"/><stop offset="1" stop-color="#E5DCC4"/>
-      </radialGradient>
-      <radialGradient id="cvGlowN">
-        <stop offset="0" stop-color="#B99149" stop-opacity=".32"/><stop offset="1" stop-color="#B99149" stop-opacity="0"/>
-      </radialGradient>
-    </defs>
-
-    <path class="cv-path" d="M146,28 C186,28 182,133 202,133"/>
-    <path class="cv-path" d="M146,70 C186,70 182,133 202,133"/>
-    <path class="cv-path" d="M146,112 C186,112 182,133 202,133"/>
-    <path class="cv-path" d="M146,154 C186,154 182,133 202,133"/>
-    <path class="cv-path" d="M146,196 C186,196 182,133 202,133"/>
-    <path class="cv-path" d="M146,238 C186,238 182,133 202,133"/>
-    <circle class="cv-dot"       r="2.4" style="offset-path:path('M146,28 C186,28 182,133 202,133')"/>
-    <circle class="cv-dot cv-t2" r="2.4" style="offset-path:path('M146,70 C186,70 182,133 202,133')"/>
-    <circle class="cv-dot cv-t3" r="2.4" style="offset-path:path('M146,112 C186,112 182,133 202,133')"/>
-    <circle class="cv-dot cv-t4" r="2.4" style="offset-path:path('M146,154 C186,154 182,133 202,133')"/>
-    <circle class="cv-dot cv-t5" r="2.4" style="offset-path:path('M146,196 C186,196 182,133 202,133')"/>
-    <circle class="cv-dot cv-t6" r="2.4" style="offset-path:path('M146,238 C186,238 182,133 202,133')"/>
-
-    <!-- Quellen: sechs Zeilen untereinander -->
-    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="10"  width="142" height="36" rx="3"/><rect x="4" y="10"  width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="31">E-MAIL</text>   <text class="cv-chip-n" x="134" y="34"  text-anchor="end" data-sync="cvEmail">1</text></g>
-    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="52"  width="142" height="36" rx="3"/><rect x="4" y="52"  width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="73">TELEFON</text>  <text class="cv-chip-n" x="134" y="76"  text-anchor="end" data-sync="cvTelefon">1</text></g>
-    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="94"  width="142" height="36" rx="3"/><rect x="4" y="94"  width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="115">FAX</text>      <text class="cv-chip-n" x="134" y="118" text-anchor="end" data-sync="cvFax">1</text></g>
-    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="136" width="142" height="36" rx="3"/><rect x="4" y="136" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="157">WEBSITE</text>  <text class="cv-chip-n" x="134" y="160" text-anchor="end" data-sync="cvWebsite">2</text></g>
-    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="178" width="142" height="36" rx="3"/><rect x="4" y="178" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="199">ZUWEISER</text> <text class="cv-chip-n" x="134" y="202" text-anchor="end" data-sync="cvZuweiser">0</text></g>
-    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="220" width="142" height="36" rx="3"/><rect x="4" y="220" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="241">PORTALE</text>  <text class="cv-chip-n" x="134" y="244" text-anchor="end" data-sync="cvPortale">0</text></g>
-    <line class="cv-sep" x1="4" y1="49"  x2="146" y2="49"/>
-    <line class="cv-sep" x1="4" y1="91"  x2="146" y2="91"/>
-    <line class="cv-sep" x1="4" y1="133" x2="146" y2="133"/>
-    <line class="cv-sep" x1="4" y1="175" x2="146" y2="175"/>
-    <line class="cv-sep" x1="4" y1="217" x2="146" y2="217"/>
-
-    <!-- Der eine Eingang -->
-    <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen"
-       onclick="go('faelle','anfragen')"
-       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
-      <circle cx="248" cy="133" r="76" fill="url(#cvGlowN)"/>
-      <circle class="cv-halo" cx="248" cy="133" r="53"/>
-      <circle class="cv-core" cx="248" cy="133" r="46" fill="url(#cvGoldN)"/>
-      <circle class="cv-pulse" cx="248" cy="133" r="46"/>
-      <text class="cv-total" x="248" y="129" data-sync="cvTotal">5</text>
-      <text class="cv-node-l" x="248" y="147">EIN EINGANG</text>
-      <text class="cv-node-s" x="248" y="161">heute</text>
-    </g>
-
-    <g class="cv-stockt" data-sync-wrap="cvStockWrap">
-      <line x1="215" y1="166" x2="203" y2="178"/>
-      <circle cx="198" cy="182" r="2.5"/>
-      <text x="190" y="196" style="text-anchor:end"><tspan data-sync="cvStock">1</tspan> stockt</text>
-    </g>
-
-    <!-- Ausgang -->
-    <path class="cv-out-thick" d="M248,179 V212"/>
-    <path class="cv-out-line" d="M248,212 V320"/>
-    <circle class="cv-step-dot" cx="248" cy="244" r="4"/>
-    <circle class="cv-step-dot" cx="248" cy="282" r="4"/>
-    <circle class="cv-step-end" cx="248" cy="320" r="7"/>
-    <text class="cv-step-l" x="232" y="248" style="text-anchor:end">ZUGETEILT</text>
-    <text class="cv-step-l" x="232" y="286" style="text-anchor:end">BEANTWORTET</text>
-    <text class="cv-step-l cv-step-l-end" x="232" y="324" style="text-anchor:end">FALL</text>
-
-    <!-- Leitsatz -->
-    <text class="cv-copy" x="170" y="356">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
-  </svg>
-
-  <div class="cv-badges"><div class="lx-chip lx-chip--in"><b data-sync="cvTotal">5</b> Anfragen heute</div><div class="lx-chip lx-chip--stock" data-sync-wrap="cvStockWrap"><b data-sync="cvStock">1</b> stockt</div></div>
-</div>
-      <div class="g-row">
-        <div>
-          <h1 id="greetTitle">Aus Quellen wird <em>planbare Belegung.</em></h1>
-          <div class="lx-rule" aria-hidden="true"></div>
-          <div class="g-date" id="greetDate"></div>
-        </div>
-        <div class="au-arch" aria-hidden="true"><img src="assets/kb-suite.webp" alt="" loading="eager"><span>Panorama-Suite — Komfort-Kategorie</span></div>
-      </div>
-    </header>
-
-    <!-- Row A · KPI/Nordstern-Band (span 12) -->
-    <div class="card ns-card hb-a">
-      <div class="kicker">Nordstern · Privatauslastung</div>
-      <svg class="gauge" viewBox="0 0 200 152" role="img" aria-label="Privatauslastung 78 Prozent, Ziel 90 Prozent">
-        <defs><linearGradient id="gaugeGold" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#D4B679"/><stop offset=".55" stop-color="#B99149"/><stop offset="1" stop-color="#7E6230"/>
-        </linearGradient></defs>
-        <path class="track" d="M34.2,134 A76,76 0 1 1 165.8,134"/>
-        <path class="val" d="M34.2,134 A76,76 0 1 1 165.8,134" stroke-dasharray="248.3 318.3"/>
-        <line class="tick" x1="167.6" y1="103.1" x2="183.5" y2="104.8"/>
-        <text class="gziel" x="186" y="96" text-anchor="middle">90</text>
-        <text class="gnum num" x="92" y="116" text-anchor="middle">78</text>
-        <text class="gpct" x="126" y="114">%</text>
-      </svg>
-      <div class="ns-betten">31 von 40 Privatbetten belegt · Ziel 90&nbsp;%+</div>
-      <div class="ns-row">
-        <div class="ns-m">
-          <div class="ns-mtext">
-            <span class="ns-l">Vorlauf</span>
-            <span class="ns-v num"><b id="nsVorlauf">9</b> <span>Tage</span></span>
-            <span class="ns-t">Ziel 21 Tage</span>
-            <span id="plusTagH"></span>
-          </div>
-          <span class="ns-ring" id="nsRingVorlauf"></span>
-        </div>
-        <div class="ns-m">
-          <div class="ns-mtext">
-            <span class="ns-l">Ø Erstreaktion</span>
-            <span class="ns-v num" id="nsRz"></span>
-            <span class="ns-t">Ziel unter 24 Std.</span>
-          </div>
-          <span class="ns-ring" id="nsRingRz"></span>
-        </div>
-        <div class="ns-m">
-          <div class="ns-mtext">
-            <span class="ns-l">Conversion</span>
-            <span class="ns-v num" id="nsConv"></span>
-            <span class="ns-t" id="nsConvSub"></span>
-          </div>
-          <span class="ns-ring" id="nsRingConv"></span>
-        </div>
-      </div>
-      <div class="lx-live" aria-live="polite"><i class="lx-pulse"></i><b><span data-sync="cvTotal">–</span> Anfragen heute</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.<span class="lx-rt">ECHTZEIT</span></div>
-    </div>
-
-    <!-- Row B · Der Trichter (span 8) + Panorama-Suite (span 4, hoch) -->
-    <div class="chap hb-8 hb-trichter">
+    <div class="chap hb-12 hb-trichter">
       <div class="hd-row">
         <div class="kicker"><span class="au-chapnum">01</span>Der Trichter · heute</div>
         <button class="hd-link" onclick="go('system','idee')">Die ganze Idee ›</button>
@@ -3487,8 +3281,212 @@ body{accent-color:var(--brass)}
       </div>
     </div>
 
-    <figure class="lx-fen hb-4 hb-photo"><img src="assets/kb-suite-neu.webp" alt="Panorama-Suite der Klinik Bavaria" loading="lazy" style="object-position:center 55%"><figcaption><span class="lx-fen-n">Panorama-Suite</span><span class="lx-fen-s">Komfort-Kategorie</span></figcaption></figure>
+    <header class="greet">
+      <div class="g-row">
+        <div>
+          <h1 id="greetTitle">Aus Quellen wird <em>planbare Belegung.</em></h1>
+          <div class="lx-rule" aria-hidden="true"></div>
+          <div class="g-date" id="greetDate"></div>
+        </div>
+        <div class="au-arch" aria-hidden="true"><img src="assets/kb-suite.webp" alt="" loading="eager"><span>Panorama-Suite — Komfort-Kategorie</span></div>
+      </div>
+<div class="cv">
 
+  <!-- ===== cv: Konvergenz-Panel · Desktop / breit (≥760px) — die Daten-IDs leben hier.
+       R1 (07/2026): Kanäle GESTAPELT (e5d-Geometrie) — sechs Zeilen links, lange Bögen
+       konvergieren rechts in den Eingang, Ausgang → Stepper → FALL. ===== -->
+  <svg class="cv-wide" viewBox="0 0 980 362" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="cvGoldW" cx="36%" cy="28%" r="85%">
+        <stop offset="0" stop-color="#F6F2E6"/><stop offset=".55" stop-color="#EFE9D8"/><stop offset="1" stop-color="#E5DCC4"/>
+      </radialGradient>
+      <radialGradient id="cvGlowW">
+        <stop offset="0" stop-color="#B99149" stop-opacity=".32"/><stop offset="1" stop-color="#B99149" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Ströme: sechs gestapelte Kanäle laufen in langen Bögen in den einen Eingang -->
+    <path class="cv-path" d="M228,44 C420,44 470,169 578,169"/>
+    <path class="cv-path" d="M228,94 C420,94 470,169 578,169"/>
+    <path class="cv-path" d="M228,144 C420,144 470,169 578,169"/>
+    <path class="cv-path" d="M228,194 C420,194 470,169 578,169"/>
+    <path class="cv-path" d="M228,244 C420,244 470,169 578,169"/>
+    <path class="cv-path" d="M228,294 C420,294 470,169 578,169"/>
+    <circle class="cv-dot"       r="2.8" style="offset-path:path('M228,44 C420,44 470,169 578,169')"/>
+    <circle class="cv-dot cv-t2" r="2.8" style="offset-path:path('M228,94 C420,94 470,169 578,169')"/>
+    <circle class="cv-dot cv-t3" r="2.8" style="offset-path:path('M228,144 C420,144 470,169 578,169')"/>
+    <circle class="cv-dot cv-t4" r="2.8" style="offset-path:path('M228,194 C420,194 470,169 578,169')"/>
+    <circle class="cv-dot cv-t5" r="2.8" style="offset-path:path('M228,244 C420,244 470,169 578,169')"/>
+    <circle class="cv-dot cv-t6" r="2.8" style="offset-path:path('M228,294 C420,294 470,169 578,169')"/>
+
+    <!-- Quellen: sechs Zeilen untereinander — Etikett links, Gold-Numeral rechts, Haarlinien dazwischen -->
+    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="23"  width="220" height="42" rx="3"/><rect x="8" y="23"  width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="48">E-MAIL</text>   <text class="cv-chip-n" x="214" y="51"  text-anchor="end" id="cvEmail">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="73"  width="220" height="42" rx="3"/><rect x="8" y="73"  width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="98">TELEFON</text>  <text class="cv-chip-n" x="214" y="101" text-anchor="end" id="cvTelefon">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="123" width="220" height="42" rx="3"/><rect x="8" y="123" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="148">FAX</text>      <text class="cv-chip-n" x="214" y="151" text-anchor="end" id="cvFax">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="173" width="220" height="42" rx="3"/><rect x="8" y="173" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="198">WEBSITE</text>  <text class="cv-chip-n" x="214" y="201" text-anchor="end" id="cvWebsite">2</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="223" width="220" height="42" rx="3"/><rect x="8" y="223" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="248">ZUWEISER</text><text class="cv-chip-n" x="214" y="251" text-anchor="end" id="cvZuweiser">0</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="8" y="273" width="220" height="42" rx="3"/><rect x="8" y="273" width="220" height="42" rx="3"/><text class="cv-chip-l" x="22" y="298">PORTALE</text> <text class="cv-chip-n" x="214" y="301" text-anchor="end" id="cvPortale">0</text></g>
+    <line class="cv-sep" x1="8" y1="69"  x2="228" y2="69"/>
+    <line class="cv-sep" x1="8" y1="119" x2="228" y2="119"/>
+    <line class="cv-sep" x1="8" y1="169" x2="228" y2="169"/>
+    <line class="cv-sep" x1="8" y1="219" x2="228" y2="219"/>
+    <line class="cv-sep" x1="8" y1="269" x2="228" y2="269"/>
+
+    <!-- Der eine Eingang -->
+    <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen"
+       onclick="go('faelle','anfragen')"
+       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
+      <circle cx="640" cy="169" r="100" fill="url(#cvGlowW)"/>
+      <circle class="cv-halo" cx="640" cy="169" r="70"/>
+      <circle class="cv-core" cx="640" cy="169" r="62" fill="url(#cvGoldW)"/>
+      <circle class="cv-pulse" cx="640" cy="169" r="62"/>
+      <text class="cv-total" x="640" y="165" id="cvTotal">5</text>
+      <text class="cv-node-l" x="640" y="185">EIN EINGANG</text>
+      <text class="cv-node-s" x="640" y="201">heute</text>
+    </g>
+
+    <!-- stockt-Hinweis -->
+    <g class="cv-stockt" id="cvStockWrap">
+      <line x1="688" y1="124" x2="703" y2="112"/>
+      <circle cx="709" cy="107" r="3"/>
+      <text x="717" y="111"><tspan id="cvStock">1</tspan> stockt</text>
+    </g>
+
+    <!-- Ausgang: ein Fall, ein Weg, planbare Belegung -->
+    <path class="cv-out-thick" d="M702,169 H744"/>
+    <path class="cv-out-line" d="M744,169 H950"/>
+    <circle class="cv-step-dot" cx="766" cy="169" r="4"/>
+    <circle class="cv-step-dot" cx="870" cy="169" r="4"/>
+    <circle class="cv-step-end" cx="950" cy="169" r="7"/>
+    <text class="cv-step-l" x="766" y="193">ZUGETEILT</text>
+    <text class="cv-step-l" x="870" y="193">BEANTWORTET</text>
+    <text class="cv-step-l cv-step-l-end" x="950" y="193">FALL</text>
+
+    <!-- Leitsatz -->
+    <text class="cv-copy" x="490" y="350">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
+  </svg>
+
+  <!-- ===== cv: Mobil / schmal (<760px) — Werte gespiegelt über data-sync.
+       R1: gleicher Stapel wie breit — sechs Zeilen links, Eingang rechts, Stepper darunter. ===== -->
+  <svg class="cv-narrow" viewBox="0 0 340 372" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="cvGoldN" cx="36%" cy="28%" r="85%">
+        <stop offset="0" stop-color="#F6F2E6"/><stop offset=".55" stop-color="#EFE9D8"/><stop offset="1" stop-color="#E5DCC4"/>
+      </radialGradient>
+      <radialGradient id="cvGlowN">
+        <stop offset="0" stop-color="#B99149" stop-opacity=".32"/><stop offset="1" stop-color="#B99149" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <path class="cv-path" d="M146,28 C186,28 182,133 202,133"/>
+    <path class="cv-path" d="M146,70 C186,70 182,133 202,133"/>
+    <path class="cv-path" d="M146,112 C186,112 182,133 202,133"/>
+    <path class="cv-path" d="M146,154 C186,154 182,133 202,133"/>
+    <path class="cv-path" d="M146,196 C186,196 182,133 202,133"/>
+    <path class="cv-path" d="M146,238 C186,238 182,133 202,133"/>
+    <circle class="cv-dot"       r="2.4" style="offset-path:path('M146,28 C186,28 182,133 202,133')"/>
+    <circle class="cv-dot cv-t2" r="2.4" style="offset-path:path('M146,70 C186,70 182,133 202,133')"/>
+    <circle class="cv-dot cv-t3" r="2.4" style="offset-path:path('M146,112 C186,112 182,133 202,133')"/>
+    <circle class="cv-dot cv-t4" r="2.4" style="offset-path:path('M146,154 C186,154 182,133 202,133')"/>
+    <circle class="cv-dot cv-t5" r="2.4" style="offset-path:path('M146,196 C186,196 182,133 202,133')"/>
+    <circle class="cv-dot cv-t6" r="2.4" style="offset-path:path('M146,238 C186,238 182,133 202,133')"/>
+
+    <!-- Quellen: sechs Zeilen untereinander -->
+    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="10"  width="142" height="36" rx="3"/><rect x="4" y="10"  width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="31">E-MAIL</text>   <text class="cv-chip-n" x="134" y="34"  text-anchor="end" data-sync="cvEmail">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="52"  width="142" height="36" rx="3"/><rect x="4" y="52"  width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="73">TELEFON</text>  <text class="cv-chip-n" x="134" y="76"  text-anchor="end" data-sync="cvTelefon">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="94"  width="142" height="36" rx="3"/><rect x="4" y="94"  width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="115">FAX</text>      <text class="cv-chip-n" x="134" y="118" text-anchor="end" data-sync="cvFax">1</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="136" width="142" height="36" rx="3"/><rect x="4" y="136" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="157">WEBSITE</text>  <text class="cv-chip-n" x="134" y="160" text-anchor="end" data-sync="cvWebsite">2</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="178" width="142" height="36" rx="3"/><rect x="4" y="178" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="199">ZUWEISER</text> <text class="cv-chip-n" x="134" y="202" text-anchor="end" data-sync="cvZuweiser">0</text></g>
+    <g class="cv-chip"><rect class="cv-chip-bg" x="4" y="220" width="142" height="36" rx="3"/><rect x="4" y="220" width="142" height="36" rx="3"/><text class="cv-chip-l" x="12" y="241">PORTALE</text>  <text class="cv-chip-n" x="134" y="244" text-anchor="end" data-sync="cvPortale">0</text></g>
+    <line class="cv-sep" x1="4" y1="49"  x2="146" y2="49"/>
+    <line class="cv-sep" x1="4" y1="91"  x2="146" y2="91"/>
+    <line class="cv-sep" x1="4" y1="133" x2="146" y2="133"/>
+    <line class="cv-sep" x1="4" y1="175" x2="146" y2="175"/>
+    <line class="cv-sep" x1="4" y1="217" x2="146" y2="217"/>
+
+    <!-- Der eine Eingang -->
+    <g class="cv-node" role="button" tabindex="0" aria-label="Alle Anfragen öffnen"
+       onclick="go('faelle','anfragen')"
+       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}">
+      <circle cx="248" cy="133" r="76" fill="url(#cvGlowN)"/>
+      <circle class="cv-halo" cx="248" cy="133" r="53"/>
+      <circle class="cv-core" cx="248" cy="133" r="46" fill="url(#cvGoldN)"/>
+      <circle class="cv-pulse" cx="248" cy="133" r="46"/>
+      <text class="cv-total" x="248" y="129" data-sync="cvTotal">5</text>
+      <text class="cv-node-l" x="248" y="147">EIN EINGANG</text>
+      <text class="cv-node-s" x="248" y="161">heute</text>
+    </g>
+
+    <g class="cv-stockt" data-sync-wrap="cvStockWrap">
+      <line x1="215" y1="166" x2="203" y2="178"/>
+      <circle cx="198" cy="182" r="2.5"/>
+      <text x="190" y="196" style="text-anchor:end"><tspan data-sync="cvStock">1</tspan> stockt</text>
+    </g>
+
+    <!-- Ausgang -->
+    <path class="cv-out-thick" d="M248,179 V212"/>
+    <path class="cv-out-line" d="M248,212 V320"/>
+    <circle class="cv-step-dot" cx="248" cy="244" r="4"/>
+    <circle class="cv-step-dot" cx="248" cy="282" r="4"/>
+    <circle class="cv-step-end" cx="248" cy="320" r="7"/>
+    <text class="cv-step-l" x="232" y="248" style="text-anchor:end">ZUGETEILT</text>
+    <text class="cv-step-l" x="232" y="286" style="text-anchor:end">BEANTWORTET</text>
+    <text class="cv-step-l cv-step-l-end" x="232" y="324" style="text-anchor:end">FALL</text>
+
+    <!-- Leitsatz -->
+    <text class="cv-copy" x="170" y="356">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
+  </svg>
+
+  <div class="cv-badges"><div class="lx-chip lx-chip--in"><b data-sync="cvTotal">5</b> Anfragen heute</div><div class="lx-chip lx-chip--stock" data-sync-wrap="cvStockWrap"><b data-sync="cvStock">1</b> stockt</div></div>
+</div>
+    </header>
+
+    <!-- Row A · KPI/Nordstern-Band (span 12) -->
+    <div class="card ns-card hb-a">
+      <div class="kicker">Nordstern · Privatauslastung</div>
+      <svg class="gauge" viewBox="0 0 200 152" role="img" aria-label="Privatauslastung 78 Prozent, Ziel 90 Prozent">
+        <defs><linearGradient id="gaugeGold" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#D4B679"/><stop offset=".55" stop-color="#B99149"/><stop offset="1" stop-color="#7E6230"/>
+        </linearGradient></defs>
+        <path class="track" d="M34.2,134 A76,76 0 1 1 165.8,134"/>
+        <path class="val" d="M34.2,134 A76,76 0 1 1 165.8,134" stroke-dasharray="248.3 318.3"/>
+        <line class="tick" x1="167.6" y1="103.1" x2="183.5" y2="104.8"/>
+        <text class="gziel" x="186" y="96" text-anchor="middle">90</text>
+        <text class="gnum num" x="92" y="116" text-anchor="middle">78</text>
+        <text class="gpct" x="126" y="114">%</text>
+      </svg>
+      <div class="ns-betten">31 von 40 Privatbetten belegt · Ziel 90&nbsp;%+</div>
+      <div class="ns-row">
+        <div class="ns-m">
+          <div class="ns-mtext">
+            <span class="ns-l">Vorlauf</span>
+            <span class="ns-v num"><b id="nsVorlauf">9</b> <span>Tage</span></span>
+            <span class="ns-t">Ziel 21 Tage</span>
+            <span id="plusTagH"></span>
+          </div>
+          <span class="ns-ring" id="nsRingVorlauf"></span>
+        </div>
+        <div class="ns-m">
+          <div class="ns-mtext">
+            <span class="ns-l">Ø Erstreaktion</span>
+            <span class="ns-v num" id="nsRz"></span>
+            <span class="ns-t">Ziel unter 24 Std.</span>
+          </div>
+          <span class="ns-ring" id="nsRingRz"></span>
+        </div>
+        <div class="ns-m">
+          <div class="ns-mtext">
+            <span class="ns-l">Conversion</span>
+            <span class="ns-v num" id="nsConv"></span>
+            <span class="ns-t" id="nsConvSub"></span>
+          </div>
+          <span class="ns-ring" id="nsRingConv"></span>
+        </div>
+      </div>
+      <div class="lx-live" aria-live="polite"><i class="lx-pulse"></i><b><span data-sync="cvTotal">–</span> Anfragen heute</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.<span class="lx-rt">ECHTZEIT</span></div>
+    </div>
+
+    <!-- Row B · Der Trichter (span 8) + Panorama-Suite (span 4, hoch) -->
     <!-- Row C · Heute wichtig (span 4) + Anlässe (span 8) -->
     <div class="chap hb-4">
       <div class="kicker">Heute wichtig</div>
@@ -3511,7 +3509,9 @@ body{accent-color:var(--brass)}
     <figure class="lx-fen hb-4 hb-photo"><img src="assets/kb-kueche.webp" alt="Klinikküche mit Blick ins Grüne" loading="lazy" style="object-position:center 50%"><figcaption><span class="lx-fen-n">Kulinarik</span><span class="lx-fen-s">Küche mit Blick ins Grüne</span></figcaption></figure>
 
     <!-- Row E · Campus-Foto-Band (span 12) -->
-    <figure class="lx-fen hb-12"><img src="assets/kb-campus.jpg" alt="Campus der Klinik in Kurpark-Lage" loading="lazy" style="object-position:center 45%"><figcaption><span class="lx-fen-n">Campus</span><span class="lx-fen-s">Kurpark-Lage</span></figcaption></figure>
+    <figure class="lx-fen hb-8"><img src="assets/kb-campus.jpg" alt="Campus der Klinik in Kurpark-Lage" loading="lazy" style="object-position:center 45%"><figcaption><span class="lx-fen-n">Campus</span><span class="lx-fen-s">Kurpark-Lage</span></figcaption></figure>
+    <figure class="lx-fen hb-4 hb-photo"><img src="assets/kb-suite-neu.webp" alt="Panorama-Suite der Klinik Bavaria" loading="lazy" style="object-position:center 55%"><figcaption><span class="lx-fen-n">Panorama-Suite</span><span class="lx-fen-s">Komfort-Kategorie</span></figcaption></figure>
+
 
   </section>
 
