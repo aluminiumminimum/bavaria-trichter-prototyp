@@ -277,10 +277,10 @@
     border-radius:14px;padding:4px}
   .seg{flex:1;min-height:44px;border-radius:11px;font-size:14px;font-weight:600;color:var(--ink-soft);
     display:flex;align-items:center;justify-content:center;gap:7px;transition:background .15s,color .15s}
-  .seg.active{background:var(--espresso-grad);color:#f3ecdc;box-shadow:0 2px 8px rgba(36,32,28,.25)}
-  .segn{font-size:12px;font-weight:700;background:rgba(155,133,115,.16);color:var(--brass-deep);
+  .seg.active{background:var(--espresso-grad);color:var(--ivory-tx);box-shadow:0 2px 8px rgba(36,32,28,.25)}
+  .segn{font-size:12px;font-weight:700;background:var(--brass-soft);color:var(--brass-deep);
     border-radius:999px;padding:1px 7px;min-width:20px;text-align:center}
-  .seg.active .segn{background:rgba(188,163,125,.25);color:#e8cf9e}
+  .seg.active .segn{background:rgba(185,145,73,.3);color:var(--ivory-tx)}
   .lblline{font-size:13.5px;color:var(--muted);margin:0 0 14px;line-height:1.5}
 
   /* ===== Anfragen (Eingang) ===== */
@@ -316,7 +316,7 @@
   .bf-chips::-webkit-scrollbar{display:none}
   .bf-chip{flex-shrink:0;min-height:44px;border:1px solid var(--hair);background:var(--paper);border-radius:999px;
     padding:10px 16px;font-size:14px;font-weight:600;color:var(--ink-soft);transition:background .15s,color .15s}
-  .bf-chip.active{background:var(--espresso-grad);border-color:var(--sage-deep);color:#f3ecdc}
+  .bf-chip.active{background:var(--espresso-grad);border-color:var(--sage-deep);color:var(--ivory-tx)}
   .board{display:flex;gap:11px;overflow-x:auto;margin:0 -20px;padding:4px 20px 16px;
     -webkit-overflow-scrolling:touch;scrollbar-width:none}
   .board::-webkit-scrollbar{display:none}
@@ -351,7 +351,7 @@
   .pill-kt{font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--hair);border-radius:6px;padding:1.5px 7px}
   .kmeta{font-size:13px;color:var(--muted);line-height:1.55}
   .stagebar{height:4px;background:var(--cream2);border-radius:99px;overflow:hidden;margin:8px 0 6px}
-  .stagebar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#bca37d,var(--brass-deep))}
+  .stagebar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--brass),var(--brass-deep))}
   .due{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;border-radius:6px;padding:2.5px 8px;margin-top:6px;white-space:nowrap;max-width:100%}
   .due.ok{background:var(--sage-soft);color:var(--sage-deep)}
   .due.warn{background:var(--brass-soft);color:var(--brass-deep)}
@@ -572,10 +572,10 @@
     border-radius:22px 22px 0 0;display:flex;flex-direction:column;overflow:hidden;
     transform:translateY(48px);transition:transform .3s cubic-bezier(.3,.8,.3,1);box-shadow:0 -10px 50px rgba(28,25,22,.3)}
   .overlay.open .modal{transform:none}
-  .mhead{background:var(--espresso-grad);color:#f3ecdc;padding:18px 20px;display:flex;gap:13px;align-items:center;flex-shrink:0}
-  .mhead .ava{width:44px;height:44px;font-size:14px;background:rgba(155,133,115,.25);color:#e8cf9e;border-color:rgba(188,163,125,.45)}
+  .mhead{background:var(--espresso-grad);color:var(--ivory-tx);padding:18px 20px;display:flex;gap:13px;align-items:center;flex-shrink:0}
+  .mhead .ava{width:44px;height:44px;font-size:14px;background:rgba(239,233,216,.12);color:var(--ivory-tx);border-color:var(--gold-soft)}
   .mhead h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;font-weight:700;margin:0;line-height:1.1}
-  .msub2{font-size:13px;color:#b5aa94;margin-top:3px;line-height:1.4}
+  .msub2{font-size:13px;color:var(--ivory-mut);margin-top:3px;line-height:1.4}
   .mbody{padding:18px 20px;overflow:auto;-webkit-overflow-scrolling:touch}
   .d-track-wrap{margin-bottom:6px}
   .d-track .kicker{margin-bottom:8px}
@@ -674,7 +674,7 @@
 .ir-stay .track{position:relative;height:8px;background:#EFEAE3;border-radius:99px;margin-top:5px}
 .ir-stay .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--brass),var(--brass-deep));border-radius:99px}
 .ir-stay .plan{position:absolute;top:-2px;width:2px;height:12px;background:var(--ink);opacity:.5}
-.ir-rep{border-left:2px solid #bca37d;padding:3px 0 8px 12px;margin-left:2px}
+.ir-rep{border-left:2px solid var(--brass-line);padding:3px 0 8px 12px;margin-left:2px}
 .ir-rep small{color:var(--muted);font:600 11px/1 Inter}.ir-rep p{font:400 13px/1.4 Inter;margin:2px 0 0}
 .db-toggle{display:inline-flex;gap:4px;background:var(--raised);border-radius:99px;padding:3px;margin-bottom:12px}
 .db-toggle button{font:600 12px/1 Inter;padding:7px 16px;border-radius:99px;border:none;background:transparent;color:var(--muted);min-height:34px}
@@ -2280,9 +2280,9 @@ body{accent-color:var(--brass)}
 
 /* — 1 · FROSTED GLASS: Overlay-Sheets über App-Inhalt + Foto-Caption-Pills — */
 #ovDetail .modal,#dbDetail .modal{
-  background:rgba(250,248,242,.86);
+  background:rgba(251,248,239,.88);
   backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15)}
-#ovDetail .mfoot,#dbDetail .mfoot{background:rgba(250,248,242,.55)}
+#ovDetail .mfoot,#dbDetail .mfoot{background:rgba(251,248,239,.6)}
 /* Band-Fotos: helle Aurora-Caption-Pill (dunkler Text) für lx-fen, dunkle Pill (heller Text) für au-photo */
 .lx-fen figcaption{padding:7px 12px;border-radius:14px;
   background:rgba(250,248,242,.66);border:1px solid rgba(255,255,255,.5);
@@ -2501,6 +2501,101 @@ body{accent-color:var(--brass)}
 .lx-fen-n{font-size:16px;font-weight:600;color:var(--sage-deep)}
 .lx-fen-s{font-family:"Cormorant Garamond",Georgia,serif;font-size:10px;font-weight:600;
   letter-spacing:.18em;color:var(--muted)}
+
+/* ============================================================
+   JADE · J4 ARBEITSFLÄCHEN (Stufe 3) — Fälle + Team in der Etiketten-Sprache (e5d)
+   Eingang als Elfenbein-Ledger · Board-Zonen als Etiketten-Paneele ·
+   Fall-Schublade mit Jade-Rahmen + Gold-Pinstripe · Team-Cockpit-Politur.
+   Additiv (Source-Order-Override), keine neuen Keyframes, kein neues Blur.
+   ============================================================ */
+
+/* — (J4.1) EINGANG: Ledger statt Einzelkarten — EIN Etiketten-Container,
+   Zeilen mit Haarlinien-Separatoren + dezentem Zebra. — */
+#inbox{gap:0;background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;
+  overflow:hidden;box-shadow:var(--shadow-soft)}
+#inbox .mail{border:0;border-top:1px solid var(--hair2);border-radius:0;box-shadow:none;background:transparent}
+#inbox .mail:first-child{border-top:0}
+#inbox .mail:nth-child(even){background:var(--paper2)}
+/* NEU-Zeile: warme Gold-Hinterlegung statt Ring; NEU-Pill = Jade-Plakette (Lack auf Elfenbein) */
+#inbox .mail.neu{border-color:var(--hair2);box-shadow:none;background:var(--brass-soft)}
+#inbox .mail.neu::after{color:var(--ivory-tx);background:var(--sage-deep);border-radius:2px;letter-spacing:.1em}
+/* Absender-/Kanal-Ikonen: kleine Elfenbein-Plaketten — Jade-Zeichnung + Gold-Ring */
+#inbox .chico{border-radius:3px;background:var(--paper);color:var(--sage-deep);
+  border:1px solid var(--gold-soft);box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--gold-faint)}
+/* Typ-Chips: qualifiziert = Gold-Linien-Plakette (WARTET-Familie), passiv bleibt stumm */
+#inbox .typ-chip{border-radius:2px}
+#inbox .typ-chip.qual{background:transparent;border:1px solid var(--gold-soft);color:var(--brass-deep)}
+/* Aufgeklappte Vorschau: Papier-Einzug mit Jade-Haarlinie links */
+#inbox .mmore .mtxt{background:var(--cream2);border-left:2px solid var(--jade-hair);
+  padding:10px 12px;border-radius:0 3px 3px 0}
+
+/* — (J4.2) EINE CTA-Sprache in den Arbeitsflächen: Primär = Jade-Lack mit Gold-Pinstripe (e5d .btn-p),
+   Sekundär = goldgerahmter Ghost (wie J3 Anlass-Gesten). — */
+#view-faelle .btn-brass,#ovDetail .btn-brass{background:var(--sage-deep);border-color:#0D2E28;color:var(--ivory-tx);
+  box-shadow:inset 0 0 0 1px rgba(185,145,73,.4),inset 0 0 0 3px var(--sage-deep),0 2px 8px rgba(18,59,51,.25);
+  text-shadow:none}
+#view-faelle .btn-ghost,#ovDetail .btn-ghost{background:transparent;border-color:var(--gold-soft);color:var(--brass-deep)}
+
+/* — (J4.3) BOARD: Zonen-Bänder = Elfenbein-Etiketten-Paneele; Kopf = Cormorant-Kapitälchen
+   auf Gold-Haarlinie; Karten = kleine Etiketten (4px-Familie — löst die J2-Radius-Spannung:
+   .karte 13px → 4px, .col 16px → 4px). Achsen-Farbpunkte (.cdot/.pill-a) bleiben funktional. — */
+#board .zone-group{background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;
+  padding:12px 14px 8px;box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+#board .done-rail{background:var(--cream2);border:1px solid var(--hair2);box-shadow:none;padding:12px 14px 8px}
+#board .zone-head{border-bottom:1px solid var(--gold-soft)}
+#board .zone-head .zone-t{font-family:"Cormorant Garamond",Georgia,serif;font-size:13.5px;font-weight:600;
+  letter-spacing:.14em;color:var(--sage-deep)}
+#board .done-rail .zone-head .zone-t{color:var(--muted)}
+#board .zone-head .zone-cnt{background:var(--cream2)}
+#board .done-rail .zone-head .zone-cnt{background:var(--paper)}
+#board .col{border-radius:4px}
+#board .karte{border-radius:4px;border-color:var(--jade-hair)}
+/* Frist-Plaketten: Mono-Duktus, kantige 2px-Plakette — Farbtriade (jade/gold/zinnober-soft) bleibt */
+#board .due{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10.5px;font-weight:400;
+  letter-spacing:.02em;border-radius:2px}
+/* Fokus-Chips: kantige Plaketten; aktiv = Jade-Lack mit Gold-Pinstripe */
+#view-faelle .bf-chip{border-radius:3px}
+#view-faelle .bf-chip.active{box-shadow:inset 0 0 0 1px var(--gold-soft)}
+
+/* — (J4.4) FALL-SCHUBLADE: Etiketten-Sprache im Overlay-Maßstab — Jade-Haarlinien-Rahmen
+   + innerer Gold-Pinstripe; Lack-Kopf mit Gold-Haarlinie darunter. — */
+#ovDetail .modal{border:1px solid var(--jade-hair);
+  box-shadow:0 -10px 50px rgba(28,25,22,.3),inset 0 0 0 1px var(--gold-faint)}
+@media(min-width:1024px){
+  #ovDetail .modal{border:0;border-left:1px solid var(--jade-hair);
+    box-shadow:-12px 0 44px rgba(31,28,28,.16),inset 0 0 0 1px var(--gold-faint)}
+}
+#ovDetail .mhead{box-shadow:inset 0 -1px 0 var(--gold-soft)}
+/* Akkordeon + Akte in die 4px-Familie — bewusst OHNE Eckwinkel, nur Haarlinien */
+#ovDetail .d-acc,#ovDetail .docs{border-radius:4px}
+#ovDetail .pa-akte{border-radius:4px;border-top:2px solid var(--gold-soft)}
+/* KZ-Kette: erteilt/Zusage = Jade-Plakette, offener/abgelehnter Schritt = Zinnober-Text,
+   künftige Schritte stumm, Verbinder Gold */
+#dKZ .status-pill{border-radius:3px}
+#dKZ .status-pill.ok{background:var(--sage-deep);color:var(--ivory-tx)}
+#dKZ .status-pill.kz-active,#dKZ .status-pill.bad{background:transparent;
+  border:1px solid var(--terra-soft);color:var(--terra)}
+#dKZ .kz-sep{color:var(--gold-soft)}
+/* Composer: Papier-Fläche mit Jade-Fokusring */
+#ovDetail .mbody textarea:focus{border-color:var(--sage-deep);box-shadow:0 0 0 2px var(--sage-soft)}
+
+/* — (J4.5) TEAM: Cockpit-Filter aktiv = Jade; Intake-Hinweis = Gold-Plakette mit
+   Cormorant-Zahl; Foto-Band → Präparate-Tafel (Doppelrahmen, Caption UNTER dem Foto,
+   Blur-Budget −1). Atem-Abstand zum Lack-Panel darüber. — */
+.tm-card.on{border-color:var(--sage-deep);
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),0 0 0 2px var(--sage-soft)}
+.tm-intake{background:var(--paper);border:1px solid var(--gold-soft);border-left:3px solid var(--brass);border-radius:4px}
+.tm-intake .num{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:19px}
+#view-team>.au-photo{height:auto;margin:6px 0 20px;background:var(--paper);border:1px solid var(--jade-line);
+  border-radius:4px;padding:9px;
+  box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft)}
+#view-team>.au-photo img{height:140px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
+#view-team>.au-photo::after{display:none}
+#view-team>.au-photo figcaption{position:static;left:auto;bottom:auto;margin:8px 2px 0;padding:0;
+  background:none;border:0;border-radius:0;box-shadow:none;text-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  font-family:"Cormorant Garamond",Georgia,serif;font-size:10px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 </style>
 </head>
 <body>
