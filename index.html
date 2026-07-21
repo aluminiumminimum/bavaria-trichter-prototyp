@@ -5811,7 +5811,7 @@ document.getElementById("sigChips").addEventListener("click",e=>{
    Ableitung ohne neue persistente Arrays (Muster: anlaesse()); einzige Session-Ausnahme ist _mtDone (Muster _arDone).
    Feldnamen bestehender Arrays sind Vertrag — nur gelesen bzw. additiv mutiert, nie umbenannt. */
 let _mtDone=new Set();
-const MT_TYP_LABEL={rueckruf:"Rückruf",angebot:"Angebot",unterlagen:"Unterlagen",kosten:"Kostenklärung",eingang:"Eingang",allgemein:"Aufgabe",intern:"Intern"};
+const MT_TYP_LABEL={rueckruf:"Rückruf",angebot:"Angebot",unterlagen:"Unterlagen",kosten:"Kostenklärung",eingang:"Eingang",allgemein:"Aufgabe",intern:"Intern",zwischenstand:"Zwischenstand"};
 const MT_SCHRITTE={
  rueckruf:["Fall-Kontext kurz prüfen (Anfrage, letzter Eintrag)","Anrufen und Anliegen bestätigen","Nächsten Schritt gemeinsam festlegen","Ergebnis ins Protokoll schreiben"],
  angebot:["Wünsche &amp; Kostenträger aus dem Fall prüfen","Passendes Angebot zusammenstellen","Angebot versenden (E-Mail/Post)","Rückmeldefrist vormerken"],
@@ -5819,7 +5819,8 @@ const MT_SCHRITTE={
  kosten:["Kostenträger und bisherigen Stand prüfen","Kostenzusage anfragen bzw. nachfassen","Rückmeldung dokumentieren","Bei Ablehnung: Alternative mit Familie besprechen"],
  eingang:["Anfrage lesen und Anliegen einordnen","Freundliche Antwort formulieren","Antwort versenden","Anfrage als bearbeitet markieren"],
  allgemein:["Fall-Kontext kurz prüfen","Nächsten Schritt festlegen","Aktion durchführen","Ergebnis dokumentieren"],
- intern:["Aufgabe kurz prüfen","Erledigen","Ergebnis kurz vermerken"]
+ intern:["Aufgabe kurz prüfen","Erledigen","Ergebnis kurz vermerken"],
+ zwischenstand:["Aktuellen Stand bei der Teambesprechung erfragen","Barthel/FIM und Kurzbericht im Fall gegenprüfen","Zwischenstand-Maske im Fall öffnen und ausfüllen","Speichern — Reminder verschwindet automatisch"]
 };
 const MT_LEITFAEDEN={
  rueckruf:["„Guten Tag, hier ist die Patientenkoordination der Klinik Bavaria — ich rufe zu Ihrer Anfrage zurück.“","Anliegen bestätigen, offene Fragen klären.","Nächsten Schritt und ungefähren Zeitrahmen nennen.","Bei Unsicherheit lieber einmal mehr nachfragen als etwas annehmen."],
@@ -5828,7 +5829,8 @@ const MT_LEITFAEDEN={
  kosten:["Kostenträger klären (PKV / Beihilfe / Selbstzahler).","Anfrage mit Diagnose und Aufenthaltsgrund stellen.","Rückmeldung dokumentieren.","Bei Ablehnung: mit der Familie Alternativen besprechen (Selbstzahlung, erneute Anfrage)."],
  eingang:["„Vielen Dank für Ihre Anfrage bei der Klinik Bavaria.“","„Wir melden uns kurzfristig mit den nächsten Schritten.“","Für Dringendes die Telefon-Erreichbarkeit nennen.","Gruß: „Herzliche Grüße, Ihr Team der Klinik Bavaria.“"],
  allgemein:["Fall kurz prüfen, offene Punkte klären.","Vereinbarten nächsten Schritt zeitnah umsetzen.","Ergebnis immer im Protokoll festhalten, damit das Team informiert bleibt."],
- intern:["Nachweise werden im Intranet unter „Meine Unterlagen“ abgelegt.","Bei Fragen helfen Personalabteilung oder Teamleitung weiter."]
+ intern:["Nachweise werden im Intranet unter „Meine Unterlagen“ abgelegt.","Bei Fragen helfen Personalabteilung oder Teamleitung weiter."],
+ zwischenstand:["Zwischenstände docken an die ohnehin stattfindende Teambesprechung an — keine Sonderaufgabe.","Kurz und knapp reicht: ein Satz Reha-Ziel, aktueller Barthel/FIM, ein Satz Arztbericht.","Nach dem Speichern gilt der Fall wieder als aktuell — der Reminder verschwindet automatisch."]
 };
 /* Termine heute: reine Zeitanker, keine To-Dos — zählen nicht in den Fortschritt. */
 const MT_TERMINE=[
@@ -5903,6 +5905,19 @@ function mtInternItem(x){
  return {key:x.key,typ:"intern",kind:"intern",ref:x,name:x.titel,ava:"KB",
   kontext:x.sub,step:"Aufgabe erledigen",block:x.fristTage===0?"jetzt":"woche",overdue:false};
 }
+/* §4.4/§4.5 Zwischenstand-Reminder — Reha-Zwischenstand nie erfasst oder älter als 10 Tage.
+   Fallback auf p.aufnahme, solange p.zwischenstand.datum noch nie gesetzt wurde. */
+function zwischenstandFaellig(p){
+ const basis=(p.zwischenstand&&p.zwischenstand.datum)?p.zwischenstand.datum:p.aufnahme;
+ if(!basis)return false;
+ const d=mtDayDiff(basis);
+ return d!==null&&d<-10;
+}
+function mtZwischenstandItem(p,idx){
+ return {key:"zwischenstand:"+p.personId,typ:"zwischenstand",kind:"zwischenstand",ref:p,idx:idx,name:p.name,
+  kontext:p.achse+" · "+p.owner,step:"Zwischenstand aktualisieren (Teambesprechung)",
+  block:"jetzt",overdue:true};
+}
 function mtTodos(){
  const jetzt=[],woche=[],gut=[];
  faelle.forEach(f=>{
@@ -5920,6 +5935,7 @@ function mtTodos(){
   const item=mtInternItem(x);
   (item.block==="jetzt"?jetzt:woche).push(item);
  });
+ inReha.forEach((p,idx)=>{ if(zwischenstandFaellig(p))jetzt.push(mtZwischenstandItem(p,idx)); });
  faelle.forEach(f=>{ if(f.status==="Aufnahme geplant")gut.push(f); });
  return {jetzt,woche,gut};
 }
@@ -5993,6 +6009,10 @@ let _mtSheetKey=null;
 function mtWarum(item){
  if(item.kind==="eingang")return escapeHtml(item.ref.kanal+" · "+item.ref.zeit+" — "+(item.ref.tit||""));
  if(item.kind==="intern")return escapeHtml(item.ref.sub);
+ if(item.kind==="zwischenstand"){
+  const p=item.ref,letzterDatum=p.zwischenstand&&p.zwischenstand.datum?p.zwischenstand.datum:null;
+  return escapeHtml("Letzter Zwischenstand: "+(letzterDatum||"noch nie erfasst")+" — mehr als 10 Tage her.");
+ }
  const f=item.ref;
  const letzter=(f.log&&f.log.length)?f.log[f.log.length-1][1]:"";
  return escapeHtml((f.quelle?f.quelle+" · ":"")+item.step)+(letzter?"<span class='mt-sletzter'>Zuletzt: "+escapeHtml(letzter)+"</span>":"");
@@ -6019,9 +6039,11 @@ function mtSheetRender(){
  const duePill=item.block==="jetzt"?"<span class='radar-due "+(item.overdue?"jetzt":"bald")+"'>"+(item.overdue?"überfällig":"heute fällig")+"</span>":"";
  const schritte=MT_SCHRITTE[item.typ]||MT_SCHRITTE.allgemein;
  const leitfaden=MT_LEITFAEDEN[item.typ]||MT_LEITFAEDEN.allgemein;
- const foot=done
-  ?"<div class='mt-sdonemsg'>✓ Erledigt — ins Protokoll übernommen.</div><button class='btn-brass' onclick='mtNext()'>Weiter zur nächsten ›</button>"
-  :"<button class='btn-brass' onclick='mtAbschliessen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Erledigt · ins Protokoll</button>";
+ const foot=item.typ==="zwischenstand"
+  ?"<button class='btn-brass' onclick='mtClose();openRsDetail("+item.idx+")'>Zwischenstand erfassen ›</button>"
+  :(done
+   ?"<div class='mt-sdonemsg'>✓ Erledigt — ins Protokoll übernommen.</div><button class='btn-brass' onclick='mtNext()'>Weiter zur nächsten ›</button>"
+   :"<button class='btn-brass' onclick='mtAbschliessen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Erledigt · ins Protokoll</button>");
  s.innerHTML="<div class='mt-back' onclick='mtClose()'></div><div class='mt-panel'>"
   +"<div class='mt-shead'><span class='ava'>"+(item.ava||initialen(item.name.replace(/[()\[\]]/g,"")))+"</span>"
   +"<div class='mt-sheadtxt'><span class='mt-stitle serif'>"+escapeHtml(item.name)+"</span><span class='mt-ssub'>"+escapeHtml(MT_TYP_LABEL[item.typ]||"Aufgabe")+"</span></div>"
