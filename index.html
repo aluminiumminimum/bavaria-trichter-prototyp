@@ -4455,6 +4455,17 @@ function sterneAusSignal(sig){
   if(sig.konkret)return sig.premium?4:3;
   return 2;
 }
+/* §3.2 Kontinuierliche Upsell-Erkennung — Bereich C: bei jedem neuen Werdegang-Eintrag erneut prüfen.
+   Duplikat-Schutz: f._upsellVorgeschlagen wird nach der ersten Erkennung gesetzt, danach kein erneutes Überschreiben. */
+function pruefeUpsell(f,text){
+  if(!f||f._upsellVorgeschlagen)return;
+  const sig=erkenneSignale(text);
+  if(sig.premium){
+    f.aufgabe="Komfort-Upgrade anbieten";
+    f.frist=dstr(2);
+    f._upsellVorgeschlagen=true;
+  }
+}
 function simulateInbound(){
  const t=INBOUND_POOL[_inbN%INBOUND_POOL.length];_inbN++;
  const mid=_inbId++;
@@ -4527,6 +4538,7 @@ function sendReply(){
   const r=document.getElementById("dReply"); const txt=(r?r.value:"").trim(); if(!txt){alert("Bitte eine Antwort verfassen.");return;}
   const kanal=document.getElementById("dReplyKanal").value;
   f.log.push([dstr(0),"↦ Antwort per "+kanal+" an "+f.name+": "+txt]);
+  pruefeUpsell(f,txt);
   if(r)r.value="";
   document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
   if(typeof inbToast==="function") inbToast("done","<b>Antwort gesendet</b> (Demo)","per "+kanal+" an "+escapeHtml(f.name),null);
@@ -5752,6 +5764,7 @@ function kzNotizAdd(){
  const el=document.getElementById("dNotizSofort");
  const txt=(el?el.value:"").trim();if(!txt)return;
  f.log.push([dstr(0),txt]);
+ pruefeUpsell(f,txt);
  if(el)el.value="";
  document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
 }
@@ -5823,7 +5836,7 @@ document.getElementById("dSpeichern").onclick=()=>{
   f.saluto=document.getElementById("dSaluto").checked;
   f.verlust=document.getElementById("dVerlust").value;
   const n=document.getElementById("dNotiz").value.trim();
-  if(n)f.log.push([dstr(0),n]);
+  if(n){f.log.push([dstr(0),n]);pruefeUpsell(f,n);}
   renderAll();
   dismissDetail();
   if(ns==="Aufnahme geplant"&&alt!=="Aufnahme geplant")celebratePlanned();
