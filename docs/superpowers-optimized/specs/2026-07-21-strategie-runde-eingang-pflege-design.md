@@ -41,6 +41,8 @@ Die erkannten Signale aus 2.1 bestimmen direkt den **Sterne-Wert** dieser Person
 
 Ein **Fall im Board** wird erst ab einer Schwelle (Sterne ≥3) automatisch vorgeschlagen — "konkret" ist hier kein separates Feld, sondern deckt sich mit der Sterne-Ableitung aus §2.2 (3–4★ = konkrete Signale erkannt). Darunter bleibt die Person in Netzwerk→Kontakte und kann später durch einen stärkeren Kontakt hochgestuft werden (kein Fall-Datensatz nötig für schwache Leads).
 
+**Verhaltensänderung an bestehendem Code (bewusst, mit Nutzer abgestimmt):** `simulateInbound()` erzeugt heute *immer* einen Fall, unabhängig von Stärke — nur die Personen-Erstellung ist schon an `einzelperson` gekoppelt. Damit die Fall-Schwelle real greift, muss `simulateInbound()` umgebaut werden: Signal-Erkennung + Sterne-Ableitung laufen zuerst, der Fall-Push nach `faelle[]` passiert nur noch bei Sterne ≥3. Das ist eine echte Verhaltensänderung an einer bestehenden, funktionierenden Demo-Funktion — kein rein additiver Zusatz. Ohne diese Änderung wäre die Sterne-Einstufung nur ein Aufkleber neben einem Fall, der ohnehin immer entsteht, und der Datensparsamkeits-Anspruch aus Bereich A würde nicht eingelöst.
+
 ### 2.4 Institutions-Abgleich (Zuweiser-Anfragen)
 
 Kommt eine Anfrage erkennbar von einer Klinik/Praxis, läuft derselbe Abgleich-Mechanismus wie bei Personen, aber gegen die Zuweiser-Archiv-Datenbank (siehe §5.3): Namensabgleich gegen Bestand + Krankenhausverzeichnis-Referenzdaten, Vorschlag zur Übernahme von Stammdaten (Adresse, Fachabteilungen) statt Leerformular.
