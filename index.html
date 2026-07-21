@@ -2975,6 +2975,10 @@ body{accent-color:var(--brass)}
 @media(hover:hover){.nx-card:hover{border-color:var(--gold-soft);
   box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),var(--shadow-soft)}}
 .nx-card:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+/* §2.1 Signal-Chips — Bereich B */
+.sig-chip{border:1px dashed var(--brass-line);border-radius:20px;padding:4px 10px;font-size:13px;cursor:pointer;display:inline-block;margin:2px}
+.sig-chip.on{border-style:solid;border-color:var(--brass);background:var(--brass-soft)}
 </style>
 </head>
 <body>
@@ -3904,7 +3908,7 @@ body{accent-color:var(--brass)}
         <div><label for="fKT">Kostenträger</label><select id="fKT"><option>Unklar</option><option>PKV</option><option>Beihilfe</option><option>Selbstzahler</option><option>GKV + Komfort</option></select></div>
         <div><label for="fOwner">Verantwortlich</label><select id="fOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
         <div><label for="fFrist">Frist Erstreaktion</label><input id="fFrist" type="date"></div>
-        <div class="full"><label for="fNotiz">Anliegen / Notiz</label><textarea id="fNotiz" placeholder="Kurz: worum geht es?"></textarea></div>
+        <div class="full"><label for="fNotiz">Anliegen / Notiz</label><textarea id="fNotiz" placeholder="Kurz: worum geht es?"></textarea><div id="sigChips"></div></div>
         <div class="full"><label for="fConsent">Einwilligung Kontaktaufnahme</label><select id="fConsent"><option>mündlich erteilt</option><option>schriftlich liegt vor</option><option>offen</option></select></div>
       </div>
       <div class="fsub">
@@ -5708,6 +5712,31 @@ document.getElementById("formNeu").addEventListener("submit",e=>{
   renderAll();
   boardStageFilter=null;renderBoard();
   go("faelle","board");
+});
+/* §2.1 Signal-Chips — Bereich B: Live-Erkennung in der manuellen Schnellerfassung, Übernahme nur per Klick */
+let _sigChipTimer=null;
+function renderSigChips(){
+  const ta=document.getElementById("fNotiz"),box=document.getElementById("sigChips");
+  if(!ta||!box)return;
+  const sig=erkenneSignale(ta.value);
+  const chips=[];
+  if(sig.premium)chips.push({feld:"premium",label:"⚡ Premium-Signal"});
+  if(sig.kostentraeger)chips.push({feld:"kt",label:"💳 Kostenträger: "+sig.kostentraeger,val:sig.kostentraeger});
+  if(sig.dringlichkeit)chips.push({feld:"dringlichkeit",label:"⏱ "+sig.dringlichkeit});
+  box.innerHTML=chips.map(c=>"<span class='sig-chip' data-feld='"+c.feld+"'>"+escapeHtml(c.label)+"</span>").join("");
+}
+document.getElementById("fNotiz").addEventListener("input",()=>{clearTimeout(_sigChipTimer);_sigChipTimer=setTimeout(renderSigChips,300);});
+document.getElementById("sigChips").addEventListener("click",e=>{
+  const chip=e.target.closest(".sig-chip");if(!chip)return;
+  if(chip.dataset.feld==="kt"){
+    const sel=document.getElementById("fKT"),sig=erkenneSignale(document.getElementById("fNotiz").value);
+    const opt=[...sel.options].find(o=>o.value===sig.kostentraeger)||(sig.kostentraeger==="GKV"?[...sel.options].find(o=>o.value==="GKV + Komfort"):null);
+    if(opt)sel.value=opt.value;
+  } else {
+    const ta=document.getElementById("fNotiz"),tag="["+chip.textContent.trim()+"]";
+    if(!ta.value.includes(tag))ta.value=(ta.value?ta.value+" ":"")+tag;
+  }
+  chip.classList.add("on");
 });
 
 /* ===== Mitarbeiter-Dashboard "Mein Tag" (.mt-*) — Spec docs/superpowers-optimized/specs/2026-07-14-mitarbeiter-dashboard-design.md =====
