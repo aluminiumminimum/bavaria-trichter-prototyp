@@ -4129,6 +4129,17 @@ const entlassDoc={pat:"Werner Adler",achse:"Geriatrie",entlassen:dstr(-3),aufent
  prozeduren:["Physiotherapie einzeln, 5 ×/Woche · Gangschule und Kraftaufbau","Ergotherapie inkl. Hilfsmittel- und Wohnraumberatung","Geriatrische Komplexbehandlung (OPS 8-550)"]};
 
 const TEAM=["S. Koordination","M. Belegung","T. Abrechnung","Recovery Manager"];
+
+/* §3.1 Achse↔Team-Zuordnung + Owner-Routing-Vorschlag — Bereich C */
+const TEAM_ACHSE={"S. Koordination":["Orthopädie","Innere"],"M. Belegung":["Neurologie","Geriatrie"],"Recovery Manager":["SalutoCare"],"T. Abrechnung":[]};
+function ownerVorschlag(achse){
+  const kandidaten=TEAM.filter(t=>(TEAM_ACHSE[t]||[]).includes(achse));
+  if(!kandidaten.length)return"S. Koordination";
+  const zaehlung=kandidaten.map(t=>({t:t,n:faelle.filter(f=>f.owner===t&&f.status!=="Aufgenommen"&&f.status!=="Verloren").length}));
+  zaehlung.sort((a,b)=>a.n-b.n);
+  return zaehlung[0].t;
+}
+
 /* ----- Zuweiser-Premium-Suite: Demo-Daten (synthetisch) ----- */
 const portalNews=[
  {d:"07.07.",t:"+4 SalutoCare-Suiten ab September",s:"Erweiterung der Privatstation · jetzt für Ihre Patienten vormerkbar"},
@@ -4462,7 +4473,7 @@ function simulateInbound(){
   if(sterne>=3){
    const fid=Math.max(0,...faelle.map(x=>x.id))+1;
    faelle.push({id:fid,personId:_pid,name:t.name,alter:t.alter,rolle:t.rolle,kanal:t.kanal,quelle:t.quelle,achse:t.achse,kt:t.kt,
-     status:"Neu",owner:"S. Koordination",aufgabe:"Erstreaktion",frist:dstr(0),saluto:t.achse==="SalutoCare",
+     status:"Neu",owner:ownerVorschlag(t.achse),aufgabe:"Erstreaktion",frist:dstr(0),saluto:t.achse==="SalutoCare",
      docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
      log:[[dstr(0),"Automatisch als Fall angelegt aus "+t.kanal+": "+t.txt]]});
    if(m)m.fallId=fid;
