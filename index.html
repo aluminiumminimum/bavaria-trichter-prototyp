@@ -4264,6 +4264,18 @@ function pNew(name,teil){
 function pHist(pid,typ,text){const p=person(pid);if(p)p.historie.push({d:dstr(0),typ:typ,text:text});}
 /* Baustein D: Sammelnamen (Familie/Eheleute/Unbekannt …) bekommen keine Einzelperson-Akte — folgt der einzelperson-Konvention aus Baustein A. */
 function istEinzelperson(name){return !/^(Familie|Eheleute|Unbekannt)\b/i.test(String(name||"").trim());}
+/* §2.2 Personen-Abgleich — Bereich B. Gibt {pid, neu:bool} zurück, oder null wenn nicht identifizierbar. */
+function findeOderErstellePerson(name,kontakt,teil){
+  if(!istEinzelperson(name))return null;
+  kontakt=kontakt||{};
+  const treffer=personen.find(p=>
+    (kontakt.tel&&p.kontakt.tel&&p.kontakt.tel===kontakt.tel)||
+    (kontakt.mail&&p.kontakt.mail&&p.kontakt.mail===kontakt.mail)||
+    p.name.toLowerCase()===String(name||"").toLowerCase());
+  if(treffer)return{pid:treffer.pid,neu:false};
+  const pid=pNew(name,Object.assign({kontakt:Object.assign({tel:"",mail:""},kontakt)},teil||{}));
+  return{pid:pid,neu:true};
+}
 function qualifyIfNeeded(f,ns){
   if(ns==="Verloren"||f.personId||!istEinzelperson(f.name))return;
   if(STATUS.indexOf(ns)<STATUS.indexOf("Qualifizierung"))return;
