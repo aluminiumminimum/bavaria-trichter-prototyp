@@ -4997,6 +4997,14 @@ function zKategorie(z){
   if(/sanit[aä]t|orthop[aä]die-technik|hilfsmittel/.test(s))return"sanitaet";
   return"krankenhaus";
 }
+/* §5.1 Gesten-Leiter — Bereich D */
+function naechsteAktion(z){
+  const drahtStark=((z.draht||"").match(/●/g)||[]).length===3;
+  if(z.status==="aktiv"&&drahtStark)return"Quartalsgespräch + jährliche Geschenkbox";
+  if(z.status==="aktiv"&&!drahtStark)return"⚠ Draht schwächelt trotz Aktivstatus — Kontakt suchen";
+  if(z.status==="aufbau")return"Persönlicher Besuch/Kennenlern-Termin";
+  return"Erstkontakt-Plan erstellen";
+}
 function setZFilter(id){zFilter=id;renderZuweiser();}
 function mapOrt(o){return String(o||"").replace(/\s*\(.*/,"").replace("überregional","überreg.");}
 function networkDot(z,i){
@@ -5053,7 +5061,7 @@ function renderZuweiser(){
    +"<div class='zrow'><span>Fälle über diesen Weg</span><b class='zfall num'>"+z.faelle+"</b></div>"
    +"<div class='zrow'><span>Letzter Kontakt</span><b>"+escapeHtml(z.letzter||"noch keiner")+"</b></div>"
    +"<div class='zrow'><span>Draht</span><span class='zdraht'>"+z.draht+"</span></div>"
-   +"<div class='znext'><b>Nächste Aktion:</b> "+escapeHtml(z.next)+"</div>"
+   +"<div class='znext'><b>Nächste Aktion:</b> "+escapeHtml(z.next||naechsteAktion(z))+"</div>"
    +"<button type='button' class='zw-portal' onclick='openReferrer(&quot;portal&quot;,&quot;"+escapeHtml(z.name)+"&quot;)'>Portal-Ansicht des Zuweisers ›</button>"
    +"</div>").join(""):"<div class='zcard ziel'><span class='zstat ziel'>Zielkategorie</span><div class='zname'>Noch keine Kontakte hinterlegt</div><div class='ztyp'>"+escapeHtml(cat.label)+"</div><div class='znext'><b>Nächste Aktion:</b> Zielpartner recherchieren, Kontaktquelle erfassen und ersten SOP-Schritt anlegen.</div></div>";
 }
