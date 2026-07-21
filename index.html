@@ -4581,6 +4581,7 @@ function renderBoardFocus(){
 }
 function makeBoardCol(st){
   const f=faelle.filter(x=>x.status===st);
+  f.sort((a,b)=>sterneVon({personId:b.personId})-sterneVon({personId:a.personId}));
   const col=document.createElement("div");col.className="col";
   col.innerHTML="<h3><span class='cdot' style='background:"+STATUS_COL[st]+"'></span>"+st+"<span class='cnt num'>"+f.length+"</span></h3>";
   f.forEach(x=>{
