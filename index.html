@@ -4802,8 +4802,8 @@ const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp"
 function arCard(a,i){
  const perName=a.pid&&person(a.pid)?person(a.pid).name:a.titel;
  const isZ=a.typ==="zuweiser"||a.typ==="zuweiser-trend";
- const due=isZ?(a.urg==="jetzt"?"überfällig":"fällig"):"in "+a.tage+" Tagen";
- const dueCls=(isZ&&a.urg==="jetzt")?"jetzt":"bald";
+ const due=isZ?(a.urg==="jetzt"?"überfällig":"fällig"):(a.urg==="beob"?"im Blick":"in "+a.tage+" Tagen");
+ const dueCls=a.urg;
  const gLbl=isZ?"Nächste Aktion":"Empfohlene Geste";
  const strip=(AR_FOTO[a.typ])?"<figure class='au-photo au-photo--"+AR_FOTO[a.typ][1]+"'><img src='assets/"+AR_FOTO[a.typ][0]+"' alt='' loading='lazy'></figure>":"";
  return "<div class='radar-card ar-rc' style='--acol:var(--brass)'>"
