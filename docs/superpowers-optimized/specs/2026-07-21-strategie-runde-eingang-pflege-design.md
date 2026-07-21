@@ -32,13 +32,14 @@ Jeder erkannte Punkt erscheint als Chip ("⚡ Premium-Signal: SalutoCare"); ein 
 Die Grenze, ob aus einem Eingangs-Eintrag ein dauerhafter Datensatz wird, ist **nicht** "konkret vs. unkonkret", sondern **identifizierbar vs. nicht**:
 
 - **Kein erkennbarer Name/Kontakt** (z. B. eine anonyme "Habt ihr noch Betten frei?"-Mail) → bleibt einmalig im Eingang-Log, wird **nie** zu einer Person.
-- **Mit Name/Kontakt** → wird immer eine Person in der Registry — neu angelegt oder (per automatischem Abgleich nach Name/Telefon/Mail) mit einer bestehenden Person verknüpft ("Meintest du Anna Muster, P01?").
+- **Mit Name/Kontakt einer eindeutigen Einzelperson** → wird immer eine Person in der Registry — neu angelegt oder (per automatischem Abgleich nach Name/Telefon/Mail) mit einer bestehenden Person verknüpft ("Meintest du Anna Muster, P01?").
+- **Ausnahme (bestehende Konvention, bleibt unangetastet):** Sammelnamen (Familie/Eheleute/"Unbekannt") laufen weiterhin über das bestehende `einzelperson:false`-Flag (Baustein A) und bekommen **keine** Einzelpersonen-Akte, unabhängig davon, ob ein Name erkannt wurde. Die Identifizierbarkeits-Grenze aus diesem Abschnitt gilt also nur für Eingänge, die sich einer einzelnen Person eindeutig zuordnen lassen — sie erweitert die bestehende Konvention, ersetzt sie nicht.
 
 Die erkannten Signale aus 2.1 bestimmen direkt den **Sterne-Wert** dieser Person, keinen separaten Pfad: kein konkretes Signal → 2★ (wie im bestehenden `STERNE`-Contract schon definiert), Alter+Frist+Kostenträger erkannt → 3–4★, explizite Absage/Widerruf erkannt → **1★, überschreibt alles andere** (DSGVO-Pflicht, nie wieder kontaktieren).
 
 ### 2.3 Fall-Schwelle
 
-Ein **Fall im Board** wird erst ab einer Schwelle (≥3★, konkret) automatisch vorgeschlagen. Darunter bleibt die Person in Netzwerk→Kontakte und kann später durch einen stärkeren Kontakt hochgestuft werden (kein Fall-Datensatz nötig für schwache Leads).
+Ein **Fall im Board** wird erst ab einer Schwelle (Sterne ≥3) automatisch vorgeschlagen — "konkret" ist hier kein separates Feld, sondern deckt sich mit der Sterne-Ableitung aus §2.2 (3–4★ = konkrete Signale erkannt). Darunter bleibt die Person in Netzwerk→Kontakte und kann später durch einen stärkeren Kontakt hochgestuft werden (kein Fall-Datensatz nötig für schwache Leads).
 
 ### 2.4 Institutions-Abgleich (Zuweiser-Anfragen)
 
@@ -48,7 +49,7 @@ Kommt eine Anfrage erkennbar von einer Klinik/Praxis, läuft derselbe Abgleich-M
 
 ### 3.1 Routing-Vorschlag statt Fixwert
 
-Heute bekommt jeder neue Fall automatisch denselben Standard-Owner ("S. Koordination", hartkodiert in `simulateInbound()`). Neu: das System schlägt einen Owner vor (nach Achse-Spezialisierung + aktueller Fallzahl je Mitarbeiter), der zuständige Mitarbeiter/Teamlead bestätigt.
+Heute bekommt jeder neue Fall automatisch denselben Standard-Owner ("S. Koordination", hartkodiert in `simulateInbound()`). Neu: das System schlägt einen Owner vor (nach Achse-Spezialisierung + aktueller Fallzahl je Mitarbeiter), der zuständige Mitarbeiter/Teamlead bestätigt. **Neue Datengrundlage nötig:** eine kleine Zuordnungstabelle Achse↔Team-Mitglied existiert noch nicht (`TEAM` kennt heute nur Namen, keine Achsen-Zuständigkeit) — das ist Teil der Umsetzung, keine Vorbedingung.
 
 ### 3.2 Kontinuierliche Upsell-Erkennung
 
@@ -102,7 +103,7 @@ Pflege/Ärzte dokumentieren bereits im echten KIS — zusätzliche Eingabe hier 
 
 ### 4.5 UI-Verankerung
 
-Die Eingabemaske lebt im bestehenden Rollen-Schalter-Modus "Mein Tag" (Koordination-Ansicht): dort erscheint eine Aufgabenliste "Zwischenstände fällig" (aus 4.4 generiert); Klick öffnet die Maske im "Erfolge & Verlauf"-Teil des Fall-Details. Speichern schreibt in dieselben geteilten Objekte (`inReha[]`/`RS_BILLING`) — dadurch aktualisieren sich interne Ansicht, Zuweiser-Portal und Reha-Charts automatisch (Barthel/FIM sind schon heute ein gemeinsames Feld, das beide Seiten lesen — keine neue Synchronisation nötig).
+Die Eingabemaske lebt im bestehenden Rollen-Schalter-Modus "Mein Tag" (Koordination-Ansicht): dort erscheint eine Aufgabenliste "Zwischenstände fällig" (aus 4.4 generiert); Klick öffnet die Maske im "Erfolge & Verlauf"-Teil des Fall-Details. Speichern schreibt in dieselben geteilten Objekte (`inReha[]`/`RS_BILLING`) — für Barthel/FIM ist das geprüft ohne neue Kopplung: `renderEinblick()` (Cofounder-Bereich, `.rp-*`) liest `p.barthel.akt`/`p.fim.akt` schon heute direkt aus `inReha[]`. Die in §4.2 neuen Felder (Reha-Ziel, Arztbericht-Kurzfassung, DRG-Status, Entlassung, Anschluss-Bedarf, Auffälligkeiten) sind additive neue Properties auf denselben `inReha[]`-Objekten — technisch unschädlich (von Rendering-Code, der nur bekannte Keys liest, einfach ignoriert), aber genaugenommen Schema-Wachstum auf einer Struktur, die der Cofounder-Bereich mit iteriert. Keine Aktion nötig, nur zur Einordnung: falls der Cofounder diese neuen Felder später auch in der Zuweiser-Ansicht zeigen möchte, ist das sein Anschluss, keiner, den diese Spec vorschreibt.
 
 **Organisatorischer Hinweis (kein Software-Thema):** Ob die Case-Management-Rolle real an der Teambesprechung teilnimmt, muss klinikintern geklärt/organisiert werden — das ist eine Voraussetzung, kein Bestandteil dieser Spec.
 
