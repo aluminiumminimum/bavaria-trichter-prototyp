@@ -3675,6 +3675,7 @@ body{accent-color:var(--brass)}
       </div>
       <div class="zcat-strip" id="zcatgrid"></div>
       <div class="zmap" id="zmap"></div>
+      <div id="zAnlaesse"></div>
       <figure class="au-photo au-photo--petrol"><img src="assets/kb-header.jpg" alt="" loading="lazy"><figcaption>Bad Kissingen · Luftbild</figcaption></figure>
       <div class="zgrid" id="zgrid"></div>
     </div>
@@ -4737,7 +4738,7 @@ function verlaufAusFaellen(z){
  return [Math.max(0,basis+d0),Math.max(0,basis+d1),basis];
 }
 zuweiser.forEach(z=>{z.verlauf3M=verlaufAusFaellen(z);});
-function anlaesse(){
+function anlaesse(scope){
  const out=[];
  personen.forEach(p=>{
   if(!p.geb||!p.sterne||p.sterne<2)return;
@@ -4780,7 +4781,11 @@ function anlaesse(){
   }
  });
  const ord={jetzt:0,bald:1,beob:2};
- return out.sort((a,b)=>(ord[a.urg]-ord[b.urg])||(a.tage-b.tage));
+ const sorted=out.sort((a,b)=>(ord[a.urg]-ord[b.urg])||(a.tage-b.tage));
+ /* §5.1 B2B/B2C-Trennung: scope "patienten" = geburtstag/jubilaeum/wiederbedarf, "zuweiser" = zuweiser/zuweiser-trend, sonst alles */
+ if(scope==="patienten")return sorted.filter(a=>a.typ==="geburtstag"||a.typ==="jubilaeum"||a.typ==="wiederbedarf");
+ if(scope==="zuweiser")return sorted.filter(a=>a.typ==="zuweiser"||a.typ==="zuweiser-trend");
+ return sorted;
 }
 function arAktion(key){
  const a=anlaesse().find(x=>x.key===key);if(!a)return;
@@ -4790,6 +4795,7 @@ function arAktion(key){
  if(typeof inbToast==="function")inbToast("done","<b>"+escapeHtml(a.geste.cta)+"</b> (Demo)",escapeHtml(a.titel),null);
  renderAnlaesse();
  renderRadar();
+ renderZuweiser();
 }
 const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf",zuweiser:"Zuweiser-Kontakt","zuweiser-trend":"Zuweiser-Trend"};
 const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"],zuweiser:["kb-arzt.jpg","petrol"]};
@@ -5051,7 +5057,7 @@ function renderRadar(){
   document.getElementById("radarHost").innerHTML=
     "<p class='db-intro'>Ehemalige Patienten mit Einwilligung, bei denen ein erneuter Reha-Bedarf absehbar ist — das System meldet sich rechtzeitig, nur bei gültiger Freigabe.</p>"
    +rhead
-   +(function(){const oth=anlaesse().filter(a=>a.typ!=="wiederbedarf");return oth.length?"<div class='ar-feedhead'>Anlässe (Geburtstage & Zuweiser)</div><div class='ar-grid'>"+oth.map(arCard).join("")+"</div><div class='ar-feedhead'>Wiederbedarf (medizinische Prognose)</div>":"";})()
+   +(function(){const oth=anlaesse("patienten").filter(a=>a.typ!=="wiederbedarf");return oth.length?"<div class='ar-feedhead'>Anlässe (Geburtstage & Jubiläen)</div><div class='ar-grid'>"+oth.map(arCard).join("")+"</div><div class='ar-feedhead'>Wiederbedarf (medizinische Prognose)</div>":"";})()
    +"<div class='radar-grid'>"+sorted.map(([r,i])=>{
       const u=urg(r.faelligInTagen),ok=r.consent==="ja",col=ACHSE_COL[r.achse]||"var(--unklar)";
       return "<div class='radar-card"+(ok?"":" locked")+(r.achse==="SalutoCare"?" hot":"")+"' style='--acol:"+col+"'>"
@@ -5194,6 +5200,10 @@ function renderZuweiser(){
    +"<div class='route-card'><div class='rlabel'>Aufbau / Ziel</div><div class='rvalue num'>"+(aufbau+ziel)+"</div><div class='rnote'>nächste Schritte</div></div></div>"
    +(archivCount&&!zArchivAnzeigen?"<div class='zarchiv-toggle'><button class='btn-ghost btn-sm' onclick='zArchivAnzeigen=true;renderZuweiser()'>⊕ "+archivCount+" potenzielle Kontakte anzeigen</button></div>":"")
    +"</div>";
+  /* §5.1 B2B/B2C-Trennung: Zuweiser-Anlässe (Kontaktpflege-Fälligkeit + Trend) gehören in die Zuweiser-Ansicht, nicht ins Patienten-Radar */
+  const zAnl=anlaesse("zuweiser");
+  const zAnlEl=document.getElementById("zAnlaesse");
+  if(zAnlEl)zAnlEl.innerHTML=zAnl.length?"<div class='ar-feedhead'>Zuweiser-Anlässe</div><div class='ar-grid'>"+zAnl.map(arCard).join("")+"</div>":"";
   const sorted=[...filtered].sort((a,b)=>({aktiv:0,aufbau:1,ziel:2}[a.status]-{aktiv:0,aufbau:1,ziel:2}[b.status])||(b.faelle-a.faelle));
   const trendMap=new Map(anlaesse().filter(a=>a.typ==="zuweiser-trend").map(a=>[a.zName,a]));
   document.getElementById("zgrid").innerHTML=sorted.length?sorted.map(z=>
