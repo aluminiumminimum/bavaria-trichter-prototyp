@@ -4363,6 +4363,8 @@ function paAkteSlot(pid){
 }
 
 let aktuellerFall=null;let zFilter="krankenhaus";let boardStageFilter=null;let horizont=9;
+/* §5.3 Archiv-Split-Filter — Bereich D */
+let zArchivAnzeigen=false;let bestandArchivAnzeigen=false;
 
 /* ---------- Helpers ---------- */
 function fristKlasse(f){if(!f)return"";const d=(new Date(f)-heute)/86400000;return d<0?"bad":d<1.5?"warn":"ok";}
@@ -4875,10 +4877,12 @@ function dbCockpit(){
 function renderBestand(){
   const fil=document.getElementById("tierFilter");
   const count=b=>bestand.filter(p=>bucketOf(p)===b).length;
-  const chip=(key,lbl)=>"<button class='tchip"+(sterneFilter===key?" on":"")+"' onclick='sterneFilter=\""+key+"\";renderBestand()'>"+lbl+" <b class='num'>"+(key==="alle"?bestand.length:count(key))+"</b></button>";
-  const chips="<div class='tier-chips'>"+chip("alle","Alle")+STERNE_ORDER.map(k=>chip(k,k+"★")).join("")+chip("gesperrt","Gesperrt")+"</div>";
+  const chip=(key,lbl)=>"<button class='tchip"+(sterneFilter===key?" on":"")+"' onclick='sterneFilter=\""+key+"\";renderBestand()'>"+lbl+" <b class='num'>"+(key==="alle"?bestand.filter(p=>!bestandArchivAnzeigen&&bucketOf(p)==="1"?false:true).length:count(key))+"</b></button>";
+  const displayOrder=bestandArchivAnzeigen?[...STERNE_ORDER,"gesperrt"]:[...STERNE_ORDER.filter(k=>k!=="1"),"gesperrt"];
+  const chips="<div class='tier-chips'>"+chip("alle","Alle")+displayOrder.filter(k=>k!=="gesperrt").map(k=>chip(k,k+"★")).join("")+chip("gesperrt","Gesperrt")+(bestandArchivAnzeigen?"":" "+"<button class='tchip' onclick='bestandArchivAnzeigen=true;renderBestand()'>⊕ Archiv anzeigen</button>")+"</div>";
   if(fil)fil.innerHTML=dbCockpit()+chips;
-  const groups=sterneFilter==="alle"?[...STERNE_ORDER,"gesperrt"]:[sterneFilter];
+  let groups=sterneFilter==="alle"?displayOrder:[sterneFilter];
+  if(!bestandArchivAnzeigen&&groups.includes("1"))groups=groups.filter(k=>k!=="1");
   const row=(p,idx)=>{
     const col=ACHSE_COL[p.achse]||"var(--unklar)";
     const cons=p.consent==="ja"?"<span class='db-pill ok'>freigegeben</span>":"<span class='db-pill lock'>gesperrt</span>";
@@ -5012,7 +5016,11 @@ function renderZuweiser(){
     "<button type='button' class='zcat"+(c.id===zFilter?" active":"")+"' onclick='setZFilter(\""+c.id+"\")'>"
    +"<div class='zl'>"+escapeHtml(c.label)+"</div><div class='zv num'>"+(catCounts[c.id]||0)+"</div><div class='zn'>"+escapeHtml(c.note)+"</div></button>"
   ).join("");
-  const filtered=zuweiser.filter(z=>zKategorie(z)===cat.id);
+  let filtered=zuweiser.filter(z=>zKategorie(z)===cat.id);
+  /* §5.3 Archiv-Split: primär nur faelle>=1 anzeigen */
+  const primaryFiltered=filtered.filter(z=>z.faelle>=1);
+  const archivCount=filtered.filter(z=>z.faelle===0).length;
+  filtered=zArchivAnzeigen?filtered:primaryFiltered;
   const aktiv=filtered.filter(z=>z.status==="aktiv").length;
   const aufbau=filtered.filter(z=>z.status==="aufbau").length;
   const ziel=filtered.filter(z=>z.status==="ziel").length;
@@ -5030,7 +5038,9 @@ function renderZuweiser(){
    +"<div class='zsummary'><h3>"+escapeHtml(cat.label)+"</h3><p>"+escapeHtml(cat.note)+". Die Karte zeigt, welche Beziehungen bereits tragen, welche aufgebaut werden und wo der nächste Kontakt entstehen soll.</p>"
    +"<div class='route-strip'><div class='route-card'><div class='rlabel'>Kontakte</div><div class='rvalue num'>"+filtered.length+"</div><div class='rnote'>in dieser Kategorie</div></div>"
    +"<div class='route-card'><div class='rlabel'>Aktiv</div><div class='rvalue num'>"+aktiv+"</div><div class='rnote'>warme Beziehungen</div></div>"
-   +"<div class='route-card'><div class='rlabel'>Aufbau / Ziel</div><div class='rvalue num'>"+(aufbau+ziel)+"</div><div class='rnote'>nächste Schritte</div></div></div></div>";
+   +"<div class='route-card'><div class='rlabel'>Aufbau / Ziel</div><div class='rvalue num'>"+(aufbau+ziel)+"</div><div class='rnote'>nächste Schritte</div></div></div>"
+   +(archivCount&&!zArchivAnzeigen?"<div class='zarchiv-toggle'><button class='btn-ghost btn-sm' onclick='zArchivAnzeigen=true;renderZuweiser()'>⊕ "+archivCount+" potenzielle Kontakte anzeigen</button></div>":"")
+   +"</div>";
   const sorted=[...filtered].sort((a,b)=>({aktiv:0,aufbau:1,ziel:2}[a.status]-{aktiv:0,aufbau:1,ziel:2}[b.status]));
   document.getElementById("zgrid").innerHTML=sorted.length?sorted.map(z=>
     "<div class='zcard"+(z.status==="ziel"?" ziel":"")+"'>"
