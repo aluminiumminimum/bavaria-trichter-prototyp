@@ -4367,6 +4367,26 @@ function inbToast(state,title,sub,fid){
  if(state==="done")_inbToastTimer=setTimeout(hideInbToast,9000);
 }
 function hideInbToast(){const el=document.getElementById("inbToast");if(el)el.classList.remove("show");}
+/* §2.1 Signal-Erkennung — Bereich B */
+function erkenneSignale(text){
+  const s=String(text||"");
+  const premium=/salutocare|selbstzahler|suite|premium/i.test(s);
+  let kt=null;
+  if(/\bpkv\b/i.test(s))kt="PKV";
+  else if(/\bgkv\b/i.test(s))kt="GKV";
+  else if(/beihilfe/i.test(s))kt="Beihilfe";
+  const absage=/keine? interesse|widerruf|abgesagt|kein bedarf/i.test(s);
+  const alterMatch=/\b(\d{1,3})\s*(?:jahre|j\.|\))/i.exec(s);
+  const fristMatch=/entlassung\s+(?:am\s+)?([\wäöü.]+)|in\s+(\d+)\s+tagen|dringend|möglichst schnell/i.exec(s);
+  const konkret=!!(alterMatch||fristMatch||kt);
+  return {
+    premium:premium,
+    kostentraeger:kt,
+    absage:absage,
+    konkret:!absage&&konkret,
+    dringlichkeit:fristMatch?fristMatch[0]:null
+  };
+}
 function simulateInbound(){
  const t=INBOUND_POOL[_inbN%INBOUND_POOL.length];_inbN++;
  const mid=_inbId++;
