@@ -5032,6 +5032,27 @@ function naechsteAktion(z){
   if(z.status==="aufbau")return"Persönlicher Besuch/Kennenlern-Termin";
   return"Erstkontakt-Plan erstellen";
 }
+/* §2.4/§5.4 Institutions-Abgleich — Bereich B. Analog zu findeOderErstellePerson (Zeile 4305), aber für
+   Institutionen: sucht per einfachem Lowercase-/Teilstring-Vergleich (kein Fuzzy-Library) gegen zuweiser[]
+   inkl. Archiv-Einträge mit faelle===0 (z.B. "Helios Klinikum", "Reha-Technik Müller") und gibt bei Treffer die
+   Stammdaten des bestehenden Eintrags zur Übernahme zurück, statt ein Leerformular zu zeigen. Anders als bei
+   findeOderErstellePerson wird bei keinem Treffer NICHTS neu angelegt — das im Spec §5.4 beschriebene
+   Krankenhausverzeichnis gilt hier nur als PRINZIP für eine spätere Runde; diese Runde importiert keine echten
+   Referenzdaten, der Abgleich läuft ausschließlich gegen die bestehende zuweiser[]-Liste. */
+function _zNorm(s){
+  return String(s||"").toLowerCase().replace(/[-–,.]/g," ").split(/\s+/).filter(Boolean)
+    .filter(w=>!["klinikum","klinik","krankenhaus","praxis","privatpraxis","zentrum","haus","gmbh","dr","fr","hr","prof"].includes(w))
+    .join(" ").trim();
+}
+function findeOderErstelleZuweiser(name){
+  const n=_zNorm(name);
+  if(!n||n.length<4)return null;
+  const treffer=zuweiser.find(z=>{
+    const zn=_zNorm(z.name);
+    return zn.length>=4&&(zn===n||zn.includes(n)||n.includes(zn));
+  });
+  return treffer?{z:treffer,neu:false}:null;
+}
 function setZFilter(id){zFilter=id;renderZuweiser();}
 function mapOrt(o){return String(o||"").replace(/\s*\(.*/,"").replace("überregional","überreg.");}
 function networkDot(z,i){
