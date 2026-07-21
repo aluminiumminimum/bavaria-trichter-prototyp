@@ -329,6 +329,8 @@
   .stp:not(:last-child)::before{content:"";position:absolute;left:10px;top:18px;bottom:0;width:2px;background:var(--brass-line)}
   .stp .dot{width:18px;height:18px;border-radius:99px;border:2px solid var(--brass);background:var(--ink);margin-top:1px}
   .stp.done .dot{background:var(--sage);border-color:var(--sage)}
+  .stp.current .dot{border-color:var(--brass);box-shadow:0 0 0 3px rgba(185,145,73,.25)}
+  .stp.current b{color:var(--brass-deep)}
   .stp b{font:600 14px/1.2 Inter;color:var(--ink)}
   .stp small{display:block;font:400 12px/1.3 Inter;color:var(--muted);margin-top:1px}
   .stp .dur{color:var(--brass-deep);font-weight:600}
@@ -5440,10 +5442,16 @@ function renderMatrix(){
 }
 function mxGo(a,b){ if(a==="ref"){ if(typeof openReferrer==="function") openReferrer(b,"Leopoldina-Krankenhaus"); return; } go(a,b); }
 function stepper(schritte){
- return `<div class="stepper">`+schritte.map(s=>{
+ return `<div class="stepper">`+schritte.map((s,i,arr)=>{
+  // Determine if this step is current
+  let isCurrent=s.current===true;
+  if(!isCurrent&&s.current===undefined&&!s.done){
+   // For explicit schritte: current is first non-done step
+   isCurrent=!arr.slice(0,i).some(x=>x.done===false);
+  }
   const dur=s.dauerMin!=null?` · <span class="dur">${s.dauerMin>=60?Math.round(s.dauerMin/60)+" Std":s.dauerMin+" Min"}</span>`:"";
   const meta=[s.who,s.ts].filter(Boolean).join(" · ");
-  return `<div class="stp ${s.done?"done":""}"><span class="dot"></span><span><b>${escapeHtml(s.label)}</b><small>${escapeHtml(meta)}${dur}</small></span></div>`;
+  return `<div class="stp ${s.done?"done":""}${isCurrent?" current":""}"><span class="dot"></span><span><b>${escapeHtml(s.label)}</b><small>${escapeHtml(meta)}${dur}</small></span></div>`;
  }).join("")+`</div>`;
 }
 function renderSuite(screen,zName){
@@ -5783,7 +5791,7 @@ function celebratePlanned(){
 /* ---------- Fall-Detail ---------- */
 function deriveSchritte(f){
  const cur=STATUS.indexOf(f.status);
- return STATUS.slice(0,6).map((s,i)=>({label:s,who:i<=cur?(f.owner||""):"",ts:"",dauerMin:null,done:i<cur}));
+ return STATUS.slice(0,6).map((s,i)=>({label:s,who:i<=cur?(f.owner||""):"",ts:"",dauerMin:null,done:i<cur,current:i===cur}));
 }
 /* ---------- Kostenzusage-Workflow (nur aktive Station gefüllt, kein kumulativer Fortschritt) ---------- */
 const KZ_STAGES=[["offen","Offen"],["angefragt","Angefragt"],["Zusage liegt vor","Zusage"],["abgelehnt","Abgelehnt"]];
