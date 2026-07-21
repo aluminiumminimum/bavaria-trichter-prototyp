@@ -31,7 +31,7 @@
 - [ ] Finde `renderEingang()` und die Stelle, an der `m` (Eingangs-Nachricht) zur Karte gerendert wird.
 - [ ] Finde `erkenneSignale(text)` und `sterneAusSignal(sig)` (bereits vorhanden aus Runde 1) — prüfe, welche Felder sie zurückgeben (Programm, Kostenträger, Dringlichkeit/Frist, Sterne).
 - [ ] Ergänze auf der Eingangs-Karte, vor dem Owner-Dropdown, eine Pill-Reihe mit den erkannten Signalen — exakt gleiche CSS-Klassen wie die Board-Karten-Pills (`.pill-a` für Achse/Programm, `.pill-kt` für Kostenträger, `.due`-Klasse für Dringlichkeit falls Frist erkannt). Kein neues CSS erfinden — bestehende Klassen wiederverwenden.
-- [ ] Ergänze eine sichtbare Sterne-Anzeige (gleiches Symbol/Markup wie an anderer Stelle im Programm, wo `STERNE` gerendert wird — `grep -n "STERNE\[" index.html` um die bestehende Render-Konvention zu finden und zu kopieren).
+- [ ] Ergänze eine sichtbare Sterne-Anzeige (gleiches Symbol/Markup wie an anderer Stelle im Programm — die Render-Funktion dafür ist `sterneHtml(n)` [index.html:4669](../../index.html#L4669), bereits verwendet in `paAkte`/`arCard`/`renderRadar`/Datenbank-Liste — `grep -n "sterneHtml(" index.html` um alle Aufrufstellen als Vorbild zu sehen und exakt zu kopieren, nicht neu erfinden).
 - [ ] Ändere den Button-Text von "Zuordnen & als Fall" zu "Als Fall anlegen & zuordnen" (String an der `onclick='uebernehmen(...)'`-Stelle).
 - [ ] Standard-Verifikation, Commit: `feat: Signal-Chips + Sterne auf Eingangs-Karte sichtbar (Punkt 1)`
 
@@ -74,8 +74,8 @@
 **Lane:** claude-implementer
 **Dateien:** Modify `index.html` — `openFallakte(id)` (`grep -n "function openFallakte"`).
 
-- [ ] In `openFallakte(id)`: vor `go('fallakte')` den Fall-Detail-Drawer schließen — gleiche Mechanik wie `openRsDetail()` das bereits für andere Overlays tut (`["ovDetail","dbDetail"].forEach(id=>{...classList.remove("open")})`, siehe [index.html:5584](../../index.html#L5584) als Vorbild). Also: `document.getElementById("ovDetail")?.classList.remove("open"); document.body.classList.remove("detail-open");` vor dem `go()`-Aufruf.
-- [ ] Standard-Verifikation: Fall öffnen → „Vollständige Fallakte öffnen" klicken → nur EINE Ansicht sichtbar, kein Overlay im Hintergrund.
+- [ ] In `openFallakte(id)`: vor `go('fallakte')` den Fall-Detail-Drawer schließen. **Nicht** das `openRsDetail()`-Muster (`["ovDetail","dbDetail"].forEach(...)`) kopieren — das ist dort nur sicher, weil direkt danach erneut `pushDetailState()` für das neue Overlay aufgerufen wird. `openFallakte()` öffnet aber kein Overlay, sondern navigiert per `go('fallakte')` (eigene Route, kein Overlay-Push). Stattdessen die bestehende Funktion `mtCloseOverlays()` ([index.html:6217-6223](../../index.html#L6217)) aufrufen — sie schließt alle Overlays UND setzt `_detailPushed=false` zurück. Ohne dieses Zurücksetzen bleibt `_detailPushed` auf `true` hängen, und der Browser-Zurück-Button auf der Fallakte-Ansicht würde dann in den `popstate`-Handler ([index.html:6356-6358](../../index.html#L6356)) laufen, der nur `_rawCloseDetails()` aufruft statt `applyHash()` — Zurück würde also nichts tun.
+- [ ] Standard-Verifikation: Fall öffnen → „Vollständige Fallakte öffnen" klicken → nur EINE Ansicht sichtbar, kein Overlay im Hintergrund. **Zusätzlich:** danach Browser-Zurück drücken und bestätigen, dass die Ansicht tatsächlich wechselt (nicht nur visuell prüfen — dieser Regressionspunkt ist nicht offensichtlich sichtbar).
 - [ ] Commit: `fix: Fall-Detail-Drawer schließt beim Öffnen der Fallakte (Punkt 3)`
 
 ### Task 3.2 — Premium-Rahmung für die Fallakte-Ansicht
@@ -110,7 +110,7 @@
 
 - [ ] In `renderZuweiser()`: die Zuweiser-Anlässe (Typ `zuweiser`/`zuweiser-trend` aus `anlaesse()`) werden — sofern nicht schon durch Task 4.1 als `znext`-Ersatz abgedeckt — NICHT mehr über `renderRadar()`/das gemeinsame Grid gezeigt.
 - [ ] In `renderRadar()`/`anlaesse()`: die Zuweiser-Typen aus dem gemeinsamen Feed entfernen bzw. so filtern, dass `renderRadar()` nur noch Patienten-Anlässe (Geburtstag, Jubiläum, Wiederbedarf) zeigt. Überschrift „Anlässe (Geburtstage & Zuweiser)" entsprechend zu „Anlässe" ändern (nur noch Patienten).
-- [ ] Prüfen: wird `renderRadar()`/dieser Anlässe-Bereich eigenständig aufgerufen oder ist er Teil von `renderBestand()`? Falls eigenständige Route: in die Bestand/Kontakte-Ansicht integrieren statt als separate Top-Level-Ansicht zu belassen (siehe Spec Punkt 5 — Radar wird kein eigener Bereich mehr). Falls das eine größere Navigations-Änderung wäre als in einem Task sinnvoll: stattdessen den Anlässe-Block sichtbar UNTER der Bestand-Übersicht rendern (`#bestandGrid`-Nachbarschaft), nicht als eigene Nav-Destination.
+- [ ] `radar` ist bereits nur ein Unterpunkt-Segment von `netzwerk` (`SEGS.netzwerk`, [index.html:6235](../../index.html#L6235)), keine eigenständige Top-Level-Route — insofern ist keine große Navigations-Änderung nötig. Den Anlässe-Block (jetzt nur noch Patienten-Anlässe) entweder als Unterpunkt in der Bestand/Kontakte-Ansicht belassen/verschieben oder als eigenes `netzwerk`-Segment weiterführen, solange er nicht mehr B2B+B2C mischt — die Nav-Struktur selbst muss nicht angetastet werden.
 - [ ] Standard-Verifikation: keine gemischte B2B/B2C-Liste mehr an irgendeiner Stelle, Commit: `refactor: Radar-Feed nach B2B/B2C getrennt (Punkt 5, Teil 1)`
 
 ### Task 5.2 — Anlass-Karten optisch auf Programmniveau heben
@@ -132,7 +132,7 @@ Diese drei Feedback-Punkte hängen zusammen: das Case-Manager-Formular verlässt
 **Lane:** claude-implementer-pro
 **Dateien:** Read-only Analyse, kein Schreiben in diesem Task.
 
-- [ ] `grep -n "\.drgStatus\|\.rehaZiel\|\.arztberichtKurz\|\.entlassungGeplant\|\.anschlussBedarf\|\.auffaelligkeiten" index.html` — für jedes Feld alle Lesestellen auflisten (bekannt bereits: `drgStatus` wird in `paAkte`/Fallakte gelesen, [index.html:6332](../../index.html#L6332) laut Spec-Review — Zeile bei Ausführung neu verifizieren).
+- [ ] `grep -n "\.drgStatus\|\.rehaZiel\|\.arztberichtKurz\|\.entlassungGeplant\|\.anschlussBedarf\|\.auffaelligkeiten" index.html` — für jedes Feld alle Lesestellen auflisten (bekannt bereits: `drgStatus` wird in `renderFallakte()` gelesen, [index.html:6332](../../index.html#L6332) laut Spec-Review — Zeile bei Ausführung neu verifizieren; das ist eine andere Funktion als `paAkte()`, das über `paAkte(p.personId)` separat in `openRsDetail()` aufgerufen wird).
 - [ ] Für jede gefundene Lesestelle außerhalb des zu entfernenden Formulars: entscheiden ob (a) Anzeige bleibt bestehen und liest weiterhin aus dem (jetzt nicht mehr editierbaren) Datenfeld — unproblematisch, Feld bleibt im Modell, nur nicht mehr in diesem Formular editierbar — oder (b) die Lesestelle wird obsolet und sollte ebenfalls entfernt werden. Ergebnis kurz dokumentieren (Kommentar im Code oder Rückgabe an den nächsten Task), nicht einfach löschen.
 - [ ] Kein Commit (reine Analyse) — Ergebnis wird in Task 6.2 verwendet.
 
@@ -155,8 +155,8 @@ Diese drei Feedback-Punkte hängen zusammen: das Case-Manager-Formular verlässt
 
 - [ ] Für `typ` in `rueckruf`/`angebot`/`eingang`/`intern`/`allgemein`: vor dem „Erledigt"-Button ein Notiz-Textarea ergänzen (Placeholder „Was wurde besprochen?"). Der „Erledigt"-Button bleibt deaktiviert (oder zeigt einen Hinweis), solange das Feld leer ist.
 - [ ] Für `typ==="kosten"`: zusätzlich zum Notizfeld eine Status-Auswahl (Select: „Zusage" / „Ablehnung" / „Ausstehend").
-- [ ] `mtAbschliessen(key)`: statt des automatisch generierten Texts (`item.ref.aufgabe||MT_TYP_LABEL[item.typ]`) den tatsächlich eingegebenen Notiz-Text (+ bei Kosten den Status) in den entsprechenden Fall-Log (`f.log`/`pHist`) schreiben.
-- [ ] Standard-Verifikation: für mindestens einen Rückruf- und einen Kostenklärungs-Task den Ablauf durchklicken, prüfen dass der eingegebene Text im Fall-Verlauf (Fall-Detail-Drawer, Verlauf-Sektion) tatsächlich auftaucht.
+- [ ] **Wichtig — `mtAbschliessen()` verzweigt nach `item.kind`, nicht nach `item.typ`, und nicht jede `kind` hat ein Fall-Log:** Nur `kind==="fall"`-Items haben `ref` als echtes `Fall`-Objekt mit `.log`-Array — dort den eingegebenen Notiz-Text (+ bei Kosten den Status) tatsächlich in `f.log`/`pHist` schreiben, statt des automatisch generierten Texts. `kind==="eingang"`-Items haben `ref=m` (ein `eingang[]`-Nachrichtenobjekt ohne `.log`-Feld) — hier den Notiz-Text stattdessen in ein neues additives Feld `m.notiz` schreiben und prüfen, wo `eingang[]`-Einträge sonst noch angezeigt werden, um `m.notiz` dort mit anzuzeigen. `kind==="intern"`-Items haben `ref=x` (statischer `MT_INTERN`-Eintrag, ausdrücklich „kein Fall-Bezug" kommentiert) — hier reicht es, den Notiz-Text lokal im `_mtDone`-Abschluss-Zustand zu vermerken (z.B. Anzeige „✓ Erledigt: <Notiz>" im `mt-check`-Element), da es keinen persistenten Fall gibt, in den geschrieben werden könnte.
+- [ ] Standard-Verifikation: für mindestens einen Rückruf-Task (`kind==="fall"`) und einen Kostenklärungs-Task den Ablauf durchklicken, prüfen dass der eingegebene Text im Fall-Verlauf (Fall-Detail-Drawer, Verlauf-Sektion) tatsächlich auftaucht. Zusätzlich einen Eingang- und einen Intern-Task durchklicken und prüfen, dass die Notiz dort sichtbar landet (nicht stillschweigend verworfen wird).
 - [ ] Commit: `feat: Mein Tag — typ-spezifische Eingabefelder statt generischem Erledigt-Knopf (Punkt 8)`
 
 ---
