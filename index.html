@@ -6340,7 +6340,7 @@ function applyHash(){
 /* §3.4 Hybrid-Fallakte — Bereich C: eigene Top-Level-Route neben der Schublade (#ovDetail).
    openFallakte() setzt nur die ID und navigiert; gerendert wird zentral in go()'s Zweig
    "if(dest==='fallakte')renderFallakte();", damit es auch bei direktem Hash-Aufruf/Reload greift. */
-function openFallakte(id){_fallakteId=id;go('fallakte');}
+function openFallakte(id){_fallakteId=id;mtCloseOverlays();go('fallakte');}
 function renderFallakte(){
   if(!_fallakteId){go('faelle','board');return;}
   const f=faelle.find(x=>x.id===_fallakteId);
