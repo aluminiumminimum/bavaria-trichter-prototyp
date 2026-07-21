@@ -1602,6 +1602,7 @@ label{font-size:12px;letter-spacing:.08em}
 .kz-actions{display:flex;flex-wrap:wrap;gap:8px}
 .kz-notiz-row{display:flex;gap:8px}
 .kz-notiz-row input{flex:1;min-width:0}
+.kz-hint{color:var(--faint);font-size:12px;font-style:italic}
 /* ===== Mitarbeiter-Dashboard "Mein Tag" (.mt-*) — Spec docs/superpowers-optimized/specs/2026-07-14-mitarbeiter-dashboard-design.md
    Perspektivenwechsel: eigene, ruhige Mitarbeiter-Sicht (S. Koordination) auf denselben Daten.
    ma-mode blendet die komplette Leitungs-Chrome nur per CSS aus — nichts wird umgebaut, Rückschalten entfernt nur die Klasse. ===== */
@@ -5803,8 +5804,13 @@ function kzChain(f){
  }).join("")+"</div>";
 }
 function kzActions(f){
- if(f.kosten==="offen")
-   return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzAnfragen()'>Kostenzusage anfragen</button></div>";
+ if(f.kosten==="offen"){
+   const aufgabeHatKosten=/kosten/i.test(f.aufgabe||"");
+   if(aufgabeHatKosten)
+     return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzAnfragen()'>Kostenzusage anfragen</button></div>";
+   else
+     return "<div class='kz-hint'>Kostenzusage offen — wird fällig, sobald die Kostenklärung ansteht.</div>";
+ }
  if(f.kosten==="angefragt")
    return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzZusage()'>Zusage erfassen</button><button class='btn-ghost btn-sm' type='button' onclick='kzAblehnung()'>Ablehnung erfassen</button></div>";
  return "";
