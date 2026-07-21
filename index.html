@@ -4679,7 +4679,7 @@ function anlaesse(){
    out.push({key:key,typ:"zuweiser-trend",urg:"jetzt",tage:0,titel:z.name,sub:"Fallzahl 2 Monate rückläufig ("+v.join("→")+")",sterne:null,geste:{label:"Kontakt suchen — Rückgang klären",cta:"Kontakt aufnehmen"},zName:z.name});
   }else if(v[2]>v[1]&&v[1]>v[0]){
    const key="trend-auf:"+z.name;if(_arDone.has(key))return;
-   out.push({key:key,typ:"zuweiser-trend",urg:"bald",tage:0,titel:z.name,sub:"Fallzahl 2 Monate steigend ("+v.join("→")+")",sterne:null,geste:{label:"Kontakt mit Dankeschön/Bestätigung",cta:"Kontakt aufnehmen"},zName:z.name});
+   out.push({key:key,typ:"zuweiser-trend",urg:"bald",tage:0,titel:z.name,sub:"Fallzahl 2 Monate steigend ("+v.join("→")+")"+(z.status==="aufbau"?" · Vorschlag: Status auf 'aktiv' hochstufen":""),sterne:null,geste:{label:"Kontakt mit Dankeschön/Bestätigung",cta:"Kontakt aufnehmen"},zName:z.name});
   }
  });
  const ord={jetzt:0,bald:1,beob:2};
