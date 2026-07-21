@@ -31,7 +31,7 @@
 5. Email/Antwort senden — als Aktion *innerhalb* der jeweiligen Aufgabe, nicht als eigenständiges erstes Element.
 6. Accordion-Details, Verlauf, neue Notiz — bleiben am Ende (Referenz-/Protokoll-Charakter).
 
-Das bisherige separate `mgrid` (Verantwortlich/Aufgabe/Frist) entfällt als eigener Block, da in den Hero integriert.
+Das bisherige separate `mgrid` (Verantwortlich/Aufgabe/Frist) entfällt als eigener Block, da in den Hero integriert. Der bestehende Button „Aktuelle Aufgabe erledigt → nächster Schritt" (`dAdvance`, [index.html:3973](../../index.html#L3973)) fungiert schon heute als De-facto-Weiter-Aktion — er wird Teil des neuen Hero-Blocks (nicht separat davor), damit „nächste Aufgabe anzeigen" und „nächste Aufgabe erledigen" an derselben Stelle stehen.
 
 **Werdegang-Fix:** [index.html:328-334](../../index.html#L328). Aktuell sind alle Stufen-Labels `color:var(--ink)` — nur der Punkt (`.dot`) wird bei erledigten Stufen grün. Der *aktuelle* Schritt ist optisch nicht von zukünftigen zu unterscheiden. Fix: eigene Markierung für die aktuelle Stufe (z.B. Gold-Ring um den Punkt + Label fett/hervorgehoben), zusätzlich zur bestehenden „erledigt"-Markierung.
 
@@ -55,17 +55,19 @@ Das bisherige separate `mgrid` (Verantwortlich/Aufgabe/Frist) entfällt als eige
 
 ---
 
-## 4. Zuweiser-Ansicht — „Ziel-Partner" raus aus der Hauptliste, Ranking rein
+## 4. Zuweiser-Ansicht — Ranking + Pflegehinweise direkt an der Karte
 
-**Ist:** `renderZuweiser()`, [index.html:5122-5170](../../index.html#L5122). Zuweiser mit Status `ziel` (nie einen Patienten geschickt, reine Landkarten-Idee) erscheinen in derselben Liste, mit derselben Kartenkomponente (`zcard`), wie echte aktive/im-Aufbau-Zuweiser — nur nach Status sortiert (`{aktiv:0,aufbau:1,ziel:2}`), nicht nach Fallzahl. Das widerspricht der in Runde 1 getroffenen Entscheidung: „jeder der real schon mal einen Patienten geschickt hat gehört in die Primäransicht" — „Ziel"-Kontakte haben das nicht.
+**Ist — bereits korrekt (nicht anfassen):** `renderZuweiser()`, [index.html:5122-5170](../../index.html#L5122). Die Archiv-Trennung ist entgegen dem ersten Eindruck bereits faktenbasiert korrekt umgesetzt: `primaryFiltered=filtered.filter(z=>z.faelle>=1)` ([index.html:5132](../../index.html#L5132), Kommentar „§5.3 Archiv-Split"), gesteuert über `zArchivAnzeigen` ([index.html:4409](../../index.html#L4409)) mit Toggle-Button ([index.html:5153](../../index.html#L5153)) — exakt die in Runde 1 vereinbarte Regel „jeder der real schon mal einen Patienten geschickt hat gehört in die Primäransicht", nicht statusbasiert. **Dieser Teil bleibt unverändert.**
+
+**Ist — tatsächliche Lücken:**
+- Sortierung der sichtbaren Karten ([index.html:5155](../../index.html#L5155)) ordnet nur nach `status` (`{aktiv:0,aufbau:1,ziel:2}`), nicht nach Fallzahl — der Zuweiser mit den meisten Zuweisungen steht nicht zuverlässig oben.
+- Die „Nächste Aktion" pro Karte ([index.html:5167](../../index.html#L5167), `z.next||naechsteAktion(z)`) ist bei allen Demo-Einträgen ein statisches Textfeld, kein aus Fallzahl-Trend berechneter Hinweis — der Trend-Nudge aus `anlaesse()` (§5.2, Rückgang/Zuwachs) taucht nur im gemischten Radar-Feed auf (siehe Punkt 5), nicht an der Zuweiser-Karte selbst.
 
 **Soll:**
-- Hauptliste zeigt nur Status `aktiv` und `aufbau`.
-- Status `ziel` wandert in das bereits bestehende Archiv-Muster: analog zu `bestandArchivAnzeigen` (Patienten-Archiv) wird ein `zArchivAnzeigen`-Toggle verwendet — gleiche Konvention, kein neues Pattern.
-- Hauptliste sortiert nach `z.faelle` absteigend (meiste Zuweisungen zuerst), statt nur nach Status.
-- Zuweiserpflege-Hinweise (Dankeschön bei Zuwachs, Kontakt-suchen bei Rückgang — aktuell nur in `anlaesse()`/Radar versteckt) werden direkt an der Zuweiser-Karte selbst angezeigt, damit Pflege aus der Zuweiser-Ansicht heraus geschieht, nicht nur aus einem separaten Feed.
+- Sichtbare Karten (nach Archiv-Filter, unverändert) zusätzlich nach `z.faelle` absteigend sortieren.
+- Den bereits in `anlaesse()` berechneten Trend-Hinweis (Rückgang → „Kontakt suchen", Zuwachs → „Dankeschön") direkt in `znext` der jeweiligen Zuweiser-Karte einblenden (statt nur im separaten Feed), sodass Pflege aus der Zuweiser-Ansicht heraus geschieht.
 
-**Erfolgskriterium:** Die Zuweiser-Hauptansicht zeigt ausschließlich reale Zuweiser, geordnet nach Relevanz (Fallzahl), mit direkt sichtbarer Pflege-Handlung pro Karte. „Ziel"-Kontakte sind einen Klick entfernt (Archiv), nicht Teil der täglichen Ansicht.
+**Erfolgskriterium:** Die Zuweiser-Hauptansicht (unveränderter Archiv-Filter) zeigt die relevantesten Partner zuerst und macht Pflegebedarf direkt an der Karte sichtbar — ohne Umweg über einen separaten Feed.
 
 ---
 
@@ -85,16 +87,22 @@ Diese Aufgabe ist überwiegend gestalterisch (CSS/Markup-Feinschliff, Abgleich m
 
 ---
 
-## 6+7. In-Reha-Übersicht vs. Case-Manager-Protokoll — sauber trennen, Felder reduzieren
+## 6+7. In-Reha-Übersicht vs. Case-Manager-Protokoll — sauber trennen, echte Feld-Duplikation auflösen
 
-**Ist:** Die `.ir-card`-Übersichtskarte selbst ([index.html:5723-5741](../../index.html#L5723)) enthält korrekt keine Case-Manager-Felder. Das eigentliche Problem liegt im Detail-Overlay `openRsDetail()`/`#rsDetail`, [index.html:5582-5647](../../index.html#L5582): Leitungs-Lesebereich (Barthel/FIM/Verweildauer) und Case-Manager-Eingabeformular (Zwischenstand-Text, DRG-Status, Entlassung geplant, Anschluss-Bedarf, Auffälligkeiten, [index.html:5624-5643](../../index.html#L5624)) sitzen im selben Overlay. Prozess (Case-Manager-Protokollierung) und Ergebnis (Leitungs-Übersicht) sind vermischt.
+**Ist:** Die `.ir-card`-Übersichtskarte selbst ([index.html:5723-5741](../../index.html#L5723)) enthält korrekt keine Case-Manager-Felder. Das eigentliche Problem liegt im Detail-Overlay `openRsDetail()`/`#rsDetail`, [index.html:5582-5647](../../index.html#L5582), und ist konkreter als zunächst angenommen:
+
+- **Leitungs-Lesebereich** (`rsErfolg`, [index.html:5596-5603](../../index.html#L5596)) zeigt bereits `p.kurzbericht` als „Aktueller Kurzbericht" ([index.html:5601](../../index.html#L5601)) — und genau dieses Feld ist auch die Quelle, die das (Cofounder-eigene, nicht anzufassende) Zuweiser-Portal im Einblick-Tab anzeigt (`.rp-kurz`/`rpDoc('kurzbericht',...)`). `p.kurzbericht` ist also bereits die richtige, einzige Quelle für Leitung + Zuweiser.
+- **Das Case-Manager-Eingabeformular** (`rsZwischenstand`, [index.html:5624-5643](../../index.html#L5624)) schreibt seinen Freitext aber in ein **komplett separates** Feld: `p.zwischenstand.text` ([index.html:5628](../../index.html#L5628), gespeichert via `rsSaveZwischenstand()` [index.html:5648-5661](../../index.html#L5648)) — nie in `p.kurzbericht`. Das Formular hat insgesamt **neun** Felder, nicht fünf: Zwischenstand-Datum, Zwischenstand-Text, Dokumentiert-durch, Reha-Ziel, Arztbericht-Kurzfassung, DRG-Status/Kostenzusage, Entlassung geplant, Anschluss-Bedarf, Auffälligkeiten.
+- Ergebnis: Was die Case-Managerin einträgt (`zwischenstand.text`), sieht weder die Leitung noch der Zuweiser. Was Leitung/Zuweiser sehen (`kurzbericht`), kann die Case-Managerin nirgends bearbeiten — eine echte, aktuell unsichtbare Sackgasse, keine bloße Geschmacksfrage.
+- Zusätzlich zeigt der Wirtschaftlichkeits-Bereich (`rsWirt`, [index.html:5622](../../index.html#L5622)) einen vorhandenen Block „Sinnvolle nächste Diagnostik & Therapie" (`bill.empf`) — genau das, was per früherer Absprache aus der Case-Manager-Dokumentation herausgehalten werden sollte.
+- Hinweis für die Umsetzung: `p.drgStatus` (Formularfeld) und `bill.kostenzusage` (bereits separat in `rsWirt` als „Kostenzusage"-Pille angezeigt, [index.html:5595](../../index.html#L5595)/[5616](../../index.html#L5616)) sind zwei unterschiedliche, nicht verbundene Kostenzusage-Quellen — bei der Umsetzung prüfen, ob `drgStatus` überhaupt noch gelesen wird, bevor das Feld aus dem Formular entfernt wird.
 
 **Soll:**
-- `openRsDetail()`/`#rsDetail` wird reiner Lesebereich für die Leitung — zeigt den zuletzt erfassten Kurzbericht, aber keine Eingabefelder mehr.
+- `openRsDetail()`/`#rsDetail` bleibt reiner Lesebereich für die Leitung (zeigt weiterhin `p.kurzbericht`, unverändert) — der Block „Sinnvolle nächste Diagnostik & Therapie" (`bill.empf`) entfällt.
 - Das Eingabeformular wandert exklusiv in die Mitarbeiteransicht (erreichbar über den bestehenden „Zwischenstand erfassen"-Reminder in Mein Tag, `mtZwischenstandItem`, [index.html:6038-6042](../../index.html#L6038)) — als eigene Eingabemaske dort, nicht als Rücksprung ins Leitungs-Overlay.
-- **Feld-Reduktion (Punkt 7):** Von den aktuell fünf strukturierten Feldern (Reha-Ziel, DRG-Status, Entlassung geplant, Anschluss-Bedarf, Auffälligkeiten) bleibt nur ein Freitext-Feld: **aktueller Kurzbericht**. Das ist alles, was eine Case-Managerin realistisch bei der wöchentlichen Teambesprechung dokumentiert. Dieser Kurzbericht ist die einzige Quelle für das, was der Zuweiser im Einblick-Tab sieht — keine separate/doppelte Pflege.
+- **Feld-Reduktion (Punkt 7):** Die neue Eingabemaske hat nur noch **ein** Freitext-Feld: **aktueller Kurzbericht**, das direkt in `p.kurzbericht` schreibt (nicht mehr in `p.zwischenstand.text`). Datum/Autor als leichte Metadaten (wer/wann zuletzt aktualisiert) können bestehen bleiben, sofern sie nicht als zusätzlicher Dokumentationsaufwand wirken. Die sechs übrigen Strukturfelder (Reha-Ziel, Arztbericht-Kurzfassung, DRG-Status, Entlassung geplant, Anschluss-Bedarf, Auffälligkeiten) werden aus der Eingabemaske entfernt — das ist mehr, als eine Case-Managerin realistisch bei der wöchentlichen Teambesprechung dokumentiert. Die zugehörigen Datenfelder im Modell bleiben unangetastet (nur additiv erweitert laut Projektregel), falls andere Stellen sie lesen — das ist beim Entfernen der Formularfelder zu prüfen, nicht anzunehmen.
 
-**Erfolgskriterium:** Leitung sieht nur lesend den aktuellen Kurzbericht; Case-Managerin trägt ausschließlich in der Mitarbeiteransicht einen einzigen Kurzbericht-Text ein; keine doppelte Datenhaltung zwischen Leitungs-Ansicht und Zuweiser-Einblick.
+**Erfolgskriterium:** Leitung sieht weiterhin lesend `p.kurzbericht`; Case-Managerin trägt in der Mitarbeiteransicht direkt in `p.kurzbericht` ein — keine zwei parallelen Freitextfelder mehr; der Zuweiser-Einblick-Tab (cofounder-eigen, unangetastet) zeigt automatisch den aktuellen Stand, weil er dieselbe Quelle liest.
 
 ---
 
