@@ -5194,7 +5194,8 @@ function renderZuweiser(){
    +"<div class='route-card'><div class='rlabel'>Aufbau / Ziel</div><div class='rvalue num'>"+(aufbau+ziel)+"</div><div class='rnote'>nächste Schritte</div></div></div>"
    +(archivCount&&!zArchivAnzeigen?"<div class='zarchiv-toggle'><button class='btn-ghost btn-sm' onclick='zArchivAnzeigen=true;renderZuweiser()'>⊕ "+archivCount+" potenzielle Kontakte anzeigen</button></div>":"")
    +"</div>";
-  const sorted=[...filtered].sort((a,b)=>({aktiv:0,aufbau:1,ziel:2}[a.status]-{aktiv:0,aufbau:1,ziel:2}[b.status]));
+  const sorted=[...filtered].sort((a,b)=>({aktiv:0,aufbau:1,ziel:2}[a.status]-{aktiv:0,aufbau:1,ziel:2}[b.status])||(b.faelle-a.faelle));
+  const trendMap=new Map(anlaesse().filter(a=>a.typ==="zuweiser-trend").map(a=>[a.zName,a]));
   document.getElementById("zgrid").innerHTML=sorted.length?sorted.map(z=>
     "<div class='zcard"+(z.status==="ziel"?" ziel":"")+"'>"
    +"<span class='zstat "+z.status+"'>"+lbl[z.status]+"</span>"
@@ -5206,7 +5207,7 @@ function renderZuweiser(){
    +"<div class='zrow'><span>Fälle über diesen Weg</span><b class='zfall num'>"+z.faelle+"</b></div>"
    +"<div class='zrow'><span>Letzter Kontakt</span><b>"+escapeHtml(z.letzter||"noch keiner")+"</b></div>"
    +"<div class='zrow'><span>Draht</span><span class='zdraht'>"+z.draht+"</span></div>"
-   +"<div class='znext'><b>Nächste Aktion:</b> "+escapeHtml(z.next||naechsteAktion(z))+"</div>"
+   +"<div class='znext'><b>Nächste Aktion:</b> "+escapeHtml((trendMap.has(z.name)?(trendMap.get(z.name).urg==="jetzt"?"⚠ ":"")+trendMap.get(z.name).geste.label:z.next||naechsteAktion(z)))+"</div>"
    +"<button type='button' class='zw-portal' onclick='openReferrer(&quot;portal&quot;,&quot;"+escapeHtml(z.name)+"&quot;)'>Portal-Ansicht des Zuweisers ›</button>"
    +"</div>").join(""):"<div class='zcard ziel'><span class='zstat ziel'>Zielkategorie</span><div class='zname'>Noch keine Kontakte hinterlegt</div><div class='ztyp'>"+escapeHtml(cat.label)+"</div><div class='znext'><b>Nächste Aktion:</b> Zielpartner recherchieren, Kontaktquelle erfassen und ersten SOP-Schritt anlegen.</div></div>";
 }
