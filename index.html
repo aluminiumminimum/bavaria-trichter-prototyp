@@ -4625,6 +4625,21 @@ function arGeste(p){
  if(p.sterne===2)return zw.includes("newsletter")?{label:"Gruß im Newsletter",cta:"In Newsletter aufnehmen"}:null;
  return null;
 }
+/* §5.2 Trend-Erkennung — Bereich D. Echte monatliche Fallzahl-Historie existiert nicht (Demo/Prototyp,
+   kein Backend). Statt Math.random() (würde bei jedem Render flackern) ein deterministisches 3-Monats-Array
+   aus faelle-Zahl + einfachem String-Hash des Namens ableiten — einmalig beim Laden, nicht pro Render. */
+function zNameHash(s){
+ let h=0;
+ for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;
+ return h;
+}
+function verlaufAusFaellen(z){
+ const basis=z.faelle;
+ const h=zNameHash(z.name);
+ const d0=(h%7)-3,d1=(Math.floor(h/13)%7)-3;
+ return [Math.max(0,basis+d0),Math.max(0,basis+d1),basis];
+}
+zuweiser.forEach(z=>{z.verlauf3M=verlaufAusFaellen(z);});
 function anlaesse(){
  const out=[];
  personen.forEach(p=>{
@@ -4656,6 +4671,17 @@ function anlaesse(){
   const key="zuw:"+z.name;if(_arDone.has(key))return;
   out.push({key:key,typ:"zuweiser",urg:seit>=kad*1.5?"jetzt":"bald",tage:seit===9999?999:seit,titel:z.name,sub:(z.letzter?seit+" Tage kein Kontakt":"Noch nie kontaktiert")+" · "+(z.next||""),sterne:null,geste:{label:z.next||"Kontakt aufnehmen",cta:"Kontakt aufnehmen"},zName:z.name});
  });
+ /* §5.2 Trend-Erkennung — reagiert auf Auffälligkeiten, unabhängig von der Kontakt-Kadenz oben */
+ zuweiser.forEach(z=>{
+  const v=z.verlauf3M;if(!v||v.length<3)return;
+  if(v[2]<v[1]&&v[1]<v[0]){
+   const key="trend-ab:"+z.name;if(_arDone.has(key))return;
+   out.push({key:key,typ:"zuweiser-trend",urg:"jetzt",tage:0,titel:z.name,sub:"Fallzahl 2 Monate rückläufig ("+v.join("→")+")",sterne:null,geste:{label:"Kontakt suchen — Rückgang klären",cta:"Kontakt aufnehmen"},zName:z.name});
+  }else if(v[2]>v[1]&&v[1]>v[0]){
+   const key="trend-auf:"+z.name;if(_arDone.has(key))return;
+   out.push({key:key,typ:"zuweiser-trend",urg:"bald",tage:0,titel:z.name,sub:"Fallzahl 2 Monate steigend ("+v.join("→")+")",sterne:null,geste:{label:"Kontakt mit Dankeschön/Bestätigung",cta:"Kontakt aufnehmen"},zName:z.name});
+  }
+ });
  const ord={jetzt:0,bald:1,beob:2};
  return out.sort((a,b)=>(ord[a.urg]-ord[b.urg])||(a.tage-b.tage));
 }
@@ -4668,13 +4694,14 @@ function arAktion(key){
  renderAnlaesse();
  renderRadar();
 }
-const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf",zuweiser:"Zuweiser-Kontakt"};
+const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf",zuweiser:"Zuweiser-Kontakt","zuweiser-trend":"Zuweiser-Trend"};
 const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"],zuweiser:["kb-arzt.jpg","petrol"]};
 function arCard(a,i){
  const perName=a.pid&&person(a.pid)?person(a.pid).name:a.titel;
- const due=a.typ==="zuweiser"?(a.urg==="jetzt"?"überfällig":"fällig"):"in "+a.tage+" Tagen";
- const dueCls=(a.typ==="zuweiser"&&a.urg==="jetzt")?"jetzt":"bald";
- const gLbl=a.typ==="zuweiser"?"Nächste Aktion":"Empfohlene Geste";
+ const isZ=a.typ==="zuweiser"||a.typ==="zuweiser-trend";
+ const due=isZ?(a.urg==="jetzt"?"überfällig":"fällig"):"in "+a.tage+" Tagen";
+ const dueCls=(isZ&&a.urg==="jetzt")?"jetzt":"bald";
+ const gLbl=isZ?"Nächste Aktion":"Empfohlene Geste";
  const strip=(AR_FOTO[a.typ])?"<figure class='au-photo au-photo--"+AR_FOTO[a.typ][1]+"'><img src='assets/"+AR_FOTO[a.typ][0]+"' alt='' loading='lazy'></figure>":"";
  return "<div class='radar-card ar-rc' style='--acol:var(--brass)'>"
   +strip
@@ -4690,7 +4717,7 @@ function arCard(a,i){
 function renderAnlaesse(){
  const el=document.getElementById("anlassList");if(!el)return;
  const list=anlaesse();
- const nG=list.filter(a=>a.typ==="geburtstag").length,nJ=list.filter(a=>a.typ==="jubilaeum").length,nW=list.filter(a=>a.typ==="wiederbedarf").length,nZ=list.filter(a=>a.typ==="zuweiser").length;
+ const nG=list.filter(a=>a.typ==="geburtstag").length,nJ=list.filter(a=>a.typ==="jubilaeum").length,nW=list.filter(a=>a.typ==="wiederbedarf").length,nZ=list.filter(a=>a.typ==="zuweiser"||a.typ==="zuweiser-trend").length;
  const sum=document.getElementById("anlassSum");
  if(sum)sum.textContent=[nG?nG+(nG===1?" Geburtstag":" Geburtstage"):null,nJ?nJ+(nJ===1?" Jubiläum":" Jubiläen"):null,nW?nW+"× Wiederbedarf":null,nZ?nZ+(nZ===1?" Zuweiser wartet":" Zuweiser warten"):null].filter(Boolean).join(" · ")||"Keine offenen Anlässe";
  const rl=document.getElementById("rlCount");if(rl)rl.textContent=list.length;
