@@ -3877,6 +3877,36 @@ body{accent-color:var(--brass)}
       <div class="mt-grid" id="mtGutList"></div>
     </div>
   </section>
+
+  <!-- ============ FALLAKTE (Vollansicht, §3.4) ============ -->
+  <section id="view-fallakte" class="view">
+    <header class="vhead">
+      <div class="kicker">Fallakte · Vollansicht</div>
+      <h1 id="faName"></h1>
+      <p class="lblline" id="faSub"></p>
+      <button class="btn-ghost btn-sm" type="button" onclick="go('faelle','board')">‹ Zurück zum Board</button>
+    </header>
+    <div class="chap">
+      <h2 class="chap-h2">Übersicht</h2>
+      <div id="faUebersicht"></div>
+    </div>
+    <div class="chap">
+      <h2 class="chap-h2">Werdegang</h2>
+      <div id="faWerdegang"></div>
+    </div>
+    <div class="chap">
+      <h2 class="chap-h2">Medizinische Kurzfelder</h2>
+      <div id="faMedizin"></div>
+    </div>
+    <div class="chap">
+      <h2 class="chap-h2">Abrechnung</h2>
+      <div id="faAbrechnung" class="kz-block"></div>
+    </div>
+    <div class="chap">
+      <h2 class="chap-h2">Dokumente</h2>
+      <div id="faDokumente"></div>
+    </div>
+  </section>
 </main>
 </div>
 
@@ -3941,6 +3971,7 @@ body{accent-color:var(--brass)}
     <div class="mbody two-track">
       <div class="d-track-wrap">
         <button id="dAdvance" class="btn-brass btn-sm" style="width:100%;margin-bottom:12px" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
+        <button class="btn-ghost btn-sm" style="width:100%;margin-bottom:12px" type="button" onclick="openFallakte(aktuellerFall.id)">Vollständige Fallakte öffnen →</button>
         <div class="komm-block" style="margin-bottom:14px"><label>Antwort senden</label>
           <div class="komm-row"><select id="dReplyKanal"><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select><button class="btn-brass btn-sm" type="button" onclick="sendReply()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Antwort senden</button></div>
           <textarea id="dReply" rows="2" placeholder="Antwort an die anfragende Person verfassen … (Demo)"></textarea>
@@ -6211,7 +6242,7 @@ function go(dest,seg){
     if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
     document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
     document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
-    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Radar · Kontakte"],auswertung:["Auswertung","Quellen · Engpässe · Team · Fachbereiche"],konzept:["Konzept","Idee · Matrix · SOPs"]};
+    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Radar · Kontakte"],auswertung:["Auswertung","Quellen · Engpässe · Team · Fachbereiche"],konzept:["Konzept","Idee · Matrix · SOPs"],fallakte:["Fallakte","Vollständige Übersicht"]};
     const _t=TITLES[dest]||TITLES.heute;
     const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
     const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
@@ -6224,6 +6255,7 @@ function go(dest,seg){
     if(location.hash!==hash)history.replaceState(null,"",hash);
     window.scrollTo(0,0);
     if(dest==="heute"&&_prevDest!=="heute"){window._kpiCounted=false;kpiCountUp();}
+    if(dest==="fallakte")renderFallakte();
   };
   /* View-Transition nur nach vollständigem Load (kein Boot-Flash beim initialen applyHash) und nicht bei reduced-motion. */
   if(document.startViewTransition && document.readyState==="complete" && !(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)){
@@ -6263,10 +6295,54 @@ function applyHash(){
   go(parts[0],parts[1]);
 }
 
+/* §3.4 Hybrid-Fallakte — Bereich C: eigene Top-Level-Route neben der Schublade (#ovDetail).
+   openFallakte() setzt nur die ID und navigiert; gerendert wird zentral in go()'s Zweig
+   "if(dest==='fallakte')renderFallakte();", damit es auch bei direktem Hash-Aufruf/Reload greift. */
+function openFallakte(id){_fallakteId=id;go('fallakte');}
+function renderFallakte(){
+  if(!_fallakteId){go('faelle','board');return;}
+  const f=faelle.find(x=>x.id===_fallakteId);
+  if(!f){go('faelle','board');return;}
+  document.getElementById("faName").textContent=f.name+(f.alter?" ("+f.alter+")":"");
+  document.getElementById("faSub").textContent=f.achse+" · "+f.kt+" · "+f.quelle+" · Kanal: "+f.kanal;
+  document.getElementById("faUebersicht").innerHTML="<div class='pa-meta'>"
+    +"<div class='pa-row'><span class='pa-k'>Status</span><span class='pa-v'>"+escapeHtml(f.status)+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Verantwortlich</span><span class='pa-v'>"+escapeHtml(f.owner)+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Nächste Aufgabe</span><span class='pa-v'>"+escapeHtml(f.aufgabe||"—")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Frist</span><span class='pa-v'>"+(f.frist?escapeHtml(fristText(f.frist)):"—")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Kostenträger</span><span class='pa-v'>"+escapeHtml(f.kt)+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(f.consent)+"</span></div>"
+    +(f.saluto?"<div class='pa-row'><span class='pa-k'>SalutoCare</span><span class='pa-v'>★ Premium-Option geeignet</span></div>":"")
+    +"</div>"+paAkteSlot(f.personId);
+  document.getElementById("faWerdegang").innerHTML=stepper(f.schritte||deriveSchritte(f))
+    +"<div class='timeline'>"+f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("")+"</div>";
+  const med=inReha.find(p=>p.personId===f.personId);
+  document.getElementById("faMedizin").innerHTML=med?("<div class='pa-meta'>"
+    +"<div class='pa-row'><span class='pa-k'>Reha-Ziel</span><span class='pa-v'>"+escapeHtml(med.rehaZiel||"—")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Barthel aktuell</span><span class='pa-v'>"+(med.barthel?med.barthel.akt:"—")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>FIM aktuell</span><span class='pa-v'>"+(med.fim?med.fim.akt:"—")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Arztbericht</span><span class='pa-v'>"+escapeHtml(med.arztberichtKurz||"—")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Entlassung geplant</span><span class='pa-v'>"+(med.entlassungGeplant?escapeHtml(med.entlassungGeplant):"offen")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Anschluss-Bedarf</span><span class='pa-v'>"+escapeHtml(med.anschlussBedarf||"—")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Auffälligkeiten</span><span class='pa-v'>"+escapeHtml(med.auffaelligkeiten||"—")+"</span></div>"
+    +"</div>"):"<p class='empty'>Noch nicht in Reha aufgenommen — keine medizinischen Kurzfelder vorhanden.</p>";
+  document.getElementById("faAbrechnung").innerHTML=kzChain(f)
+    +"<div class='pa-meta'>"
+    +"<div class='pa-row'><span class='pa-k'>Kostenstatus</span><span class='pa-v'>"+escapeHtml(f.kosten)+"</span></div>"
+    +(med?"<div class='pa-row'><span class='pa-k'>DRG-Status</span><span class='pa-v'>"+escapeHtml(med.drgStatus||"offen")+"</span></div>":"")
+    +"</div>";
+  const DOC_LABELS=["Entlassbrief","Befunde","Versicherungsdaten","Kostenzusage"];
+  document.getElementById("faDokumente").innerHTML="<div class='docs'>"+DOC_LABELS.map(function(l,i){
+    return "<label><span class='status-pill "+(f.docs[i]?"ok":"lock")+"'>"+(f.docs[i]?"✓ vorhanden":"– offen")+"</span> "+escapeHtml(l)+"</label>";
+  }).join("")+"</div>";
+}
+
 /* ===== WS1 · Zurück-Navigation: Detail-Overlays in den Browser-Verlauf einhängen ===== */
 /* ovDetail (Fall) und dbDetail (Datenbank) sind gegenseitig exklusiv -> ein Flag genuegt.
    Oeffnen: pushDetailState(); Zurueck via Button/Esc/Backdrop/Browser-Zurueck: dismissDetail(). */
 let _detailPushed=false;
+/* §3.4 Hybrid-Fallakte — eigenes, von _DETAIL_IDS unabhängiges State: normale go()-Navigation, keine Overlay-Mechanik. */
+let _fallakteId=null;
 const _DETAIL_IDS=["ovDetail","dbDetail","rsDetail"];
 function _detailOpen(){
   return _DETAIL_IDS.some(id=>{const e=document.getElementById(id);return e&&e.classList.contains("open");});
