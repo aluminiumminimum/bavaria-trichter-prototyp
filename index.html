@@ -2991,6 +2991,19 @@ body{accent-color:var(--brass)}
 .rsz-save{margin-top:8px;padding:10px 18px;font-size:13px;cursor:pointer;border-radius:4px;border:1px solid var(--brass);background:var(--brass-soft);color:var(--ink);transition:background 200ms,border-color 200ms}
 .rsz-save:hover{background:var(--brass);color:var(--paper)}
 .rsz-save.saved{background:var(--sage-deep);border-color:var(--sage-deep);color:var(--paper)}
+
+/* ===== FALL-DETAIL · NÄCHSTE-AUFGABE-HERO (.fh-*) — Task 2.1 (UX-Feinschliff Runde 2, Punkt 2)
+   Aufgabe/Frist/Verantwortlich + Advance-/Fallakte-Button stehen jetzt gebündelt ganz oben im
+   Drawer, direkt nach dem Header, statt am Kartenende. Rahmen im bestehenden Etiketten-Muster
+   (Jade-Hairline + Gold-Doppelring, vgl. #view-heute>.chap/.ns-m), Radius-Familie 4px, keine
+   neuen Keyframes, reduced-motion-safe (rein statisches CSS). */
+.fh-hero{position:relative;background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;
+  padding:16px 18px;margin-bottom:18px;
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+.fh-aufgabe{font-size:16px;font-weight:600;color:var(--ink);border-color:var(--jade-hair)}
+.fh-meta{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px}
+.fh-actions{margin-top:15px}
+@media(min-width:900px){.mbody.two-track .fh-hero{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -3969,21 +3982,28 @@ body{accent-color:var(--brass)}
       <div><h2 id="dName"></h2><div class="msub2" id="dSub"></div></div>
     </div>
     <div class="mbody two-track">
-      <div class="d-track-wrap">
-        <button id="dAdvance" class="btn-brass btn-sm" style="width:100%;margin-bottom:12px" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
-        <button class="btn-ghost btn-sm" style="width:100%;margin-bottom:12px" type="button" onclick="openFallakte(aktuellerFall.id)">Vollständige Fallakte öffnen →</button>
-        <div class="komm-block" style="margin-bottom:14px"><label>Antwort senden</label>
-          <div class="komm-row"><select id="dReplyKanal"><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select><button class="btn-brass btn-sm" type="button" onclick="sendReply()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Antwort senden</button></div>
-          <textarea id="dReply" rows="2" placeholder="Antwort an die anfragende Person verfassen … (Demo)"></textarea>
+      <div class="fh-hero">
+        <label for="dAufgabe" class="kicker">Nächste Aufgabe</label>
+        <input id="dAufgabe" class="fh-aufgabe">
+        <div class="fh-meta">
+          <div><label for="dFrist">Frist</label><input id="dFrist" type="date"></div>
+          <div><label for="dOwner">Verantwortlich</label><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
         </div>
+        <div class="fh-actions">
+          <button id="dAdvance" class="btn-brass btn-sm" style="width:100%;margin-bottom:12px" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
+          <button class="btn-ghost btn-sm" style="width:100%" type="button" onclick="openFallakte(aktuellerFall.id)">Vollständige Fallakte öffnen →</button>
+        </div>
+      </div>
+      <div class="d-track-wrap">
         <div id="dWerdegang" class="d-track"></div>
         <div id="dKZ" class="kz-block"></div>
         <div id="dAkte"></div>
+        <div class="komm-block" style="margin-top:14px"><label>Antwort senden</label>
+          <div class="komm-row"><select id="dReplyKanal"><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select><button class="btn-brass btn-sm" type="button" onclick="sendReply()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Antwort senden</button></div>
+          <textarea id="dReply" rows="2" placeholder="Antwort an die anfragende Person verfassen … (Demo)"></textarea>
+        </div>
       </div>
       <div class="mgrid">
-        <div><label for="dOwner">Verantwortlich</label><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></div>
-        <div><label for="dAufgabe">Nächste Aufgabe</label><input id="dAufgabe"></div>
-        <div><label for="dFrist">Frist</label><input id="dFrist" type="date"></div>
         <details class="d-acc full">
           <summary>Details &amp; Unterlagen</summary>
           <div class="d-acc-body">
