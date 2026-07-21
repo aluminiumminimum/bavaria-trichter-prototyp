@@ -327,9 +327,9 @@
   .stepper{display:flex;flex-direction:column;gap:0}
   .stp{display:grid;grid-template-columns:22px 1fr;gap:10px;position:relative;padding-bottom:14px}
   .stp:not(:last-child)::before{content:"";position:absolute;left:10px;top:18px;bottom:0;width:2px;background:var(--brass-line)}
-  .stp .dot{width:18px;height:18px;border-radius:99px;border:2px solid var(--brass);background:var(--ink);margin-top:1px}
+  .stp .dot{width:18px;height:18px;border-radius:99px;border:2px solid var(--brass);background:transparent;margin-top:1px}
   .stp.done .dot{background:var(--sage);border-color:var(--sage)}
-  .stp.current .dot{border-color:var(--brass);box-shadow:0 0 0 3px rgba(185,145,73,.25)}
+  .stp.current .dot{background:var(--brass);border-color:var(--brass);box-shadow:0 0 0 3px rgba(185,145,73,.25)}
   .stp.current b{color:var(--brass-deep)}
   .stp b{font:600 14px/1.2 Inter;color:var(--ink)}
   .stp small{display:block;font:400 12px/1.3 Inter;color:var(--muted);margin-top:1px}
