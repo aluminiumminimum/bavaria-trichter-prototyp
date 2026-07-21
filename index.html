@@ -4537,13 +4537,21 @@ function renderEingang(){
       +"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span>"
       +(m.done?"<span class='ok-chip mini'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall")+"</span>":"")+"</span></span>"
       +"<span class='mail-chev'>›</span></button>";
+    const sig=erkenneSignale(m.txt);
+    const sterne=sterneAusSignal(sig);
+    const pills="<div class='pills'>"
+      +(m.achse?"<span class='pill-a' style='background:"+(ACHSE_COL[m.achse]||"var(--unklar)")+"'>"+escapeHtml(m.achse)+"</span>":"")
+      +(sig.kostentraeger?"<span class='pill-kt'>"+escapeHtml(sig.kostentraeger)+"</span>":"")
+      +(sig.dringlichkeit?"<span class='due'>"+escapeHtml(sig.dringlichkeit)+"</span>":"")
+      +"</div>";
+    const sterneBlock=sterneHtml(sterne);
     const act=m.done
       ?(m.fallId?"<button class='btn-ghost btn-sm' onclick='openDetail("+m.fallId+")'>→ Fall öffnen</button>":"")
       :m.typ==="passiv"
         ?"<button class='btn-ghost btn-sm' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>"
-        :"<div class='eingang-act'><select class='eingang-owner' id='eo-"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select><button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Zuordnen &amp; als Fall</button><button class='btn-ghost btn-sm' onclick='antwortenEingang("+m.id+")'>✉ Antworten</button></div>";
+        :"<div class='eingang-act'><select class='eingang-owner' id='eo-"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select><button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Als Fall anlegen &amp; zuordnen</button><button class='btn-ghost btn-sm' onclick='antwortenEingang("+m.id+")'>✉ Antworten</button></div>";
     return "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"+head
-      +"<div class='mmore'><div class='mtxt'>"+escapeHtml(m.txt)+"</div>"+act+"</div></article>";
+      +"<div class='mmore'>"+pills+sterneBlock+"<div class='mtxt'>"+escapeHtml(m.txt)+"</div>"+act+"</div></article>";
   }).join("");
 }
 function toggleMail(btn){const a=btn.closest(".mail");if(a)a.classList.toggle("open");}
