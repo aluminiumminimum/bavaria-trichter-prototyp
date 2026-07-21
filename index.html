@@ -4413,16 +4413,27 @@ function simulateInbound(){
  inbToast("in","<b>Neue Anfrage</b> über "+escapeHtml(t.kanal),"landet im Eingang — wird automatisch verarbeitet …",null);
  setTimeout(()=>{
   const m=eingang.find(x=>x.id===mid); if(m){m.done=true;m._neu=false;}
+  const sig=erkenneSignale(t.txt);
+  const sterne=sterneAusSignal(sig);
   let _pid=null;
-  if(t.einzelperson){_pid=pNew(t.name,{kt:t.kt==="Privat"?"PKV":t.kt});pHist(_pid,"anfrage","Anfrage über "+t.kanal+" ("+t.quelle+")");pHist(_pid,"fall","Automatisch als Fall angelegt");}
-  const fid=Math.max(0,...faelle.map(x=>x.id))+1;
-  faelle.push({id:fid,personId:_pid,name:t.name,alter:t.alter,rolle:t.rolle,kanal:t.kanal,quelle:t.quelle,achse:t.achse,kt:t.kt,
-    status:"Neu",owner:"S. Koordination",aufgabe:"Erstreaktion",frist:dstr(0),saluto:t.achse==="SalutoCare",
-    docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
-    log:[[dstr(0),"Automatisch als Fall angelegt aus "+t.kanal+": "+t.txt]]});
-  if(m)m.fallId=fid;
-  renderAll();
-  inbToast("done","<b>Automatisch als Fall angelegt</b>",escapeHtml(t.name)+" · "+escapeHtml(t.achse)+" · "+escapeHtml(t.kanal),fid);
+  if(t.einzelperson){
+   const r=findeOderErstellePerson(t.name,{},{kt:t.kt==="Privat"?"PKV":t.kt,sterne:sterne,sterneGrund:"Automatisch aus Eingangssignal: "+(sig.konkret?"konkrete Anfrage":"schwaches Signal")});
+   if(r){_pid=r.pid;pHist(_pid,"anfrage","Anfrage über "+t.kanal+" ("+t.quelle+")");}
+  }
+  if(sterne>=3){
+   const fid=Math.max(0,...faelle.map(x=>x.id))+1;
+   faelle.push({id:fid,personId:_pid,name:t.name,alter:t.alter,rolle:t.rolle,kanal:t.kanal,quelle:t.quelle,achse:t.achse,kt:t.kt,
+     status:"Neu",owner:"S. Koordination",aufgabe:"Erstreaktion",frist:dstr(0),saluto:t.achse==="SalutoCare",
+     docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
+     log:[[dstr(0),"Automatisch als Fall angelegt aus "+t.kanal+": "+t.txt]]});
+   if(m)m.fallId=fid;
+   if(_pid)pHist(_pid,"fall","Automatisch als Fall angelegt");
+   renderAll();
+   inbToast("done","<b>Automatisch als Fall angelegt</b>",escapeHtml(t.name)+" · "+escapeHtml(t.achse)+" · "+escapeHtml(t.kanal),fid);
+  } else {
+   renderAll();
+   inbToast("done","<b>Als Kontakt gespeichert</b> (schwaches Signal, kein Fall)",escapeHtml(t.name)+" · "+sterne+"★",null);
+  }
  },1600);
 }
 function renderEingang(){
