@@ -2605,6 +2605,9 @@ body{accent-color:var(--brass)}
 /* Erledigt-Meldung liest als gesiegelt: Zinnober-Siegelpunkt (DER Zinnober-Moment in Mein Tag) */
 .mt-sdonemsg::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;
   background:var(--terra);box-shadow:0 0 0 2px var(--terra-soft);margin-right:9px;vertical-align:0}
+/* Task 6.3: Notiz-Anzeige der aufgeklappten Eingangs-Nachricht (analog .mtxt-Papiereinzug) */
+.mt-eingang-notiz{font-size:13.5px;color:var(--ink-soft);margin:0 0 12px;padding:8px 12px;
+  background:var(--paper2);border-left:2px solid var(--gold-soft);border-radius:0 3px 3px 0}
 
 /* — (J5.3) FOTO-BÄNDER → Präparate-Tafeln (Doppelrahmen, Caption UNTER dem Foto, Sepia-Grade):
    Mein Tag (Komfort) · Netzwerk-Zuweiser (Luftbild) · Datenbank (Garten-Quadrat). — */
@@ -4586,7 +4589,9 @@ function renderEingang(){
         ?"<button class='btn-ghost btn-sm' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>"
         :"<div class='eingang-act'><select class='eingang-owner' id='eo-"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select><button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Als Fall anlegen &amp; zuordnen</button><button class='btn-ghost btn-sm' onclick='antwortenEingang("+m.id+")'>✉ Antworten</button></div>";
     return "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"+head
-      +"<div class='mmore'>"+pills+sterneBlock+"<div class='mtxt'>"+escapeHtml(m.txt)+"</div>"+act+"</div></article>";
+      +"<div class='mmore'>"+pills+sterneBlock+"<div class='mtxt'>"+escapeHtml(m.txt)+"</div>"
+      +(m.notiz?"<div class='mt-eingang-notiz'>Notiz: "+escapeHtml(m.notiz)+"</div>":"")
+      +act+"</div></article>";
   }).join("");
 }
 function toggleMail(btn){const a=btn.closest(".mail");if(a)a.classList.toggle("open");}
@@ -5981,7 +5986,10 @@ document.getElementById("sigChips").addEventListener("click",e=>{
    Ableitung ohne neue persistente Arrays (Muster: anlaesse()); einzige Session-Ausnahme ist _mtDone (Muster _arDone).
    Feldnamen bestehender Arrays sind Vertrag — nur gelesen bzw. additiv mutiert, nie umbenannt. */
 let _mtDone=new Set();
+/* Task 6.3: Notiz zu internen Aufgaben (kein Fall-Log vorhanden) — Muster _mtDone. */
+let _mtNotizen=new Map();
 const MT_TYP_LABEL={rueckruf:"Rückruf",angebot:"Angebot",unterlagen:"Unterlagen",kosten:"Kostenklärung",eingang:"Eingang",allgemein:"Aufgabe",intern:"Intern",zwischenstand:"Zwischenstand"};
+const MT_NOTIZ_LABEL={rueckruf:"Notiz zum Telefonat",angebot:"Notiz zum Angebot",unterlagen:"Notiz zu den Unterlagen",kosten:"Notiz zur Kostenklärung",eingang:"Notiz zur Antwort",allgemein:"Notiz",intern:"Notiz"};
 const MT_SCHRITTE={
  rueckruf:["Fall-Kontext kurz prüfen (Anfrage, letzter Eintrag)","Anrufen und Anliegen bestätigen","Nächsten Schritt gemeinsam festlegen","Ergebnis ins Protokoll schreiben"],
  angebot:["Wünsche &amp; Kostenträger aus dem Fall prüfen","Passendes Angebot zusammenstellen","Angebot versenden (E-Mail/Post)","Rückmeldefrist vormerken"],
@@ -6117,7 +6125,9 @@ function mtNextOpenKey(excludeKey){
 function mtCard(item){
  const done=_mtDone.has(item.key);
  const duePill=item.block==="jetzt"?"<span class='radar-due "+(item.overdue?"jetzt":"bald")+"'>"+(item.overdue?"überfällig":"heute fällig")+"</span>":"";
- const action=done?"<span class='mt-check'>✓ Erledigt</span>"
+ /* Task 6.3: interne Aufgaben haben kein Fall-Log — Notiz kommt aus _mtNotizen (gekürzt). */
+ const internNotiz=(item.kind==="intern"&&_mtNotizen.has(item.key))?_mtNotizen.get(item.key):"";
+ const action=done?"<span class='mt-check'>✓ Erledigt"+(internNotiz?" — "+escapeHtml(internNotiz.slice(0,60))+(internNotiz.length>60?"…":""):"")+"</span>"
   :"<button class='btn-ghost btn-sm' onclick='mtOpen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Jetzt erledigen ›</button>";
  const rkLabel=item.typ==="intern"?"Aufgabe":"Fall";
  return "<div class='radar-card"+(done?" mt-done":"")+"'>"
@@ -6213,14 +6223,20 @@ function mtSheetRender(){
   ?"<button class='rsz-save' onclick='rsSaveZwischenstand("+item.idx+")'>Speichern</button>"
   :(done
    ?"<div class='mt-sdonemsg'>✓ Erledigt — ins Protokoll übernommen.</div><button class='btn-brass' onclick='mtNext()'>Weiter zur nächsten ›</button>"
-   :"<button class='btn-brass' onclick='mtAbschliessen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Erledigt · ins Protokoll</button>");
+   :"<button id='mtAbschlBtn' class='btn-brass' disabled onclick='mtAbschliessen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Erledigt · ins Protokoll</button>");
  /* §6+7: Zwischenstand hat einen eigenen Body — direkte Kurzbericht-Eingabe statt Schritte/Leitfaden. */
+ /* Task 6.3: typ-spezifische Notiz statt generischem Erledigt-Klick — nur solange die Aufgabe noch offen ist;
+    kosten bekommt zusätzlich einen Status-Select. Button bleibt disabled, bis das Notizfeld befüllt ist. */
+ const notizBody=(item.typ==="zwischenstand"||done)?""
+  :(item.typ==="kosten"?"<div class='radar-prog'><span class='rk'>Kosten-Status</span><select id='mtKostenStatus' class='rsz-input'><option value=''>Ausstehend</option><option value='zusage'>Zusage erhalten</option><option value='ablehnung'>Ablehnung erhalten</option></select></div>":"")
+  +"<div class='radar-prog'><span class='rk'>"+escapeHtml(MT_NOTIZ_LABEL[item.typ]||"Notiz")+"</span><textarea id='mtNotiz' class='rsz-textarea' placeholder='Was wurde besprochen / vereinbart?' oninput=\"document.getElementById('mtAbschlBtn').disabled=!this.value.trim()\"></textarea></div>";
  const body=item.typ==="zwischenstand"
   ?"<div class='radar-prog'><span class='rk'>Warum jetzt</span><p>"+mtWarum(item)+"</p></div>"
    +"<div class='radar-prog'><span class='rk'>Aktueller Kurzbericht</span><textarea id='mtZwText' class='rsz-textarea' placeholder='Reha-Ziel, Barthel/FIM-Stand, Arztbericht kurz, Auffälligkeiten…'>"+escapeHtml(item.ref.kurzbericht||"")+"</textarea></div>"
   :"<div class='radar-prog'><span class='rk'>Warum jetzt</span><p>"+mtWarum(item)+"</p></div>"
    +"<div class='radar-prog'><span class='rk'>So gehst du vor</span><ol class='mt-ssteps'>"+schritte.map(x=>"<li>"+escapeHtml(x)+"</li>").join("")+"</ol></div>"
-   +"<div class='radar-prog'><span class='rk'>Leitfaden</span><div class='mt-sleitfaden'>"+leitfaden.map(x=>"<p>"+escapeHtml(x)+"</p>").join("")+"</div></div>";
+   +"<div class='radar-prog'><span class='rk'>Leitfaden</span><div class='mt-sleitfaden'>"+leitfaden.map(x=>"<p>"+escapeHtml(x)+"</p>").join("")+"</div></div>"
+   +notizBody;
  s.innerHTML="<div class='mt-back' onclick='mtClose()'></div><div class='mt-panel'>"
   +"<div class='mt-shead'><span class='ava'>"+(item.ava||initialen(item.name.replace(/[()\[\]]/g,"")))+"</span>"
   +"<div class='mt-sheadtxt'><span class='mt-stitle serif'>"+escapeHtml(item.name)+"</span><span class='mt-ssub'>"+escapeHtml(MT_TYP_LABEL[item.typ]||"Aufgabe")+"</span></div>"
@@ -6231,15 +6247,26 @@ function mtSheetRender(){
 }
 function mtAbschliessen(key){
  const item=mtFindItem(key);if(!item)return;
+ /* Task 6.3: tatsächlich eingegebene Notiz statt generiertem Text — Notizfeld ist Pflicht (Button war bis dahin disabled). */
+ const notizEl=document.getElementById("mtNotiz");
+ const notiz=notizEl?notizEl.value.trim():"";
  if(item.kind==="eingang"){
   item.ref.done=true;
+  if(notiz)item.ref.notiz=notiz;
  }else if(item.kind==="intern"){
-  /* kein Fall-Log — interne Aufgabe hat keinen Fall */
+  if(notiz)_mtNotizen.set(key,notiz);
+ }else if(item.typ==="kosten"){
+  const statusEl=document.getElementById("mtKostenStatus");
+  const kstat=statusEl?statusEl.value:"";
+  const statusTxt=kstat==="zusage"?"Kostenzusage erhalten":kstat==="ablehnung"?"Kostenzusage abgelehnt":"Kostenklärung bearbeitet";
+  item.ref.log.push([dstr(0),statusTxt+(notiz?" — "+notiz:"")]);
+  if(kstat==="zusage")item.ref.kosten="Zusage liegt vor";
+  else if(kstat==="ablehnung")item.ref.kosten="abgelehnt";
+  else item.ref.kosten="angefragt";
  }else{
-  const desc=item.typ==="kosten"?"Kostenklärung":(item.ref.aufgabe||MT_TYP_LABEL[item.typ]);
-  item.ref.log.push([dstr(0),desc+" erledigt (Mein Tag)"]);
-  if(item.typ==="kosten"){item.ref.kosten="angefragt";}
-  else{item.ref.aufgabe="";item.ref.frist="";}
+  const desc=item.ref.aufgabe||MT_TYP_LABEL[item.typ];
+  item.ref.log.push([dstr(0),desc+": "+notiz]);
+  item.ref.aufgabe="";item.ref.frist="";
  }
  _mtDone.add(key);
  renderAll();
