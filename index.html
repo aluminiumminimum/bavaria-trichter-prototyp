@@ -4072,6 +4072,13 @@ body{accent-color:var(--brass)}
 </div>
 <script>
 const STATUS=["Neu","Kontaktiert","Qualifizierung","Unterlagen","Aufnahme geplant","Aufgenommen","Verloren"];
+const STATUS_AUFGABE={
+  "Neu":"Rückruf/Erstkontakt",
+  "Kontaktiert":"Bedarf qualifizieren",
+  "Qualifizierung":"Unterlagen anfordern",
+  "Unterlagen":"Kostenzusage anfragen",
+  "Aufnahme geplant":"Anreise & Zimmer organisieren"
+};
 const STATUS_COL={"Neu":"#7A7265","Kontaktiert":"#5E7B8C","Qualifizierung":"#B99149","Unterlagen":"#7E6230","Aufnahme geplant":"#2E5C4F","Aufgenommen":"#123B33","Verloren":"#A8341F"}; /* J7: Welt-Token-Hexes (slate/azzurro/gold/brass-deep/jade/lack-jade/zinnober) */
 const ACHSE_COL={"Orthopädie":"var(--ortho)","Neurologie":"var(--neuro)","Geriatrie":"var(--geri)","Innere":"var(--innere)","SalutoCare":"var(--saluto)","Unklar":"var(--unklar)"};
 const heute=new Date();
@@ -5853,13 +5860,20 @@ function kzNotizAdd(){
  if(el)el.value="";
  document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
 }
-function advanceFall(){ const f=aktuellerFall;if(!f)return;
- const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return;
+function advanceFallStatus(f){
+ const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return false;
  const ns=STATUS[cur+1]; f.log.push([dstr(0),"Aufgabe erledigt · Status: "+f.status+" → "+ns]);
  if(f.personId)pHist(f.personId,ns==="Aufgenommen"?"aufnahme":"fall","Status: "+f.status+" → "+ns);
  qualifyIfNeeded(f,ns);
  if(f.schritte&&f.schritte[cur]) f.schritte[cur].done=true;
- f.status=ns; renderAll(); openDetail(f.id);
+ f.status=ns;
+ f.aufgabe=STATUS_AUFGABE[ns]||"";
+ f.frist=STATUS_AUFGABE[ns]?dstr(2):"";
+ return true;
+}
+function advanceFall(){ const f=aktuellerFall;if(!f)return;
+ advanceFallStatus(f);
+ renderAll(); openDetail(f.id);
 }
 function openDetail(id){
   aktuellerFall=faelle.find(x=>x.id===id);const f=aktuellerFall;if(!f)return;
