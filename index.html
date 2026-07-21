@@ -4399,6 +4399,12 @@ function erkenneSignale(text){
     dringlichkeit:fristMatch?fristMatch[0]:null
   };
 }
+/* §2.2 Sterne-Ableitung aus Signalen — Bereich B */
+function sterneAusSignal(sig){
+  if(sig.absage)return 1;
+  if(sig.konkret)return sig.premium?4:3;
+  return 2;
+}
 function simulateInbound(){
  const t=INBOUND_POOL[_inbN%INBOUND_POOL.length];_inbN++;
  const mid=_inbId++;
