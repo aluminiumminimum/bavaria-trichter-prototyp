@@ -242,7 +242,7 @@ document.getElementById("faNaechste").innerHTML="<div class='kicker'>Nächste Au
 **Lane:** `claude-implementer`
 **Dateien/Anker:** `lbl`-Map [index.html:5176](../../../index.html#L5176), `Z_CATS`-Note [index.html:5124](../../../index.html#L5124), `kpRender()`-Select [index.html:4971](../../../index.html#L4971), Empty-State-Karte [index.html:5227](../../../index.html#L5227), `.zstat`-Emission auf der Haupt-Karte [index.html:5216](../../../index.html#L5216). `grep -n "const lbl=\|Zielkategorie im Aufbau\|Status: im Aufbau\|class='zstat" index.html` vor Bearbeitung erneut ausführen.
 
-**Wichtig — bewusster Scope-Cut (im Review ggf. gegenprüfen):** Die Netzwerk-Landkarte (`zmap`/`networkDot()` [index.html:5166-5168](../../../index.html#L5166)/Map-Legende [index.html:5199](../../../index.html#L5199)) färbt Punkte weiterhin dreistufig nach `z.status` (aktiv/aufbau/ziel) — **das bleibt in diesem Task unangetastet**. Die Spec nennt `networkDot()` zwar als „dieselbe Trichotomie" im Ist-Teil, das Soll beschreibt aber ausdrücklich nur die Kartenliste (`zgrid`) als binär; `z.status` bleibt zusätzlich als Datenfeld erhalten (additiv-Regel — wird an anderer Stelle evtl. noch gelesen). Wird die Landkarte in einer späteren Runde ebenfalls vereinheitlicht, ist das eine eigene Entscheidung.
+**Korrektur nach Nutzer-Feedback (Landkarte NICHT ausgenommen):** Der erste Entwurf dieses Tasks führte die Netzwerk-Landkarte (`zmap`/`networkDot()`/Map-Legende/Route-Strip-Kachel) als bewussten Scope-Cut — das war falsch. Der Nutzer hat explizit moniert, dass die Dreistufigkeit noch sichtbar ist. Das Vokabular **und** die Dreistufigkeit müssen überall aus der sichtbaren Oberfläche verschwinden, auch aus der Landkarte. `z.status` bleibt als Datenfeld erhalten (additiv-Regel, wird evtl. an anderer Stelle noch gelesen) — nur die visuelle Auswertung in `networkDot()`/Legende/Route-Strip wird binär (siehe zusätzliche Schritte unten).
 
 **Schritte:**
 - [ ] `grep -n "const lbl=\|Zielkategorie im Aufbau\|Status: im Aufbau\|class='zstat" index.html` — Zeilen neu bestätigen.
@@ -252,11 +252,30 @@ document.getElementById("faNaechste").innerHTML="<div class='kicker'>Nächste Au
 - [ ] `kpRender()`-Select (Zeile 4971): Optionen „Status: im Aufbau"/„Status: Ziel" entfernen, nur „Status: aktiv"/„Status: alle" behalten (Werte/Vergleichslogik entsprechend anpassen, falls der Select sonst auf inzwischen nicht mehr existierende Optionswerte prüft — `grep -n "_kp.status" index.html` gegenprüfen).
 - [ ] Empty-State-Karte (Zeile 5227): Text „Zielkategorie" / „Zielpartner recherchieren, Kontaktquelle erfassen und ersten SOP-Schritt anlegen." durch neutrale Formulierung ersetzen, z. B. „Noch keine aktiven Zuweiser in dieser Kategorie" / „Kontakt herstellen und ersten Fall verzeichnen."; `class='zcard ziel'`/`class='zstat ziel'` in diesem Markup auf `class='zcard'` (ohne `ziel`-Modifier) reduzieren.
 - [ ] Nach obigen Änderungen erneut `grep -n "\.zstat" index.html` ausführen — sind nur noch CSS-Definitionen (keine Emission mehr) übrig, sind folgende Regeln jetzt verwaist und können entfernt werden: `.zstat`-Basisregel + `.zstat.aktiv`/`.aufbau`/`.ziel` (Stand Planerstellung [index.html:395-398](../../../index.html#L395)), Override-Block (Stand Planerstellung [index.html:1775](../../../index.html#L1775)/[1779](../../../index.html#L1779)), zweiter Override-Block (Stand Planerstellung [index.html:2637](../../../index.html#L2637)). Ebenso `.zcard.ziel` (Stand Planerstellung [index.html:394](../../../index.html#L394)/[2635](../../../index.html#L2635)) — **`.zcard` selbst (ohne `.ziel`) bleibt**, wird weiterhin für jede Karte gebraucht. Vor dem Löschen jeweils per `grep` bestätigen, dass wirklich keine Emission mehr existiert — nicht blind nach Zeilennummer löschen, da sich Zeilen durch vorherige Tasks verschoben haben.
-- [ ] Standard-Verifikation.
+- [ ] **Landkarte binär — `networkDot(z,i)`** ([index.html:5166-5168](../../../index.html#L5166), per `grep -n "function networkDot" index.html` neu bestätigen): Farblogik von dreistufig auf binär umstellen, bestehende Farbwerte wiederverwenden (keine neuen erfinden):
+```js
+// Ist: const color=z.status==="aktiv"?"#2E5C4F":z.status==="aufbau"?"#B99149":"#A19C8C";
+const color=z.faelle>=1?"#2E5C4F":"#A19C8C";
+```
+  Jade `#2E5C4F` für aktive Zuweiser (`faelle>=1` — dieselbe Definition wie überall sonst in diesem Punkt), gedämpftes Taupe/Grau `#A19C8C` (bereits vorhandener Wert, bisher „Zielkontakt") für potenzielle Kontakte. Gold `#B99149` (bisher „im Aufbau") entfällt vollständig aus der Landkarte.
+- [ ] **Map-Legende** (Zeile 5199, Stand Planerstellung; per `grep -n "map-legend" index.html` neu bestätigen): dritten Eintrag entfernen, zweiten Eintrag umbenennen und nur bei eingeblendetem Archiv zeigen (ohne Archiv-Toggle ist ohnehin kein Taupe-Punkt auf der Karte sichtbar, siehe `filtered`-Zuweisung Zeile 5187):
+```js
+// Ist: +"</svg><div class='map-legend'><span><i style='background:#2E5C4F'></i>aktiv</span><span><i style='background:#B99149'></i>im Aufbau</span><span><i style='background:#A19C8C'></i>Zielkontakt</span><span>Punktgröße = Fälle</span></div>"
++"</svg><div class='map-legend'><span><i style='background:#2E5C4F'></i>aktiv</span>"
++(zArchivAnzeigen?"<span><i style='background:#A19C8C'></i>potenziell (Archiv)</span>":"")
++"<span>Punktgröße = Fälle</span></div>"
+```
+- [ ] **Route-Strip-Kachel „Aufbau / Ziel"** (Zeile 5205, Stand Planerstellung): auf „Potenzielle Kontakte" umstellen, gespeist aus dem bereits vorhandenen `archivCount` (Zeile 5186: `filtered.filter(z=>z.faelle===0).length`, zählt unabhängig vom Archiv-Toggle) statt aus `aufbau+ziel`:
+```js
+// Ist: +"<div class='route-card'><div class='rlabel'>Aufbau / Ziel</div><div class='rvalue num'>"+(aufbau+ziel)+"</div><div class='rnote'>nächste Schritte</div></div></div>"
++"<div class='route-card'><div class='rlabel'>Potenzielle Kontakte</div><div class='rvalue num'>"+archivCount+"</div><div class='rnote'>im Archiv</div></div></div>"
+```
+- [ ] Die dadurch verwaisten `const aufbau=filtered.filter(z=>z.status==="aufbau").length;`/`const ziel=filtered.filter(z=>z.status==="ziel").length;` (Zeilen 5189-5190, Stand Planerstellung — per `grep -n "const aufbau=\|const ziel=" index.html` neu bestätigen und erst löschen, wenn keine andere Verwendung mehr existiert) entfernen. `const aktiv=filtered.filter(z=>z.status==="aktiv").length;` (Zeile 5188) **bleibt unverändert** — speist weiterhin die separate „Aktiv"-Kachel, die nicht Teil dieser Korrektur ist.
+- [ ] Standard-Verifikation, inkl. Landkarte bei 390px (Legende darf nicht umbrechen) UND 1440px.
 
-**Sichtprüfung:** In der Zuweiser-Ansicht (Kategorie-Filter, Landkarte, Kartenliste) taucht der Text „Im Aufbau" oder „Ziel-Partner"/„Zielkategorie" nirgends mehr auf — die Landkarte selbst zeigt weiterhin dreifarbige Punkte (bewusst unverändert, siehe Scope-Cut-Hinweis oben).
+**Sichtprüfung:** In der Zuweiser-Ansicht (Kategorie-Filter, Landkarte, Legende, Route-Strip, Kartenliste) taucht der Text „Im Aufbau"/„Ziel-Partner"/„Zielkategorie"/„Aufbau / Ziel" nirgends mehr auf, und die Landkarte zeigt nur noch zwei Punktfarben (Jade = aktiv, Taupe = potenziell, nur bei eingeblendetem Archiv sichtbar) statt dreier.
 
-**Commit:** `refactor: Zuweiser-Vokabular „Im Aufbau"/„Ziel-Partner" aus der Oberfläche entfernt (Punkt 4)`
+**Commit:** `refactor: Zuweiser-Vokabular „Im Aufbau"/„Ziel-Partner" aus der gesamten Oberfläche entfernt, inkl. Landkarte (Punkt 4)`
 
 ---
 
@@ -611,6 +630,6 @@ Sequentiell in Phasen-Reihenfolge 1→2→3→4→5→6→7 ausführen (eine Dat
 - Kein neuer Radar-eigener Datentyp und keine neue Detail-Akte für Anlässe — `arCard()`, `anlaesse()`, `AR_TYP`/`AR_FOTO` werden verlagert und wiederverwendet, nicht neu erfunden.
 - Keine neuen Keyframes — die bestehenden 9 müssen ausreichen; neue visuelle Zustände (Stepper „zukünftig", Leitfaden-Collapse, Protokolle-Pane-Toggle) sind statische CSS-Regeln bzw. natives `<details>`, keine Animation.
 - Keine Änderung an der Matrix-Kachel-Darstellung selbst (Task 5.2s Änderung an Zeile 4170 betrifft nur das Routen-Datenfeld, nicht die `.mx-*`-Präsentation).
-- Die Netzwerk-Landkarte (`zmap`/`networkDot()`) bleibt dreifarbig nach `z.status` — bewusster Scope-Cut in Task 4.1, siehe dortige Anmerkung, kein Versehen.
+- Die Netzwerk-Landkarte (`zmap`/`networkDot()`) wird in Task 4.1 auf binäre Punktfarben (Jade/Taupe) umgestellt — kein Scope-Cut mehr (Korrektur nach Nutzer-Feedback, siehe Anmerkung dort); `z.status` selbst bleibt als Datenfeld erhalten, nur die visuelle Auswertung ändert sich.
 - Keine Erweiterung der `kind==="eingang"`/`"intern"`/`typ==="kosten"`-Zweige in `mtAbschliessen()` um eine Fall-Kopplung — Task 7.3 koppelt ausschließlich den generischen (Status→Aufgabe-)Zweig.
 - Jede Änderung bei 390px UND 1440px verifizieren, 0 Console-Errors, reduced-motion-safe, nur synthetische Demo-Daten, `escapeHtml` für dynamische Inhalte.
