@@ -3112,6 +3112,24 @@ summary.rk::-webkit-details-marker{display:none}
 .pa-fold{margin-top:14px}
 .pa-fold>summary::after{content:"›";display:inline-block;margin-left:6px;font-size:15px;line-height:1;color:var(--faint);transition:transform .2s}
 .pa-fold[open]>summary::after{transform:rotate(90deg)}
+/* Task 2.1 (Punkt 4): .ts-* — Team-Cockpit (KPI-Zeile + Belastungs-Balken + Achse-Aufteilung) */
+.ts-kpis{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+.ts-kpi{flex:1;min-width:120px;background:var(--paper2);border:1px solid var(--hair);border-radius:13px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi);padding:11px 15px;position:relative;overflow:hidden}
+.ts-kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brass)}
+.ts-kpi.jetzt::before{background:var(--terra)}
+.ts-kpi-n{font:700 23px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
+.ts-kpi.jetzt .ts-kpi-n{color:var(--terra)}
+.ts-kpi-l{font:600 11px/1.1 Inter;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.ts-bal{display:flex;flex-direction:column;gap:8px;margin:0 0 16px}
+.ts-bal-row{display:flex;align-items:center;gap:10px}
+.ts-bal-name{flex:0 0 128px;font-size:12.5px;color:var(--ink-soft);font-weight:600}
+.ts-bal-track{flex:1;height:8px;border-radius:99px;background:var(--cream2);position:relative;overflow:hidden}
+.ts-bal-fill{height:100%;border-radius:99px;background:var(--sage-deep)}
+.ts-bal-ueb{position:absolute;right:0;top:0;bottom:0;width:4px;background:var(--terra)}
+.ts-bal-n{flex:0 0 22px;text-align:right;font:700 15px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
+.ts-achse{display:flex;gap:8px;flex-wrap:wrap}
+.ts-achse-chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:6px 11px;border-radius:99px;border:1px solid var(--hair);background:var(--paper)}
+.ts-achse-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -5580,6 +5598,33 @@ function kpiCountUp(){
 /* ---------- Render: Auswertung ---------- */
 let teamFilter="alle";
 function setTeamFilter(e){teamFilter=(teamFilter===e?"alle":e);renderTeam();}
+function teamCockpitHtml(openCases){
+ const heuteFaellig=openCases.filter(f=>f.frist===dstr(0)).length;
+ const ueberf=openCases.filter(f=>f.frist&&new Date(f.frist)<heute).length;
+ const avg=(openCases.length/TEAM.length).toFixed(1);
+ const kpis="<div class='ts-kpis'>"
+   +"<div class='ts-kpi'><div class='ts-kpi-n num'>"+openCases.length+"</div><div class='ts-kpi-l'>Offene Fälle gesamt</div></div>"
+   +"<div class='ts-kpi'><div class='ts-kpi-n num'>"+heuteFaellig+"</div><div class='ts-kpi-l'>Heute fällig</div></div>"
+   +"<div class='ts-kpi"+(ueberf?" jetzt":"")+"'><div class='ts-kpi-n num'>"+ueberf+"</div><div class='ts-kpi-l'>Überfällig</div></div>"
+   +"<div class='ts-kpi'><div class='ts-kpi-n num'>"+avg+"</div><div class='ts-kpi-l'>Ø offene Fälle / Kopf</div></div>"
+   +"</div>";
+ const counts=TEAM.map(t=>openCases.filter(f=>f.owner===t).length);
+ const maxN=Math.max(1,...counts);
+ const bal="<div class='ts-bal'>"+TEAM.map((t,i)=>{
+   const n=counts[i];
+   const ueb=openCases.filter(f=>f.owner===t&&f.frist&&new Date(f.frist)<heute).length;
+   return "<div class='ts-bal-row'><span class='ts-bal-name'>"+escapeHtml(t)+"</span>"
+     +"<div class='ts-bal-track'><div class='ts-bal-fill' style='width:"+(n/maxN*100)+"%'></div>"
+     +(ueb?"<div class='ts-bal-ueb'></div>":"")+"</div>"
+     +"<span class='ts-bal-n num'>"+n+"</span></div>";
+ }).join("")+"</div>";
+ const achsen=[...new Set(openCases.map(f=>f.achse))];
+ const ach="<div class='ts-achse'>"+achsen.map(a=>{
+   const n=openCases.filter(f=>f.achse===a).length;
+   return "<span class='ts-achse-chip'><span class='ts-achse-dot' style='background:"+(ACHSE_COL[a]||"var(--unklar)")+"'></span>"+escapeHtml(a)+" <b class='num'>"+n+"</b></span>";
+ }).join("")+"</div>";
+ return kpis+bal+ach;
+}
 function renderTeam(){
  const el=document.getElementById("teamGrid"); if(!el)return;
  const offen=f=>!["Aufgenommen","Verloren"].includes(f.status);
@@ -5604,6 +5649,7 @@ function renderTeam(){
      +"<span class='db-c-chev'>›</span></button>").join("")||"<p class='empty'>Keine offenen Aufgaben.</p>";
  el.innerHTML=
    "<div class='tm-intake'><div><span class='num'>"+eingangOffen+"</span> offene Anfragen im zentralen Eingang · warten auf Zuordnung</div><button class='btn-ghost btn-sm' onclick='go(\"faelle\",\"anfragen\")'>Zum Eingang ›</button></div>"
+   +teamCockpitHtml(openCases)
    +"<div class='tm-cards'>"+cards+"</div>"
    +"<div class='tm-listhead'>Offene Aufgaben"+(teamFilter!=="alle"?" · "+escapeHtml(teamFilter)+" <button class='tm-clear' onclick='setTeamFilter(\""+teamFilter+"\")'>alle zeigen</button>":"")+"</div>"
    +"<div class='tm-list'>"+list+"</div>";
