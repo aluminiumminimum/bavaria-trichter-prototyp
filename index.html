@@ -299,8 +299,6 @@
     background:var(--brass-soft);border:1px solid var(--brass-line);border-radius:6px;padding:2px 8px}
   .mtime{font-size:13px;color:var(--faint)}
   .mail .btn-brass{margin-top:11px}
-  .eingang-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .eingang-owner{font-size:13px;padding:8px 10px;border:1px solid var(--hair);border-radius:9px;min-height:38px;background:var(--paper2);color:var(--ink)}
   .ok-chip{display:inline-block;margin-top:11px;color:var(--sage-deep);font-weight:600;font-size:14px}
   .typ-chip{font:600 10px/1 Inter;padding:3px 7px;border-radius:99px;margin-left:6px}
   .typ-chip.qual{background:var(--sage-soft);color:var(--sage-deep)}.typ-chip.passiv{background:var(--raised);color:var(--muted)}
@@ -1423,12 +1421,7 @@ label{font-size:12px;letter-spacing:.08em}
 .mrow .mmeta{margin-top:4px}
 .mrow .ok-chip.mini{margin-top:0;font-size:12px}
 .mail-chev{flex-shrink:0;color:var(--faint);font-size:19px;line-height:1;transition:transform .2s}
-.mail.open .mail-chev{transform:rotate(90deg)}
-.mmore{display:none;padding:0 16px 14px 71px}
-.mail.open .mmore{display:block}
-.mmore .mtxt{margin-top:0;margin-bottom:12px}
 #inbox .mail.done{opacity:.62}
-#inbox .mail.done.open{opacity:1}
 #view-faelle .sim-cta{width:auto;display:inline-block;margin:8px 0 0}
 /* --- Phase 5: Board-Zonen (3 Trichter-Stufen + Abgeschlossen-Leiste) --- */
 #board.board{gap:20px}
@@ -1867,8 +1860,6 @@ body.ma-mode #view-meintag{display:block}
    Fristen/Meta in Fragment Mono, Zustände „stockt/überfällig" strikt in der --alert-Familie.
    Source-Order-Overrides: gewinnen über die Basisregeln oben, greifen NUR Fälle-Scopes. */
 
-/* — Eingang: aufgeklappter Mail-Body als eigene Elevationsstufe, Meta/Zeit in Mono — */
-#inbox .mail.open .mmore{background:var(--cream2)}
 #inbox .mtime,#inbox .mmeta .chtag{font-family:"Fragment Mono",ui-monospace,monospace;letter-spacing:.1em}
 #inbox .mtime{text-transform:uppercase}
 
@@ -2466,9 +2457,6 @@ body{accent-color:var(--brass)}
 /* Typ-Chips: qualifiziert = Gold-Linien-Plakette (WARTET-Familie), passiv bleibt stumm */
 #inbox .typ-chip{border-radius:2px}
 #inbox .typ-chip.qual{background:transparent;border:1px solid var(--gold-soft);color:var(--brass-deep)}
-/* Aufgeklappte Vorschau: Papier-Einzug mit Jade-Haarlinie links */
-#inbox .mmore .mtxt{background:var(--cream2);border-left:2px solid var(--jade-hair);
-  padding:10px 12px;border-radius:0 3px 3px 0}
 
 /* — (J4.2) EINE CTA-Sprache in den Arbeitsflächen: Primär = Jade-Lack mit Gold-Pinstripe (e5d .btn-p),
    Sekundär = goldgerahmter Ghost (wie J3 Anlass-Gesten). — */
@@ -3033,7 +3021,7 @@ body{accent-color:var(--brass)}
 }
 /* Task 2.1 (Punkt 1): Eingang-Triage-Karte (Wer/Woher/Was/Wie-konkret) — Doppelrahmen-Etikette
    analog #view-fallakte .chap (Gold-Eckwinkel + Jade-Hairline), eigener Namespace (.eg-*);
-   der bestehende .mail/.mmore-Wrapper der Eingangs-Karte selbst bleibt unverändert. */
+   der .mail-Wrapper besteht als kompakte, nicht mehr aufklappbare Zeile fort (Punkt 1, Runde 4). */
 .eg-triage{position:relative;background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;
   padding:12px 14px;margin-bottom:12px;box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint)}
 .eg-triage::before,.eg-triage::after{content:"";position:absolute;width:8px;height:8px;pointer-events:none;opacity:.6}
@@ -3044,8 +3032,6 @@ body{accent-color:var(--brass)}
 .eg-v{font-size:13.5px;color:var(--ink-soft);display:flex;align-items:center;gap:7px;flex-wrap:wrap;line-height:1.4}
 .eg-v .ava{width:22px;height:22px;font-size:10px;flex-shrink:0}
 .eg-grund{color:var(--muted);font-size:12px}
-.eingang-vorschlag{flex-basis:100%;font-size:12px;color:var(--muted)}
-.eingang-vorschlag b{color:var(--brass-deep);font-weight:600}
 /* Task 4.2 (Punkt 4): Zuweiser-Karte — Rang-Badge (großes Serif-Numeral) + 3-Monats-Sparkline.
    Eigener Namespace .zw-* (analog .zw-portal); .rsp-chart/.rsp-legend (Cofounder Reha-Charts)
    nur als Strukturvorbild gelesen, nicht wiederverwendet. */
@@ -4763,7 +4749,6 @@ function renderEingang(){
     return "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"+head+"</article>";
   }).join("");
 }
-function toggleMail(btn){const a=btn.closest(".mail");if(a)a.classList.toggle("open");}
 function uebernehmen(id,owner){
   const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
   owner=owner||TEAM[0];
