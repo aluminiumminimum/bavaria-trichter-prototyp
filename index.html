@@ -1532,9 +1532,6 @@ label{font-size:12px;letter-spacing:.08em}
 }
 .pa-head .st-row{font-size:12px}
 /* ---------- Baustein B · Anlass-Radar (.ar-*) ---------- */
-#anlassChap{grid-column:1/-1}
-.ar-head{display:flex;align-items:baseline;gap:12px;margin:2px 0 12px}
-.ar-sum{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:19px;color:var(--ink-soft)}
 .ar-more{margin-left:auto;background:none;border:none;cursor:pointer;font:600 12px/1 Inter;color:var(--brass-deep);letter-spacing:.03em;padding:6px 2px}
 .ar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
 .ar-grid .radar-card{height:100%;display:flex;flex-direction:column}
@@ -1769,7 +1766,7 @@ body.ma-mode #view-meintag{display:block}
 
 /* (4) PETROL = informativ/strukturell. */
 .typ-chip.passiv{background:var(--petrol-soft);color:var(--petrol);border:1px solid rgba(87,160,143,.35)}
-#sub-netzwerk-kontakte .kicker,#sub-netzwerk-radar .kicker{color:var(--petrol)}
+#sub-netzwerk-kontakte .kicker{color:var(--petrol)}
 #view-konzept .kicker,#view-auswertung .kicker{color:var(--petrol)}
 #mtGutChap .kicker{color:var(--petrol)}
 
@@ -2426,7 +2423,6 @@ body{accent-color:var(--brass)}
   box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint)}
 .ar-rc>.au-photo::after{border-radius:0;background:linear-gradient(180deg,rgba(255,248,234,.04),rgba(18,59,51,.12))}
 .ar-rc>.au-photo img{filter:saturate(.85) sepia(.08)}
-#anlassChap .btn-ghost{background:transparent;border-color:var(--gold-soft);color:var(--brass-deep)}
 .chtag{background:transparent;border:1px solid var(--gold-soft);color:var(--brass-deep);border-radius:2px}
 .wrow{border-bottom-color:var(--hair2)}
 
@@ -3632,7 +3628,8 @@ body{accent-color:var(--brass)}
 
     <div class="chap hb-8" id="radarLine">
       <div class="kicker"><span class="au-chapnum">02</span>Radar · Beziehungen pflegen</div>
-      <button class="card lx-live rl-strip" onclick="go('netzwerk','radar')"><i class="lx-pulse"></i><b><span id="rlCount">–</span> Anlässe fällig</b> · Geburtstage, Wiederbedarf, Zuweiser-Kontakte<span class="lx-rt">RADAR ›</span></button>
+      <button class="card lx-live rl-strip" onclick="go('netzwerk','kontakte')"><i class="lx-pulse"></i><b><span id="rlCountPat">–</span> Anlässe fällig</b> · Geburtstage, Jubiläen, Wiederbedarf<span class="lx-rt">KONTAKTE ›</span></button>
+      <button class="card lx-live rl-strip" onclick="go('netzwerk','zuweiser')"><i class="lx-pulse"></i><b><span id="rlCountZuw">–</span> Zuweiser warten</b> · Kontaktpflege fällig<span class="lx-rt">ZUWEISER ›</span></button>
     </div>
 
     <!-- Row D · Belegung (span 8) + Panorama-Suite (span 4, hoch) -->
@@ -3695,7 +3692,6 @@ body{accent-color:var(--brass)}
       <h1>Netzwerk</h1>
       <div class="segments" role="tablist" aria-label="Netzwerk-Bereiche">
         <button class="seg active" data-seg="zuweiser" role="tab">Zuweiser <b class="segn num" id="segCntZuweiser"></b></button>
-        <button class="seg" data-seg="radar" role="tab">Radar</button>
         <button class="seg" data-seg="kontakte" role="tab">Kontakte <b class="segn num" id="segCntBestand"></b></button>
       </div>
     </header>
@@ -3719,21 +3715,14 @@ body{accent-color:var(--brass)}
       <figure class="au-photo au-photo--petrol"><img src="assets/kb-header.jpg" alt="" loading="lazy"><figcaption>Bad Kissingen · Luftbild</figcaption></figure>
       <div class="zgrid" id="zgrid"></div>
     </div>
-    <div class="sub" id="sub-netzwerk-radar">
-      <div class="kicker">Radar &amp; Anlässe</div>
-      <div id="radarHost"></div>
-      <div class="chap" id="anlassChap">
-        <div class="kicker">Anlässe · Beziehungen pflegen</div>
-        <div class="ar-head"><span class="ar-sum" id="anlassSum"></span></div>
-        <div class="ar-grid" id="anlassList"></div>
-      </div>
-    </div>
     <div class="sub" id="sub-netzwerk-kontakte">
       <div class="kicker">Kontakte</div>
       <h2 class="hero-h2">Kontakte vor dem Fall.</h2>
       <p class="db-intro">Jeder Kontakt ist eingestuft und läuft automatisch in seiner Strecke. Wird er konkret, wird er zum Fall.</p>
       <figure class="au-photo au-photo--gold"><img src="assets/kb-garten.webp" alt="" loading="lazy"><figcaption>Genuss · Klinik Bavaria</figcaption></figure>
       <div id="tierFilter"></div>
+      <div class="kicker">Anlässe</div>
+      <div id="radarHost"></div>
       <div id="btable"></div>
       <p class="db-foot">Aktive Ansprache nur mit dokumentierter Einwilligung.</p>
     </div>
@@ -4902,14 +4891,9 @@ function arCard(a,i){
   +"</div>";
 }
 function renderAnlaesse(){
- const el=document.getElementById("anlassList");if(!el)return;
- const list=anlaesse();
- const nG=list.filter(a=>a.typ==="geburtstag").length,nJ=list.filter(a=>a.typ==="jubilaeum").length,nW=list.filter(a=>a.typ==="wiederbedarf").length,nZ=list.filter(a=>a.typ==="zuweiser"||a.typ==="zuweiser-trend").length;
- const sum=document.getElementById("anlassSum");
- if(sum)sum.textContent=[nG?nG+(nG===1?" Geburtstag":" Geburtstage"):null,nJ?nJ+(nJ===1?" Jubiläum":" Jubiläen"):null,nW?nW+"× Wiederbedarf":null,nZ?nZ+(nZ===1?" Zuweiser wartet":" Zuweiser warten"):null].filter(Boolean).join(" · ")||"Keine offenen Anlässe";
- const rl=document.getElementById("rlCount");if(rl)rl.textContent=list.length;
- el.innerHTML=list.slice(0,3).map(arCard).join("")||"<p class='empty'>Alles gepflegt — keine offenen Anlässe.</p>";
- /* Foto-Strip auf JEDER Karte mit AR_FOTO-Eintrag (geburtstag/wiederbedarf/zuweiser) */
+ const pat=anlaesse("patienten"), zuw=anlaesse("zuweiser");
+ const rp=document.getElementById("rlCountPat");if(rp)rp.textContent=pat.length;
+ const rz=document.getElementById("rlCountZuw");if(rz)rz.textContent=zuw.length;
 }
 /* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
 const FC_BETTEN=7; // Komfort-Kontingent (Privat-/Selbstzahler + Komfort-Aufzahler)
@@ -6429,7 +6413,7 @@ function go(dest,seg){
     if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
     document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
     document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
-    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Radar · Kontakte"],auswertung:["Auswertung","Quellen · Engpässe · Team · Fachbereiche"],konzept:["Konzept","Idee · Matrix · SOPs"],fallakte:["Fallakte","Vollständige Übersicht"]};
+    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Kontakte"],auswertung:["Auswertung","Quellen · Engpässe · Team · Fachbereiche"],konzept:["Konzept","Idee · Matrix · SOPs"],fallakte:["Fallakte","Vollständige Übersicht"]};
     const _t=TITLES[dest]||TITLES.heute;
     const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
     const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
