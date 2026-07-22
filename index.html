@@ -3036,6 +3036,18 @@ body{accent-color:var(--brass)}
 #view-fallakte .pa-row{font-size:14.5px;padding:9px 0}
 #view-fallakte .pa-k{font-size:11.5px;flex-basis:150px}
 #view-fallakte .pa-v{font-size:14.5px}
+/* Task 3.1 (Punkt 3): Fallakte-Dashboard — Kennzahl-Kacheln (Muster analog .rs-kpi/.g-stat,
+   große Serif-/Statuswerte statt 10px-Label-Listen) + zweispaltiges Layout ab 1024px.
+   #faKacheln/#faNaechste(.fh-hero, wiederverwendet aus Task 1.3) laufen bewusst außerhalb
+   von .fa-cols volle Breite; darunter Werdegang links, restliche Chaps rechts gestapelt. */
+.fa-kacheln{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:18px}
+.fa-kachel{background:var(--paper2);border:1px solid var(--hair2);border-radius:8px;padding:14px 16px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.fa-kachel .rk{display:block;font:700 10.5px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep)}
+@media(min-width:1024px){
+  .fa-kacheln{grid-template-columns:repeat(3,1fr)}
+  .fa-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+}
 /* Task 2.1 (Punkt 1): Eingang-Triage-Karte (Wer/Woher/Was/Wie-konkret) — Doppelrahmen-Etikette
    analog #view-fallakte .chap (Gold-Eckwinkel + Jade-Hairline), eigener Namespace (.eg-*);
    der bestehende .mail/.mmore-Wrapper der Eingangs-Karte selbst bleibt unverändert. */
@@ -3945,27 +3957,36 @@ body{accent-color:var(--brass)}
       <div class="kicker">Fallakte · Vollansicht</div>
       <h1><span class="ava" id="faAva"></span> <span id="faName"></span></h1>
       <p class="lblline" id="faSub"></p>
+      <div class="pa-head" id="faHeadMeta"></div>
       <button class="btn-ghost btn-sm" type="button" onclick="go('faelle','board')">‹ Zurück zum Board</button>
     </header>
-    <div class="chap">
-      <h2 class="chap-h2">Übersicht</h2>
-      <div id="faUebersicht"></div>
-    </div>
-    <div class="chap">
-      <h2 class="chap-h2">Werdegang</h2>
-      <div id="faWerdegang"></div>
-    </div>
-    <div class="chap">
-      <h2 class="chap-h2">Medizinische Kurzfelder</h2>
-      <div id="faMedizin"></div>
-    </div>
-    <div class="chap">
-      <h2 class="chap-h2">Abrechnung</h2>
-      <div id="faAbrechnung" class="kz-block"></div>
-    </div>
-    <div class="chap">
-      <h2 class="chap-h2">Dokumente</h2>
-      <div id="faDokumente"></div>
+    <div class="fa-kacheln" id="faKacheln"></div>
+    <div class="fh-hero" id="faNaechste"></div>
+    <div class="fa-cols">
+      <div class="fa-col-l">
+        <div class="chap">
+          <h2 class="chap-h2">Werdegang</h2>
+          <div id="faWerdegang"></div>
+        </div>
+      </div>
+      <div class="fa-col-r">
+        <div class="chap">
+          <h2 class="chap-h2">Übersicht</h2>
+          <div id="faUebersicht"></div>
+        </div>
+        <div class="chap">
+          <h2 class="chap-h2">Medizinische Kurzfelder</h2>
+          <div id="faMedizin"></div>
+        </div>
+        <div class="chap">
+          <h2 class="chap-h2">Abrechnung</h2>
+          <div id="faAbrechnung" class="kz-block"></div>
+        </div>
+        <div class="chap">
+          <h2 class="chap-h2">Dokumente</h2>
+          <div id="faDokumente"></div>
+        </div>
+      </div>
     </div>
   </section>
 </main>
@@ -6470,12 +6491,13 @@ function renderFallakte(){
   document.getElementById("faName").textContent=f.name+(f.alter?" ("+f.alter+")":"");
   document.getElementById("faSub").textContent=f.achse+" · "+f.kt+" · "+f.quelle+" · Kanal: "+f.kanal;
   document.getElementById("faAva").textContent=initialen(f.name);
+  document.getElementById("faHeadMeta").innerHTML="<span class='pill-a' style='background:"+(ACHSE_COL[f.achse]||"var(--unklar)")+"'>"+escapeHtml(f.achse)+"</span>"+sterneHtml(sterneVon({personId:f.personId}));
+  document.getElementById("faKacheln").innerHTML=
+     "<div class='fa-kachel'><span class='rk'>Frist</span><span class='due "+fristKlasse(f.frist)+"'>"+(f.frist?escapeHtml(fristText(f.frist)):"—")+"</span></div>"
+    +"<div class='fa-kachel'>"+kzChain(f)+"</div>"
+    +"<div class='fa-kachel'>"+sterneHtml(sterneVon({personId:f.personId}))+"</div>";
+  document.getElementById("faNaechste").innerHTML="<div class='kicker'>Nächste Aufgabe</div>"+aufgabenHeroHtml(f);
   document.getElementById("faUebersicht").innerHTML="<div class='pa-meta'>"
-    +"<div class='pa-row'><span class='pa-k'>Status</span><span class='pa-v'>"+escapeHtml(f.status)+"</span></div>"
-    +"<div class='pa-row'><span class='pa-k'>Verantwortlich</span><span class='pa-v'>"+escapeHtml(f.owner)+"</span></div>"
-    +"<div class='pa-row'><span class='pa-k'>Nächste Aufgabe</span><span class='pa-v'>"+escapeHtml(f.aufgabe||"—")+"</span></div>"
-    +"<div class='pa-row'><span class='pa-k'>Frist</span><span class='pa-v'>"+(f.frist?escapeHtml(fristText(f.frist)):"—")+"</span></div>"
-    +"<div class='pa-row'><span class='pa-k'>Kostenträger</span><span class='pa-v'>"+escapeHtml(f.kt)+"</span></div>"
     +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(f.consent)+"</span></div>"
     +(f.saluto?"<div class='pa-row'><span class='pa-k'>SalutoCare</span><span class='pa-v'>★ Premium-Option geeignet</span></div>":"")
     +"</div>"+paAkteSlot(f.personId);
