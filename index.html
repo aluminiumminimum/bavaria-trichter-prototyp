@@ -3079,6 +3079,10 @@ body{accent-color:var(--brass)}
    summary.rk nutzt bestehende .rk-Styling (Etiketten-Label), List-Marker versteckt. */
 summary.rk{cursor:pointer;list-style:none}
 summary.rk::-webkit-details-marker{display:none}
+/* R4 Task 1.1 Nachtrag: rohe Checklisten-Checkboxen in #dArbeit (Anreise-Zweig) kompakt inline,
+   analog .docs input — sonst greift die globale input{width:100%}-Regel. */
+#dArbeit label{display:flex;gap:10px;align-items:center;font:500 14.5px/1.4 Inter,sans-serif;color:var(--ink);text-transform:none;letter-spacing:0;min-height:44px;margin:0}
+#dArbeit input[type=checkbox]{width:18px;height:18px;min-height:0;accent-color:var(--brass)}
 </style>
 </head>
 <body>
