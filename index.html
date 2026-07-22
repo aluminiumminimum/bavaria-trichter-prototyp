@@ -3075,6 +3075,10 @@ body{accent-color:var(--brass)}
 .mt-sfall{padding:14px 22px;border-bottom:1px solid var(--hair)}
 .mt-sfstatus{font-size:12px;color:var(--muted);margin-top:2px}
 .mt-sfall .timeline{margin-top:10px}
+/* Task 7.2 (Punkt 8): Leitfaden-Collapse — natives <details> statt dauerhaft sichtbar.
+   summary.rk nutzt bestehende .rk-Styling (Etiketten-Label), List-Marker versteckt. */
+summary.rk{cursor:pointer;list-style:none}
+summary.rk::-webkit-details-marker{display:none}
 </style>
 </head>
 <body>
@@ -6386,7 +6390,7 @@ function mtSheetRender(){
   +"<div class='radar-prog'><span class='rk'>"+escapeHtml(MT_NOTIZ_LABEL[item.typ]||"Notiz")+"</span><textarea id='mtNotiz' class='rsz-textarea' placeholder='Was wurde besprochen / vereinbart?' oninput=\"document.getElementById('mtAbschlBtn').disabled=!this.value.trim()\"></textarea></div>";
  const body="<div class='radar-prog'><span class='rk'>Warum jetzt</span><p>"+mtWarum(item)+"</p></div>"
    +"<div class='radar-prog'><span class='rk'>So gehst du vor</span><ol class='mt-ssteps'>"+schritte.map(x=>"<li>"+escapeHtml(x)+"</li>").join("")+"</ol></div>"
-   +"<div class='radar-prog'><span class='rk'>Leitfaden</span><div class='mt-sleitfaden'>"+leitfaden.map(x=>"<p>"+escapeHtml(x)+"</p>").join("")+"</div></div>"
+   +"<details class='mt-sleitfaden-details'><summary class='rk'>Leitfaden</summary><div class='mt-sleitfaden'>"+leitfaden.map(x=>"<p>"+escapeHtml(x)+"</p>").join("")+"</div></details>"
    +notizBody;
  /* Task 7.1 (Punkt 8): Mini-Fallakte-Header — nur für Fall-Items (item.kind==="fall"), Achse/KT-Pills
     + Status + letzte 2 Verlaufseinträge (gleiches Rendermuster wie #dLog). */
