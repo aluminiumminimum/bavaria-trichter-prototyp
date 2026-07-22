@@ -464,9 +464,9 @@ function antwortenEingang(id,owner){
 
 **Lane:** `claude-implementer`
 
-**Dateien/Anker:** `grep -n "function toggleMail\|\.mail\.open\|\.mmore\|\.mail\.done\.open" index.html` vor Bearbeitung ausführen und alle Zeilenangaben neu bestätigen (Zeilen verschieben sich durch Task 2.1/2.2).
+**Dateien/Anker:** `grep -n "function toggleMail\|\.mail\.open\|\.mmore\|\.mail\.done\.open\|\.eingang-act\|\.eingang-owner\|\.eingang-vorschlag" index.html` vor Bearbeitung ausführen und alle Zeilenangaben neu bestätigen (Zeilen verschieben sich durch Task 2.1/2.2).
 
-**Ist (verifiziert, Stand Planerstellung — vollständige Liste, per grep selbst nachgezählt, geht über die im Spec explizit genannten drei Zeilen hinaus):** Nach Task 2.2 ruft keine Zeile mehr `toggleMail()` auf und keine Zeile erzeugt mehr ein `<div class="mmore">`-Element — jede CSS-Regel, die `.mmore` oder `.mail.open`/`.mail.done.open` referenziert, ist damit vollständig unerreichbar (nicht nur „selten benutzt", sondern zu 0% erreichbar):
+**Ist (verifiziert, Stand Planerstellung — vollständige Liste, per grep selbst nachgezählt und im Plan-Review um drei weitere Fundstellen ergänzt, geht über die im Spec explizit genannten drei Zeilen hinaus):** Nach Task 2.2 ruft keine Zeile mehr `toggleMail()` auf, keine Zeile erzeugt mehr ein `<div class="mmore">`-Element, und keine Zeile emittiert mehr `<select class='eingang-owner'>`/`.eingang-act`/`.eingang-vorschlag` (das gesamte alte Owner-Zuordnungs-Markup aus `renderEingang()` ist durch die `.egd-owner`-Chips in `#egDetail` ersetzt) — jede CSS-Regel, die eine dieser drei Klassen-Familien referenziert, ist damit vollständig unerreichbar (nicht nur „selten benutzt", sondern zu 0% erreichbar):
 - `.mail.open .mail-chev{transform:rotate(90deg)}` ([index.html:1426](../../../index.html#L1426))
 - `.mmore{display:none;padding:0 16px 14px 71px}` ([index.html:1427](../../../index.html#L1427)) — **selbst gefunden, nicht im Spec-Text**: Basisregel wird verwaist, weil kein `.mmore`-Element mehr existiert.
 - `.mail.open .mmore{display:block}` ([index.html:1428](../../../index.html#L1428))
@@ -474,6 +474,9 @@ function antwortenEingang(id,owner){
 - `#inbox .mail.done.open{opacity:1}` ([index.html:1431](../../../index.html#L1431)) — **selbst gefunden**: `.open` wird nach dieser Änderung nie mehr auf `.mail` gesetzt, diese Kombination ist damit unerreichbar.
 - `#inbox .mail.open .mmore{background:var(--cream2)}` ([index.html:1871](../../../index.html#L1871))
 - Kommentar + Regel `/* Aufgeklappte Vorschau: Papier-Einzug mit Jade-Haarlinie links */ #inbox .mmore .mtxt{background:var(--cream2);border-left:2px solid var(--jade-hair);padding:10px 12px;border-radius:0 3px 3px 0}` ([index.html:2469-2471](../../../index.html#L2469)) — **selbst gefunden**.
+- `.eingang-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}` ([index.html:302](../../../index.html#L302)) — **Plan-Review-Fund:** verwaist, weil Task 2.2 die komplette Owner-Zuordnungs-Zeile (Select + Vorschlag + Buttons) aus `renderEingang()` entfernt.
+- `.eingang-owner{font-size:13px;padding:8px 10px;border:1px solid var(--hair);border-radius:9px;min-height:38px;background:var(--paper2);color:var(--ink)}` ([index.html:303](../../../index.html#L303)) — **Plan-Review-Fund**, dieselbe Ursache: das `<select class='eingang-owner'>` existiert nach Task 2.2 nirgends mehr.
+- `.eingang-vorschlag{flex-basis:100%;font-size:12px;color:var(--muted)}` und `.eingang-vorschlag b{color:var(--brass-deep);font-weight:600}` ([index.html:3047-3048](../../../index.html#L3047)) — **Plan-Review-Fund**, dieselbe Ursache.
 - `function toggleMail(btn){const a=btn.closest(".mail");if(a)a.classList.toggle("open");}` — keine Aufrufstelle mehr im Code (`renderEingang()` ruft seit Task 2.2 `openEgDetail(m.id)` statt `toggleMail(this)`).
 
 **NICHT entfernen (bewusst geprüft, bleibt funktional):**
@@ -482,16 +485,16 @@ function antwortenEingang(id,owner){
 
 **Schritte:**
 
-- [ ] `grep -n "function toggleMail\|\.mail\.open\|\.mmore\|\.mail\.done\.open" index.html` — alle Fundstellen neu bestätigen, insbesondere dass wirklich **keine** verbleibende Aufrufstelle von `toggleMail(` mehr existiert (`grep -n "toggleMail(" index.html` sollte nur noch die Funktionsdefinition selbst zeigen).
+- [ ] `grep -n "function toggleMail\|\.mail\.open\|\.mmore\|\.mail\.done\.open\|\.eingang-act\|\.eingang-owner\|\.eingang-vorschlag" index.html` — alle Fundstellen neu bestätigen, insbesondere dass wirklich **keine** verbleibende Aufrufstelle von `toggleMail(` und keine verbleibende Emission von `.eingang-act`/`.eingang-owner`/`.eingang-vorschlag` mehr existiert (`grep -n "toggleMail(" index.html` sollte nur noch die Funktionsdefinition selbst zeigen).
 - [ ] `function toggleMail(btn){...}` komplett entfernen.
-- [ ] Die 6 oben gelisteten CSS-Regeln (1426, 1427, 1428, 1429, 1431, 1871, 2469-2471 inkl. Kommentarzeile) entfernen — Zeilen zuvor per grep neu lokalisieren, nicht blind nach den hier notierten Nummern löschen.
+- [ ] Die 10 oben gelisteten CSS-Regeln (1426, 1427, 1428, 1429, 1431, 1871, 2469-2471 inkl. Kommentarzeile, 302, 303, 3047-3048) entfernen — Zeilen zuvor per grep neu lokalisieren, nicht blind nach den hier notierten Nummern löschen.
 - [ ] **Stalen Kommentar korrigieren** ([index.html:3034-3036](../../../index.html#L3034), per `grep -n "der bestehende .mail/.mmore-Wrapper"` lokalisieren): Der Satz „der bestehende `.mail`/`.mmore`-Wrapper der Eingangs-Karte selbst bleibt unverändert." ist seit Task 2.2 falsch (der Wrapper wurde grundlegend vereinfacht) — Satz entfernen oder auf „der `.mail`-Wrapper besteht als kompakte, nicht mehr aufklappbare Zeile fort (Punkt 1, Runde 4)" korrigieren.
 - [ ] `grep -c "function "  index.html` vor/nach vergleichen — genau eine Funktion (`toggleMail`) weniger, sonst nichts.
 - [ ] Standard-Verifikation bei 390px UND 1440px.
 
-**Sichtprüfung:** Eingangs-Zeilen zeigen keinen rotierenden Chevron mehr und keinen Akkordeon-Effekt beim Klick (öffnen stattdessen `#egDetail`, aus Task 2.2); 0 Console-Errors; `grep -n "\.mmore\|toggleMail" index.html` liefert keine Treffer mehr außer ggf. im korrigierten Kommentar.
+**Sichtprüfung:** Eingangs-Zeilen zeigen keinen rotierenden Chevron mehr und keinen Akkordeon-Effekt beim Klick (öffnen stattdessen `#egDetail`, aus Task 2.2); 0 Console-Errors; `grep -n "\.mmore\|toggleMail\|\.eingang-act\|\.eingang-owner\|\.eingang-vorschlag" index.html` liefert keine Treffer mehr außer ggf. im korrigierten Kommentar.
 
-**Commit:** `chore: toggleMail() und verwaistes .mail/.mmore-CSS entfernt (Punkt 1, Teil 3)`
+**Commit:** `chore: toggleMail() und verwaistes .mail/.mmore/.eingang-*-CSS entfernt (Punkt 1, Teil 3)`
 
 ---
 
@@ -508,7 +511,7 @@ function antwortenEingang(id,owner){
 **Umzubenennen (Entität „Patienten-Datenbank"):**
 - `SEGS.netzwerk=["zuweiser","kontakte"]` ([index.html:6492](../../../index.html#L6492)) → `["zuweiser","patienten"]`.
 - Segment-Button `data-seg="kontakte"` ([index.html:3720](../../../index.html#L3720), Label-Text „Kontakte") → `data-seg="patienten"`, Text „Patienten" (Zähler-ID `segCntBestand` **bleibt unverändert** — rein interner, nicht sichtbarer Name, zählt bereits korrekt `bestand.length`).
-- Sub-View-ID `sub-netzwerk-kontakte` ([index.html:3743](../../../index.html#L3743)) + alle 6 CSS-Selektor-Vorkommen (`grep -n "sub-netzwerk-kontakte" index.html` → [1739](../../../index.html#L1739), [1769](../../../index.html#L1769), [2602](../../../index.html#L2602), [2607](../../../index.html#L2607), [2608](../../../index.html#L2608), [2609](../../../index.html#L2609), [2610](../../../index.html#L2610)) → durchgängig `sub-netzwerk-patienten` (Replace-All auf den exakten String ist hier sicher, da die Zeichenkette nirgends etwas anderes meint).
+- Sub-View-ID `sub-netzwerk-kontakte` ([index.html:3743](../../../index.html#L3743)) + alle 7 CSS-Selektor-Vorkommen (`grep -n "sub-netzwerk-kontakte" index.html` → [1739](../../../index.html#L1739), [1769](../../../index.html#L1769), [2602](../../../index.html#L2602), [2607](../../../index.html#L2607), [2608](../../../index.html#L2608), [2609](../../../index.html#L2609), [2610](../../../index.html#L2610)) → durchgängig `sub-netzwerk-patienten` (Replace-All auf den exakten String ist hier sicher, da die Zeichenkette nirgends etwas anderes meint).
 - Drei `go('netzwerk','kontakte')`/`go("netzwerk","kontakte")`-Aufrufstellen: Heute-Live-Karte ([index.html:3656](../../../index.html#L3656)), `inDatenbank()` (nach Task 2.2s Änderung dort, per grep neu lokalisieren), `setDbView(v)` ([index.html:4822](../../../index.html#L4822)) → alle auf `'patienten'`/`"patienten"`.
 - `switchTab()`: `bestand:["netzwerk","kontakte"]` ([index.html:6527](../../../index.html#L6527)) → `bestand:["netzwerk","patienten"]`.
 - `applyHash()`: bestehende zwei Aliase (`bestand`→`kontakte`, `radar`→`kontakte`, [index.html:6547-6548](../../../index.html#L6547)) → Ziel auf `patienten` ändern; **zusätzlich neuen dritten Alias einfügen** `if(parts[0]==="netzwerk"&&parts[1]==="kontakte"){go("netzwerk","patienten");return;}` (alte Bookmarks/Links auf `#netzwerk/kontakte` bleiben gültig).
@@ -533,7 +536,7 @@ function antwortenEingang(id,owner){
 - [ ] `grep -n "kontakte" index.html` ausführen, jede Zeile gegen die zwei obigen Listen abgleichen (umzubenennen / unverändert) — falls eine Zeile in keiner der beiden Listen vorkommt, vor dem Anfassen kurz einordnen, welcher Fall zutrifft (Entität „Patienten-Datenbank" vs. etwas anderes), nicht blind ersetzen.
 - [ ] `SEGS.netzwerk` umstellen.
 - [ ] `data-seg="kontakte"` + Label-Text umstellen.
-- [ ] `sub-netzwerk-kontakte` → `sub-netzwerk-patienten` an allen 7 Fundstellen (Markup-ID + 6 CSS-Selektoren).
+- [ ] `sub-netzwerk-kontakte` → `sub-netzwerk-patienten` an allen 8 Fundstellen (Markup-ID + 7 CSS-Selektoren).
 - [ ] Alle drei `go('netzwerk','kontakte')`-Aufrufstellen umstellen.
 - [ ] `switchTab()`-Map-Ziel umstellen.
 - [ ] `applyHash()`: zwei bestehende Aliase umstellen + neuen dritten Alias (`kontakte`→`patienten`) einfügen.
