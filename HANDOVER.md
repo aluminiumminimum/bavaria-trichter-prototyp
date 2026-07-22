@@ -1,7 +1,7 @@
 # HANDOVER — Klinik Bavaria · Concierge OS
 
 **Für:** neuer Thread mit Fable-als-Orchestrator (delegiert an `claude-implementer` / `claude-implementer-pro`, konsultiert `fable-advisor`) — **oder den Cofounder**, der die nächste Aufgabe (§7) direkt übernimmt.
-**Stand:** `main` = `4488af1`, live. Datum des Handovers: 2026-07-16 (ursprünglich 2026-07-09; seither: Jade-Apotheke-Overhaul 16.07. + IA-Restrukturierung „Prozess-Achse" 16.07. — §3/§7 aktualisiert).
+**Stand:** `main` = `5dbb488`, live. Datum des Handovers: 2026-07-16 (ursprünglich 2026-07-09; seither: Jade-Apotheke-Overhaul 16.07. + IA-Restrukturierung „Prozess-Achse" 16.07. — §3/§7 aktualisiert; **22.07.: Workflow-Redesign Runden 2–4 — 73 Commits, §4c neu**).
 
 Lies zusätzlich die **`CLAUDE.md`** im Repo-Root — das ist die verbindliche Konventions-Quelle. Dieses Dokument ergänzt sie um Projektstand, Architektur-Landkarte und Orchestrator-Spielregeln.
 
@@ -122,6 +122,66 @@ Idiome**. Erst fragen: „Welche bestehende Komponente löst das schon?" — Kar
 radar-card-Familie (Avatar, Frist-Pill, Serifen-h3, `.rk`-Kicker-Sektionen, Ghost-CTA),
 Listen-Gruppen = Kartei-Panel (.db-group/.stg-h), Kapitel = #anlassChap-Kopf,
 KPI-Kacheln = .radar-kpi. Dünne „Utility-Listen" fallen gegen den Rest der App ab.
+
+---
+
+## 4c. Workflow-Redesign Runden 2–4 (21.–22.07., 73 Commits `c4c7312..5dbb488`, alle live)
+
+Drei Iterationsrunden auf Nutzer-Feedback zum Eingangs/Fall/Netzwerk/Reha-Workflow.
+Specs+Pläne: `docs/superpowers-optimized/{specs,plans}/2026-07-21-ux-feinschliff-runde2-*`,
+`2026-07-22-workflow-redesign-runde3-*`, `2026-07-22-runde4-vertiefung-*`.
+
+**Was das Programm jetzt kann:** Echtes Status→Aufgabe-Modell — `advanceFallStatus()`
+schaltet bei „Erledigt" nicht mehr nur `f.status`, sondern setzt auch Aufgabentext und
+Frist der jeweils nächsten Stufe (Neu→Rückruf, Kontaktiert→Qualifizieren, …, Aufnahme
+geplant→Anreise organisieren); der Werdegang-Stepper unterscheidet jetzt eindeutig
+erledigt (Jade gefüllt) / aktuell (Gold) / zukünftig (hohl/blass). Der Eingang öffnet
+pro Zeile ein echtes Detail-Fenster (`#egDetail`, Namespace `.egd-*`) statt eines
+Akkordeons — Wer/Woher/Was/Wie-konkret-Zusammenfassung (`.eg-*`) plus eine echte
+Team-Zuordnung mit sichtbarer Auslastung je Person statt nacktem `<select>`; „Als Fall
+anlegen" springt direkt in den neuen Fall-Drawer, nicht mehr aufs Board. Der Fall-Drawer
+hat jetzt eine dynamische Fall-Akte: `#dArbeit` zeigt je nach aktivem Aufgabentyp ein
+anderes Werkzeug (Notizfläche bei Rückruf, Kostenzusage-Kette+Demo-Upload bei
+Kostenklärung, Dokumente-Checkliste bei Unterlagen, Antwort-Editor bei Angebot,
+Checkliste bei Anreise) — Werdegang, Stammdaten/Akte und Verlauf bleiben davon
+unabhängig immer sichtbar. Die vollständige Fallakte (`renderFallakte()`) ist ein
+Dashboard mit Kennzahl-Kacheln statt einer Textliste. Die Zuweiser-Ansicht ist jetzt
+binär (nur „Im Aufbau"/„Ziel-Partner" ist komplett raus) — aktive Partner gerankt #1,
+#2, … nach Fallzahl mit Trend-Sparkline, jede Karte trägt ein aus den Zahlen
+abgeleitetes Pflege-Feld (Bedanken / Nachfassen / Rhythmus-Geste). Netzwerk heißt jetzt
+durchgängig „Zuweiser · Patienten" (vorher „Kontakte"); innerhalb beider Sub-Views
+trennt eine neue `.nwt-*`-Tableiste Radar/Anlässe von Stammdaten/Ranking, die vorher
+übereinandergestapelt waren. Das Case-Management-Protokoll-Board (`ma-mode`-Reiter
+„Protokolle", `.mtp-*`) hat jetzt strukturierte Felder statt eines einzelnen Textfelds:
+Barthel/FIM-Zahlen (`p.barthel.akt`/`p.fim.akt`), Kurzbericht mit Textbaustein-Chips,
+plus ein neues Feld „Weiterer Verlauf/Plan" (`p.verlaufPlan`) mit eigenen Chips —
+die Leitungsansicht (`#rsErfolg`) zeigt „Weiterer Verlauf" zusätzlich zum Kurzbericht,
+wenn gesetzt.
+
+**Für den Cofounder wichtig:**
+- Seine Namespaces (`.rp-*`, `.rpd-*`, `.rsp-*`, `.mx-*`, `openReferrer`/`closeReferrer`,
+  `#refOverlay`) wurden **nicht** angefasst — verifiziert.
+- **Eine chirurgische Ausnahme:** Der Routen-String der Matrix-Kachel „Nachsorge & Radar"
+  (`MATRIX`-Array, [index.html:4298](./index.html#L4298)) wurde von `route:["netzwerk","radar"]`
+  auf `route:["netzwerk","patienten"]` umgestellt — **nur der String**, die `.mx-*`-Kachel-
+  Darstellung selbst ist unverändert.
+- Datenmodell nur additiv erweitert: neue Felder `eingang[].wer`/`.notiz`, `inReha[].verlaufPlan`
+  (einziges wirklich neues Feld). `faelle[]` strukturell unverändert.
+- `p.barthel.akt`/`p.fim.akt` werden jetzt vom Protokoll-Board beschrieben (vorher nur
+  Demo-Werte) — Format identisch, die `rsp-*`-Reha-Charts lesen wie bisher.
+- `p.kurzbericht` ist jetzt die von der Case-Managerin über das Protokoll-Board gepflegte
+  gemeinsame Quelle — `.rp-kurz` im Zuweiser-Portal liest sie unverändert, keine
+  Schnittstellenänderung.
+- Routen-Aliase fangen alte Links ab: `#netzwerk/kontakte`, `#netzwerk/bestand`,
+  `#netzwerk/radar` lösen alle weiterhin zu `netzwerk/patienten` auf (`applyHash()`,
+  [index.html:6698-6700](./index.html#L6698)).
+- Neue eigene Namespaces (frei bearbeitbar, nichts davon kollidiert mit Cofounder-Code):
+  `.fh-*` (Aufgaben-Hero), `.egd-*` (Anfrage-Detail-Fenster), `.nwt-*` (Netzwerk-Tableisten),
+  `.mtp-*` (Protokoll-Board), `.eg-*` (Eingangs-Triage-Zeile), `.zw-*`, `.ah-*`.
+
+**Dokumentiert unter:** `docs/superpowers-optimized/specs/` + `plans/`, Paare
+`2026-07-21-ux-feinschliff-runde2-*`, `2026-07-22-workflow-redesign-runde3-*`,
+`2026-07-22-runde4-vertiefung-*` (je Design-Spec + Umsetzungsplan mit Commit-Zuordnung).
 
 ---
 

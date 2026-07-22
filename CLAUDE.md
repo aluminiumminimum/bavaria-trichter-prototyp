@@ -42,8 +42,9 @@ Interaktiver Produkt-Prototyp („Privatpatienten-Maschine") für einen Investor
   `.rp-*` Zuweiser-Suite · `.rpd-*` Dokument-Viewer · `.rsp-*` Reha-Charts · `.mx-*` Matrix ·
   `.ds-*` Desktop-Sidebar · `.rs-*`/`.ir-*` Reha-Steuerung · `.db-*` Datenbank · `.tabbar` Mobil-Nav.
 - Views schalten via `go(view[,sub])`; Sidebar/Tabbar-Buttons tragen `data-nav`. **IA (seit 07/2026,
-  Prozess-Achse):** `heute` · `faelle`(anfragen/board/team) · `inreha` · `netzwerk`(zuweiser/radar/kontakte) ·
-  `auswertung` · `konzept`(idee/matrix/sops). Alt-Routen (team/matrix/system/…) laufen über Aliase in
+  Prozess-Achse):** `heute` · `faelle`(anfragen/board/team) · `inreha` · `netzwerk`(zuweiser/patienten) ·
+  `auswertung` · `konzept`(idee/matrix/sops). Alt-Routen (team/matrix/system/…, sowie
+  `netzwerk/kontakte`/`bestand`/`radar` → `netzwerk/patienten`) laufen über Aliase in
   `switchTab()`/`applyHash()`. Rollen-Schalter Leitung⇄Koordination (`.ds-role`) = Einstieg in `ma-mode`.
   Das Zuweiser-Portal ist ein **Overlay** (`#refOverlay`, kein View) — bewusst KEIN `data-nav`;
   mobiler Einstieg über die `.nx-entry`-Karten in Netzwerk→Zuweiser.
