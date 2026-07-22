@@ -1728,7 +1728,7 @@ body.ma-mode #view-meintag{display:block}
 .au-photo--rose::after{background:linear-gradient(180deg, rgba(255,248,234,.06), rgba(185,145,73,.08))}
 .au-photo--gold::after{background:linear-gradient(180deg, rgba(255,248,234,.06), rgba(185,145,73,.12))}
 /* Kontext-Größen (je Platzierung) */
-#sub-netzwerk-zuweiser>.au-photo{height:120px;margin:12px 0}
+#sub-netzwerk-zuweiser .au-photo{height:120px;margin:12px 0}
 #sub-netzwerk-patienten>.au-photo{width:120px;height:120px;margin:0 0 14px}
 #view-inreha>.au-photo{height:130px;margin:0 0 14px}
 #view-meintag>.au-photo{height:110px;margin:0 0 10px}
@@ -2587,15 +2587,15 @@ body{accent-color:var(--brass)}
 
 /* — (J5.3) FOTO-BÄNDER → Präparate-Tafeln (Doppelrahmen, Caption UNTER dem Foto, Sepia-Grade):
    Mein Tag (Komfort) · Netzwerk-Zuweiser (Luftbild) · Datenbank (Garten-Quadrat). — */
-#view-meintag>.au-photo,#sub-netzwerk-zuweiser>.au-photo,#sub-netzwerk-patienten>.au-photo{
+#view-meintag>.au-photo,#sub-netzwerk-zuweiser .au-photo,#sub-netzwerk-patienten>.au-photo{
   height:auto;background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;padding:9px;
   box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft)}
 #view-meintag>.au-photo img{height:110px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
-#sub-netzwerk-zuweiser>.au-photo img{height:120px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
+#sub-netzwerk-zuweiser .au-photo img{height:120px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
 #sub-netzwerk-patienten>.au-photo{width:170px}
 #sub-netzwerk-patienten>.au-photo img{height:130px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
-#view-meintag>.au-photo::after,#sub-netzwerk-zuweiser>.au-photo::after,#sub-netzwerk-patienten>.au-photo::after{display:none}
-#view-meintag>.au-photo figcaption,#sub-netzwerk-zuweiser>.au-photo figcaption,#sub-netzwerk-patienten>.au-photo figcaption{
+#view-meintag>.au-photo::after,#sub-netzwerk-zuweiser .au-photo::after,#sub-netzwerk-patienten>.au-photo::after{display:none}
+#view-meintag>.au-photo figcaption,#sub-netzwerk-zuweiser .au-photo figcaption,#sub-netzwerk-patienten>.au-photo figcaption{
   position:static;left:auto;bottom:auto;margin:8px 2px 0;padding:0;
   background:none;border:0;border-radius:0;box-shadow:none;text-shadow:none;
   backdrop-filter:none;-webkit-backdrop-filter:none;
@@ -3083,6 +3083,12 @@ summary.rk::-webkit-details-marker{display:none}
 .egd-ownername{display:flex;flex-direction:column;gap:2px}
 .egd-vorschlag{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);font-weight:700}
 .egd-load{margin-left:auto;font-size:12.5px;color:var(--muted);flex-shrink:0}
+/* Task 3.2 (Punkt 3): .nwt-* — interne Tableiste Radar/Stammdaten bzw. Pflege/Stammdaten, Muster wie .mtp-* */
+.nwt-segbar{display:flex;gap:6px;margin:14px 0 16px;background:var(--cream2);border:1px solid var(--hair);border-radius:13px;padding:4px}
+.nwt-seg{flex:1;min-height:40px;border-radius:10px;font-size:13.5px;font-weight:600;color:var(--ink-soft);background:transparent;border:0;cursor:pointer}
+.nwt-seg.active{background:var(--espresso-grad);color:var(--ivory-tx);box-shadow:0 2px 8px rgba(36,32,28,.25)}
+.nwt-pane{display:none}
+.nwt-pane.active{display:block}
 </style>
 </head>
 <body>
@@ -3726,33 +3732,49 @@ summary.rk::-webkit-details-marker{display:none}
     </header>
     <div class="sub active" id="sub-netzwerk-zuweiser">
       <p class="lblline">Zuweiser-Netzwerk · zuerst Kategorien, dann Kontakte und nächste Aktion.</p>
-      <div id="zAnlaesse"></div>
-      <div class="nx-entry">
-        <button class="card nx-card" onclick="openReferrer('portal','Leopoldina-Krankenhaus')">
-          <div class="kicker">Für Zuweiser</div>
-          <b>Zuweiserportal öffnen&nbsp;↗</b>
-          <span>Freie Plätze, Anmeldung, Verlauf &amp; Entlassbrief — die Sicht des zuweisenden Arztes.</span>
-        </button>
-        <button class="card nx-card" onclick="kpOpen()">
-          <div class="kicker">Kampagne</div>
-          <b>Newsletter an Segment senden</b>
-          <span>Zielgruppe wählen, Bausteine setzen, Vorschau prüfen — Versand als Demo.</span>
-        </button>
+      <div class="nwt-segbar">
+        <button class="nwt-seg active" data-nwt="pflege" onclick="nwtSwitch(this,'pflege')">Pflege &amp; Gesten</button>
+        <button class="nwt-seg" data-nwt="stamm" onclick="nwtSwitch(this,'stamm')">Stammdaten &amp; Ranking</button>
       </div>
-      <div class="zcat-strip" id="zcatgrid"></div>
-      <div class="zmap" id="zmap"></div>
-      <figure class="au-photo au-photo--petrol"><img src="assets/kb-header.jpg" alt="" loading="lazy"><figcaption>Bad Kissingen · Luftbild</figcaption></figure>
-      <div class="zgrid" id="zgrid"></div>
+      <div class="nwt-pane active" data-nwt="pflege">
+        <div id="zAnlaesse"></div>
+      </div>
+      <div class="nwt-pane" data-nwt="stamm">
+        <div class="nx-entry">
+          <button class="card nx-card" onclick="openReferrer('portal','Leopoldina-Krankenhaus')">
+            <div class="kicker">Für Zuweiser</div>
+            <b>Zuweiserportal öffnen&nbsp;↗</b>
+            <span>Freie Plätze, Anmeldung, Verlauf &amp; Entlassbrief — die Sicht des zuweisenden Arztes.</span>
+          </button>
+          <button class="card nx-card" onclick="kpOpen()">
+            <div class="kicker">Kampagne</div>
+            <b>Newsletter an Segment senden</b>
+            <span>Zielgruppe wählen, Bausteine setzen, Vorschau prüfen — Versand als Demo.</span>
+          </button>
+        </div>
+        <div class="zcat-strip" id="zcatgrid"></div>
+        <div class="zmap" id="zmap"></div>
+        <figure class="au-photo au-photo--petrol"><img src="assets/kb-header.jpg" alt="" loading="lazy"><figcaption>Bad Kissingen · Luftbild</figcaption></figure>
+        <div class="zgrid" id="zgrid"></div>
+      </div>
     </div>
     <div class="sub" id="sub-netzwerk-patienten">
       <div class="kicker">Patienten</div>
       <h2 class="hero-h2">Patienten vor dem Fall.</h2>
       <p class="db-intro">Jeder Kontakt ist eingestuft und läuft automatisch in seiner Strecke. Wird er konkret, wird er zum Fall.</p>
       <figure class="au-photo au-photo--gold"><img src="assets/kb-garten.webp" alt="" loading="lazy"><figcaption>Genuss · Klinik Bavaria</figcaption></figure>
-      <div id="tierFilter"></div>
-      <div class="kicker">Anlässe</div>
-      <div id="radarHost"></div>
-      <div id="btable"></div>
+      <div class="nwt-segbar">
+        <button class="nwt-seg active" data-nwt="radar" onclick="nwtSwitch(this,'radar')">Radar &amp; Anlässe</button>
+        <button class="nwt-seg" data-nwt="stamm" onclick="nwtSwitch(this,'stamm')">Stammdaten</button>
+      </div>
+      <div class="nwt-pane active" data-nwt="radar">
+        <div class="kicker">Anlässe</div>
+        <div id="radarHost"></div>
+      </div>
+      <div class="nwt-pane" data-nwt="stamm">
+        <div id="tierFilter"></div>
+        <div id="btable"></div>
+      </div>
       <p class="db-foot">Aktive Ansprache nur mit dokumentierter Einwilligung.</p>
     </div>
   </section>
@@ -6423,6 +6445,13 @@ function mtpSwitch(which){
  document.getElementById("mtpPaneTag").classList.toggle("active",which==="tag");
  document.getElementById("mtpPaneProtokolle").classList.toggle("active",which==="protokolle");
  if(which==="protokolle")renderMtProtokolle();
+}
+/* Task 3.2 (Punkt 3): .nwt-* — Tab-Umschalter für Patienten (Radar/Stammdaten) und Zuweiser
+   (Pflege/Stammdaten), scope-los per closest() — beide Tab-Leisten existieren gleichzeitig im DOM. */
+function nwtSwitch(btn,which){
+ const bar=btn.closest(".nwt-segbar");
+ bar.querySelectorAll(".nwt-seg").forEach(b=>b.classList.toggle("active",b.dataset.nwt===which));
+ btn.closest(".sub").querySelectorAll(".nwt-pane").forEach(p=>p.classList.toggle("active",p.dataset.nwt===which));
 }
 /* Protokoll-Board: jeder inReha[]-Patient als eigene Zeile — editierbarer Kurzbericht
    (schreibt direkt in p.kurzbericht, dieselbe Quelle wie Leitung/Zuweiser-Portal) + Fällig-Ampel
