@@ -392,10 +392,6 @@
   .zgrid{display:grid;grid-template-columns:1fr;gap:12px}
   .zcard{background:var(--paper2);border:1px solid var(--hair);border-radius:18px;padding:16px 17px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi)}
   .zcard.ziel{border-style:dashed;background:var(--paper2)}
-  .zstat{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:2.5px 9px;display:inline-block;margin-bottom:8px}
-  .zstat.aktiv{background:var(--sage-soft);color:var(--sage-deep)}
-  .zstat.aufbau{background:var(--brass-soft);color:var(--brass-deep)}
-  .zstat.ziel{background:var(--raised);color:var(--muted)}
   .zcard .zname{font-family:"Cormorant Garamond",Georgia,serif;font-size:22px;font-weight:700;line-height:1.15}
   .zcard .ztyp{font-size:11.5px;color:var(--brass-deep);font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin:3px 0 10px}
   .zcontact{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}
@@ -870,7 +866,6 @@
 .col h3 .cnt{font-size:12.5px}
 .zcat .zl{font-size:12.5px;letter-spacing:.1em}
 .map-title{font-size:13px;letter-spacing:.13em}
-.zstat{font-size:12px;letter-spacing:.07em}
 .zcard .ztyp{font-size:12.5px;letter-spacing:.06em}
 .zcontact small{font-size:11.5px;letter-spacing:.08em}
 .bestand-stat .sl{font-size:12.5px;letter-spacing:.1em}
@@ -880,7 +875,7 @@ label{font-size:12px;letter-spacing:.08em}
 .help-contact .role,.template-card .role{font-size:12.5px;letter-spacing:.12em}
 .route-card .rlabel{font-size:12.5px;letter-spacing:.07em}
 .chtag{font-size:12px;letter-spacing:.07em}
-.t-kicker,.map-title,.zstat{line-height:1.3}
+.t-kicker,.map-title{line-height:1.3}
 /* ===== DESIGN-V2 A2 — Label/Meta + Badges/Pills lesbarer ===== */
 .g-date{font-size:13px}
 .zcat .zn{font-size:13.5px}
@@ -1772,11 +1767,9 @@ body.ma-mode #view-meintag{display:block}
 
 /* (3) SAGE = positiv: Chips bekommen einen 1px-Salbei-Rand für mehr Präsenz. */
 .typ-chip.qual{border:1px solid rgba(143,185,150,.35)}
-.zstat.aktiv{border:1px solid rgba(143,185,150,.35)}
 
 /* (4) PETROL = informativ/strukturell. */
 .typ-chip.passiv{background:var(--petrol-soft);color:var(--petrol);border:1px solid rgba(87,160,143,.35)}
-.zstat.ziel{background:var(--petrol-soft);color:var(--petrol)}
 #sub-netzwerk-kontakte .kicker,#sub-netzwerk-radar .kicker{color:var(--petrol)}
 #view-konzept .kicker,#view-auswertung .kicker{color:var(--petrol)}
 #mtGutChap .kicker{color:var(--petrol)}
@@ -2634,7 +2627,6 @@ body{accent-color:var(--brass)}
 .zcard::after{display:none}
 .zcard.ziel{border-style:dashed;background:var(--paper)}
 @media(hover:hover){.zcard:hover{box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),var(--shadow)}}
-.zstat{border-radius:2px}
 .zcontact a,.zcontact span{border-radius:3px;background:var(--paper2)}
 .znext{border-radius:3px;background:var(--paper2)}
 .zw-portal{background:transparent;border:1px solid var(--gold-soft);color:var(--brass-deep);border-radius:3px}
@@ -5052,7 +5044,7 @@ function kpRender(){
     +"<div class='kp-row'><label class='kp-radio'><input type='radio' name='kpTyp' "+(_kp.typ==="zuweiser"?"checked":"")+" onchange='kpSet(\"typ\",\"zuweiser\")'> Zuweiser</label>"
     +"<label class='kp-radio'><input type='radio' name='kpTyp' "+(_kp.typ==="patienten"?"checked":"")+" onchange='kpSet(\"typ\",\"patienten\")'> Altpatienten & Kontakte ab 3★</label></div>"
     +(_kp.typ==="zuweiser"?"<div class='kp-row'><select onchange='kpSet(\"kat\",this.value)'>"+kats+"</select>"
-      +"<select onchange='kpSet(\"status\",this.value)'><option value='aktiv'"+(_kp.status==="aktiv"?" selected":"")+">Status: aktiv</option><option value='aufbau'"+(_kp.status==="aufbau"?" selected":"")+">Status: im Aufbau</option><option value='ziel'"+(_kp.status==="ziel"?" selected":"")+">Status: Ziel</option><option value='alle'"+(_kp.status==="alle"?" selected":"")+">Status: alle</option></select></div>":"")
+      +"<select onchange='kpSet(\"status\",this.value)'><option value='aktiv'"+(_kp.status==="aktiv"?" selected":"")+">Status: aktiv</option><option value='alle'"+(_kp.status==="alle"?" selected":"")+">Status: alle</option></select></div>":"")
     +"<div class='kp-count'><b class='num'>"+emp.length+"</b> Empfänger"+(emp.length?"":" — Segment anpassen")+"</div></div>"
   +"<div class='kp-sec'><div class='kp-k'>2 · Inhalt</div>"
     +"<input class='kp-betreff' value='"+escapeHtml(_kp.betreff)+"' onchange='kpSet(\"betreff\",this.value)'>"
@@ -5205,7 +5197,7 @@ const Z_CATS=[
   {id:"krankenhaus",label:"Krankenhäuser",note:"Akutkliniken, Sozialdienste, Privatstationen"},
   {id:"privatpraxis",label:"Privatpraxen",note:"Fachpraxen und direkte ärztliche Empfehlungen"},
   {id:"hausaerzte",label:"Hausärzte",note:"regionale Lotsen für Innere und Geriatrie"},
-  {id:"sanitaet",label:"Sanitätshäuser",note:"Zielkategorie im Aufbau"},
+  {id:"sanitaet",label:"Sanitätshäuser",note:"Sanitätshäuser & Orthopädie-Technik"},
   {id:"premium",label:"Premium",note:"SalutoCare, Netzwerke, besondere Kanäle"}
 ];
 function zKategorie(z){
@@ -5249,7 +5241,7 @@ function setZFilter(id){zFilter=id;renderZuweiser();}
 function mapOrt(o){return String(o||"").replace(/\s*\(.*/,"").replace("überregional","überreg.");}
 function networkDot(z,i){
   const pos=[[136,154],[282,111],[382,148],[474,100],[472,182],[220,185],[204,118],[330,188],[104,116],[250,158],[430,140]][i%11];
-  const color=z.status==="aktiv"?"#2E5C4F":z.status==="aufbau"?"#B99149":"#A19C8C";
+  const color=z.faelle>=1?"#2E5C4F":"#A19C8C";
   const r=8+Math.min(5,z.faelle)*2;
   return "<g><circle cx='"+pos[0]+"' cy='"+pos[1]+"' r='"+(r+9)+"' fill='"+color+"' opacity='.09'/>"
     +"<circle cx='"+pos[0]+"' cy='"+pos[1]+"' r='"+r+"' fill='"+color+"' opacity='.9'/>"
@@ -5257,7 +5249,6 @@ function networkDot(z,i){
     +"<text x='"+pos[0]+"' y='"+(pos[1]+r+18)+"' text-anchor='middle' font-family='Inter' font-size='11' font-weight='600' fill='#5c554c'>"+escapeHtml(mapOrt(z.ort))+"</text></g>";
 }
 function renderZuweiser(){
-  const lbl={aktiv:"Aktiver Partner",aufbau:"Im Aufbau",ziel:"Ziel-Partner (Landkarte)"};
   const catCounts=Object.fromEntries(Z_CATS.map(c=>[c.id,zuweiser.filter(z=>zKategorie(z)===c.id).length]));
   const cat=Z_CATS.find(c=>c.id===zFilter)||Z_CATS[0];
   document.getElementById("zcatgrid").innerHTML=Z_CATS.map(c=>
@@ -5270,8 +5261,6 @@ function renderZuweiser(){
   const archivCount=filtered.filter(z=>z.faelle===0).length;
   filtered=zArchivAnzeigen?filtered:primaryFiltered;
   const aktiv=filtered.filter(z=>z.status==="aktiv").length;
-  const aufbau=filtered.filter(z=>z.status==="aufbau").length;
-  const ziel=filtered.filter(z=>z.status==="ziel").length;
   document.getElementById("zmap").innerHTML=
     "<div class='map-panel'>"
    +"<div class='map-title'>Netzwerk-Landkarte · "+escapeHtml(cat.label)+"</div>"
@@ -5280,13 +5269,15 @@ function renderZuweiser(){
    +"<path d='M78,154 C126,74 205,54 286,84 C348,107 386,62 458,95 C514,121 501,179 433,191 C351,206 315,154 240,178 C167,202 114,204 78,154Z' fill='#f3eddf' stroke='#ddcfb8'/>"
    +"<path d='M132,142 C214,120 297,120 421,112' fill='none' stroke='#d8c49e' stroke-width='1.2' stroke-dasharray='4 6' opacity='.75'/>"
    +(filtered.length?filtered.map(networkDot).join(""):"<text x='280' y='126' text-anchor='middle' font-family='Inter' font-size='14' fill='#847c71'>Noch keine Kontakte in dieser Kategorie</text>")
-   +"</svg><div class='map-legend'><span><i style='background:#2E5C4F'></i>aktiv</span><span><i style='background:#B99149'></i>im Aufbau</span><span><i style='background:#A19C8C'></i>Zielkontakt</span><span>Punktgröße = Fälle</span></div>"
+   +"</svg><div class='map-legend'><span><i style='background:#2E5C4F'></i>aktiv</span>"
+   +(zArchivAnzeigen?"<span><i style='background:#A19C8C'></i>potenziell (Archiv)</span>":"")
+   +"<span>Punktgröße = Fälle</span></div>"
    +(filtered.length?"<div class='map-index'>"+filtered.map((z,i)=>"<span><b>"+(i+1)+"</b><em>"+escapeHtml(z.name)+" · "+escapeHtml(mapOrt(z.ort))+"</em></span>").join("")+"</div>":"")
    +"</div>"
    +"<div class='zsummary'><h3>"+escapeHtml(cat.label)+"</h3><p>"+escapeHtml(cat.note)+". Die Karte zeigt, welche Beziehungen bereits tragen, welche aufgebaut werden und wo der nächste Kontakt entstehen soll.</p>"
    +"<div class='route-strip'><div class='route-card'><div class='rlabel'>Kontakte</div><div class='rvalue num'>"+filtered.length+"</div><div class='rnote'>in dieser Kategorie</div></div>"
    +"<div class='route-card'><div class='rlabel'>Aktiv</div><div class='rvalue num'>"+aktiv+"</div><div class='rnote'>warme Beziehungen</div></div>"
-   +"<div class='route-card'><div class='rlabel'>Aufbau / Ziel</div><div class='rvalue num'>"+(aufbau+ziel)+"</div><div class='rnote'>nächste Schritte</div></div></div>"
+   +"<div class='route-card'><div class='rlabel'>Potenzielle Kontakte</div><div class='rvalue num'>"+archivCount+"</div><div class='rnote'>im Archiv</div></div></div>"
    +(archivCount&&!zArchivAnzeigen?"<div class='zarchiv-toggle'><button class='btn-ghost btn-sm' onclick='zArchivAnzeigen=true;renderZuweiser()'>⊕ "+archivCount+" potenzielle Kontakte anzeigen</button></div>":"")
    +"</div>";
   /* §5.1 B2B/B2C-Trennung: Zuweiser-Anlässe (Kontaktpflege-Fälligkeit + Trend) gehören in die Zuweiser-Ansicht, nicht ins Patienten-Radar */
@@ -5297,7 +5288,6 @@ function renderZuweiser(){
   const trendMap=new Map(anlaesse().filter(a=>a.typ==="zuweiser-trend").map(a=>[a.zName,a]));
   document.getElementById("zgrid").innerHTML=sorted.length?sorted.map(z=>
     "<div class='zcard"+(z.status==="ziel"?" ziel":"")+"'>"
-   +"<span class='zstat "+z.status+"'>"+lbl[z.status]+"</span>"
    +"<div class='zname'>"+escapeHtml(z.name)+"</div><div class='ztyp'>"+escapeHtml(z.typ)+"</div>"
    +"<div class='zcontact'><span><small>Telefon</small>"+escapeHtml(z.tel||"offen")+"</span><a href='mailto:"+escapeHtml(z.mail||"")+"'><small>E-Mail</small>"+escapeHtml(z.mail||"offen")+"</a></div>"
    +"<div class='zrow'><span>Ort</span><b>"+escapeHtml(z.ort)+"</b></div>"
@@ -5308,7 +5298,7 @@ function renderZuweiser(){
    +"<div class='zrow'><span>Draht</span><span class='zdraht'>"+z.draht+"</span></div>"
    +"<div class='znext'><b>Nächste Aktion:</b> "+escapeHtml((trendMap.has(z.name)?(trendMap.get(z.name).urg==="jetzt"?"⚠ ":"")+trendMap.get(z.name).geste.label:z.next||naechsteAktion(z)))+"</div>"
    +"<button type='button' class='zw-portal' onclick='openReferrer(&quot;portal&quot;,&quot;"+escapeHtml(z.name)+"&quot;)'>Portal-Ansicht des Zuweisers ›</button>"
-   +"</div>").join(""):"<div class='zcard ziel'><span class='zstat ziel'>Zielkategorie</span><div class='zname'>Noch keine Kontakte hinterlegt</div><div class='ztyp'>"+escapeHtml(cat.label)+"</div><div class='znext'><b>Nächste Aktion:</b> Zielpartner recherchieren, Kontaktquelle erfassen und ersten SOP-Schritt anlegen.</div></div>";
+   +"</div>").join(""):"<div class='zcard'><div class='zname'>Noch keine aktiven Zuweiser in dieser Kategorie</div><div class='ztyp'>"+escapeHtml(cat.label)+"</div><div class='znext'><b>Nächste Aktion:</b> Kontakt herstellen und ersten Fall verzeichnen.</div></div>";
 }
 /* ---------- Render: Heute (Cockpit-Erzählung) ---------- */
 function kennzahlen(){
