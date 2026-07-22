@@ -3070,6 +3070,11 @@ body{accent-color:var(--brass)}
 .mtp-rhead{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin-bottom:10px}
 .mtp-rhead .due{margin:0 0 0 auto}
 .mtp-row .rsz-textarea{width:100%;margin-bottom:10px}
+/* Task 7.1 (Punkt 8): Mitarbeiter-Sheet — Mini-Fallakte-Block .mt-sfall unter .mt-shead (nur item.kind==="fall"),
+   Achse/KT-Pills + Status + letzte 2 Verlaufseinträge über bereits gestylte .pills/.pill-a/.pill-kt/.timeline. */
+.mt-sfall{padding:14px 22px;border-bottom:1px solid var(--hair)}
+.mt-sfstatus{font-size:12px;color:var(--muted);margin-top:2px}
+.mt-sfall .timeline{margin-top:10px}
 </style>
 </head>
 <body>
@@ -6383,10 +6388,19 @@ function mtSheetRender(){
    +"<div class='radar-prog'><span class='rk'>So gehst du vor</span><ol class='mt-ssteps'>"+schritte.map(x=>"<li>"+escapeHtml(x)+"</li>").join("")+"</ol></div>"
    +"<div class='radar-prog'><span class='rk'>Leitfaden</span><div class='mt-sleitfaden'>"+leitfaden.map(x=>"<p>"+escapeHtml(x)+"</p>").join("")+"</div></div>"
    +notizBody;
+ /* Task 7.1 (Punkt 8): Mini-Fallakte-Header — nur für Fall-Items (item.kind==="fall"), Achse/KT-Pills
+    + Status + letzte 2 Verlaufseinträge (gleiches Rendermuster wie #dLog). */
+ const miniFallakte=item.kind==="fall"
+  ?"<div class='mt-sfall'><div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[item.ref.achse]||"var(--unklar)")+"'>"+escapeHtml(item.ref.achse)+"</span><span class='pill-kt'>"+escapeHtml(item.ref.kt)+"</span></div>"
+   +"<div class='mt-sfstatus'>Status: "+escapeHtml(item.ref.status)+"</div>"
+   +"<div class='timeline'>"+item.ref.log.slice(-2).map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("")+"</div>"
+   +"</div>"
+  :"";
  s.innerHTML="<div class='mt-back' onclick='mtClose()'></div><div class='mt-panel'>"
   +"<div class='mt-shead'><span class='ava'>"+(item.ava||initialen(item.name.replace(/[()\[\]]/g,"")))+"</span>"
   +"<div class='mt-sheadtxt'><span class='mt-stitle serif'>"+escapeHtml(item.name)+"</span><span class='mt-ssub'>"+escapeHtml(MT_TYP_LABEL[item.typ]||"Aufgabe")+"</span></div>"
   +duePill+"<button class='mt-sx' onclick='mtClose()' aria-label='Schließen'>×</button></div>"
+  +miniFallakte
   +"<div class='mt-sbody'>"+body+"</div>"
   +"<div class='mt-sfoot'>"+foot+"</div>"
   +"</div>";
