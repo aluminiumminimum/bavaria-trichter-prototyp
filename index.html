@@ -6173,7 +6173,7 @@ function mtFallAufgabeItem(f){
  if(f.aufgabe){
   const typ=mtTyp(f.aufgabe);
   const d=mtDayDiff(f.frist);
-  return {key:"fall:"+f.id+":"+typ,typ:typ,kind:"fall",ref:f,name:f.name,
+  return {key:"fall:"+f.id+":"+f.status,typ:typ,kind:"fall",ref:f,name:f.name,
    kontext:f.quelle||f.kanal,step:f.aufgabe,
    block:(d!==null&&d<=0)?"jetzt":"woche",overdue:(d!==null&&d<0)};
  }
@@ -6428,9 +6428,15 @@ function mtAbschliessen(key){
   else if(kstat==="ablehnung")item.ref.kosten="abgelehnt";
   else item.ref.kosten="angefragt";
  }else{
-  const desc=item.ref.aufgabe||MT_TYP_LABEL[item.typ];
-  item.ref.log.push([dstr(0),desc+": "+notiz]);
-  item.ref.aufgabe="";item.ref.frist="";
+  const f=item.ref;
+  const desc=f.aufgabe||MT_TYP_LABEL[item.typ];
+  f.log.push([dstr(0),desc+": "+notiz]);
+  if(advanceFallStatus(f)){
+   const naechstes=mtFallAufgabeItem(f);
+   if(naechstes)_mtSheetKey=naechstes.key;
+  }else{
+   f.aufgabe="";f.frist="";
+  }
  }
  _mtDone.add(key);
  renderAll();
