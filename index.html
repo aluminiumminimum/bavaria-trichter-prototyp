@@ -4164,6 +4164,15 @@ const AUFGABE_ICON={
  "Kostenzusage anfragen":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><circle cx='12' cy='12' r='9'/><path d='M15 9a4 4 0 0 0-6 3 4 4 0 0 0 6 3M8 11h5M8 13h5'/></svg>",
  "Anreise & Zimmer organisieren":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M3 11.2 12 4l9 7.2'/><path d='M5.6 9.6V20h12.8V9.6'/><path d='M10 20v-5h4v5'/></svg>"
 };
+function aufgabeIcon(a){
+ if(AUFGABE_ICON[a])return AUFGABE_ICON[a];
+ if(/rückruf|erstkontakt|anruf/i.test(a))return AUFGABE_ICON["Rückruf/Erstkontakt"];
+ if(/qualifizier|bedarf/i.test(a))return AUFGABE_ICON["Bedarf qualifizieren"];
+ if(/unterlagen|dokument|befund/i.test(a))return AUFGABE_ICON["Unterlagen anfordern"];
+ if(/kosten/i.test(a))return AUFGABE_ICON["Kostenzusage anfragen"];
+ if(/anreise|zimmer|aufnahme/i.test(a))return AUFGABE_ICON["Anreise & Zimmer organisieren"];
+ return "";
+}
 const STATUS_COL={"Neu":"#7A7265","Kontaktiert":"#5E7B8C","Qualifizierung":"#B99149","Unterlagen":"#7E6230","Aufnahme geplant":"#2E5C4F","Aufgenommen":"#123B33","Verloren":"#A8341F"}; /* J7: Welt-Token-Hexes (slate/azzurro/gold/brass-deep/jade/lack-jade/zinnober) */
 const ACHSE_COL={"Orthopädie":"var(--ortho)","Neurologie":"var(--neuro)","Geriatrie":"var(--geri)","Innere":"var(--innere)","SalutoCare":"var(--saluto)","Unklar":"var(--unklar)"};
 const heute=new Date();
@@ -4574,9 +4583,9 @@ const W_ICON={
 /* WS4 · Automatisierung: eingehende Anfrage -> automatisch Fall (Demo) */
 let _inbId=201,_inbN=0,_inbToastTimer=null;
 const INBOUND_POOL=[
- {kanal:"Website",einzelperson:false,name:"Familie Hoffmann",alter:74,rolle:"Angehörige",achse:"Neurologie",kt:"Privat",quelle:"wechselreha.de",tit:"Website-Formular: Angehörige fragt für Vater (74) nach Wechsel-Reha",txt:"Vater (74 Jahre) liegt in anderer Reha, unzufrieden — Wechsel in Premium-Neuro-Reha dringend gewünscht."},
- {kanal:"E-Mail",einzelperson:true,name:"Herr Reinhardt",alter:61,rolle:"Patient",achse:"SalutoCare",kt:"Selbstzahler",quelle:"klinik-bavaria.com",tit:"E-Mail: Selbstzahler (61) fragt Premium-Suite an",txt:"Komfort-Reha nach OP (Patient, 61 Jahre), Suite, möglichst schnell."},
- {kanal:"Website",einzelperson:false,name:"Frau Dr. Kessler",alter:58,rolle:"Zuweiser",achse:"Orthopädie",kt:"Privat",quelle:"Privatpraxis",tit:"Website-Formular: Privatärztin meldet Patientin (58) nach Hüft-TEP",txt:"AHB nach Hüft-TEP, Privatpatientin, kurzfristige Aufnahme erbeten."}
+ {kanal:"Website",einzelperson:false,name:"Familie Hoffmann",alter:74,rolle:"Angehörige",achse:"Neurologie",kt:"Privat",quelle:"wechselreha.de",tit:"Website-Formular: Angehörige fragt für Vater (74) nach Wechsel-Reha",txt:"Vater (74 Jahre) liegt in anderer Reha, unzufrieden — Wechsel in Premium-Neuro-Reha dringend gewünscht.",wer:"Familie Hoffmann fragt für Vater (74)"},
+ {kanal:"E-Mail",einzelperson:true,name:"Herr Reinhardt",alter:61,rolle:"Patient",achse:"SalutoCare",kt:"Selbstzahler",quelle:"klinik-bavaria.com",tit:"E-Mail: Selbstzahler (61) fragt Premium-Suite an",txt:"Komfort-Reha nach OP (Patient, 61 Jahre), Suite, möglichst schnell.",wer:"Herr Reinhardt fragt selbst (61)"},
+ {kanal:"Website",einzelperson:false,name:"Frau Dr. Kessler",alter:58,rolle:"Zuweiser",achse:"Orthopädie",kt:"Privat",quelle:"Privatpraxis",tit:"Website-Formular: Privatärztin meldet Patientin (58) nach Hüft-TEP",txt:"AHB nach Hüft-TEP, Privatpatientin, kurzfristige Aufnahme erbeten.",wer:"Privatärztin Dr. Kessler meldet Patientin (58) an"}
 ];
 function inbToast(state,title,sub,fid){
  let el=document.getElementById("inbToast");
@@ -4630,7 +4639,7 @@ function pruefeUpsell(f,text){
 function simulateInbound(){
  const t=INBOUND_POOL[_inbN%INBOUND_POOL.length];_inbN++;
  const mid=_inbId++;
- eingang.unshift({id:mid,kanal:t.kanal,tit:t.tit,txt:t.txt,zeit:"gerade eben",achse:t.achse,done:false,typ:"qualifiziert",_neu:true});
+ eingang.unshift({id:mid,kanal:t.kanal,tit:t.tit,txt:t.txt,zeit:"gerade eben",achse:t.achse,done:false,typ:"qualifiziert",wer:t.wer||"",_neu:true});
  renderEingang();
  inbToast("in","<b>Neue Anfrage</b> über "+escapeHtml(t.kanal),"landet im Eingang — wird automatisch verarbeitet …",null);
  setTimeout(()=>{
@@ -4697,7 +4706,7 @@ function renderEingang(){
           +"<div class='eingang-vorschlag'>Vorschlag: <b>"+escapeHtml(vorschlag)+"</b> — Achse "+escapeHtml(m.achse)+", geringste Auslastung</div>"
           +"<button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Als Fall anlegen &amp; zuordnen</button><button class='btn-ghost btn-sm' onclick='antwortenEingang("+m.id+")'>✉ Antworten</button></div>";
     return "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"+head
-      +"<div class='mmore'>"+triage+pills+sterneBlock+"<div class='mtxt'>"+escapeHtml(m.txt)+"</div>"
+      +"<div class='mmore'>"+triage+(m.typ==="passiv"?pills+sterneBlock:"")+"<div class='mtxt'>"+escapeHtml(m.txt)+"</div>"
       +(m.notiz?"<div class='mt-eingang-notiz'>Notiz: "+escapeHtml(m.notiz)+"</div>":"")
       +act+"</div></article>";
   }).join("");
@@ -5919,7 +5928,7 @@ function deriveSchritte(f){
    in Task 3.1 (Fallakte) als alleinige Darstellung wiederverwendet. */
 function aufgabenHeroHtml(f){
  const fk=fristKlasse(f.frist), ft=f.frist?fristText(f.frist):"—";
- return "<div class='ah-typ'>"+(AUFGABE_ICON[f.aufgabe]||"")+"<b>"+escapeHtml(f.aufgabe||"Keine offene Aufgabe")+"</b></div>"
+ return "<div class='ah-typ'>"+aufgabeIcon(f.aufgabe)+"<b>"+escapeHtml(f.aufgabe||"Keine offene Aufgabe")+"</b></div>"
   +"<div class='ah-meta'>"
   +"<span class='ah-owner'><span class='ava'>"+initialen(f.owner)+"</span>"+escapeHtml(f.owner)+"</span>"
   +(f.frist?"<span class='due "+fk+"'>Frist "+escapeHtml(ft)+"</span>":"")
