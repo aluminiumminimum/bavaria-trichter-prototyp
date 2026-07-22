@@ -459,7 +459,6 @@
   .status-pill.ok{background:var(--sage-soft);color:var(--sage-deep)}
   .status-pill.lock{background:var(--raised);color:var(--muted)}
   .status-pill.bad{background:var(--terra-soft);color:var(--terra)}
-  .wv{color:var(--brass-deep);font-weight:600;font-size:14px}
   .tier-legend{font:400 12px/1.5 Inter;color:#6b6460;margin:4px 0 8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
   .tier-filter{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
   .tier-filter button{font:600 12px/1 Inter;padding:8px 12px;border-radius:99px;border:1px solid var(--hair);background:var(--paper2);color:var(--ink);min-height:36px}
@@ -4871,7 +4870,7 @@ function inDatenbank(id){
  if(m.einzelperson&&m.pName){_pid=pNew(m.pName,{kt:"Unklar"});pHist(_pid,"kontakt","In Datenbank aufgenommen aus "+m.kanal);}
  bestand.unshift({name:(m.einzelperson&&m.pName)?m.pName:(m.tit.split(":")[1]?m.tit.split(":")[1].trim():"Neuer Kontakt"),personId:_pid,alter:null,achse:m.achse,entl:"—",
    consent:(m.tit+" "+m.txt).toLowerCase().includes("freigabe")?"ja":"nein",
-   anlass:"Aus Eingang ("+m.kanal+"): "+m.txt,wv:false,stufe:2,quelle:"Broschüre-Download",
+   anlass:"Aus Eingang ("+m.kanal+"): "+m.txt,stufe:2,quelle:"Broschüre-Download",
    auto:"1 Info-Mail nach 7 Tagen, dann ruhend",board:"neu",owner:"S. Koordination"});
  const _eg=document.getElementById("egDetail");if(_eg)_eg.classList.remove("open");
  renderAll();go("netzwerk","patienten");
@@ -5338,7 +5337,6 @@ function renderRadar(){
         +"</div>";
     }).join("")+"</div>";
 }
-function wiedervorlage(i){bestand[i].wv=true;renderBestand();renderHeute();}
 function openDbDetail(i){
   if(!matchMedia("(min-width:1024px)").matches)return;
   const p=bestand[i];if(!p)return;
@@ -5347,9 +5345,6 @@ function openDbDetail(i){
   document.getElementById("dbName").textContent=p.name+(p.alter?" ("+p.alter+")":"");
   document.getElementById("dbSub").textContent=p.achse+(p.quelle?" · "+p.quelle:"");
   const cons=p.consent==="ja"?"<span class='status-pill ok'>freigegeben</span>":p.consent==="widerruf"?"<span class='status-pill bad'>Widerruf</span>":"<span class='status-pill lock'>gesperrt</span>";
-  const action=p.consent==="ja"
-    ?(p.wv?"<span class='wv'>Wiedervorlage gesetzt</span>":"<button class='btn-ghost btn-sm' onclick='wiedervorlage("+i+");openDbDetail("+i+")'>Nachsorge vormerken</button>")
-    :"<button class='btn-brass btn-sm' disabled>Kontaktfreigabe fehlt</button>";
   document.getElementById("dbBody").innerHTML=
      "<div class='db-insp' style='--acol:"+(ACHSE_COL[p.achse]||"var(--unklar)")+"'>"
     +"<div class='di-auto"+(p.consent!=="ja"?" blocked":"")+"'>⟳ "+escapeHtml(autoFor(p))+"</div>"
@@ -5361,7 +5356,6 @@ function openDbDetail(i){
     +((p.personId&&person(p.personId)&&person(p.personId).sterneGrund)?"<div class='di-row'><span class='di-k'>Begründung</span><span>"+escapeHtml(person(p.personId).sterneGrund)+"</span></div>":"")
     +"<div class='di-row'><span class='di-k'>Quelle</span><span>"+escapeHtml(p.quelle||"—")+"</span></div>"
     +"</div>"
-    +"<div class='patient-actions'>"+action+"</div>"
     +"</div>"+paAkte(p.personId);
   document.getElementById("dbDetail").classList.add("open");
   document.body.classList.add("detail-open");
