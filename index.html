@@ -3089,6 +3089,14 @@ summary.rk::-webkit-details-marker{display:none}
 .nwt-seg.active{background:var(--espresso-grad);color:var(--ivory-tx);box-shadow:0 2px 8px rgba(36,32,28,.25)}
 .nwt-pane{display:none}
 .nwt-pane.active{display:block}
+/* Task 4.1 (Punkt 4): Protokoll-Board — Index-Zeile + Textbaustein-Chips */
+.mtp-idx{display:flex;gap:16px;margin:10px 0}
+.mtp-idx label{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink-soft)}
+.mtp-idx input{width:64px;font:inherit;padding:6px 8px;border:1px solid var(--hair);border-radius:8px;background:var(--paper2);color:var(--ink)}
+.mtp-lbl{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);margin:10px 0 4px}
+.mtp-chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip-sm{font:500 12.5px/1 Inter;padding:7px 11px;border-radius:99px;border:1px solid var(--hair);background:var(--paper);color:var(--ink-soft);cursor:pointer;min-height:32px}
+@media(hover:hover){.chip-sm:hover{border-color:var(--brass);color:var(--brass-deep)}}
 </style>
 </head>
 <body>
@@ -5880,6 +5888,12 @@ function rsSaveZwischenstand(i){
  const p=inReha[i];if(!p)return;
  const ta=document.getElementById("mtpKb"+i);
  if(ta)p.kurzbericht=ta.value||"";
+ const vp=document.getElementById("mtpVp"+i);
+ if(vp)p.verlaufPlan=vp.value||"";
+ const ba=document.getElementById("mtpBa"+i);
+ if(ba){const n=parseInt(ba.value,10);if(!isNaN(n))p.barthel.akt=Math.max(0,Math.min(100,n));}
+ const fi=document.getElementById("mtpFi"+i);
+ if(fi){const n=parseInt(fi.value,10);if(!isNaN(n))p.fim.akt=Math.max(18,Math.min(126,n));}
  p.zwischenstand.datum=dstr(0);
  p.zwischenstand.autor=p.zwischenstand.autor||"Case-Management";
  renderMeinTag();
@@ -6453,6 +6467,18 @@ function nwtSwitch(btn,which){
  bar.querySelectorAll(".nwt-seg").forEach(b=>b.classList.toggle("active",b.dataset.nwt===which));
  btn.closest(".sub").querySelectorAll(".nwt-pane").forEach(p=>p.classList.toggle("active",p.dataset.nwt===which));
 }
+/* Task 4.1 (Punkt 4): Textbaustein-Chips für Kurzbericht/Verlauf-Plan — hängen den Satz an
+   den bestehenden Textarea-Inhalt an, ersetzen ihn nicht. */
+const MT_KB_CHIPS=["Mobilisation planmäßig.","Schmerz rückläufig.","Kreislauf stabil.","Motivation gut.","Entlassvorbereitung eingeleitet."];
+const MT_VP_CHIPS=["Therapieplan fortführen.","Belastung steigern.","Angehörigengespräch vereinbaren.","Entlassung vorbereiten."];
+function mtChipAppend(taId,txt){
+ const ta=document.getElementById(taId);if(!ta)return;
+ ta.value=ta.value?ta.value+" "+txt:txt;
+}
+function mtChip(which,i,idx){
+ const arr=which==="kb"?MT_KB_CHIPS:MT_VP_CHIPS;
+ mtChipAppend(which==="kb"?"mtpKb"+i:"mtpVp"+i,arr[idx]);
+}
 /* Protokoll-Board: jeder inReha[]-Patient als eigene Zeile — editierbarer Kurzbericht
    (schreibt direkt in p.kurzbericht, dieselbe Quelle wie Leitung/Zuweiser-Portal) + Fällig-Ampel
    aus zwischenstandFaellig(p), pro Zeile einzeln speicherbar. */
@@ -6464,7 +6490,14 @@ function renderMtProtokolle(){
    +"<div class='mtp-rhead'><span class='ava'>"+initialen(p.name)+"</span><b>"+escapeHtml(p.name)+"</b>"
    +"<span class='patient-meta'>"+escapeHtml(p.achse)+" · Tag "+p.verweildauer.ist+"/"+p.verweildauer.plan+"</span>"
    +"<span class='due "+(faellig?"bad":"ok")+"'>"+(faellig?"Zwischenstand fällig":"aktuell")+"</span></div>"
-   +"<textarea id='mtpKb"+i+"' class='rsz-textarea'>"+escapeHtml(p.kurzbericht||"")+"</textarea>"
+   +"<div class='mtp-idx'>"
+     +"<label>Barthel <input type='number' id='mtpBa"+i+"' min='0' max='100' value='"+p.barthel.akt+"'></label>"
+     +"<label>FIM <input type='number' id='mtpFi"+i+"' min='18' max='126' value='"+p.fim.akt+"'></label>"
+   +"</div>"
+   +"<div class='mtp-chips'>"+MT_KB_CHIPS.map((c,ci)=>"<button type='button' class='chip-sm' onclick='mtChip(\"kb\","+i+","+ci+")'>"+escapeHtml(c)+"</button>").join("")+"</div>"
+   +"<label class='mtp-lbl'>Kurzbericht</label><textarea id='mtpKb"+i+"' class='rsz-textarea'>"+escapeHtml(p.kurzbericht||"")+"</textarea>"
+   +"<div class='mtp-chips'>"+MT_VP_CHIPS.map((c,ci)=>"<button type='button' class='chip-sm' onclick='mtChip(\"vp\","+i+","+ci+")'>"+escapeHtml(c)+"</button>").join("")+"</div>"
+   +"<label class='mtp-lbl'>Weiterer Verlauf / Plan</label><textarea id='mtpVp"+i+"' class='rsz-textarea'>"+escapeHtml(p.verlaufPlan||"")+"</textarea>"
    +"<button class='btn-brass btn-sm' onclick='rsSaveZwischenstand("+i+")'>Speichern</button>"
    +"</div>";
  }).join("");
