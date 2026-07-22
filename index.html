@@ -4661,6 +4661,16 @@ function paGeb(geb){
  return {tage:Math.round((n-h0)/86400000),wird:n.getFullYear()-j,datum:String(da).padStart(2,"0")+"."+String(mo+1).padStart(2,"0")+"."};
 }
 /* Tages-Diff bewusst gegen Mitternacht (h0) statt gegen `heute` (trägt Ladezeit-Uhrzeit) — sonst kippt die Tageszahl je nach Tageszeit um ±1. */
+/* Task 2.3 (Punkt 6): symmetrische Jahrestag-Erkennung — anders als paGeb() (nur bevorstehend) liefert
+   jahrestagDiff() auch vergangene Jahrestage (negativ = vor N Tagen, positiv = in N Tagen). */
+function jahrestagDiff(datum){
+ if(!datum)return null;
+ const mo=+datum.slice(5,7)-1,da=+datum.slice(8,10);
+ const h0=new Date(heute.getFullYear(),heute.getMonth(),heute.getDate());
+ const dies=new Date(heute.getFullYear(),mo,da), vorjahr=new Date(heute.getFullYear()-1,mo,da);
+ const diffDies=Math.round((dies-h0)/86400000), diffVor=Math.round((vorjahr-h0)/86400000);
+ return Math.abs(diffDies)<=Math.abs(diffVor)?diffDies:diffVor;
+}
 const PA_TYP={anfrage:"Anfrage",fall:"Fall",aufnahme:"Aufnahme",entlassung:"Entlassung",kontakt:"Kontakt"};
 const PA_ZW={behandlung:"Behandlung",newsletter:"Newsletter",post:"Post/Geschenk"};
 function paAkte(pid){
@@ -4949,7 +4959,6 @@ function sterneVon(p){const per=p.personId?person(p.personId):null;return per&&p
 function bucketOf(p){return p.consent!=="ja"?"gesperrt":String(sterneVon(p));}
 function sterneHtml(n){let s="";for(let i=1;i<=5;i++)s+="<span class='st"+(i<=n?" on":"")+"'>★</span>";return "<span class='st-row' role='img' aria-label='"+n+" von 5 Sternen'>"+s+"</span>";}
 /* ---------- Baustein B · Anlass-Engine (.ar-*) — Spec 2026-07-14 §3 ---------- */
-const AR_RHYTHMUS={aktiv:45,aufbau:30,ziel:60};
 let _arDone=new Set();
 function arGeste(p){
  const ew=p.einwilligung||{};const ok=ew.status==="erteilt";const zw=ew.zwecke||[];
@@ -5000,15 +5009,40 @@ function anlaesse(scope){
   const per=r.personId?person(r.personId):null;
   out.push({key:key,typ:"wiederbedarf",urg:r.faelligInTagen<=45?"jetzt":r.faelligInTagen<=120?"bald":"beob",tage:r.faelligInTagen,titel:r.name+" — Wiederbedarf absehbar",sub:r.prognose,sterne:per?per.sterne:null,geste:{label:"Persönliche Wiedervorlage",cta:"Wiedervorlage planen"},pid:r.personId});
  });
+ /* Task 2.3 (Punkt 6): ersetzt den alten typ:"zuweiser"-Kadenz-Block vollständig — nur Zuweiser mit
+    echter Fallbeziehung (faelle>=1) erscheinen im Pflege-Feed, sonst drei unterscheidbare Anlass-Typen
+    statt eines einzelnen Rückgangs-Hinweises. */
  zuweiser.forEach(z=>{
-  const kad=AR_RHYTHMUS[z.status]||60;
+  if(z.faelle<1)return;
+  const staerke=((z.draht||"").match(/●/g)||[]).length;
+  const kad=staerke>=3?90:staerke===2?180:330;
   const seit=z.letzter?Math.round((heute-new Date(z.letzter))/86400000):9999;
   if(seit<kad)return;
-  const key="zuw:"+z.name;if(_arDone.has(key))return;
-  out.push({key:key,typ:"zuweiser",urg:seit>=kad*1.5?"jetzt":"bald",tage:seit===9999?999:seit,titel:z.name,sub:(z.letzter?seit+" Tage kein Kontakt":"Noch nie kontaktiert")+" · "+(z.next||""),sterne:null,geste:{label:z.next||"Kontakt aufnehmen",cta:"Kontakt aufnehmen"},zName:z.name});
+  const key="zuw-rhy:"+z.name;if(_arDone.has(key))return;
+  out.push({key:key,typ:"zuweiser-rhythmus",urg:seit>=kad*1.5?"jetzt":"bald",tage:seit===9999?999:seit,titel:z.name,sub:seit+" Tage kein Kontakt · "+(z.next||""),sterne:null,geste:{label:z.next||"Kontakt aufnehmen",cta:"Kontakt aufnehmen"},zName:z.name});
  });
- /* §5.2 Trend-Erkennung — reagiert auf Auffälligkeiten, unabhängig von der Kontakt-Kadenz oben */
  zuweiser.forEach(z=>{
+  if(z.faelle<1)return;
+  const schwellen=[20,10,5].filter(s=>z.faelle>=s);
+  if(!schwellen.length)return;
+  const schwelle=schwellen[0];
+  const key="zuw-meil:"+z.name+":"+schwelle;if(_arDone.has(key))return;
+  out.push({key:key,typ:"zuweiser-meilenstein",urg:"bald",tage:0,titel:z.name,sub:"Dankeschön-Geste: "+schwelle+". Patient",sterne:null,geste:{label:"Dankeschön senden",cta:"Kontakt aufnehmen"},zName:z.name});
+ });
+ zuweiser.forEach(z=>{
+  if(z.faelle<1)return;
+  const diff=jahrestagDiff(z.seit);
+  if(diff===null||Math.abs(diff)>30)return;
+  const key="zuw-jub:"+z.name;if(_arDone.has(key))return;
+  out.push({key:key,typ:"zuweiser-jubilaeum",urg:Math.abs(diff)<=7?"jetzt":"bald",tage:diff,titel:z.name+" — Partnerschafts-Jubiläum",sub:(diff<0?Math.abs(diff)+" Tage vergangen":"in "+diff+" Tagen")+" seit Partnerschaftsbeginn",sterne:null,geste:{label:"Jubiläums-Geste senden",cta:"Kontakt aufnehmen"},zName:z.name});
+ });
+ /* §5.2 Trend-Erkennung — reagiert auf Auffälligkeiten, unabhängig von der Kontakt-Kadenz oben.
+    Task 2.3 (Punkt 6): faelle<1-Guard ergänzt — sonst kann die hash-basierte 3-Monats-Historie
+    (verlaufAusFaellen(), Basis 0) rechnerisch einen Trend andichten und kontaktlose Zuweiser
+    (Helios Klinikum, Reha-Technik Müller) trotz des faelle>=1-Filters oben über diesen zweiten,
+    unabhängigen Anlass-Erzeuger zurück in den Pflege-Feed spülen. */
+ zuweiser.forEach(z=>{
+  if(z.faelle<1)return;
   const v=z.verlauf3M;if(!v||v.length<3)return;
   if(v[2]<v[1]&&v[1]<v[0]){
    const key="trend-ab:"+z.name;if(_arDone.has(key))return;
@@ -5022,7 +5056,7 @@ function anlaesse(scope){
  const sorted=out.sort((a,b)=>(ord[a.urg]-ord[b.urg])||(a.tage-b.tage));
  /* §5.1 B2B/B2C-Trennung: scope "patienten" = geburtstag/jubilaeum/wiederbedarf, "zuweiser" = zuweiser/zuweiser-trend, sonst alles */
  if(scope==="patienten")return sorted.filter(a=>a.typ==="geburtstag"||a.typ==="jubilaeum"||a.typ==="wiederbedarf");
- if(scope==="zuweiser")return sorted.filter(a=>a.typ==="zuweiser"||a.typ==="zuweiser-trend");
+ if(scope==="zuweiser")return sorted.filter(a=>["zuweiser-rhythmus","zuweiser-meilenstein","zuweiser-jubilaeum","zuweiser-trend"].includes(a.typ));
  return sorted;
 }
 function arAktion(key){
@@ -5035,11 +5069,11 @@ function arAktion(key){
  renderRadar();
  renderZuweiser();
 }
-const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf",zuweiser:"Zuweiser-Kontakt","zuweiser-trend":"Zuweiser-Trend"};
-const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"],zuweiser:["kb-arzt.jpg","petrol"]};
+const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf","zuweiser-rhythmus":"Zuweiser-Rhythmus","zuweiser-meilenstein":"Zuweiser-Meilenstein","zuweiser-jubilaeum":"Partnerschafts-Jubiläum","zuweiser-trend":"Zuweiser-Trend"};
+const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"],"zuweiser-rhythmus":["kb-arzt.jpg","petrol"]};
 function arCard(a,i){
  const perName=a.pid&&person(a.pid)?person(a.pid).name:a.titel;
- const isZ=a.typ==="zuweiser"||a.typ==="zuweiser-trend";
+ const isZ=["zuweiser-rhythmus","zuweiser-meilenstein","zuweiser-jubilaeum","zuweiser-trend"].includes(a.typ);
  const due=isZ?(a.urg==="jetzt"?"überfällig":"fällig"):(a.urg==="beob"?"im Blick":"in "+a.tage+" Tagen");
  const dueCls=a.urg;
  const gLbl=isZ?"Nächste Aktion":"Empfohlene Geste";
