@@ -4349,6 +4349,41 @@ function egSummaryHtml(m){
    +"<div style='padding:16px 20px'>"+mid+"<div class='mtxt'>"+escapeHtml(m.txt)+"</div>"
    +(m.notiz?"<div class='mt-eingang-notiz'>Notiz: "+escapeHtml(m.notiz)+"</div>":"")+"</div>";
 }
+/* Task 2.2 (Punkt 1): #egDetail öffnen — Kopf+Zusammenfassung aus egSummaryHtml(), darunter je nach
+   Zustand entweder Team-Zuordnung (qualifiziert, offen), ein einzelner Aufnahme-Button (passiv, offen)
+   oder ein schreibgeschützter Verweis (m.done). */
+function openEgDetail(id){
+ const m=eingang.find(x=>x.id===id);if(!m)return;
+ if(_egId!==id){_egId=id;egOwner=(m.typ!=="passiv"&&!m.done)?ownerVorschlag(m.achse):null;}
+ _closeSiblingDetailRails("egDetail");
+ let actions;
+ if(m.done){
+   actions=m.fallId
+     ?"<button class='btn-brass' onclick='openDetail("+m.fallId+")'>Fall öffnen ›</button>"
+     :"<span class='ok-chip'>✓ in Datenbank</span>";
+ }else if(m.typ==="passiv"){
+   actions="<button class='btn-brass' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>";
+ }else{
+   actions="<div class='egd-owners'>"+TEAM.map(function(t,i){
+     const n=faelle.filter(f=>f.owner===t&&f.status!=="Aufgenommen"&&f.status!=="Verloren").length;
+     const sel=egOwner===t,vor=t===ownerVorschlag(m.achse);
+     return "<button type='button' class='egd-owner"+(sel?" sel":"")+"' onclick='egSetOwner("+m.id+","+i+")'>"
+       +"<span class='ava'>"+initialen(t)+"</span><span class='egd-ownername'>"+escapeHtml(t)
+       +(vor?"<span class='egd-vorschlag'>Vorschlag — Achse "+escapeHtml(m.achse)+", geringste Auslastung</span>":"")
+       +"</span><span class='egd-load'>"+n+" offene "+(n===1?"Fall":"Fälle")+"</span></button>";
+   }).join("")+"</div>"
+   +"<button class='btn-brass' style='width:100%;margin-top:4px' onclick='uebernehmen("+m.id+",egOwner)'>Als Fall anlegen &amp; zuordnen</button>"
+   +"<button class='btn-ghost' style='width:100%' onclick='antwortenEingang("+m.id+",egOwner)'>✉ Antworten</button>";
+ }
+ document.getElementById("egdBody").innerHTML=egSummaryHtml(m)
+   +"<div class='mfoot' style='flex-direction:column;align-items:stretch;gap:8px'>"+actions
+   +"<button class='btn-ghost' onclick='dismissDetail()'>‹ Zurück</button></div>";
+ document.getElementById("egDetail").classList.add("open");
+ document.body.classList.add("detail-open");
+ if(!matchMedia("(min-width:1024px)").matches)document.body.classList.add("locked");
+ pushDetailState();
+}
+function egSetOwner(id,idx){ egOwner=TEAM[idx]; openEgDetail(id); }
 function ownerVorschlag(achse){
   const kandidaten=TEAM.filter(t=>(TEAM_ACHSE[t]||[]).includes(achse));
   if(!kandidaten.length)return"S. Koordination";
@@ -4718,52 +4753,20 @@ function simulateInbound(){
 }
 function renderEingang(){
   document.getElementById("inbox").innerHTML=eingang.map(m=>{
-    const head="<button class='mrow' onclick='toggleMail(this)'>"
+    const head="<button class='mrow' onclick='openEgDetail("+m.id+")'>"
       +"<span class='chico'>"+(CHAN_ICON[m.kanal]||CHAN_ICON["E-Mail"])+"</span>"
       +"<span class='mhtxt'><span class='mtit'>"+escapeHtml(m.tit)+"</span>"
       +"<span class='mmeta'><span class='chtag'>"+escapeHtml(m.kanal)+"</span><span class='mtime'>"+escapeHtml(m.zeit)+"</span>"
       +"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span>"
       +(m.done?"<span class='ok-chip mini'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall")+"</span>":"")+"</span></span>"
       +"<span class='mail-chev'>›</span></button>";
-    const sig=erkenneSignale(m.txt);
-    const sterne=sterneAusSignal(sig);
-    const sterneBlock=sterneHtml(sterne);
-    const vorschlag=m.typ!=="passiv"?ownerVorschlag(m.achse):null;
-    const achsePill=m.achse?"<span class='pill-a' style='background:"+(ACHSE_COL[m.achse]||"var(--unklar)")+"'>"+escapeHtml(m.achse)+"</span>":"";
-    const pills="<div class='pills'>"+achsePill
-      +(sig.kostentraeger?"<span class='pill-kt'>"+escapeHtml(sig.kostentraeger)+"</span>":"")
-      +(sig.dringlichkeit?"<span class='due'>"+escapeHtml(sig.dringlichkeit)+"</span>":"")
-      +"</div>";
-    /* Task 2.1 (Punkt 1): Wer/Woher/Was/Wie-konkret-Triage-Karte — nur für qualifizierte Einträge
-       (passive Einträge zeigen ohnehin keine Owner-Zuordnung, brauchen also keine Triage-Entscheidung). */
-    let triage="";
-    if(m.typ!=="passiv"){
-      const inst=zuweiser.find(z=>m.txt.includes(z.name));
-      const grund=[sig.kostentraeger?sig.kostentraeger+" erkannt":null,sig.dringlichkeit?"Frist "+sig.dringlichkeit:null,sig.konkret?"konkrete Anfrage":null].filter(Boolean).join(" · ");
-      triage="<div class='eg-triage'>"
-        +"<div class='eg-row'><div class='kicker'>Wer</div><div class='eg-v'><span class='ava'>"+initialen(m.wer||"")+"</span>"+escapeHtml(m.wer||"")+"</div></div>"
-        +"<div class='eg-row'><div class='kicker'>Woher</div><div class='eg-v'>"+escapeHtml(m.kanal)+(inst?" · "+escapeHtml(inst.name):"")+"</div></div>"
-        +"<div class='eg-row'><div class='kicker'>Was</div><div class='eg-v'>"+(achsePill||"—")+"</div></div>"
-        +"<div class='eg-row'><div class='kicker'>Wie konkret</div><div class='eg-v'>"+sterneBlock+(grund?"<span class='eg-grund'>"+escapeHtml(grund)+"</span>":"")+"</div></div>"
-        +"</div>";
-    }
-    const act=m.done
-      ?(m.fallId?"<button class='btn-ghost btn-sm' onclick='openDetail("+m.fallId+")'>→ Fall öffnen</button>":"")
-      :m.typ==="passiv"
-        ?"<button class='btn-ghost btn-sm' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>"
-        :"<div class='eingang-act'><select class='eingang-owner' id='eo-"+m.id+"'>"+TEAM.map(t=>"<option"+(t===vorschlag?" selected":"")+">"+escapeHtml(t)+"</option>").join("")+"</select>"
-          +"<div class='eingang-vorschlag'>Vorschlag: <b>"+escapeHtml(vorschlag)+"</b> — Achse "+escapeHtml(m.achse)+", geringste Auslastung</div>"
-          +"<button class='btn-brass btn-sm' onclick='uebernehmen("+m.id+")'>Als Fall anlegen &amp; zuordnen</button><button class='btn-ghost btn-sm' onclick='antwortenEingang("+m.id+")'>✉ Antworten</button></div>";
-    return "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"+head
-      +"<div class='mmore'>"+triage+(m.typ==="passiv"?pills+sterneBlock:"")+"<div class='mtxt'>"+escapeHtml(m.txt)+"</div>"
-      +(m.notiz?"<div class='mt-eingang-notiz'>Notiz: "+escapeHtml(m.notiz)+"</div>":"")
-      +act+"</div></article>";
+    return "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"+head+"</article>";
   }).join("");
 }
 function toggleMail(btn){const a=btn.closest(".mail");if(a)a.classList.toggle("open");}
-function uebernehmen(id){
+function uebernehmen(id,owner){
   const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
-  const sel=document.getElementById("eo-"+id); const owner=sel?sel.value:TEAM[0];
+  owner=owner||TEAM[0];
   m.done=true;
   const fid=Math.max(...faelle.map(x=>x.id))+1;
   faelle.push({id:fid,name:"Neuer Fall (aus Eingang)",alter:null,rolle:"offen",kanal:m.kanal,quelle:m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.kanal,
@@ -4771,11 +4774,11 @@ function uebernehmen(id){
     saluto:m.achse==="SalutoCare",docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
     log:[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit+" — zugewiesen an "+owner]]});
   m.fallId=fid;
-  renderAll();go("faelle","board");
+  renderAll();openDetail(fid);
 }
-function antwortenEingang(id){
+function antwortenEingang(id,owner){
   const m=eingang.find(x=>x.id===id); if(!m)return;
-  if(!m.done) uebernehmen(id);
+  if(!m.done) uebernehmen(id,owner);
   if(m.fallId){ openDetail(m.fallId); setTimeout(function(){const r=document.getElementById("dReply");if(r)r.focus();},80); }
 }
 function sendReply(){
@@ -4797,6 +4800,7 @@ function inDatenbank(id){
    consent:(m.tit+" "+m.txt).toLowerCase().includes("freigabe")?"ja":"nein",
    anlass:"Aus Eingang ("+m.kanal+"): "+m.txt,wv:false,stufe:2,quelle:"Broschüre-Download",
    auto:"1 Info-Mail nach 7 Tagen, dann ruhend",board:"neu",owner:"S. Koordination"});
+ const _eg=document.getElementById("egDetail");if(_eg)_eg.classList.remove("open");
  renderAll();go("netzwerk","kontakte");
 }
 
