@@ -3102,6 +3102,12 @@ summary.rk::-webkit-details-marker{display:none}
 .eg-zsf p{margin:2px 0 0;font-size:14px;color:var(--ink-soft);line-height:1.45}
 .eg-original{margin-top:10px;background:var(--paper2);border:1px solid var(--hair);border-left:3px solid var(--brass-line);border-radius:8px;padding:10px 12px}
 .eg-original .mtxt{margin-top:4px}
+/* Task 1.3 (Punkt 2): SalutoCare-Toggle + Bearbeitungs-Hinweis */
+.egd-saluto{display:block;width:100%;min-height:44px;margin-bottom:8px;font:600 13.5px/1 Inter;
+  border:1px solid var(--hair);border-radius:12px;background:var(--paper);color:var(--ink-soft);cursor:pointer}
+.egd-saluto.on{border-color:var(--brass);background:var(--brass-soft);color:var(--brass-deep)}
+.ah-hinweis,.mt-shinweis{margin-top:8px;font-size:12.5px;color:var(--ink-soft)}
+.ah-hinweis .kicker,.mt-shinweis .kicker{display:inline;margin:0 6px 0 0;font-size:10.5px}
 </style>
 </head>
 <body>
@@ -4382,7 +4388,7 @@ function egSummaryHtml(m){
    oder ein schreibgeschützter Verweis (m.done). */
 function openEgDetail(id){
  const m=eingang.find(x=>x.id===id);if(!m)return;
- if(_egId!==id){_egId=id;egOwner=(m.typ!=="passiv"&&!m.done)?ownerVorschlag(m.achse):null;}
+ if(_egId!==id){_egId=id;egOwner=(m.typ!=="passiv"&&!m.done)?ownerVorschlag(m.achse):null;egSaluto=m.achse==="SalutoCare";egHinweis="";}
  _closeSiblingDetailRails("egDetail");
  let actions;
  if(m.done){
@@ -4392,7 +4398,8 @@ function openEgDetail(id){
  }else if(m.typ==="passiv"){
    actions="<button class='btn-brass' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>";
  }else{
-   actions="<div class='egd-owners'>"+TEAM.map(function(t,i){
+   actions="<button type='button' class='egd-saluto"+(egSaluto?" on":"")+"' onclick='egToggleSaluto("+m.id+")'>★ SalutoCare / Premium</button>"
+   +"<div class='egd-owners'>"+TEAM.map(function(t,i){
      const n=faelle.filter(f=>f.owner===t&&f.status!=="Aufgenommen"&&f.status!=="Verloren").length;
      const sel=egOwner===t,vor=t===ownerVorschlag(m.achse);
      return "<button type='button' class='egd-owner"+(sel?" sel":"")+"' onclick='egSetOwner("+m.id+","+i+")'>"
@@ -4400,6 +4407,8 @@ function openEgDetail(id){
        +(vor?"<span class='egd-vorschlag'>Vorschlag — Achse "+escapeHtml(m.achse)+", geringste Auslastung</span>":"")
        +"</span><span class='egd-load'>"+n+" offene "+(n===1?"Fall":"Fälle")+"</span></button>";
    }).join("")+"</div>"
+   +"<label class='kicker' style='margin-top:10px;display:block'>Hinweis für die Bearbeitung (optional)</label>"
+   +"<textarea id='egdHinweis' class='rsz-textarea' placeholder='Worauf muss geachtet werden?' oninput='egHinweis=this.value'>"+escapeHtml(egHinweis)+"</textarea>"
    +"<button class='btn-brass' style='width:100%;margin-top:4px' onclick='uebernehmen("+m.id+",egOwner)'>Als Fall anlegen &amp; zuordnen</button>"
    +"<button class='btn-ghost' style='width:100%' onclick='antwortenEingang("+m.id+",egOwner)'>✉ Antworten</button>";
  }
@@ -4412,6 +4421,7 @@ function openEgDetail(id){
  pushDetailState();
 }
 function egSetOwner(id,idx){ egOwner=TEAM[idx]; openEgDetail(id); }
+function egToggleSaluto(id){ egSaluto=!egSaluto; openEgDetail(id); }
 function ownerVorschlag(achse){
   const kandidaten=TEAM.filter(t=>(TEAM_ACHSE[t]||[]).includes(achse));
   if(!kandidaten.length)return"S. Koordination";
@@ -4656,6 +4666,8 @@ function paAkteSlot(pid){
 let aktuellerFall=null;let zFilter="krankenhaus";let boardStageFilter=null;let horizont=9;
 /* Task 2.1 (Punkt 1): #egDetail-State — aktuell offene Eingangs-Zeile + gewählter Owner */
 let egOwner=null,_egId=null;
+/* Task 1.3 (Punkt 2): SalutoCare-Toggle + Bearbeitungs-Hinweis bei der Eingangs-Zuordnung */
+let egSaluto=false,egHinweis="";
 /* §5.3 Archiv-Split-Filter — Bereich D */
 let zArchivAnzeigen=false;let bestandArchivAnzeigen=false;
 
@@ -4796,10 +4808,12 @@ function uebernehmen(id,owner){
   owner=owner||TEAM[0];
   m.done=true;
   const fid=Math.max(...faelle.map(x=>x.id))+1;
+  const _log=[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit+" — zugewiesen an "+owner]];
+  if(egHinweis)_log.push([dstr(0),"[Hinweis bei Zuordnung] "+egHinweis]);
   faelle.push({id:fid,name:"Neuer Fall (aus Eingang)",alter:null,rolle:"offen",kanal:m.kanal,quelle:m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.kanal,
     achse:m.achse,kt:"Unklar",status:"Neu",owner:owner,aufgabe:STATUS_AUFGABE["Neu"],frist:dstr(0),
-    saluto:m.achse==="SalutoCare",docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
-    log:[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit+" — zugewiesen an "+owner]]});
+    saluto:egSaluto,zuordnungsHinweis:egHinweis||"",docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
+    log:_log});
   m.fallId=fid;
   renderAll();openDetail(fid);
 }
@@ -6019,7 +6033,8 @@ function aufgabenHeroHtml(f){
   +"<div class='ah-meta'>"
   +"<span class='ah-owner'><span class='ava'>"+initialen(f.owner)+"</span>"+escapeHtml(f.owner)+"</span>"
   +(f.frist?"<span class='due "+fk+"'>Frist "+escapeHtml(ft)+"</span>":"")
-  +"</div>";
+  +"</div>"
+  +(f.zuordnungsHinweis?"<div class='ah-hinweis'><span class='kicker'>Hinweis</span> "+escapeHtml(f.zuordnungsHinweis)+"</div>":"");
 }
 /* Task 1.1 (Punkt 2): #dArbeit — aufgabentyp-abhängiger Arbeitsbereich im Fall-Drawer.
    drawerAufgabenTyp() klassifiziert f.aufgabe per Regex (Stil analog aufgabeIcon()/mtTyp()),
@@ -6569,6 +6584,7 @@ function mtSheetRender(){
  const miniFallakte=item.kind==="fall"
   ?"<div class='mt-sfall'><div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[item.ref.achse]||"var(--unklar)")+"'>"+escapeHtml(item.ref.achse)+"</span><span class='pill-kt'>"+escapeHtml(item.ref.kt)+"</span></div>"
    +"<div class='mt-sfstatus'>Status: "+escapeHtml(item.ref.status)+"</div>"
+   +(item.ref.zuordnungsHinweis?"<div class='mt-shinweis'><span class='kicker'>Hinweis</span> "+escapeHtml(item.ref.zuordnungsHinweis)+"</div>":"")
    +"<div class='timeline'>"+item.ref.log.slice(-2).map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("")+"</div>"
    +"</div>"
   :"";
