@@ -3054,6 +3054,25 @@ body{accent-color:var(--brass)}
    nur als Strukturvorbild gelesen, nicht wiederverwendet. */
 .zw-rankline{display:flex;align-items:center;gap:10px;margin-bottom:4px}
 .zw-rank{font-size:28px;font-weight:700;color:var(--brass-deep);line-height:1}
+/* Task 6.1 (Punkt 6+7): Mein Tag — Segment-Leiste .mtp-* (Reiter „Mein Tag"/„Protokolle"),
+   reines classList-Toggle ohne Routing/Hash — eigener Namespace statt .segments/.seg, da
+   Letztere über einen globalen Klick-Handler bereits go()-Routing auslösen (nicht gewollt hier).
+   .mtp-row-Etikette analog #view-fallakte .chap (Doppelrahmen + Gold-Eckwinkel). */
+.mtp-segbar{display:flex;gap:6px;margin-top:16px;background:var(--cream2);border:1px solid var(--hair);
+  border-radius:14px;padding:4px}
+.mtp-seg{flex:1;min-height:44px;border-radius:11px;font-size:14px;font-weight:600;color:var(--ink-soft);
+  display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s}
+.mtp-seg.active{background:var(--espresso-grad);color:var(--ivory-tx);box-shadow:0 2px 8px rgba(36,32,28,.25)}
+.mtp-pane{display:none}
+.mtp-pane.active{display:block}
+.mtp-row{position:relative;background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;
+  padding:16px;margin-bottom:14px;box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+.mtp-row::before,.mtp-row::after{content:"";position:absolute;width:9px;height:9px;pointer-events:none;z-index:2;opacity:.6}
+.mtp-row::before{top:9px;left:9px;border-top:1px solid var(--brass);border-left:1px solid var(--brass)}
+.mtp-row::after{bottom:9px;right:9px;border-bottom:1px solid var(--brass);border-right:1px solid var(--brass)}
+.mtp-rhead{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin-bottom:10px}
+.mtp-rhead .due{margin:0 0 0 auto}
+.mtp-row .rsz-textarea{width:100%;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -3912,6 +3931,12 @@ body{accent-color:var(--brass)}
       <div class="mt-prog"><div class="mt-progtrack"><div class="mt-progfill" id="mtProgFill"></div></div><span class="mt-prognum serif num" id="mtProgNum"></span></div>
     </header>
 
+    <div class="mtp-segbar">
+      <button class="mtp-seg active" data-mtp="tag" onclick="mtpSwitch('tag')">Mein Tag</button>
+      <button class="mtp-seg" data-mtp="protokolle" onclick="mtpSwitch('protokolle')">Protokolle</button>
+    </div>
+
+    <div class="mtp-pane active" id="mtpPaneTag">
     <div class="mt-termine" id="mtTermine"></div>
 
     <figure class="au-photo au-photo--gold"><img src="assets/kb-komfort-wall.webp" alt="" loading="lazy"><figcaption>Komfort · Klinik Bavaria</figcaption></figure>
@@ -3932,6 +3957,15 @@ body{accent-color:var(--brass)}
       <div class="kicker">Gut zu wissen</div>
       <h2 class="chap-h2">Geplante Aufnahmen dieser Woche</h2>
       <div class="mt-grid" id="mtGutList"></div>
+    </div>
+    </div>
+
+    <div class="mtp-pane" id="mtpPaneProtokolle">
+      <div class="chap">
+        <div class="kicker">Protokolle</div>
+        <h2 class="chap-h2">Alle In-Reha-Patienten</h2>
+        <div id="mtpList"></div>
+      </div>
     </div>
   </section>
 
@@ -5769,13 +5803,12 @@ function openRsDetail(i){
    sind nur noch leichte Metadaten und steuern zwischenstandFaellig() (Reminder). */
 function rsSaveZwischenstand(i){
  const p=inReha[i];if(!p)return;
- const ta=document.getElementById("mtZwText");
+ const ta=document.getElementById("mtpKb"+i);
  if(ta)p.kurzbericht=ta.value||"";
  p.zwischenstand.datum=dstr(0);
  p.zwischenstand.autor=p.zwischenstand.autor||"Case-Management";
  renderMeinTag();
- const btn=document.querySelector(".rsz-save");
- if(btn){btn.textContent="✓ Gespeichert";btn.classList.add("saved");setTimeout(mtSheetRender,1200);}
+ renderMtProtokolle();
 }
 function rsCockpit(){
  let erlos=0,db=0,offen=0;
@@ -6276,6 +6309,31 @@ function renderMeinTag(){
  document.getElementById("mtJetztList").innerHTML=jetzt.length?jetzt.map(mtCard).join(""):"<p class='empty'>Nichts Dringendes gerade.</p>";
  document.getElementById("mtWocheList").innerHTML=woche.length?woche.map(mtCard).join(""):"<p class='empty'>Keine weiteren Aufgaben diese Woche.</p>";
  document.getElementById("mtGutList").innerHTML=gut.length?gut.map(mtInfoCard).join(""):"<p class='empty'>Nichts Besonderes vorgemerkt.</p>";
+ renderMtProtokolle();
+}
+/* Task 6.1 (Punkt 6+7): Segment-Toggle Mein Tag ⇄ Protokolle — reines classList-Toggle,
+   kein Routing/Hash, kein neuer Top-Level-View, ma-mode-Gate bleibt unangetastet. */
+function mtpSwitch(which){
+ document.querySelectorAll(".mtp-seg").forEach(b=>b.classList.toggle("active",b.dataset.mtp===which));
+ document.getElementById("mtpPaneTag").classList.toggle("active",which==="tag");
+ document.getElementById("mtpPaneProtokolle").classList.toggle("active",which==="protokolle");
+ if(which==="protokolle")renderMtProtokolle();
+}
+/* Protokoll-Board: jeder inReha[]-Patient als eigene Zeile — editierbarer Kurzbericht
+   (schreibt direkt in p.kurzbericht, dieselbe Quelle wie Leitung/Zuweiser-Portal) + Fällig-Ampel
+   aus zwischenstandFaellig(p), pro Zeile einzeln speicherbar. */
+function renderMtProtokolle(){
+ const el=document.getElementById("mtpList");if(!el)return;
+ el.innerHTML=inReha.map((p,i)=>{
+  const faellig=zwischenstandFaellig(p);
+  return "<div class='mtp-row'>"
+   +"<div class='mtp-rhead'><span class='ava'>"+initialen(p.name)+"</span><b>"+escapeHtml(p.name)+"</b>"
+   +"<span class='patient-meta'>"+escapeHtml(p.achse)+" · Tag "+p.verweildauer.ist+"/"+p.verweildauer.plan+"</span>"
+   +"<span class='due "+(faellig?"bad":"ok")+"'>"+(faellig?"Zwischenstand fällig":"aktuell")+"</span></div>"
+   +"<textarea id='mtpKb"+i+"' class='rsz-textarea'>"+escapeHtml(p.kurzbericht||"")+"</textarea>"
+   +"<button class='btn-brass btn-sm' onclick='rsSaveZwischenstand("+i+")'>Speichern</button>"
+   +"</div>";
+ }).join("");
 }
 /* ---------- Mein Tag: geführte Arbeitskarte (Sheet, Anatomie von kpOpen/kpClose) ---------- */
 let _mtSheetKey=null;
