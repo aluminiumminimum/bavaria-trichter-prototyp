@@ -5850,6 +5850,7 @@ function openRsDetail(i){
   +"<div class='rs-dev'>"+devBar("Barthel-Index (0–100)",p.barthel.auf,p.barthel.akt,100)+devBar("FIM (18–126)",p.fim.auf,p.fim.akt,126)+"</div>"
   +rsChart(p)
   +"<div class='rs-report'><span class='rk'>Aktueller Kurzbericht</span>"+escapeHtml(p.kurzbericht)+"</div>"
+  +(p.verlaufPlan?"<div class='rs-report'><span class='rk'>Weiterer Verlauf</span>"+escapeHtml(p.verlaufPlan)+"</div>":"")
   +(p.labor?"<div class='rs-labor'>"+p.labor.map(l=>"<span class='rs-lab'><b>"+escapeHtml(l.k)+"</b>"+escapeHtml(l.v)+"</span>").join("")+"</div>":"")
   +"<div class='rs-timeline'>"+p.eintraege.map(e=>"<div class='rs-te'><small>"+escapeHtml(e.d)+"</small><p>"+escapeHtml(e.txt)+"</p></div>").join("")+"</div>";
  const stayState=p.verweildauer.ist<=p.verweildauer.plan?"<span class='rs-pill ok'>im Plan</span>":"<span class='rs-pill warn'>über Plan</span>";
