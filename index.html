@@ -3097,6 +3097,11 @@ summary.rk::-webkit-details-marker{display:none}
 .mtp-chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
 .chip-sm{font:500 12.5px/1 Inter;padding:7px 11px;border-radius:99px;border:1px solid var(--hair);background:var(--paper);color:var(--ink-soft);cursor:pointer;min-height:32px}
 @media(hover:hover){.chip-sm:hover{border-color:var(--brass);color:var(--brass-deep)}}
+/* Task 1.2 (Punkt 1): Zusammenfassung + Papier-Optik für die Originalanfrage in #egDetail */
+.eg-zsf{margin-top:12px}
+.eg-zsf p{margin:2px 0 0;font-size:14px;color:var(--ink-soft);line-height:1.45}
+.eg-original{margin-top:10px;background:var(--paper2);border:1px solid var(--hair);border-left:3px solid var(--brass-line);border-radius:8px;padding:10px 12px}
+.eg-original .mtxt{margin-top:4px}
 </style>
 </head>
 <body>
@@ -4339,6 +4344,11 @@ function _closeSiblingDetailRails(exceptId){
 }
 /* Zusammenfassungs-Helper (Kopf + Zuordnungsblock) — eine Funktion für qualifiziert/passiv/m.done,
    von openEgDetail() (Task 2.2) genutzt. */
+function egZusammenfassung(m){
+ if(m.zusammenfassung)return m.zusammenfassung;
+ const sig=erkenneSignale(m.txt);
+ return (m.wer||"Anfrage")+" — "+[sig.kostentraeger,sig.dringlichkeit?"Frist "+sig.dringlichkeit:null,sig.konkret?"konkrete Anfrage":null].filter(Boolean).join(" · ");
+}
 function egSummaryHtml(m){
  const sig=erkenneSignale(m.txt);
  const sterneBlock=sterneHtml(sterneAusSignal(sig));
@@ -4362,7 +4372,9 @@ function egSummaryHtml(m){
  return "<div class='mhead'><div class='ava'>"+initialen(m.wer||"")+"</div><div><h2>"+escapeHtml(m.wer||m.tit)+"</h2>"
    +"<div class='msub2'><span class='chtag'>"+escapeHtml(m.kanal)+"</span> · <span class='mtime'>"+escapeHtml(m.zeit)+"</span> · "
    +"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span></div></div></div>"
-   +"<div style='padding:16px 20px'>"+mid+"<div class='mtxt'>"+escapeHtml(m.txt)+"</div>"
+   +"<div style='padding:16px 20px'>"+mid
+   +"<div class='eg-zsf'><span class='kicker'>Zusammenfassung</span><p>"+escapeHtml(egZusammenfassung(m))+"</p></div>"
+   +"<div class='eg-original'><span class='kicker'>Originalanfrage</span><div class='mtxt'>"+escapeHtml(m.txt)+"</div></div>"
    +(m.notiz?"<div class='mt-eingang-notiz'>Notiz: "+escapeHtml(m.notiz)+"</div>":"")+"</div>";
 }
 /* Task 2.2 (Punkt 1): #egDetail öffnen — Kopf+Zusammenfassung aus egSummaryHtml(), darunter je nach
