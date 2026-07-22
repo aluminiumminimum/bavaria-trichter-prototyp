@@ -2991,7 +2991,7 @@ body{accent-color:var(--brass)}
   box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
 .fh-meta{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px}
 .fh-actions{margin-top:15px}
-@media(min-width:900px){.mbody.two-track .fh-hero{grid-column:1/-1}}
+@media(min-width:900px){.mbody.two-track .fh-hero,.mbody.two-track #dArbeit{grid-column:1/-1}}
 /* Task 1.3 (Punkt 2): Aufgaben-Hero (.ah-*) — reine Präsentation aus aufgabenHeroHtml(f),
    auch in Task 3.1 (Fallakte) wiederverwendet. dOwner/dFrist bleiben echte, editierbare
    native Elemente, nur chip-/pill-artig statt nackt umgestylt (.fh-owner-chip/#dFristWrap). */
@@ -4088,14 +4088,10 @@ summary.rk::-webkit-details-marker{display:none}
           <button class="btn-ghost btn-sm" style="width:100%" type="button" onclick="openFallakte(aktuellerFall.id)">Vollständige Fallakte öffnen →</button>
         </div>
       </div>
+      <div id="dArbeit"></div>
       <div class="d-track-wrap">
         <div id="dWerdegang" class="d-track"></div>
-        <div id="dKZ" class="kz-block"></div>
         <div id="dAkte"></div>
-        <div class="komm-block" style="margin-top:14px"><label>Antwort senden</label>
-          <div class="komm-row"><select id="dReplyKanal"><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select><button class="btn-brass btn-sm" type="button" onclick="sendReply()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Antwort senden</button></div>
-          <textarea id="dReply" rows="2" placeholder="Antwort an die anfragende Person verfassen … (Demo)"></textarea>
-        </div>
       </div>
       <div class="mgrid">
         <details class="d-acc full">
@@ -4105,21 +4101,12 @@ summary.rk::-webkit-details-marker{display:none}
             <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option><option>abgelehnt</option></select></div>
             <div><label for="dKT">Kostenträger</label><select id="dKT"><option>PKV</option><option>Selbstzahler</option><option>GKV + Komfort</option><option>Beihilfe</option><option>GKV</option></select></div>
             <div><label for="dConsent">Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
-            <div class="full"><label>Unterlagen <span id="docCnt" style="color:var(--brass-deep)"></span></label>
-              <div class="docs">
-                <label><input type="checkbox" id="u1"> Entlassbrief</label>
-                <label><input type="checkbox" id="u2"> Befunde</label>
-                <label><input type="checkbox" id="u3"> Versicherungsdaten</label>
-                <label><input type="checkbox" id="u4"> Kostenzusage</label>
-              </div>
-            </div>
             <div class="full"><div class="saluto-toggle"><input type="checkbox" id="dSaluto"><span>★ Für <b>SalutoCare</b> geeignet · Premium-Option aktiv anbieten</span></div></div>
             <div class="full verlustrow" id="rowVerlust"><label for="dVerlust">Verlustgrund (Pflicht bei „Verloren&#8220;)</label>
               <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
             </div>
           </div>
         </details>
-        <div class="full"><label for="dNotizSofort">Notiz sofort vermerken</label><div class="kz-notiz-row"><input id="dNotizSofort" placeholder="z. B. Rückruf erledigt"><button class="btn-ghost btn-sm" type="button" onclick="kzNotizAdd()">Ins Protokoll</button></div></div>
         <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
         <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
       </div>
@@ -5934,6 +5921,55 @@ function aufgabenHeroHtml(f){
   +(f.frist?"<span class='due "+fk+"'>Frist "+escapeHtml(ft)+"</span>":"")
   +"</div>";
 }
+/* Task 1.1 (Punkt 2): #dArbeit — aufgabentyp-abhängiger Arbeitsbereich im Fall-Drawer.
+   drawerAufgabenTyp() klassifiziert f.aufgabe per Regex (Stil analog aufgabeIcon()/mtTyp()),
+   dArbeitHtml() rendert das passende Werkzeug; kzChain/kzActions/kzNotizAdd werden hier
+   verschoben (nicht neu gebaut), ihre bisherigen IDs (#dKZ, #dNotizSofort) bleiben identisch. */
+function drawerAufgabenTyp(f){
+ const a=f.aufgabe||"";
+ if(/rückruf|erstkontakt|anruf/i.test(a))return"rueckruf";
+ if(/kosten/i.test(a))return"kosten";
+ if(/unterlagen|dokument|befund/i.test(a))return"unterlagen";
+ if(/angebot/i.test(a))return"angebot";
+ if(/anreise|zimmer|aufnahme/i.test(a))return"anreise";
+ return"allgemein";
+}
+function dArbeitHtml(f){
+ const typ=drawerAufgabenTyp(f);
+ if(typ==="kosten")
+   return "<div id='dKZ' class='kz-block'><div class='kicker'>Kostenzusage</div>"+kzChain(f)+kzActions(f)+"</div>"
+    +"<div class='full' style='margin-top:12px'><label>Kostenzusage-Dokument</label>"
+    +"<button class='btn-ghost btn-sm' type='button' onclick='dArbeitKostenUpload()'>⇪ Dokument hochladen (Demo)</button></div>";
+ if(typ==="unterlagen")
+   return "<div class='full'><label>Unterlagen <span id='docCnt' style='color:var(--brass-deep)'></span></label>"
+    +"<div class='docs'>"
+    +"<label><input type='checkbox' id='u1' "+(f.docs[0]?"checked":"")+" onchange='updateDocCnt()'> Entlassbrief</label>"
+    +"<label><input type='checkbox' id='u2' "+(f.docs[1]?"checked":"")+" onchange='updateDocCnt()'> Befunde</label>"
+    +"<label><input type='checkbox' id='u3' "+(f.docs[2]?"checked":"")+" onchange='updateDocCnt()'> Versicherungsdaten</label>"
+    +"<label><input type='checkbox' id='u4' "+(f.docs[3]?"checked":"")+" onchange='updateDocCnt()'> Kostenzusage</label>"
+    +"</div></div><button class='btn-ghost btn-sm' type='button' onclick='dArbeitUnterlagenAnfordern()'>Fehlende anfordern</button>";
+ if(typ==="angebot")
+   return "<div class='komm-block'><label>Antwort senden</label>"
+    +"<div class='komm-row'><select id='dReplyKanal'><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select>"
+    +"<button class='btn-brass btn-sm' type='button' onclick='sendReply()'><svg viewBox='0 0 24 24' width='14' height='14' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>Antwort senden</button></div>"
+    +"<textarea id='dReply' rows='2' placeholder='Antwort an die anfragende Person verfassen … (Demo)'></textarea></div>";
+ if(typ==="anreise")
+   return "<div class='kicker'>Anreise-Checkliste</div>"
+    +"<label><input type='checkbox'> Zimmer reserviert</label>"
+    +"<label><input type='checkbox'> Transport geklärt</label>"
+    +"<label><input type='checkbox'> Aufnahmetag bestätigt</label>";
+ return "<div class='full'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL[typ]||MT_NOTIZ_LABEL.allgemein)+"</label>"
+   +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
+   +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>";
+}
+function dArbeitKostenUpload(){
+ const f=aktuellerFall;if(!f)return;
+ f.docs[3]=true;
+ inbToast("done","<b>Kostenzusage-Dokument hochgeladen</b> (Demo)","",null);
+}
+function dArbeitUnterlagenAnfordern(){
+ inbToast("done","<b>Fehlende Unterlagen angefordert</b> (Demo)","",null);
+}
 /* ---------- Kostenzusage-Workflow (nur aktive Station gefüllt, kein kumulativer Fortschritt) ---------- */
 const KZ_STAGES=[["offen","Offen"],["angefragt","Angefragt"],["Zusage liegt vor","Zusage"],["abgelehnt","Abgelehnt"]];
 function kzChain(f){
@@ -6012,16 +6048,15 @@ function openDetail(id){
   document.getElementById("dKosten").value=f.kosten;
   document.getElementById("dKT").value=f.kt;
   document.getElementById("dConsent").value=f.consent;
-  ["u1","u2","u3","u4"].forEach((u,i)=>document.getElementById(u).checked=f.docs[i]);
-  updateDocCnt();
   document.getElementById("dSaluto").checked=f.saluto;
   document.getElementById("dVerlust").value=f.verlust||"";
   document.getElementById("dNotiz").value="";
-  document.getElementById("dNotizSofort").value="";
+  var _dns=document.getElementById("dNotizSofort");if(_dns)_dns.value="";
   var _dr=document.getElementById("dReply");if(_dr)_dr.value="";
   document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
   document.getElementById("dWerdegang").innerHTML="<div class='kicker'>Werdegang</div>"+stepper(f.schritte||deriveSchritte(f));
-  document.getElementById("dKZ").innerHTML="<div class='kicker'>Kostenzusage</div>"+kzChain(f)+kzActions(f);
+  document.getElementById("dArbeit").innerHTML=dArbeitHtml(f);
+  updateDocCnt();
   document.getElementById("dAkte").innerHTML=paAkteSlot(f.personId);
   document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
   toggleVerlust();
@@ -6035,9 +6070,11 @@ function closeDetail(){
   document.getElementById("ovDetail").classList.remove("open");
   document.body.classList.remove("locked","detail-open");
 }
-function updateDocCnt(){const n=["u1","u2","u3","u4"].filter(u=>document.getElementById(u).checked).length;
-  document.getElementById("docCnt").textContent="("+n+" / 4)";}
-["u1","u2","u3","u4"].forEach(u=>document.getElementById(u).addEventListener("change",updateDocCnt));
+function updateDocCnt(){
+  if(!document.getElementById("u1"))return;
+  const n=["u1","u2","u3","u4"].filter(u=>document.getElementById(u).checked).length;
+  document.getElementById("docCnt").textContent="("+n+" / 4)";
+}
 function toggleVerlust(){document.getElementById("rowVerlust").classList.toggle("show",document.getElementById("dStatus").value==="Verloren");}
 document.getElementById("dStatus").addEventListener("change",toggleVerlust);
 document.getElementById("dOwner").addEventListener("change",function(){document.getElementById("dOwnerAva").textContent=initialen(this.value);});
@@ -6058,7 +6095,7 @@ document.getElementById("dSpeichern").onclick=()=>{
   f.kosten=document.getElementById("dKosten").value;
   const _kt=document.getElementById("dKT").value; if(_kt)f.kt=_kt;
   f.consent=document.getElementById("dConsent").value;
-  f.docs=["u1","u2","u3","u4"].map(u=>document.getElementById(u).checked);
+  if(document.getElementById("u1"))f.docs=["u1","u2","u3","u4"].map(u=>document.getElementById(u).checked);
   f.saluto=document.getElementById("dSaluto").checked;
   f.verlust=document.getElementById("dVerlust").value;
   const n=document.getElementById("dNotiz").value.trim();
