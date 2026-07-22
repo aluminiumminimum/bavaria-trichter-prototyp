@@ -3108,6 +3108,10 @@ summary.rk::-webkit-details-marker{display:none}
 .egd-saluto.on{border-color:var(--brass);background:var(--brass-soft);color:var(--brass-deep)}
 .ah-hinweis,.mt-shinweis{margin-top:8px;font-size:12.5px;color:var(--ink-soft)}
 .ah-hinweis .kicker,.mt-shinweis .kicker{display:inline;margin:0 6px 0 0;font-size:10.5px}
+/* Task 1.4 (Punkt 5): .pa-fold — Stammdaten-Akte im Fall-Drawer/In-Reha-Overlay standardmäßig zugeklappt */
+.pa-fold{margin-top:14px}
+.pa-fold>summary::after{content:"›";display:inline-block;margin-left:6px;font-size:15px;line-height:1;color:var(--faint);transition:transform .2s}
+.pa-fold[open]>summary::after{transform:rotate(90deg)}
 </style>
 </head>
 <body>
@@ -5896,7 +5900,7 @@ function openRsDetail(i){
     +"<div class='rs-row'><span class='rs-k'>Diagnose (ICD)</span><span>"+escapeHtml(p.icd)+"</span></div>"
     +"<div class='rs-row'><span class='rs-k'>Aufnahme</span><span>"+escapeHtml(p.aufnahme)+"</span></div>"
   +"</div>"
-  +((bill.zusatz&&bill.zusatz.length)?"<div class='rs-empf'><span class='rk'>Zusatzerlöse / Wahlleistungen</span><ul>"+bill.zusatz.map(z=>"<li>"+escapeHtml(z.label)+" · +"+z.eur+" €/Tag</li>").join("")+"</ul></div>":"")+paAkte(p.personId);
+  +((bill.zusatz&&bill.zusatz.length)?"<div class='rs-empf'><span class='rk'>Zusatzerlöse / Wahlleistungen</span><ul>"+bill.zusatz.map(z=>"<li>"+escapeHtml(z.label)+" · +"+z.eur+" €/Tag</li>").join("")+"</ul></div>":"")+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkte(p.personId)+"</details>";
  /* §6+7: Kurzbericht-Eingabe wandert exklusiv nach Mein Tag (mtSheetRender/rsSaveZwischenstand) —
     hier nur Lese-Hinweis, wann/von wem zuletzt aktualisiert wurde. */
  document.getElementById("rsZwischenstand").innerHTML=
@@ -6172,7 +6176,7 @@ function openDetail(id){
   document.getElementById("dWerdegang").innerHTML="<div class='kicker'>Werdegang</div>"+stepper(f.schritte||deriveSchritte(f));
   document.getElementById("dArbeit").innerHTML=dArbeitHtml(f);
   updateDocCnt();
-  document.getElementById("dAkte").innerHTML=paAkteSlot(f.personId);
+  document.getElementById("dAkte").innerHTML="<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId)+"</details>";
   document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
   toggleVerlust();
   _closeSiblingDetailRails("ovDetail");
