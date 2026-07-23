@@ -1576,8 +1576,9 @@ label{font-size:12px;letter-spacing:.08em}
    Perspektivenwechsel: eigene, ruhige Mitarbeiter-Sicht (S. Koordination) auf denselben Daten.
    ma-mode blendet die komplette Leitungs-Chrome nur per CSS aus — nichts wird umgebaut, Rückschalten entfernt nur die Klasse. ===== */
 body.ma-mode .dsidebar,body.ma-mode header.dtopbar,body.ma-mode nav.tabbar,body.ma-mode #inbToast,body.ma-mode #rpToast{display:none}
-body.ma-mode .view:not(#view-meintag){display:none}
+body.ma-mode .view:not(#view-meintag):not(#view-fallakte.active){display:none}
 body.ma-mode #view-meintag{display:block}
+body.ma-mode:has(#view-fallakte.active) #view-meintag{display:none}
 @media(min-width:1024px){body.ma-mode .app{margin-left:0}}
 #view-meintag{max-width:880px;margin:0 auto}
 .mt-head{margin:4px 0 8px}
