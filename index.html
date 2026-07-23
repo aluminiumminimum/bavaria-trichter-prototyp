@@ -6436,6 +6436,12 @@ function kzNotizAdd(){
 }
 function advanceFallStatus(f){
  const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return false;
+ const _typ=drawerAufgabenTyp(f);
+ const _items=SOP_CHECKLISTE[_typ];
+ if(_items){
+   const _erledigt=_items.filter((label,i)=>f.sopDone&&f.sopDone[_typ+":"+f.status+":"+i]);
+   if(_erledigt.length) f.log.push([dstr(0),"Erledigt: "+_erledigt.join(" · ")]);
+ }
  const ns=STATUS[cur+1]; f.log.push([dstr(0),"Aufgabe erledigt · Status: "+f.status+" → "+ns]);
  if(f.personId)pHist(f.personId,ns==="Aufgenommen"?"aufnahme":"fall","Status: "+f.status+" → "+ns);
  qualifyIfNeeded(f,ns);
