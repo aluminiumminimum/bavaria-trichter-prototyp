@@ -4985,11 +4985,17 @@ function uebernehmen(id,owner){
   const fid=Math.max(...faelle.map(x=>x.id))+1;
   const _log=[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit+" — zugewiesen an "+owner]];
   if(m.hinweis)_log.push([dstr(0),"[Hinweis bei Zuordnung] "+m.hinweis]);
-  faelle.push({id:fid,name:"Neuer Fall (aus Eingang)",alter:null,rolle:"offen",kanal:m.kanal,quelle:m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.kanal,
+  const _fk=fallFakten(m);
+  const _alterC=_fk.find(c=>c.typ==="alter"), _diagC=_fk.find(c=>c.typ==="diagnose");
+  const _name=(m.patient&&m.patient.name)
+    ||(_alterC?("Patient/Patientin ("+_alterC.raw+")"+(_diagC?" · "+_diagC.text:"")):null)
+    ||"Neuer Fall (aus Eingang)";
+  faelle.push({id:fid,name:_name,alter:(m.patient&&m.patient.alter!=null)?m.patient.alter:null,rolle:"offen",kanal:m.kanal,quelle:m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.kanal,
     achse:m.achse,kt:"Unklar",status:"Neu",owner:owner,aufgabe:STATUS_AUFGABE["Neu"],frist:dstr(0),
     saluto:m.saluto===true,zuordnungsHinweis:m.hinweis||"",
     sterne:m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt)),
     rueckfragen:egVollstaendigkeit(m).filter(c=>!c.ok).map(c=>({frage:c.frage,done:false})),
+    originalTxt:m.txt,originalKanal:m.kanal,originalZeit:m.zeit,
     docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
     log:_log});
   m.fallId=fid;
@@ -5055,7 +5061,7 @@ function makeBoardCol(st){
   f.forEach(x=>{
     const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"");
     const fk=fristKlasse(x.frist);
-    k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter?"("+x.alter+")":"")+"</span></span></div>"
+    k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter&&!/\(\d+\)/.test(x.name)?"("+x.alter+")":"")+"</span></span></div>"
       +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+escapeHtml(x.achse)+"</span><span class='pill-kt'>"+escapeHtml(x.kt)+"</span></div>"
       +"<div class='kmeta'>"+escapeHtml(x.quelle)+"<br>"+escapeHtml(x.owner)+(x.aufgabe?" · "+escapeHtml(x.aufgabe):"")+"</div>"
       +"<div class='stagebar' title='Statusfortschritt'><span style='width:"+statusFortschritt(x.status)+"%'></span></div>"
@@ -7047,7 +7053,7 @@ function renderFallakte(){
   const f=faelle.find(x=>x.id===_fallakteId);
   if(!f){go('faelle','board');return;}
   aktuellerFall=f;
-  document.getElementById("faName").textContent=f.name+(f.alter?" ("+f.alter+")":"");
+  document.getElementById("faName").textContent=f.name+(f.alter&&!/\(\d+\)/.test(f.name)?" ("+f.alter+")":"");
   document.getElementById("faSub").textContent=f.achse+" · "+f.kt+" · "+f.quelle+" · Kanal: "+f.kanal;
   document.getElementById("faAva").textContent=initialen(f.name);
   document.getElementById("faHeadMeta").innerHTML="<span class='pill-a' style='background:"+(ACHSE_COL[f.achse]||"var(--unklar)")+"'>"+escapeHtml(f.achse)+"</span>"
