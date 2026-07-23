@@ -5249,18 +5249,12 @@ function arAktion(key){
  renderRadar();
  renderZuweiser();
 }
-/* TEMPORÄR (Runde 6 Punkt 5, Task 2→5): zuweiser-bericht/-fortbildung hier nur, damit arCard()
-   zwischen Task 2 und Task 4 kein "undefined"-Label rendert. Wird in Task 5 zusammen mit den
-   übrigen zuweiser-*-Einträgen entfernt, sobald renderZuweiserAnlaesse() (Task 4) arCard() für
-   Zuweiser-Anlässe nicht mehr aufruft. */
-const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf","zuweiser-rhythmus":"Zuweiser-Rhythmus","zuweiser-meilenstein":"Zuweiser-Meilenstein","zuweiser-jubilaeum":"Partnerschafts-Jubiläum","zuweiser-bericht":"Zuweiser-Abschlussbericht","zuweiser-fortbildung":"Zuweiser-Fortbildung","zuweiser-trend":"Zuweiser-Trend"};
-const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"],"zuweiser-rhythmus":["kb-arzt.jpg","petrol"]};
+const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf"};
+const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"]};
 function arCard(a,i){
  const perName=a.pid&&person(a.pid)?person(a.pid).name:a.titel;
- const isZ=["zuweiser-rhythmus","zuweiser-meilenstein","zuweiser-jubilaeum","zuweiser-bericht","zuweiser-fortbildung","zuweiser-trend"].includes(a.typ); // TEMPORÄR, s. Kommentar bei AR_TYP oben
- const due=isZ?(a.urg==="jetzt"?"überfällig":"fällig"):(a.urg==="beob"?"im Blick":"in "+a.tage+" Tagen");
+ const due=a.urg==="beob"?"im Blick":"in "+a.tage+" Tagen";
  const dueCls=a.urg;
- const gLbl=isZ?"Nächste Aktion":"Empfohlene Geste";
  const strip=(AR_FOTO[a.typ])?"<figure class='au-photo au-photo--"+AR_FOTO[a.typ][1]+"'><img src='assets/"+AR_FOTO[a.typ][0]+"' alt='' loading='lazy'></figure>":"";
  return "<div class='radar-card ar-rc' style='--acol:var(--brass)'>"
   +strip
@@ -5269,7 +5263,7 @@ function arCard(a,i){
   +(a.sterne?"<div class='ar-cardstars'>"+sterneHtml(a.sterne)+"</div>":"")
   +"<div class='patient-meta'>"+AR_TYP[a.typ]+"</div>"
   +"<div class='radar-prog'><span class='rk'>Anlass</span>"+escapeHtml(a.sub)+"</div>"
-  +"<div class='radar-prog'><span class='rk'>"+gLbl+"</span>"+escapeHtml(a.geste.label)+"</div>"
+  +"<div class='radar-prog'><span class='rk'>Empfohlene Geste</span>"+escapeHtml(a.geste.label)+"</div>"
   +"<div class='patient-actions'><button class='btn-ghost btn-sm' onclick='arAktion(\""+a.key.replace(/"/g,"&quot;")+"\")'>"+escapeHtml(a.geste.cta)+" ›</button></div>"
   +"</div>";
 }
