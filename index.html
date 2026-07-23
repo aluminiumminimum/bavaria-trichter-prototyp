@@ -4754,8 +4754,8 @@ let egGruppe=null,_egId=null;
 let zArchivAnzeigen=false;let bestandArchivAnzeigen=false;
 
 /* ---------- Helpers ---------- */
-function fristKlasse(f){if(!f)return"";const d=(new Date(f)-heute)/86400000;return d<0?"bad":d<1.5?"warn":"ok";}
-function fristText(f){if(!f)return"";const d=Math.round((new Date(f)-heute)/86400000);return d<0?"überfällig ("+Math.abs(d)+" T)":d===0?"heute fällig":"in "+d+" T";}
+function fristKlasse(f){if(!f)return"";const h=dstr(0);if(f<h)return"bad";if(f===h)return"warn";const d=(new Date(f)-heute)/86400000;return d<1.5?"warn":"ok";}
+function fristText(f){if(!f)return"";const h=dstr(0);if(f<h)return"überfällig ("+Math.round((new Date(h)-new Date(f))/86400000)+" T)";if(f===h)return"heute fällig";const d=Math.round((new Date(f)-heute)/86400000);return "in "+d+" T";}
 function statusFortschritt(s){return Math.max(12,((STATUS.indexOf(s)+1)/STATUS.length*100));}
 function zaehle(arr,key){const m={};arr.forEach(x=>{const k=key(x);if(!k)return;m[k]=(m[k]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
 function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));}
@@ -5647,7 +5647,7 @@ function kennzahlen(){
   const conv=auf+verl?Math.round(auf/(auf+verl)*100):0;
   const rz=faelle.filter(x=>x.reaktion!=null);
   const rzAvg=rz.length?Math.round(rz.reduce((s,x)=>s+x.reaktion,0)/rz.length):0;
-  const ueberf=offen.filter(x=>x.frist&&new Date(x.frist)<heute).length;
+  const ueberf=offen.filter(x=>x.frist&&x.frist<dstr(0)).length;
   const neu=eingang.filter(m=>!m.done).length;
   const kontaktf=bestand.filter(p=>p.consent==="ja").length;
   const blockers=offen.filter(x=>x.docs.some(d=>!d)||x.kosten==="offen"||x.consent==="offen").length;
