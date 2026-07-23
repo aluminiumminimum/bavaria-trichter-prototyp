@@ -6277,6 +6277,22 @@ function rsChart(p){
    <text x="${cw}" y="122" text-anchor="end" font-family="Inter" font-size="10" fill="#948c80">Tag ${p.verweildauer.ist}</text>
   </svg><div class="rsp-legend"><span class="b"><i></i>Barthel</span><span class="f"><i></i>FIM</span></div></div>`;
 }
+/* Runde 6 Punkt 4 (§4.2/§4.3): irbAmpel()/irbMeilenstein() für die neue BWL-Karte.
+   Additiv — noch von keinem Aufrufer genutzt (altes renderInReha() bleibt bis Task 3 unverändert
+   aktiv); Verdrahtung + Markup-Umbau folgt atomar in Task 3. */
+function irbAmpel(bill,p){
+ const kz=bill.kostenzusage||"—";
+ if(kz==="liegt vor")return{cls:"ok",label:"liegt vor"};
+ if(kz!=="offen")return{cls:"ok",label:"kein Kostenträger nötig"}; // "n.a. (Selbstzahler)" u.ä.
+ return p.verweildauer.ist<2?{cls:"warn",label:"angefragt"}:{cls:"bad",label:"fehlt – kritisch"};
+}
+function irbMeilenstein(p){
+ const rest=p.verweildauer.plan-p.verweildauer.ist;
+ if(rest<=3)return{label:"Entlassgespräch",detail:p.entlassungGeplant?"am "+p.entlassungGeplant:"Termin abstimmen"};
+ if(rest<=10)return{label:"Verlängerungsentscheid",detail:"spätestens in "+(rest-3)+" Tagen"};
+ const zbTag=14;
+ return{label:"Zwischenbericht fällig",detail:p.verweildauer.ist<zbTag?"in "+(zbTag-p.verweildauer.ist)+" Tagen (Tag 14)":"jetzt (Tag 14 erreicht)"};
+}
 function renderInReha(){
  const el=document.getElementById("inrehaGrid");if(!el)return;
  const _ck=document.getElementById("rsCockpit");if(_ck)_ck.innerHTML=rsCockpit();
