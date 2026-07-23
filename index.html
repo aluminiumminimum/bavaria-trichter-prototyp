@@ -5278,6 +5278,37 @@ function renderAnlaesse(){
  const rp=document.getElementById("rlCountPat");if(rp)rp.textContent=pat.length;
  const rz=document.getElementById("rlCountZuw");if(rz)rz.textContent=zuw.length;
 }
+/* Runde 6 Punkt 5 (§5.1): .zwa-* — eigene Etiketten-Karten für die Zuweiser-Anlässe (Kicker+Icon,
+   Zuweiser-Name, voller Anlass-Satz, Fälligkeits-Chip, ein Erledigt-Button), ersetzt arCard()/
+   .radar-card für #zAnlaesse. arCard() bleibt für die drei Patienten-Anlass-Typen (renderRadar())
+   unverändert aktiv. */
+const ZWA_TYP={
+ "zuweiser-rhythmus":{ico:"⟳",label:"Kontaktpflege"},
+ "zuweiser-jubilaeum":{ico:"✦",label:"Jahrestag"},
+ "zuweiser-meilenstein":{ico:"◆",label:"Meilenstein"},
+ "zuweiser-bericht":{ico:"✉",label:"Abschlussbericht"},
+ "zuweiser-fortbildung":{ico:"▣",label:"Fortbildung"},
+ "zuweiser-trend":{ico:"∿",label:"Fallzahl-Trend"}
+};
+function zwaKarte(a){
+ const t=ZWA_TYP[a.typ]||{ico:"•",label:""};
+ const dueTxt=a.urg==="jetzt"?"überfällig":"in "+a.tage+" Tagen";
+ return "<div class='zwa-card'>"
+  +"<div class='zwa-head'><span class='zwa-ico'>"+t.ico+"</span><span class='zwa-typ'>"+t.label+"</span>"
+  +"<span class='radar-due "+a.urg+"' style='margin-left:auto'>"+dueTxt+"</span></div>"
+  +"<div class='zwa-name'>"+escapeHtml(a.zName)+"</div>"
+  +"<p class='zwa-text'>"+escapeHtml(a.sub)+"</p>"
+  +"<div class='zwa-foot'><button class='btn-ghost btn-sm' onclick='arAktion(\""+a.key.replace(/"/g,"&quot;")+"\")'>Erledigt ✓</button></div>"
+  +"</div>";
+}
+function renderZuweiserAnlaesse(){
+ const zAnl=anlaesse("zuweiser");
+ const el=document.getElementById("zAnlaesse");if(!el)return;
+ if(!zAnl.length){el.innerHTML="<p class='empty'>Aktuell keine anstehenden Zuweiser-Anlässe.</p>";return;}
+ const woche=zAnl.filter(a=>a.urg==="jetzt"), demnaechst=zAnl.filter(a=>a.urg==="bald");
+ el.innerHTML=(woche.length?"<div class='ar-feedhead'>Diese Woche</div><div class='zwa-group'>"+woche.map(zwaKarte).join("")+"</div>":"")
+  +(demnaechst.length?"<div class='ar-feedhead'>Demnächst</div><div class='zwa-group'>"+demnaechst.map(zwaKarte).join("")+"</div>":"");
+}
 /* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
 const FC_BETTEN=7; // Komfort-Kontingent (Privat-/Selbstzahler + Komfort-Aufzahler)
 const FC_ZIEL=FC_BETTEN-1; // Ziel-Belegung (Demo): eine Stufe unter Vollbelegung → gestrichelte Ziel-Linie im Forecast
@@ -5676,10 +5707,8 @@ function renderZuweiser(){
    +"<div class='route-card'><div class='rlabel'>Potenzielle Kontakte</div><div class='rvalue num'>"+archivCount+"</div><div class='rnote'>im Archiv</div></div></div>"
    +(archivCount&&!zArchivAnzeigen?"<div class='zarchiv-toggle'><button class='btn-ghost btn-sm' onclick='zArchivAnzeigen=true;renderZuweiser()'>⊕ "+archivCount+" potenzielle Kontakte anzeigen</button></div>":"")
    +"</div>";
-  /* §5.1 B2B/B2C-Trennung: Zuweiser-Anlässe (Kontaktpflege-Fälligkeit + Trend) gehören in die Zuweiser-Ansicht, nicht ins Patienten-Radar */
-  const zAnl=anlaesse("zuweiser");
-  const zAnlEl=document.getElementById("zAnlaesse");
-  if(zAnlEl)zAnlEl.innerHTML=zAnl.length?"<div class='ar-feedhead'>Zuweiserpflege — anstehende Gesten</div><div class='ar-grid'>"+zAnl.map(arCard).join("")+"</div>":"";
+  /* Runde 6 Punkt 5 (§5.1): eigene Etiketten-Karten (.zwa-*) statt arCard()/.radar-card */
+  renderZuweiserAnlaesse();
   const chipsHtml="<div class='tier-chips'>"+zwChip("alle","Alle",primaryFiltered)
     +["5","4","3","2","1"].map(k=>zwChip(k,k+"★",primaryFiltered)).join("")+"</div>";
   const zwChipsEl=document.getElementById("zwSterneChips");if(zwChipsEl)zwChipsEl.innerHTML=chipsHtml;
