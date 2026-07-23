@@ -3151,6 +3151,9 @@ summary.rk::-webkit-details-marker{display:none}
 .egt-pool-zsf{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.4;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .egt-pool-weitere{margin-top:16px}
+/* Runde 6 Punkt 1 (§7.9): .egt-rueckfragen — abhakbare Rückfragen-Liste im Werkbank-Typ "rueckruf",
+   Checkbox-Styling erbt bereits von der globalen #dArbeit-label/input-Regel. */
+.egt-rueckfragen{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -6224,10 +6227,20 @@ function dArbeitHtml(f){
     +"<label><input type='checkbox'> Zimmer reserviert</label>"
     +"<label><input type='checkbox'> Transport geklärt</label>"
     +"<label><input type='checkbox'> Aufnahmetag bestätigt</label>";
+ if(typ==="rueckruf"&&f.rueckfragen&&f.rueckfragen.length)
+   return "<div class='egt-rueckfragen'><span class='kicker'>Offene Rückfragen</span>"
+     +f.rueckfragen.map(function(r,i){
+       return "<label><input type='checkbox' "+(r.done?"checked":"")+" onchange='egRueckfrageToggle("+i+")'> "+escapeHtml(r.frage)+"</label>";
+     }).join("")
+     +"</div>"
+     +"<div class='full' style='margin-top:12px'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL.rueckruf)+"</label>"
+     +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
+     +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>";
  return "<div class='full'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL[typ]||MT_NOTIZ_LABEL.allgemein)+"</label>"
    +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
    +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>";
 }
+function egRueckfrageToggle(i){ const f=aktuellerFall;if(!f||!f.rueckfragen)return; f.rueckfragen[i].done=!f.rueckfragen[i].done; renderFallakte(); }
 function dArbeitKostenUpload(){
  const f=aktuellerFall;if(!f)return;
  f.docs[3]=true;
