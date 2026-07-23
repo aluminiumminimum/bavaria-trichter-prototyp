@@ -1142,9 +1142,9 @@ label{font-size:12px;letter-spacing:.08em}
   .radar-kpi .rk-l{font:600 11px/1.1 Inter;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:3px}
   .radar-card{border-left:3px solid var(--acol,var(--brass-line))}
   /* ===== WS3 · Reha-Steuerung — Cockpit-Karteikarten + Detail (Erfolge | Wirtschaftlichkeit) ===== */
-  #inrehaGrid{display:grid;grid-template-columns:1fr;gap:14px}
-  @media(min-width:900px){#inrehaGrid{grid-template-columns:1fr 1fr}}
-  @media(min-width:1320px){#inrehaGrid{grid-template-columns:1fr 1fr 1fr}}
+  #inrehaGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+  @media(min-width:900px){#inrehaGrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+  @media(min-width:1320px){#inrehaGrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)}}
   .ir-card{display:block;width:100%;text-align:left;cursor:pointer;background:var(--paper);border:1px solid var(--hair);border-left:3px solid var(--acol,var(--brass-line));border-radius:16px;box-shadow:var(--shadow-soft);padding:16px 18px;transition:transform .16s ease,box-shadow .16s ease}
   @media(hover:hover){.ir-card:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),var(--shadow)}}
   .ir-card.hot{background:linear-gradient(180deg,var(--paper),var(--brass-soft))}
@@ -6297,23 +6297,31 @@ function renderInReha(){
  const el=document.getElementById("inrehaGrid");if(!el)return;
  const _ck=document.getElementById("rsCockpit");if(_ck)_ck.innerHTML=rsCockpit();
  el.innerHTML=inReha.map((p,i)=>{
-  const rest=Math.max(0,p.verweildauer.plan-p.verweildauer.ist);
-  const stayPct=Math.min(100,Math.round(p.verweildauer.ist/p.verweildauer.plan*100));
   const col=ACHSE_COL[p.achse]||"var(--unklar)";
-  const dB=p.barthel.akt-p.barthel.auf,dF=p.fim.akt-p.fim.auf;
+  const bill=RS_BILLING[p.name]||{};
+  const stayPct=Math.min(100,Math.round(p.verweildauer.ist/p.verweildauer.plan*100));
+  const ts=bill.tagessatz||0,kt=bill.kostenTag||0;
+  const erlösPlan=ts*p.verweildauer.plan,marge=ts?Math.round((ts-kt)/ts*100):0;
+  const zusatzTag=(bill.zusatz||[]).reduce((s,z)=>s+z.eur,0);
+  const ampel=irbAmpel(bill,p);
+  const ms=irbMeilenstein(p);
+  const sterne=sterneVon(p),kt_=person(p.personId)?.kt||"—";
   return `<button class="ir-card${p.achse==="SalutoCare"?" hot":""}" style="--acol:${col}" onclick="openRsDetail(${i})">
     <div class="ir-head"><span class="ava">${initialen(p.name)}</span>
-      <div class="ir-htxt"><h3>${escapeHtml(p.name)} <span class="ir-age">(${p.alter})</span></h3>
-      <div class="ir-icd"><span class="ach-dot"></span>${escapeHtml(p.achse)} · ${escapeHtml(p.icd)}</div></div>
-      <span class="ir-chev">›</span></div>
-    <div class="ir-metrics">
-      <div class="ir-m"><div class="ir-mv num">${p.barthel.akt}<span class="ir-delta">▲${dB}</span></div><div class="ir-ml">Barthel</div></div>
-      <div class="ir-m"><div class="ir-mv num">${p.fim.akt}<span class="ir-delta">▲${dF}</span></div><div class="ir-ml">FIM</div></div>
-      <div class="ir-m"><div class="ir-mv num">${p.ziel}%</div><div class="ir-ml">Reha-Ziel</div></div>
-    </div>
-    ${rsSpark(p)}
-    <div class="ir-stay"><div class="lbl"><span>Verweildauer</span><span>Tag ${p.verweildauer.ist} / ${p.verweildauer.plan} · noch ${rest} T</span></div>
+     <div class="ir-htxt"><h3>${escapeHtml(p.name)} <span class="ir-age">(${p.alter})</span></h3>
+      <div class="irb-tags">${sterneHtml(sterne)}<span class="irb-achse">${escapeHtml(p.achse)}</span><span class="irb-zimmer">${escapeHtml(bill.zimmer||"—")}</span></div></div>
+     <span class="ir-chev">›</span></div>
+    <div class="ir-stay irb-stay"><div class="lbl"><span>Tag ${p.verweildauer.ist} von ${p.verweildauer.plan}</span>
+      <span>${p.entlassungGeplant?escapeHtml(p.entlassungGeplant):"Entlassung offen"}${bill.verlaengerung?"<span class='irb-gold-dot' title='Verlängerung möglich'></span>":""}</span></div>
       <div class="track"><div class="fill" style="width:${stayPct}%"></div></div></div>
+    <div class="irb-bwl">
+      <div class="irb-b"><div class="irb-bv num">${ts.toLocaleString('de-DE')} €</div><div class="irb-bl">Erlös/Tag</div></div>
+      <div class="irb-b"><div class="irb-bv num">${erlösPlan.toLocaleString('de-DE')} €</div><div class="irb-bl">Gesamterlös (Plan)</div></div>
+      <div class="irb-b"><div class="irb-bv num">${marge} %</div><div class="irb-bl">DB-Marge</div></div>
+      <div class="irb-b"><div class="irb-bv num">${zusatzTag.toLocaleString('de-DE')} €</div><div class="irb-bl">Zusatzerlöse/Tag</div></div>
+    </div>
+    <div class="irb-ampel ${ampel.cls}"><span class="irb-dot"></span>Kostenzusage ${escapeHtml(ampel.label)} · ${escapeHtml(kt_)}</div>
+    <div class="irb-foot"><span class="irb-ms-l">${escapeHtml(ms.label)}</span><span class="irb-ms-d">${escapeHtml(ms.detail)}</span></div>
    </button>`;
  }).join("")||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
 }
