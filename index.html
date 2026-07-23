@@ -1240,33 +1240,6 @@ label{font-size:12px;letter-spacing:.08em}
   .timeline .log-in{border-left:2px solid var(--hair);padding-left:9px}
   .eingang-done{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   /* ===== WS7 · Mitarbeitercockpit ===== */
-  .tm-intake{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--brass-soft);border:1px solid var(--hair);border-left:3px solid var(--brass);border-radius:12px;padding:12px 16px;margin:0 0 16px;font:400 13.5px/1.4 Inter;color:var(--ink)}
-  .tm-intake .num{color:var(--brass-deep);font-weight:700;font-size:16px}
-  .tm-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
-  @media(min-width:1100px){.tm-cards{grid-template-columns:repeat(4,1fr)}}
-  .tm-card{text-align:left;background:var(--paper);border:1px solid var(--hair);border-radius:14px;box-shadow:var(--shadow-soft);padding:13px 15px;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
-  @media(hover:hover){.tm-card:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),var(--shadow)}}
-  .tm-card.on{border-color:var(--brass);box-shadow:0 0 0 2px var(--brass-soft)}
-  .tm-h{display:flex;align-items:center;gap:9px;margin-bottom:10px}
-  .tm-h .ava{width:34px;height:34px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font:600 12px/1 Inter}
-  .tm-n{font:600 13.5px/1.2 Inter;color:var(--ink)}
-  .tm-kpis{display:flex;gap:14px;font:400 12.5px/1 Inter;color:var(--muted)}
-  .tm-kpis .num{font:700 18px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink);margin-right:3px}
-  .tm-fr{font:400 11.5px/1.3 Inter;color:var(--faint);margin-top:8px}
-  .tm-listhead{font:600 12px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);margin:0 0 10px;display:flex;align-items:center;gap:10px}
-  .tm-clear{font:600 11px/1 Inter;color:var(--brass-deep);text-decoration:underline}
-  .tm-list{background:var(--paper);border:1px solid var(--hair);border-radius:14px;box-shadow:var(--shadow-soft);overflow:hidden}
-  .tm-task{width:100%;text-align:left;display:flex;align-items:center;gap:11px;padding:12px 15px;border-top:1px solid var(--hair2);cursor:pointer;background:transparent}
-  .tm-task:first-child{border-top:none}
-  @media(hover:hover){.tm-task:hover{background:var(--paper2)}}
-  .tm-task .ava.sm{width:32px;height:32px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font:600 11px/1 Inter}
-  .tm-tmain{flex:1;min-width:0}
-  .tm-tt{font:600 14px/1.2 Inter;color:var(--ink)}
-  .tm-ach{color:var(--muted);font-weight:400}
-  .tm-ts{font:400 12.5px/1.3 Inter;color:var(--ink-soft);margin-top:2px}
-  .tm-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px;font:400 11px/1.2 Inter;color:var(--muted);flex:0 0 auto;text-align:right}
-  .tm-owner{color:var(--brass-deep);font-weight:600}
-  .tm-status{font-size:10px;text-transform:uppercase;letter-spacing:.04em}
   /* Team · Kanal-Bündelung */
 /* ===== ABSCHLUSS-DOKUMENTE + QR + REHA-CHARTS ===== */
 #rpDocView{position:fixed;inset:0;z-index:110;display:none;align-items:flex-start;justify-content:center;background:rgba(27,27,22,.35);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);overflow-y:auto;padding:4vh 14px}
@@ -1808,13 +1781,6 @@ body.ma-mode:has(#view-fallakte.active) #view-meintag{display:none}
    Zustands-Einfärbung im Team (überfällig/heute fällig je Zeile) hat keinen Markup-Hook
    und bleibt bewusst ruhig-mono — echte Zustandsfarbe bräuchte JS (außerhalb dieses Scopes). */
 
-/* — Team: Cockpit-Karten als Elevationsflächen, KPI-Ziffern Fraunces 600, Meta in Mono — */
-.tm-card{background:var(--paper2);border-radius:18px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi)}
-.tm-kpis .num{font-weight:600}
-.tm-intake .num{font-family:"Fragment Mono",ui-monospace,monospace}
-.tm-fr{font-family:"Fragment Mono",ui-monospace,monospace}
-.tm-meta{font-family:"Fragment Mono",ui-monospace,monospace}
-
 /* — Mein Tag: Kopf-Meta in Mono, Fortschritt/Termine ruhig — */
 .mt-date{font-family:"Fragment Mono",ui-monospace,monospace}
 .mt-sum{font-family:"Fragment Mono",ui-monospace,monospace;color:var(--muted)}
@@ -1923,7 +1889,7 @@ body{accent-color:var(--brass)}
    3/4px-Ring + weiche Jade-Haarlinie. Familien mit farbigem Funktions-Rand (ar-card
    border-top, mx-cell border-top, radar-kpi/db-cockpit ::before-Balken) behalten ihre
    Codierung — dort kein border-Shorthand. Cofounder rp-, rpd- und rsp-Bereiche bleiben unberührt. */
-.card,.tm-card,.tm-list,.radar-kpi,.db-cockpit,.ir-card{
+.card,.radar-kpi,.db-cockpit,.ir-card{
   background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;
   box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
 .ar-card,.mx-cell{
@@ -1937,7 +1903,7 @@ body{accent-color:var(--brass)}
   box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft);
   padding:16px 16px 14px;position:relative}
 .db-list{border-radius:4px}
-.tm-card,.tm-list,.radar-card,.ir-card{position:relative}
+.radar-card,.ir-card{position:relative}
 
 /* ===== JADE · HEUTE-KAPITEL — Etiketten-Kapitel · Gold-Eckwinkel · Siegel (e5d) ===== */
 /* (1) Kapitel-Container werden zu großen Etiketten (e5d .t-eingang/.t-forecast): Creme-Grund,
@@ -2474,24 +2440,6 @@ body{accent-color:var(--brass)}
 #dKZ .status-pill.kz-active,#dKZ .status-pill.bad{background:transparent;
   border:1px solid var(--terra-soft);color:var(--terra)}
 #dKZ .kz-sep{color:var(--gold-soft)}
-
-/* — (J4.5) TEAM: Cockpit-Filter aktiv = Jade; Intake-Hinweis = Gold-Plakette mit
-   Cormorant-Zahl; Foto-Band → Präparate-Tafel (Doppelrahmen, Caption UNTER dem Foto,
-   Blur-Budget −1). Atem-Abstand zum Lack-Panel darüber. — */
-.tm-card.on{border-color:var(--sage-deep);
-  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-soft),0 0 0 2px var(--sage-soft)}
-.tm-intake{background:var(--paper);border:1px solid var(--gold-soft);border-left:3px solid var(--brass);border-radius:4px}
-.tm-intake .num{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:19px}
-#sub-faelle-team>.au-photo{height:auto;margin:6px 0 20px;background:var(--paper);border:1px solid var(--jade-line);
-  border-radius:4px;padding:9px;
-  box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-faint),var(--shadow-soft)}
-#sub-faelle-team>.au-photo img{height:140px;border:1px solid var(--jade-line);filter:saturate(.85) sepia(.08)}
-#sub-faelle-team>.au-photo::after{display:none}
-#sub-faelle-team>.au-photo figcaption{position:static;left:auto;bottom:auto;margin:8px 2px 0;padding:0;
-  background:none;border:0;border-radius:0;box-shadow:none;text-shadow:none;
-  backdrop-filter:none;-webkit-backdrop-filter:none;
-  font-family:"Cormorant Garamond",Georgia,serif;font-size:10px;font-weight:600;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 
 /* ============================================================
    JADE · J5 MEIN TAG + NETZWERK + DATENBANK (Stufe 3) — e5d-Parität
@@ -3060,24 +3008,6 @@ summary.rk::-webkit-details-marker{display:none}
 .pa-fold{margin-top:14px}
 .pa-fold>summary::after{content:"›";display:inline-block;margin-left:6px;font-size:15px;line-height:1;color:var(--faint);transition:transform .2s}
 .pa-fold[open]>summary::after{transform:rotate(90deg)}
-/* Task 2.1 (Punkt 4): .ts-* — Team-Cockpit (KPI-Zeile + Belastungs-Balken + Achse-Aufteilung) */
-.ts-kpis{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 16px}
-.ts-kpi{flex:1;min-width:120px;background:var(--paper2);border:1px solid var(--hair);border-radius:13px;box-shadow:var(--shadow-soft),inset 0 1px 0 var(--glass-hi);padding:11px 15px;position:relative;overflow:hidden}
-.ts-kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brass)}
-.ts-kpi.jetzt::before{background:var(--terra)}
-.ts-kpi-n{font:700 23px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
-.ts-kpi.jetzt .ts-kpi-n{color:var(--terra)}
-.ts-kpi-l{font:600 11px/1.1 Inter;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:3px}
-.ts-bal{display:flex;flex-direction:column;gap:8px;margin:0 0 16px}
-.ts-bal-row{display:flex;align-items:center;gap:10px}
-.ts-bal-name{flex:0 0 128px;font-size:12.5px;color:var(--ink-soft);font-weight:600}
-.ts-bal-track{flex:1;height:8px;border-radius:99px;background:var(--cream2);position:relative;overflow:hidden}
-.ts-bal-fill{height:100%;border-radius:99px;background:var(--sage-deep)}
-.ts-bal-ueb{position:absolute;right:0;top:0;bottom:0;width:4px;background:var(--terra)}
-.ts-bal-n{flex:0 0 22px;text-align:right;font:700 15px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
-.ts-achse{display:flex;gap:8px;flex-wrap:wrap}
-.ts-achse-chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:6px 11px;border-radius:99px;border:1px solid var(--hair);background:var(--paper)}
-.ts-achse-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 /* Task A (Runde 5 Sprint 3, §3): .fk-stageband — horizontales Prozessband im Fallakte-Kopf +
    .fk-hinweis — goldene Zuordnungs-Hinweis-Zeile, nur hier, nicht mehr zusätzlich in aufgabenHeroHtml(). */
 .fk-stageband{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin:10px 0 2px}
