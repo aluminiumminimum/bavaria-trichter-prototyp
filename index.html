@@ -2926,7 +2926,6 @@ body{accent-color:var(--brass)}
    Eigener Namespace .zw-* (analog .zw-portal); .rsp-chart/.rsp-legend (Cofounder Reha-Charts)
    nur als Strukturvorbild gelesen, nicht wiederverwendet. */
 .zw-rankline{display:flex;align-items:center;gap:10px;margin-bottom:4px}
-.zw-rank{font-size:28px;font-weight:700;color:var(--brass-deep);line-height:1}
 /* Task 6.1 (Punkt 6+7): Mein Tag — Segment-Leiste .mtp-* (Reiter „Mein Tag"/„Protokolle"),
    reines classList-Toggle ohne Routing/Hash — eigener Namespace statt .segments/.seg, da
    Letztere über einen globalen Klick-Handler bereits go()-Routing auslösen (nicht gewollt hier).
@@ -3820,6 +3819,7 @@ summary.rk::-webkit-details-marker{display:none}
         <div class="zcat-strip" id="zcatgrid"></div>
         <div class="zmap" id="zmap"></div>
         <figure class="au-photo au-photo--petrol"><img src="assets/kb-header.jpg" alt="" loading="lazy"><figcaption>Bad Kissingen · Luftbild</figcaption></figure>
+        <div id="zwSterneChips"></div>
         <div class="zgrid" id="zgrid"></div>
       </div>
     </div>
@@ -4755,6 +4755,7 @@ let aktuellerFall=null;let zFilter="krankenhaus";let boardStageFilter=null;let h
 let egGruppe=null,_egId=null;
 /* §5.3 Archiv-Split-Filter — Bereich D */
 let zArchivAnzeigen=false;let bestandArchivAnzeigen=false;
+let zwSterneFilter="alle";
 
 /* ---------- Helpers ---------- */
 function fristKlasse(f){if(!f)return"";const h=dstr(0);if(f<h)return"bad";if(f===h)return"warn";const d=(new Date(f)-heute)/86400000;return d<1.5?"warn":"ok";}
@@ -5620,6 +5621,29 @@ function networkDot(z,i){
     +"<text x='"+pos[0]+"' y='"+(pos[1]+4)+"' text-anchor='middle' font-family='Inter' font-size='11' font-weight='700' fill='#faf8f4'>"+(i+1)+"</text>"
     +"<text x='"+pos[0]+"' y='"+(pos[1]+r+18)+"' text-anchor='middle' font-family='Inter' font-size='11' font-weight='600' fill='#5c554c'>"+escapeHtml(mapOrt(z.ort))+"</text></g>";
 }
+/* Runde 6 Punkt 5 (§4): zwSterne() — deterministische 1-5-Sterne-Einstufung aus Fallvolumen,
+   Draht-Stärke (gleiche Zählweise wie rhythmusPflege()) und Trend (aus dem bestehenden
+   verlaufAusFaellen()/verlauf3M). faelle<1 (Archiv/Nie-Kontaktierte) liefert null — kein Ranking. */
+function zwSterne(z){
+ if(z.faelle<1)return null;
+ const volumen=z.faelle>=5?3:z.faelle>=3?2:1;
+ const staerke=((z.draht||"").match(/●/g)||[]).length;
+ const draht=staerke>=3?2:staerke===2?1:0;
+ const v=z.verlauf3M||[0,0,0];
+ const trend=(v[2]>v[1]&&v[1]>v[0])?1:(v[2]<v[1]&&v[1]<v[0])?-1:0;
+ const score=volumen+draht+trend;
+ if(score>=6)return 5;
+ if(score>=4)return 4;
+ if(score===3)return 3;
+ if(score===2)return 2;
+ return 1;
+}
+/* Runde 6 Punkt 5 (§5.3): zwChip() — Sterne-Filter-Chips, analog renderBestand()s chip()-Vorbild
+   (index.html renderBestand()), nutzt bestehende .tier-chips/.tchip-CSS (keine neue Klasse). */
+function zwChip(key,lbl,pool){
+ const n=key==="alle"?pool.length:pool.filter(z=>zwSterne(z)===+key).length;
+ return "<button class='tchip"+(zwSterneFilter===key?" on":"")+"' onclick='zwSterneFilter=\""+key+"\";renderZuweiser()'>"+lbl+" <b class='num'>"+n+"</b></button>";
+}
 function renderZuweiser(){
   const catCounts=Object.fromEntries(Z_CATS.map(c=>[c.id,zuweiser.filter(z=>zKategorie(z)===c.id).length]));
   const cat=Z_CATS.find(c=>c.id===zFilter)||Z_CATS[0];
@@ -5656,11 +5680,15 @@ function renderZuweiser(){
   const zAnl=anlaesse("zuweiser");
   const zAnlEl=document.getElementById("zAnlaesse");
   if(zAnlEl)zAnlEl.innerHTML=zAnl.length?"<div class='ar-feedhead'>Zuweiserpflege — anstehende Gesten</div><div class='ar-grid'>"+zAnl.map(arCard).join("")+"</div>":"";
-  const sorted=[...filtered].sort((a,b)=>b.faelle-a.faelle);
+  const chipsHtml="<div class='tier-chips'>"+zwChip("alle","Alle",primaryFiltered)
+    +["5","4","3","2","1"].map(k=>zwChip(k,k+"★",primaryFiltered)).join("")+"</div>";
+  const zwChipsEl=document.getElementById("zwSterneChips");if(zwChipsEl)zwChipsEl.innerHTML=chipsHtml;
+  const sorted=[...filtered].filter(z=>zwSterneFilter==="alle"||zwSterne(z)===+zwSterneFilter)
+    .sort((a,b)=>(zwSterne(b)||0)-(zwSterne(a)||0)||b.faelle-a.faelle);
   const trendMap=new Map(anlaesse().filter(a=>a.typ==="zuweiser-trend").map(a=>[a.zName,a]));
-  document.getElementById("zgrid").innerHTML=sorted.length?sorted.map((z,i)=>
+  document.getElementById("zgrid").innerHTML=sorted.length?sorted.map(z=>
     "<div class='zcard'>"
-   +"<div class='zw-rankline'><span class='zw-rank serif'>#"+(i+1)+"</span>"+zwSparkline(z.verlauf3M)+"</div>"
+   +"<div class='zw-rankline'>"+(zwSterne(z)!=null?sterneHtml(zwSterne(z)):"<span class='zwa-noster'>kein Ranking</span>")+zwSparkline(z.verlauf3M)+"</div>"
    +"<div class='zname'>"+escapeHtml(z.name)+"</div><div class='ztyp'>"+escapeHtml(z.typ)+"</div>"
    +"<div class='zcontact'><span><small>Telefon</small>"+escapeHtml(z.tel||"offen")+"</span><a href='mailto:"+escapeHtml(z.mail||"")+"'><small>E-Mail</small>"+escapeHtml(z.mail||"offen")+"</a></div>"
    +"<div class='zrow'><span>Ort</span><b>"+escapeHtml(z.ort)+"</b></div>"
