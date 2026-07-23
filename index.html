@@ -5347,6 +5347,34 @@ function renderZuweiserAnlaesse(){
  el.innerHTML=(woche.length?"<div class='ar-feedhead'>Diese Woche</div><div class='zwa-group'>"+woche.map(zwaKarte).join("")+"</div>":"")
   +(demnaechst.length?"<div class='ar-feedhead'>Demnächst</div><div class='zwa-group'>"+demnaechst.map(zwaKarte).join("")+"</div>":"");
 }
+/* Runde 6 Punkt 6+7 (§5.1): .zwa-* wiederverwendet aus P5 — eigene Etiketten-Karten für die
+   individuellen Patienten-Anlässe (Geburtstag/Entlass-Jubiläum/Nachsorge), ersetzt arCard()/
+   .radar-card in renderRadar(). Wiederbedarf bleibt unverändert (Spec §5.2 — eigene, bereits gute
+   Kartenoptik mit Lock-Status). renderPatientenAnlaesse() gibt einen HTML-String zurück (kein
+   eigenes Zielelement wie #zAnlaesse — Block A ist Teil von renderRadar()s einer #radarHost-innerHTML). */
+const PAA_TYP={geburtstag:{ico:"✦",label:"Geburtstag"},jubilaeum:{ico:"❖",label:"Entlass-Jubiläum"},
+ nachsorge:{ico:"✚",label:"Nachsorge"}};
+function paaKarte(a){
+ const t=PAA_TYP[a.typ]||{ico:"•",label:""};
+ const dueTxt=a.tage===0?"heute":"in "+a.tage+" Tagen";
+ return "<div class='zwa-card'>"
+  +"<div class='zwa-head'><span class='zwa-ico'>"+t.ico+"</span><span class='zwa-typ'>"+t.label+"</span>"
+  +"<span class='radar-due "+a.urg+"' style='margin-left:auto'>"+dueTxt+"</span></div>"
+  +"<div class='zwa-name'>"+escapeHtml(a.titel)+"</div>"
+  +(a.sterne?"<div class='ar-cardstars'>"+sterneHtml(a.sterne)+"</div>":"")
+  +"<p class='zwa-text'>"+escapeHtml(a.sub)+"</p>"
+  +"<div class='zwa-foot'><button class='btn-ghost btn-sm' onclick='arAktion(\""+a.key.replace(/"/g,"&quot;")+"\")'>Erledigt ✓</button></div>"
+  +"</div>";
+}
+function renderPatientenAnlaesse(){
+ const anl=anlaesse("patienten").filter(a=>a.typ!=="wiederbedarf");
+ if(!anl.length)return"";
+ const woche=anl.filter(a=>a.urg==="jetzt"), demnaechst=anl.filter(a=>a.urg==="bald");
+ return "<div class='ar-feedhead'>Individuelle Anlässe</div>"
+  +(woche.length?"<div class='ar-feedhead'>Diese Woche</div><div class='zwa-group'>"+woche.map(paaKarte).join("")+"</div>":"")
+  +(demnaechst.length?"<div class='ar-feedhead'>Demnächst</div><div class='zwa-group'>"+demnaechst.map(paaKarte).join("")+"</div>":"")
+  +"<div class='ar-feedhead'>Wiederbedarf (medizinische Prognose)</div>";
+}
 /* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
 const FC_BETTEN=7; // Komfort-Kontingent (Privat-/Selbstzahler + Komfort-Aufzahler)
 const FC_ZIEL=FC_BETTEN-1; // Ziel-Belegung (Demo): eine Stufe unter Vollbelegung → gestrichelte Ziel-Linie im Forecast
@@ -5577,7 +5605,7 @@ function renderRadar(){
   document.getElementById("radarHost").innerHTML=
     "<p class='db-intro'>Ehemalige Patienten mit Einwilligung, bei denen ein erneuter Reha-Bedarf absehbar ist — das System meldet sich rechtzeitig, nur bei gültiger Freigabe.</p>"
    +rhead
-   +(function(){const oth=anlaesse("patienten").filter(a=>a.typ!=="wiederbedarf");return oth.length?"<div class='ar-feedhead'>Anlässe (Geburtstage & Jubiläen)</div><div class='ar-grid'>"+oth.map(arCard).join("")+"</div><div class='ar-feedhead'>Wiederbedarf (medizinische Prognose)</div>":"";})()
+   +renderPatientenAnlaesse()
    +"<div class='radar-grid'>"+sorted.map(([r,i])=>{
       const u=urg(r.faelligInTagen),ok=r.consent==="ja",col=ACHSE_COL[r.achse]||"var(--unklar)";
       return "<div class='radar-card"+(ok?"":" locked")+(r.achse==="SalutoCare"?" hot":"")+"' style='--acol:"+col+"'>"
