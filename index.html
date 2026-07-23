@@ -3033,7 +3033,7 @@ summary.rk::-webkit-details-marker{display:none}
 #dArbeit input[type=checkbox]{width:18px;height:18px;min-height:0;accent-color:var(--brass)}
 /* Task 2.1 (Punkt 1): #egDetail — Anfrage-Detail-Fenster, Struktur/Docking wie #ovDetail */
 @media(min-width:1024px){
-  #egDetail{align-items:stretch;justify-content:flex-end;background:transparent;pointer-events:none}
+  #egDetail{align-items:stretch;justify-content:flex-end}
   #egDetail .modal{width:460px;max-width:460px;height:100dvh;max-height:100dvh;border-radius:0;
     border-left:1px solid var(--hair);box-shadow:-12px 0 44px rgba(31,28,28,.16);transform:translateX(28px)}
   #egDetail.open .modal{transform:none;pointer-events:auto}
@@ -4148,7 +4148,7 @@ summary.rk::-webkit-details-marker{display:none}
 </div>
 
 <!-- ============ FALL-DETAIL ============ -->
-<div class="overlay" id="egDetail" role="dialog" aria-modal="true" aria-label="Anfrage-Detail">
+<div class="overlay" id="egDetail" role="dialog" aria-modal="true" aria-label="Anfrage-Detail" onclick="if(event.target===this)dismissDetail()">
   <div class="modal">
     <div id="egdBody"></div>
   </div>
