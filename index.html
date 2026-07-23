@@ -3151,6 +3151,51 @@ summary.rk::-webkit-details-marker{display:none}
 .fkw-stamm{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin:0 0 14px;padding:10px 12px;background:var(--brass-soft);border:1px solid var(--brass-line);border-radius:8px}
 .fkw-stamm label{display:block;font-size:11px;color:var(--brass-deep);margin-bottom:3px}
 .fkw-stamm input{font:inherit;padding:6px 8px;border:1px solid var(--hair);border-radius:8px;background:var(--paper)}
+/* Runde 6 Punkt 3: .tc-* — Team-Führungs-Cockpit. .tc-kpi/.tc-panel nutzen .card (Etiketten-
+   Doppelrahmen) als Basisklasse zusätzlich, keine eigene Rahmen-CSS nötig. */
+.tc-kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:0 0 20px}
+@media(min-width:900px){.tc-kpis{grid-template-columns:repeat(4,1fr)}}
+.tc-kpi{padding:16px 17px}
+.tc-kpi-n{font:700 30px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
+.tc-kpi-e{font:600 13px/1 Inter;color:var(--muted);margin-left:4px}
+.tc-kpi-l{font:600 11.5px/1.2 Inter;letter-spacing:.04em;text-transform:uppercase;color:var(--brass-deep);margin:2px 0 8px}
+.tc-kpi .zw-spark{display:block;margin:4px 0}
+.tc-kpi-delta{font:700 12px/1 Inter;display:inline-block;margin-top:4px}
+.tc-kpi-delta.gut{color:var(--sage-deep)}
+.tc-kpi-delta.schlecht{color:var(--terra)}
+.tc-panels{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 20px}
+.tc-panel.schmal{grid-column:1/-1}
+@media(min-width:900px){.tc-panels{grid-template-columns:1fr 1fr auto}.tc-panel.schmal{grid-column:auto;min-width:180px}}
+.tc-panel{padding:16px 17px}
+.tc-panel-h{font:700 19px/1.2 "Cormorant Garamond",Georgia,serif;color:var(--ink);margin:0 0 10px}
+.tc-pipe{display:flex;height:22px;border-radius:6px;overflow:hidden;background:var(--cream2)}
+.tc-pipe-seg{display:flex;align-items:center;justify-content:center;min-width:0}
+.tc-pipe-n{font:700 11px/1 "Cormorant Garamond",Georgia,serif;color:var(--paper)}
+.tc-pipe-legend{display:flex;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--faint);margin:5px 0 0}
+.tc-pipe-verl{font-size:11px;color:var(--terra);margin-top:4px}
+.tc-ma-list{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.tc-ma-row{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:transparent;border:1px solid transparent;border-radius:8px;padding:6px 8px;cursor:pointer}
+.tc-ma-row.on{border-color:var(--brass);background:var(--brass-soft)}
+@media(hover:hover){.tc-ma-row:hover{background:var(--paper2)}}
+.tc-ma-name{flex:0 0 100px;font-size:12.5px;font-weight:600;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-ma-track{flex:1;height:7px;border-radius:99px;background:var(--cream2);overflow:hidden}
+.tc-ma-fill{height:100%;border-radius:99px;background:var(--sage-deep)}
+.tc-ma-n{flex:0 0 18px;text-align:right;font:700 14px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
+.tc-ma-ueb{font:700 10.5px/1 Inter;color:var(--terra);flex:0 0 auto}
+.tc-ma-erl{font-size:10.5px;color:var(--faint);flex:0 0 auto}
+.tc-attn-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--hair);border-radius:12px;overflow:hidden}
+.tc-attn-row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 14px;border-top:1px solid var(--hair2);background:transparent;cursor:pointer}
+.tc-attn-row:first-child{border-top:none}
+@media(hover:hover){.tc-attn-row:hover{background:var(--paper2)}}
+.tc-attn-name{font:600 13.5px/1.2 Inter;color:var(--ink);flex:0 0 140px}
+.tc-attn-aufg{font-size:12.5px;color:var(--ink-soft);flex:1;min-width:0}
+.tc-attn-owner{font-size:11px;color:var(--brass-deep);font-weight:600;flex:0 0 auto}
+.tc-attn-tage{font:700 11.5px/1 Inter;color:var(--ink-soft);flex:0 0 auto} /* neutral: tcFallZeile() setzt zusätzlich .bad/.warn/.ok via fristKlasse() */
+.tc-attn-tage.bad{color:var(--terra)}
+.tc-attn-tage.warn{color:var(--brass-deep)}
+.tc-attn-tage.ok{color:var(--faint);font-weight:600}
+.tc-clear{font:600 11px/1 Inter;color:var(--brass-deep);text-decoration:underline;margin:0 0 10px;display:inline-block}
+@media(max-width:600px){.tc-attn-row,.tc-ma-row{flex-wrap:wrap}.tc-attn-aufg{flex:1 1 100%;order:3}}
 </style>
 </head>
 <body>
@@ -4263,7 +4308,7 @@ function initialen(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpp
 let faelle=[
  {id:1,personId:"P01",name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]],originalTxt:"Kurzanmeldung Sozialdienst RHÖN Campus Bad Neustadt, Station Neurologie, Az. N-1187/26. Patientin Anna Muster, 67 Jahre, Diagnose Schlaganfall, Kostenträger PKV. Aufnahme zur AHB möglichst schnell gewünscht, Tochter organisiert und bittet um Rückruf. Unterlagen folgen per Fax.",originalKanal:"Zuweiser direkt"},
  {id:3,personId:"P02",name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"]],originalTxt:"Hallo, ich hatte vor Kurzem eine Hüft-TEP und suche jetzt eine Reha-Klinik für die Anschlussbehandlung. Ich bin Selbstzahlerin, 58 Jahre alt, und hätte gerne ein Komfortzimmer, wenn das geht am liebsten mit Blick ins Grüne. Einen Termin bräuchte ich möglichst schnell, weil ich zuhause gerade nicht gut zurechtkomme. Viele Grüße, Maria Probst, 0170 4471182",originalKanal:"Website-Formular"},
- {id:6,personId:"P03",name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(0),saluto:true,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss"],[dstr(-4),"Med. Rückfrage an Oberarzt"]]},
+ {id:6,personId:"P03",name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(-2),saluto:true,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss"],[dstr(-4),"Med. Rückfrage an Oberarzt"]]},
  {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage"],[dstr(-4),"Entlassbrief liegt vor"]]},
  {id:9,personId:"P05",name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]],originalTxt:"Anruf Tochter Winkler, 11:40 · ruft für ihre Mutter Ruth (77) an, liegt Station 2 Nord UKW Würzburg · Diagnose Schlaganfall, PKV-versichert · möchte möglichst schnell einen Platz in der Neuro-Reha, am liebsten Privatzimmer · Rückrufnummer hinterlegt",originalKanal:"Telefon"},
  {id:12,personId:"P06",name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage"],[dstr(-11),"Rückruf erst nach 26 Std."],[dstr(-8),"Familie hat anderes Haus gewählt"]]},
@@ -5772,6 +5817,19 @@ function kpiCountUp(){
   rpCount(document.querySelector("#nsRz b"),k.rzAvg,1000);
   rpCount(document.querySelector("#nsConv b"),k.conv,1100);
 }
+
+// Runde 6 Punkt 3 — reiner Demo-Seed für die 4 KPI-Trendlinien. Die App führt keine Tages-Historie,
+// kann diese Werte also nicht rückwirkend berechnen. Nur TC_WOCHE[k][6] (heute) ist bewusst identisch
+// zum live in tcKpis() berechneten Wert — die vorigen 6 Punkte sind erfundene, plausible Vorgeschichte.
+const TC_WOCHE={
+ aufnahmen:   [0,1,1,1,2,2,2],   // endet bei live Aufnahmen(7T)=2
+ conversion:  [58,60,62,64,65,66,67], // endet bei live Conversion=67
+ reaktion:    [9,9,8,8,8,7,7],   // endet bei live Ø Reaktionszeit=7
+ ueberfaellig:[3,3,2,2,1,1,1]    // Review-Fix 2: endet bei live Überfällig=1 (Heinz-Vogel-Seed, §4.4), Delta=1-3=-2
+};
+function tcDelta(arr){ return arr[6]-arr[0]; } // Delta-Pfeil: ausschließlich Seed[6]-Seed[0], unabhängig vom Live-Hero-Wert
+// Demo-Seed, keine Live-Ableitung möglich (Begründung: Spec §4.6) — "diese Woche erledigt" je TEAM-Mitglied.
+const TC_ERLEDIGT={"S. Koordination":4,"M. Belegung":3,"Recovery Manager":2,"T. Abrechnung":1};
 
 /* ---------- Render: Auswertung ---------- */
 let teamFilter="alle";
