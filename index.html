@@ -3132,6 +3132,10 @@ summary.rk::-webkit-details-marker{display:none}
 .egt-pool-zsf{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.4;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .egt-pool-weitere{margin-top:16px}
+/* Nachfix 1 (R6-P1 Nutzerfeedback): .egt-pool-gruppe — getrennter Abschnitt je Belegungs-Team im
+   "Deine Gruppen"-Block (Orthopädie / Neuro-Geri). */
+.egt-pool-gruppe{margin-bottom:16px}
+.egt-pool-gruppe:last-child{margin-bottom:0}
 /* Runde 6 Punkt 1 (§7.9): .egt-rueckfragen — abhakbare Rückfragen-Liste im Werkbank-Typ "rueckruf",
    Checkbox-Styling erbt bereits von der globalen #dArbeit-label/input-Regel. */
 .egt-rueckfragen{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
@@ -4022,8 +4026,8 @@ summary.rk::-webkit-details-marker{display:none}
     <div class="chap egt-pool" id="egtPoolChap">
       <div class="kicker">Pool</div>
       <h2 class="chap-h2">Offene Anfragen deiner Gruppe(n)</h2>
-      <div class="mt-grid" id="egtPoolList"></div>
-      <details class="egt-pool-weitere">
+      <div id="egtPoolList"></div>
+      <details class="egt-pool-weitere" id="egtPoolWeitere">
         <summary class="rk">Weitere Gruppen (<span id="egtPoolWeitereCount">0</span>)</summary>
         <div class="mt-grid" id="egtPoolWeitereList"></div>
       </details>
@@ -4273,7 +4277,7 @@ const passivLead={id:201,name:"Sabine Vogt",alter:54,rolle:"Patient selbst",kana
 
 let eingang=[
  {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Nummer notiert, möchte Rückruf heute. Vermutlich PKV.",zeit:"vor 25 Min.",achse:"Innere",done:false,typ:"qualifiziert",wer:"Ehefrau fragt für Mann (72)",zusammenfassung:"Ehefrau fragt telefonisch für ihren Mann (72) nach Reha nach Herz-OP — PKV, Rückruf heute gewünscht.",gruppe:null,sterne:null,autoVerteilt:false},
- {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Patient (68), PKV, Entlassung in 4 Tagen. Unterlagen anbei.",zeit:"vor 1 Std.",achse:"Neurologie",done:false,typ:"qualifiziert",wer:"Sozialdienst RHÖN Bad Neustadt meldet Patient (68) nach Schlaganfall an",zusammenfassung:"Sozialdienst RHÖN Bad Neustadt meldet einen Patienten (68) nach Schlaganfall zur AHB an — PKV, Entlassung in 4 Tagen.",gruppe:"Neurologie",sterne:null,autoVerteilt:true,saluto:false,hinweis:""},
+ {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Patient (68), PKV, Entlassung in 4 Tagen. Unterlagen anbei.",zeit:"vor 1 Std.",achse:"Neurologie",done:false,typ:"qualifiziert",wer:"Sozialdienst RHÖN Bad Neustadt meldet Patient (68) nach Schlaganfall an",zusammenfassung:"Sozialdienst RHÖN Bad Neustadt meldet einen Patienten (68) nach Schlaganfall zur AHB an — PKV, Entlassung in 4 Tagen.",gruppe:"Neuro-Geri",sterne:null,autoVerteilt:true,saluto:false,hinweis:""},
  {id:103,kanal:"Website",tit:"Website-Formular: Selbstzahlerin (55) fragt nach Premium-Reha",txt:"Interessiert an Suite, fragt nach Preisen und freien Terminen.",zeit:"vor 2 Std.",achse:"SalutoCare",done:false,typ:"qualifiziert",wer:"Selbstzahlerin fragt selbst nach Premium-Suite (55)",zusammenfassung:"Selbstzahlerin (55) fragt über die Website nach der Premium-Suite — interessiert an Preisen und freien Terminen.",gruppe:null,sterne:null,autoVerteilt:false},
  {id:104,kanal:"E-Mail",tit:"E-Mail: Hausarzt Dr. Sommer empfiehlt Patientin (79)",txt:"Geriatrische Reha angefragt, Beihilfe, Tochter koordiniert.",zeit:"gestern",achse:"Geriatrie",done:true,typ:"qualifiziert",wer:"Hausarzt Dr. Sommer empfiehlt Patientin (79), Tochter koordiniert",zusammenfassung:"Hausarzt Dr. Sommer empfiehlt seine Patientin (79) für eine geriatrische Reha — Beihilfe, Tochter koordiniert die Aufnahme."},
  {id:105,kanal:"Recare",tit:"Recare: Klinikum Fulda sucht Neuro-Reha-Platz",txt:"GKV + Komfort-Wunsch, Übernahme in 6 Tagen möglich.",zeit:"gestern",achse:"Neurologie",done:true,typ:"qualifiziert",wer:"Entlassmanagement Klinikum Fulda sucht Reha-Platz",zusammenfassung:"Entlassmanagement Klinikum Fulda sucht über Recare einen Neuro-Reha-Platz — GKV mit Komfort-Wunsch, Übernahme in 6 Tagen möglich."},
@@ -4281,7 +4285,7 @@ let eingang=[
  ,{id:107,einzelperson:true,pName:"Carola Diehm",kanal:"Website",tit:"Broschüre-Download: Interessentin (57) lädt Reha-Broschüre",txt:"E-Mail hinterlegt, Kontaktfreigabe erteilt. Keine konkrete Anfrage.",zeit:"vor 40 Min.",achse:"Orthopädie",done:false,typ:"passiv",zusammenfassung:"Interessentin (57) lädt die Reha-Broschüre herunter und erteilt Kontaktfreigabe — noch keine konkrete Anfrage."}
  ,{id:108,einzelperson:false,kanal:"E-Mail",tit:"Lose Mail: Habt ihr eigentlich freie Plätze?",txt:"Einmalige Frage, kein Name, keine Unterlagen, kein Follow-up.",zeit:"vor 3 Std.",achse:"Innere",done:false,typ:"passiv",zusammenfassung:"Anonyme Anfrage per E-Mail nach freien Plätzen — kein Name, kein Follow-up erkennbar."}
  ,{id:109,kanal:"Zuweiser-Fax",tit:"Fax: Sozialdienst Klinikum Hammelburg, Anmeldung AHB nach Knie-TEP",txt:"Patient (66), GKV, Entlassung in 5 Tagen. Unterlagen vollständig beigefügt.",zeit:"vor 50 Min.",achse:"Orthopädie",done:false,typ:"qualifiziert",wer:"Sozialdienst Klinikum Hammelburg meldet Patient (66) nach Knie-TEP an",zusammenfassung:"Sozialdienst Klinikum Hammelburg meldet einen Patienten (66) nach Knie-TEP zur AHB an — GKV, Entlassung in 5 Tagen.",gruppe:"Orthopädie",sterne:null,autoVerteilt:true,saluto:false,hinweis:""}
- ,{id:110,kanal:"Recare",tit:"Recare: Entlassmanagement Bad Kissingen sucht Geriatrie-Reha-Platz",txt:"Patientin (81), Beihilfe, Übernahme in 6 Tagen möglich.",zeit:"vor 90 Min.",achse:"Geriatrie",done:false,typ:"qualifiziert",wer:"Entlassmanagement Bad Kissingen sucht Reha-Platz für Patientin (81)",zusammenfassung:"Entlassmanagement Bad Kissingen sucht über Recare einen Geriatrie-Reha-Platz für eine Patientin (81) — Beihilfe, Übernahme in 6 Tagen möglich.",gruppe:"Geriatrie",sterne:null,autoVerteilt:true,saluto:false,hinweis:""}
+ ,{id:110,kanal:"Recare",tit:"Recare: Entlassmanagement Bad Kissingen sucht Geriatrie-Reha-Platz",txt:"Patientin (81), Beihilfe, Übernahme in 6 Tagen möglich.",zeit:"vor 90 Min.",achse:"Geriatrie",done:false,typ:"qualifiziert",wer:"Entlassmanagement Bad Kissingen sucht Reha-Platz für Patientin (81)",zusammenfassung:"Entlassmanagement Bad Kissingen sucht über Recare einen Geriatrie-Reha-Platz für eine Patientin (81) — Beihilfe, Übernahme in 6 Tagen möglich.",gruppe:"Neuro-Geri",sterne:null,autoVerteilt:true,saluto:false,hinweis:""}
 ];
 
 let bestand=[
@@ -4364,10 +4368,16 @@ const TEAM=["S. Koordination","M. Belegung","T. Abrechnung","Recovery Manager"];
 
 /* §3.1 Achse↔Team-Zuordnung + Owner-Routing-Vorschlag — Bereich C */
 const TEAM_ACHSE={"S. Koordination":["Orthopädie","Innere"],"M. Belegung":["Neurologie","Geriatrie"],"Recovery Manager":["SalutoCare"],"T. Abrechnung":[]};
-/* Runde 6 Punkt 1 (§5.3): GRUPPEN — reine Ableitung aus TEAM_ACHSE, keine neue Mitgliederliste,
-   keine Änderung an TEAM_ACHSE selbst. */
-const GRUPPEN=Array.from(new Set(Object.values(TEAM_ACHSE).flat()));
-function gruppenMitglieder(g){ return TEAM.filter(t=>(TEAM_ACHSE[t]||[]).includes(g)); }
+/* Runde 6 Punkt 1, Nachfix 1 (Nutzerfeedback): zwei Belegungs-Teams statt fünf Achsen-Gruppen.
+   GRUPPEN ist jetzt eine feste Team-Liste; achseZuGruppe() bildet Achsen auf Teams ab. SalutoCare
+   liefert bewusst kein Team (null) — immer Entscheidungsfall beim Leiter, nie automatisch verteilt,
+   der Leiter gibt sie manuell an eines der zwei Teams frei. Keine Änderung an TEAM_ACHSE selbst. */
+const GRUPPEN=["Orthopädie","Neuro-Geri"];
+function achseZuGruppe(achse){
+  if(achse==="Orthopädie") return "Orthopädie";
+  if(achse==="Neurologie"||achse==="Geriatrie"||achse==="Innere") return "Neuro-Geri";
+  return null;
+}
 function egGruppenPoolGroesse(g){ return eingang.filter(m=>!m.done&&m.gruppe===g).length; }
 /* Task 2.1 (Punkt 1): #egDetail — gemeinsamer Schließ-Helper für die drei rechts angedockten
    Detail-Schienen (verhindert zwei gleichzeitig offene 460px-Overlays, s. Plan „Ist"). */
@@ -4828,7 +4838,7 @@ function klassifiziereEingang(m){
   if(m.typ==="passiv") return "passiv";
   const sig=erkenneSignale(m.txt);
   if(!m.achse||m.achse==="Unklar") return "entscheidung";
-  if(m.achse==="SalutoCare"||sig.premium) return "entscheidung";
+  if(!achseZuGruppe(m.achse)||sig.premium) return "entscheidung"; // SalutoCare (kein Team-Mapping) oder Premium-Verdacht
   if(!sig.kostentraeger||sig.unsicher) return "entscheidung";
   if(sig.absage) return "entscheidung";
   return "auto";
@@ -4856,7 +4866,7 @@ function simulateInbound(){
  setTimeout(()=>{
   m._neu=false;
   if(klassifiziereEingang(m)==="auto"){
-   m.gruppe=m.achse; m.autoVerteilt=true;
+   m.gruppe=achseZuGruppe(m.achse); m.autoVerteilt=true;
    renderEingang();
    inbToast("done","<b>Automatisch verteilt</b>","an Gruppe "+escapeHtml(m.gruppe)+" · "+escapeHtml(t.kanal),null);
   }else{
@@ -6570,19 +6580,29 @@ function mtTermineHtml(){
   }).join("")
   +"</div>";
 }
-/* Runde 6 Punkt 1 (§3.2, §7.8): Pool-Block Koordinationsansicht — zweistufig: oben eigene
-   Gruppe(n) (aus TEAM_ACHSE["S. Koordination"]), darunter eingeklappt alle übrigen offenen
-   Pool-Anfragen (kleines Team, aushelfen erlaubt — jede freigegebene Anfrage bleibt erreichbar). */
+/* Runde 6 Punkt 1 (§3.2, §7.8), Nachfix 1: Pool-Block Koordinationsansicht — zweistufig: oben eigene
+   Gruppe(n) (aus TEAM_ACHSE["S. Koordination"], über achseZuGruppe() auf die zwei Belegungs-Teams
+   abgebildet — ergibt {Orthopädie, Neuro-Geri}, beide als getrennte Abschnitte), darunter eingeklappt
+   alle übrigen offenen Pool-Anfragen (kleines Team, aushelfen erlaubt — jede freigegebene Anfrage
+   bleibt erreichbar). Der "Weitere Gruppen"-Block wird nur gerendert, wenn dort tatsächlich Anfragen
+   liegen. */
 function renderEgtPool(){
-  const meineGruppen=TEAM_ACHSE["S. Koordination"]||[];
+  const meineGruppen=Array.from(new Set((TEAM_ACHSE["S. Koordination"]||[]).map(achseZuGruppe).filter(Boolean)));
   const karte=function(m){
     return "<article class='egt-pool-card'><p class='egt-pool-zsf'>"+escapeHtml(egZusammenfassung(m))+"</p>"
       +sterneHtml(m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt)))
       +"<button class='btn-brass btn-sm' type='button' onclick='egUebernehmenAusPool("+m.id+")'>Übernehmen</button></article>";
   };
-  const eigene=eingang.filter(m=>!m.done&&m.gruppe&&meineGruppen.includes(m.gruppe));
+  const abschnitt=function(g){
+    const items=eingang.filter(m=>!m.done&&m.gruppe===g);
+    return "<div class='egt-pool-gruppe'><div class='kicker'>"+escapeHtml(g)+"</div><div class='mt-grid'>"
+      +(items.length?items.map(karte).join(""):"<p class='empty'>Keine offenen Anfragen in dieser Gruppe.</p>")
+      +"</div></div>";
+  };
+  document.getElementById("egtPoolList").innerHTML=meineGruppen.map(abschnitt).join("");
   const weitere=eingang.filter(m=>!m.done&&m.gruppe&&!meineGruppen.includes(m.gruppe));
-  document.getElementById("egtPoolList").innerHTML=eigene.length?eigene.map(karte).join(""):"<p class='empty'>Keine offenen Anfragen in deiner Gruppe.</p>";
+  const weitereBox=document.getElementById("egtPoolWeitere");
+  if(weitereBox) weitereBox.style.display=weitere.length?"":"none";
   document.getElementById("egtPoolWeitereList").innerHTML=weitere.map(karte).join("");
   document.getElementById("egtPoolWeitereCount").textContent=weitere.length;
 }
