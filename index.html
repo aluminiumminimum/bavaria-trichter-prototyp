@@ -6546,10 +6546,15 @@ function mtCard(item){
  const duePill=item.block==="jetzt"?"<span class='radar-due "+(item.overdue?"jetzt":"bald")+"'>"+(item.overdue?"überfällig":"heute fällig")+"</span>":"";
  /* Task 6.3: interne Aufgaben haben kein Fall-Log — Notiz kommt aus _mtNotizen (gekürzt). */
  const internNotiz=(item.kind==="intern"&&_mtNotizen.has(item.key))?_mtNotizen.get(item.key):"";
+ /* R6-P1 Nachfix 3 (Nutzerfeedback): Fall-Aufgaben öffnen direkt die Fallakte statt des alten
+    Aufgaben-Sheets (ma-mode-CSS-Gate lässt sie seit Commit dd27e90 durch) — mtOpen() bleibt für
+    Aufgaben ohne Fall-Bezug (kind!=="fall", z. B. interne Aufgaben) unverändert bestehen. */
  const action=done?"<span class='mt-check'>✓ Erledigt"+(internNotiz?" — "+escapeHtml(internNotiz.slice(0,60))+(internNotiz.length>60?"…":""):"")+"</span>"
   :(item.typ==="zwischenstand"
     ?"<button class='btn-ghost btn-sm' onclick='mtpSwitch(\"protokolle\")'>Zum Protokoll ›</button>"
-    :"<button class='btn-ghost btn-sm' onclick='mtOpen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Jetzt erledigen ›</button>");
+    :item.kind==="fall"
+      ?"<button class='btn-ghost btn-sm' onclick='openFallakte("+item.ref.id+")'>Jetzt erledigen ›</button>"
+      :"<button class='btn-ghost btn-sm' onclick='mtOpen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Jetzt erledigen ›</button>");
  const rkLabel=item.typ==="intern"?"Aufgabe":"Fall";
  return "<div class='radar-card"+(done?" mt-done":"")+"'>"
   +"<div class='patient-top'><span class='ava'>"+(item.ava||initialen(item.name.replace(/[()\[\]]/g,"")))+"</span>"+duePill+"</div>"
