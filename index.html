@@ -3154,6 +3154,16 @@ summary.rk::-webkit-details-marker{display:none}
 .zwa-text{font-size:13.5px;color:var(--ink-soft);line-height:1.45;margin:0 0 10px}
 .zwa-foot{display:flex;align-items:center;justify-content:flex-end}
 .zwa-noster{font:600 12px/1 Inter;color:var(--muted)}
+/* Runde 6 Punkt 6 (§5.3): .par-* — Toggle-Switch für Automatik-Regeln (Demo, Session-State).
+   CSS-Transition, keine neue Animation — @keyframes-Zahl bleibt 9. */
+.par-toggle{position:relative;display:inline-block;width:34px;height:18px;margin-left:auto;flex-shrink:0}
+.par-toggle input{position:absolute;opacity:0;width:0;height:0}
+.par-slider{position:absolute;inset:0;background:var(--jade-line);border-radius:10px;cursor:pointer;transition:background .15s}
+.par-slider::before{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--paper);transition:transform .15s}
+.par-toggle input:checked+.par-slider{background:var(--brass-deep)}
+.par-toggle input:checked+.par-slider::before{transform:translateX(16px)}
+.par-foot{font:600 12px/1.4 Inter;color:var(--ink-soft);margin-top:8px}
+.par-foot.muted{opacity:.55;font-style:italic}
 </style>
 </head>
 <body>
@@ -4642,7 +4652,7 @@ let personen=[
  {pid:"P16",name:"Klaus Reuter",geb:gebIn(133,62),lebenszyklus:"interessent",kt:"Selbstzahler",sterne:2,sterneGrund:"Broschüre-Download ohne konkrete Anfrage",kontakt:{tel:"0971 0000-516",mail:"k.reuter@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-25),zwecke:["newsletter"]},zuweiserRef:null,historie:[{d:dstr(-25),typ:"kontakt",text:"Premium-Broschüre, E-Mail-Einwilligung"}]},
  {pid:"P17",name:"Ilse Hartmann",geb:gebIn(-233,61),lebenszyklus:"interessent",kt:"Unklar",sterne:2,sterneGrund:"Newsletter-Leserin, noch keine Anfrage",kontakt:{tel:"0971 0000-517",mail:"i.hartmann@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-60),zwecke:["newsletter"]},zuweiserRef:null,historie:[{d:dstr(-60),typ:"kontakt",text:"Newsletter-Anmeldung"}]},
  {pid:"P18",name:"Gerda Sommer",geb:gebIn(19,69),lebenszyklus:"altpatient",kt:"GKV",sterne:3,sterneGrund:"War bereits da (Ortho-Reha), Wiederkehr-Potenzial",kontakt:{tel:"0971 0000-518",mail:"g.sommer@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-400),zwecke:["behandlung","post"]},zuweiserRef:null,historie:[{d:dstr(-400),typ:"entlassung",text:"Ortho-Reha abgeschlossen"}]},
- {pid:"P19",name:"Norbert Frey",geb:gebIn(-99,64),lebenszyklus:"interessent",kt:"Unklar",sterne:2,sterneGrund:"Messe-Kontakt ohne konkrete Details",kontakt:{tel:"0971 0000-519",mail:"n.frey@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"mündlich",datum:dstr(-90),zwecke:["behandlung"]},zuweiserRef:null,historie:[{d:dstr(-90),typ:"kontakt",text:"Messe-Kontakt (Gesundheitsmesse), ruht"}]},
+ {pid:"P19",name:"Norbert Frey",geb:gebIn(-99,64),lebenszyklus:"interessent",kt:"Unklar",sterne:2,sterneGrund:"Messe-Kontakt ohne konkrete Details",kontakt:{tel:"0971 0000-519",mail:"n.frey@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"mündlich",datum:dstr(-395),zwecke:["behandlung"]},zuweiserRef:null,historie:[{d:dstr(-395),typ:"kontakt",text:"Messe-Kontakt (Gesundheitsmesse), ruht"}]},
  {pid:"P20",name:"Hannelore Beck",geb:gebIn(76,70),lebenszyklus:"interessent",kt:"Unklar",sterne:2,sterneGrund:"Kurze Anfrage ohne Details, keine Freigabe",kontakt:{tel:"",mail:"h.beck@demo-patient.local"},angehoerige:[],einwilligung:{status:"offen",form:null,datum:null,zwecke:[]},zuweiserRef:null,historie:[{d:dstr(-11),typ:"kontakt",text:"E-Mail eingegangen, keine Freigabe angeklickt"}]},
  {pid:"P21",name:"Margarete Wirth",geb:gebIn(5,73),lebenszyklus:"altpatient",kt:"GKV + Komfort",sterne:5,sterneGrund:"War da & sehr zufrieden, Komfort-Zusatz, Gegenseite absehbar",kontakt:{tel:"0971 0000-521",mail:"m.wirth@demo-patient.local"},angehoerige:[{name:"Dorothea Wirth",bezug:"Tochter"}],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-330),zwecke:["behandlung","newsletter","post"]},zuweiserRef:null,historie:[{d:dstr(-360),typ:"aufnahme",text:"Aufnahme nach Knie-TEP links"},{d:dstr(-330),typ:"entlassung",text:"Reha abgeschlossen, gutes Ergebnis"}]},
  {pid:"P22",name:"Christa Mohr",geb:gebIn(12,58),lebenszyklus:"altpatient",kt:"Selbstzahler",sterne:5,sterneGrund:"Premium-Wiederkehrerin, aktive Selbstzahlerin",kontakt:{tel:"0971 0000-522",mail:"c.mohr@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-150),zwecke:["behandlung","newsletter","post"]},zuweiserRef:null,historie:[{d:dstr(-150),typ:"entlassung",text:"Premium-Reha abgeschlossen (SalutoCare)"}]},
@@ -4650,7 +4660,19 @@ let personen=[
  {pid:"P24",name:"Friedrich Berg",geb:gebIn(170,71),lebenszyklus:"altpatient",kt:"PKV",sterne:4,sterneGrund:"War da, PKV, Gegenseite mittelfristig wahrscheinlich",kontakt:{tel:"0971 0000-524",mail:"f.berg@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-240),zwecke:["behandlung","post"]},zuweiserRef:null,historie:[{d:dstr(-240),typ:"entlassung",text:"Reha nach Hüft-TEP links abgeschlossen"}]},
  {pid:"P25",name:"Walter Simon",geb:gebIn(-45,80),lebenszyklus:"altpatient",kt:"GKV",sterne:1,sterneGrund:"Einwilligung widerrufen, kein Zuzahlungsinteresse",kontakt:{tel:"",mail:""},angehoerige:[],einwilligung:{status:"widerruf",form:null,datum:dstr(-500),zwecke:[]},zuweiserRef:null,historie:[{d:dstr(-690),typ:"entlassung",text:"Kardio-Reha abgeschlossen"},{d:dstr(-500),typ:"kontakt",text:"Kontakteinwilligung widerrufen"}]},
  /* Seed-Ergänzung Mein Tag: Werner Aumann (Baustein-A-Konvention, additiv) */
- {pid:"P26",name:"Werner Aumann",geb:gebIn(170,72),lebenszyklus:"interessent",kt:"PKV",sterne:3,sterneGrund:"PKV, konkrete Anfrage, Kostenklärung läuft",kontakt:{tel:"0971 0000-526",mail:"w.aumann@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-4),zwecke:["behandlung"]},zuweiserRef:null,historie:[{d:dstr(-4),typ:"anfrage",text:"Anfrage über Empfehlung (Knie-TEP, AHB gesucht)"}]}
+ {pid:"P26",name:"Werner Aumann",geb:gebIn(170,72),lebenszyklus:"interessent",kt:"PKV",sterne:3,sterneGrund:"PKV, konkrete Anfrage, Kostenklärung läuft",kontakt:{tel:"0971 0000-526",mail:"w.aumann@demo-patient.local"},angehoerige:[],einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-4),zwecke:["behandlung"]},zuweiserRef:null,historie:[{d:dstr(-4),typ:"anfrage",text:"Anfrage über Empfehlung (Knie-TEP, AHB gesucht)"}]},
+ {pid:"P27",name:"Rosa Klein",geb:gebIn(140,66),lebenszyklus:"altpatient",kt:"PKV",sterne:3,
+  sterneGrund:"War da, PKV, reguläre Nachsorge nach Knie-TEP",
+  kontakt:{tel:"0971 0000-527",mail:"r.klein@demo-patient.local"},angehoerige:[],
+  einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-49),zwecke:["behandlung","post"]},
+  zuweiserRef:null,
+  historie:[{d:dstr(-49),typ:"entlassung",text:"Ortho-Reha nach Knie-TEP abgeschlossen, Entlassung nach Hause"}]},
+ {pid:"P28",name:"Anton Weiss",geb:gebIn(160,64),lebenszyklus:"altpatient",kt:"Selbstzahler",sterne:5,
+  sterneGrund:"Premium-Selbstzahler (SalutoCare-Suite), Bezugstherapeutin bekannt",
+  kontakt:{tel:"0971 0000-528",mail:"a.weiss@demo-patient.local"},angehoerige:[],
+  einwilligung:{status:"erteilt",form:"schriftlich",datum:dstr(-45),zwecke:["behandlung","newsletter","post"]},
+  zuweiserRef:null,
+  historie:[{d:dstr(-45),typ:"entlassung",text:"Premium-Reha (SalutoCare-Suite) abgeschlossen, Entlassung nach Hause"}]}
 ];
 let zuweiserEvents=[
  {zName:"Leopoldina-Krankenhaus",d:dstr(-1),typ:"fall",text:"Fall Ludwig Bauer vermittelt (Hüft-TEP)"},
