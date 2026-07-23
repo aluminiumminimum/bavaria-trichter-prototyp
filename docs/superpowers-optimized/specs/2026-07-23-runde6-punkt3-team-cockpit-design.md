@@ -14,6 +14,14 @@ kein Keyframe); Jade-Apotheke-Identität, Etiketten-Doppelrahmen (`.card`); Corm
 `escapeHtml()` um alle dynamischen Texte; kein `Math.random`; 390px + 1440px, 0 Console-Errors; nur
 synthetische Daten.
 
+> **Review-Fixes eingearbeitet** (verbindliche Entscheidungen): §4.3 zeitstabile Überfällig-Definition
+> (Begleit-Fix an `fristKlasse()`/`fristText()`/`kennzahlen().ueberf`) · §4.4 Heinz-Vogel-Seed-Justierung
+> (`frist:dstr(-2)`) statt leerer Demo-Liste · §6.2 Zählmodell-Fix (Mitarbeiter-Zeilen lesen den
+> globalen, nicht den panel-lokalen Fall-Datensatz) · §6.3 Sortier-Fix (leere Fristen ans Ende) +
+> ein beim Umsetzen selbst gefundener Folgefehler in derselben Funktion (neue `tcFallZeile()` statt
+> `tcAttnZeile()` für nicht-überfällige Fälle im Personenfilter, s. §6.3). Alle Zahlen in §4/§6/§7 unten
+> sind bereits die korrigierten.
+
 ---
 
 ## 1. Problem
@@ -54,7 +62,8 @@ Von oben nach unten, neuer Namespace `.tc-*`:
    (6 Status-Stufen als Segmentleiste) und Mitarbeiter-Zeilen mit Last-Balken, Überfällig-Marker,
    „diese Woche erledigt".
 3. **„Braucht Aufmerksamkeit"-Liste** — alle echt überfälligen Fälle, sortiert nach Tagen überfällig,
-   Klick → Fallakte. Leer im Normalfall (siehe §4.4) → ruhige Leerzustands-Zeile.
+   Klick → Fallakte. Ruhige Leerzustands-Zeile, falls keiner überfällig ist (Code-Pfad bleibt erhalten,
+   §7 Abnahme 6 — der Demo-Startzustand selbst zeigt nach §4.4 genau 1 Zeile).
 
 Jede Zahl kommt entweder live aus `faelle[]`/`eingang[]` oder ist explizit als Demo-Seed-Zeitreihe
 gekennzeichnet — nirgends zeigt dieselbe Kennzahl zweimal dieselbe Aggregation.
@@ -129,36 +138,95 @@ exakt ab und wird bereits identisch dafür in `kennzahlen()` verwendet
 wären eine Redundanz, die diese Spec gerade beheben soll (Wiederverwenden statt duplizieren,
 `CLAUDE.md`). Neue Datumsfelder entfallen ersatzlos gegenüber dem ursprünglichen Auftrag.
 
-### 4.2 Live-Formeln, durchgerechnet gegen die aktuellen Seeds (`faelle[]`, 9 Einträge)
+### 4.2 Live-Formeln, durchgerechnet gegen die aktuellen Seeds (`faelle[]`, 9 Einträge, Werte nach §4.3/§4.4)
 
 | # | KPI | Formel | Ergebnis |
 |---|---|---|---|
 | 1 | Aufnahmen (7 Tage) | `faelle.filter(f=>f.status==="Aufgenommen"&&f.log.some(([d,t])=>d>=dstr(-7)&&/aufgenommen/i.test(t))).length` — **neue** kleine Funktion `tcAufnahmen7T()`, da `kennzahlen().auf` alle Aufnahmen seit je zählt, nicht nur die letzten 7 Tage | id10 (log-Zeile `dstr(-2)`,„Aufgenommen — Privatzimmer") + id11 (`dstr(-3)`,„Aufgenommen") → **2** |
 | 2 | Conversion | reuse `kennzahlen().conv` (bereits `auf/(auf+verl)*100` gerundet, [index.html:5647](../../../index.html#L5647)) | auf=2, verl=1 (id12) → round(2/3·100) = **67 %** |
 | 3 | Ø Reaktionszeit | reuse `kennzahlen().rzAvg` ([index.html:5648-5649](../../../index.html#L5648)) | Werte `[3,1,6,2,26,4,8,5]` (id1 `reaktion:null` ausgeschlossen) → 55/8 = 6,875 → round = **7 Std.** |
-| 4 | Überfällige Aufgaben | **neu**, NICHT `kennzahlen().ueberf`/`teamCockpitHtml`s lokales `ueberf` wiederverwendet (Begründung §4.3) — Tage-gerundet wie `fristText()` ([index.html:4758](../../../index.html#L4758)): `offeneFaelle().filter(f=>f.frist&&Math.round((new Date(f.frist)-heute)/86400000)<0).length` | offene Fälle mit Frist: id1(`dstr(0)`,d=0), id3(`dstr(2)`,d=2), id6(`dstr(0)`,d=0), id8(`dstr(1)`,d=1), id9(`dstr(2)`,d=2) — keiner mit d<0 → **0** |
+| 4 | Überfällige Aufgaben | reuse `kennzahlen().ueberf` — **jetzt zeitstabil** dank Begleit-Fix §4.3, exakt dieselbe Definition wie die neue Kennzahl selbst gebraucht hätte: `offen.filter(x=>x.frist&&x.frist<dstr(0)).length` | offene Fälle mit Frist: id1(`dstr(0)`, **nicht** `<dstr(0)`), id3(`dstr(2)`), id6(`dstr(-2)`, **Treffer** — Review-Seed-Justierung §4.4), id8(`dstr(1)`), id9(`dstr(2)`) → **1** |
 
-### 4.3 Bewusste Abweichung von `kennzahlen().ueberf` (mention, nicht fixen)
+### 4.3 Begleit-Fix (Review-Finding 1, verbindlich): zeitstabile Überfällig-Definition an 2 bestehenden Code-Stellen
 
-`kennzahlen().ueberf` und `teamCockpitHtml`s eigenes `ueberf`
-([index.html:5650](../../../index.html#L5650), [index.html:5781](../../../index.html#L5781)) vergleichen
-`new Date(f.frist)<heute` **ohne Tage-Rundung** — ein `Date`-Objekt aus einem reinen Datumsstring steht
-auf Mitternacht UTC, `heute` ist der aktuelle Zeitpunkt (Uhrzeit inklusive). Ergebnis: eine Frist auf
-„heute" (`dstr(0)`) gilt nach dieser Formel **den ganzen Tag über als bereits überfällig**, sobald
-Mitternacht UTC vorbei ist — mit den aktuellen Seeds liefert dieselbe Rechnung dort **2** (id1, id6,
-beide `frist:dstr(0)`) statt der korrekten **0**. Das ist ein bestehendes Verhalten in fremdem,
-unverändertem Code (`kennzahlen()`, `teamCockpitHtml` wird ohnehin komplett ersetzt) — hier nur vermerkt,
-nicht repariert (Surgical Changes). Diese Spec nutzt für ihre eigene „Überfällig"-Kennzahl konsequent die
-**korrekte**, bereits im Code etablierte Tage-Rundung aus `fristText()`, damit KPI-Karte und
-„Braucht Aufmerksamkeit"-Liste (§6.3) intern konsistent bleiben (dieselbe Formel, dieselbe Zahl).
+**Der Bug:** `fristKlasse()`/`fristText()` ([index.html:4757-4758](../../../index.html#L4757)) und
+`kennzahlen().ueberf` ([index.html:5650](../../../index.html#L5650)) vergleichen bisher
+`new Date(f.frist)<heute` — ein reiner Datumsstring wird als Mitternacht UTC geparst, `heute` ist aber
+der **beim Laden eingefrorene** Zeitpunkt inklusive Uhrzeit (`const heute=new Date();`,
+[index.html:4258](../../../index.html#L4258)). Eine Frist auf „heute" (`dstr(0)`) gilt nach dieser Formel
+**den ganzen restlichen Tag über als bereits überfällig**, sobald Mitternacht UTC vorbei ist — der
+Bug sitzt im Instant-Vergleich gegen das eingefrorene `heute`, nicht in `dstr()` selbst. Ohne Fix hätte
+das Cockpit z. B. nachmittags „0 überfällig" gezeigt (bei Tages-gerundeter Formel), während dieselbe
+Fallakte (Anna Muster, id1, `frist:dstr(0)`) „überfällig (1 T)" schreit — ein Demo-Killer bei
+widersprüchlichen Zahlen auf derselben Bühne.
 
-### 4.4 Erwarteter Ist-Zustand: 0 überfällig, leere Liste
+**Der Fix:** Kalendertag-Stringvergleich statt Instant-Vergleich — `f.frist` und `dstr(0)` sind beides
+reine `"YYYY-MM-DD"`-Strings, lexikographisch identisch zur Datums-Ordnung, **ohne** Uhrzeit-Komponente:
 
-Mit den aktuellen Seeds sind **keine** Fälle nach der korrekten Definition überfällig — die
-„Braucht Aufmerksamkeit"-Liste zeigt initial den Leerzustand (§6.3). Das ist kein Fehlzustand: der
-Nutzer selbst hat diesen Fall explizit vorgesehen („Wenn leer: ruhige Leerzustands-Zeile"). Die
-Trendlinie der Überfällig-Karte zeigt die Vorgeschichte (Seed, §4.5) mit einem Abwärtstrend auf 0 — das
-erzählt „das Team hat aufgeholt", eine für einen Pitch günstigere Aussage als eine rote Dauerzahl.
+```diff
+-function fristKlasse(f){if(!f)return"";const d=(new Date(f)-heute)/86400000;return d<0?"bad":d<1.5?"warn":"ok";}
+-function fristText(f){if(!f)return"";const d=Math.round((new Date(f)-heute)/86400000);return d<0?"überfällig ("+Math.abs(d)+" T)":d===0?"heute fällig":"in "+d+" T";}
++function fristKlasse(f){if(!f)return"";const h=dstr(0);if(f<h)return"bad";if(f===h)return"warn";const d=(new Date(f)-heute)/86400000;return d<1.5?"warn":"ok";}
++function fristText(f){if(!f)return"";const h=dstr(0);if(f<h)return"überfällig ("+Math.round((new Date(h)-new Date(f))/86400000)+" T)";if(f===h)return"heute fällig";const d=Math.round((new Date(f)-heute)/86400000);return "in "+d+" T";}
+```
+
+```diff
+-  const ueberf=offen.filter(x=>x.frist&&new Date(x.frist)<heute).length;
++  const ueberf=offen.filter(x=>x.frist&&x.frist<dstr(0)).length;
+```
+
+Nur die Grenze überfällig/heute wechselt auf Stringvergleich; der Zukunfts-Zweig (`fristText()`s
+„in X T", `fristKlasse()`s `warn`/`ok`-Split ab morgen) behält die bestehende Rundung gegen `heute` —
+dort verschiebt sich keine Tag-Grenze fälschlich, nur eine grobe „wie bald"-Einordnung (kein Fixbedarf
+laut Review, ausdrücklich erlaubt: „relative „in X T"-Texte dürfen die Rundung behalten").
+
+`aufgabenHeroHtml()`s Überfällig-Darstellung ([index.html:6258-6264](../../../index.html#L6258)) hat
+**keinen eigenen** Datumsvergleich — sie ruft ausschließlich `fristKlasse(f.frist)`/`fristText(f.frist)`
+auf ([index.html:6259](../../../index.html#L6259)) und wird durch den obigen Fix automatisch korrekt,
+ohne eigene Code-Änderung an dieser Stelle. Die vom Review benannten „3 Stellen" sind damit 3
+*Symptom-Orte*, real **2 Fix-Orte** (das benachbarte Paar `fristKlasse`+`fristText`, plus
+`kennzahlen().ueberf`). `renderWichtig()` ([index.html:5661](../../../index.html#L5661)) nutzt bereits
+eine Tage-**gerundete** Formel (nicht dieselbe Instant-Bug-Familie, da schon `Math.round(...)` statt
+rohem `<heute`) — vom Review nicht benannt, hier bewusst unangetastet.
+
+**Konsequenz für diese Spec:** `kennzahlen().ueberf` liefert jetzt exakt dieselbe, korrekte Zahl, die die
+neue `.tc-*`-Kennzahl ohnehin gebraucht hätte — die KPI-Karte „Überfällige Aufgaben" kann `k.ueberf`
+direkt wiederverwenden (§6.1), keine eigene Parallel-Formel mehr nötig (Wiederverwenden statt
+duplizieren, wie bereits für Conversion/Reaktionszeit vorgesehen).
+
+### 4.4 Review-Finding 2: Demo-Wert statt leerer Liste — Heinz-Vogel-Seed-Justierung
+
+Mit der korrekten Definition (§4.3) und den *ursprünglichen* Seeds wäre „Überfällige Aufgaben" **0** und
+„Braucht Aufmerksamkeit" leer — technisch korrekt, aber ein zu stiller Startzustand für einen Pitch (das
+Cockpit soll in Aktion sichtbar sein). Bewusste Demo-Justierung eines bestehenden Feld-Werts (Wert-Tweak,
+keine neue Struktur — analog dem Thoraxzentrum-Seed aus Runde 5):
+
+```diff
+- {id:6,…quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(0),saluto:true,…}
++ {id:6,…quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(-2),saluto:true,…}
+```
+
+([index.html:4266](../../../index.html#L4266) — einzige Änderung: `frist:dstr(0)`→`frist:dstr(-2)`, alle
+anderen Felder dieses Fall-Objekts unverändert.)
+
+**Neu durchgerechnet:**
+- Heinz Vogel (id6) ist jetzt 2 Kalendertage überfällig (`dstr(0)`−`dstr(-2)`) → „Überfällige Aufgaben"
+  = **1**, „Braucht Aufmerksamkeit" zeigt genau **1 Zeile**: „Heinz Vogel — Übernahmefähigkeit Beatmung
+  klären — Recovery Manager — **2 Tage überfällig**" (Zinnober).
+- Anna Muster (id1, `frist:dstr(0)`, unverändert) ist **nicht** überfällig — `f.frist===dstr(0)` greift,
+  sie ist „heute fällig", erscheint **nicht** in „Braucht Aufmerksamkeit" (die Liste zeigt nur
+  `frist<dstr(0)`). Ihr Aufgaben-Hero in der Fallakte zeigt dank §4.3 „Frist heute fällig" statt (vorher,
+  mit dem Bug, jeden Nachmittag) „überfällig (1 T)".
+- Mitarbeiter-Überfällig-Marker (§4.7, §6.2): Recovery Manager hätte 1 (aus id6) — wird aber nirgends als
+  Mitarbeiter-Zeile gerendert (ihr einziges Panel „Direkt/Premium" ist `schmal`, keine `.tc-ma-list`,
+  §6.2); sichtbar bleibt der Fall ausschließlich über die globale „Braucht Aufmerksamkeit"-Liste. Alle
+  anderen drei Mitarbeiter: weiterhin 0 überfällig.
+- `TC_WOCHE.ueberfaellig` (§4.5): letzter Wert wechselt von 0 auf **1** (Sparkline-Ende = neuer Live-Wert).
+
+Keine anderen Kennzahlen betroffen — id6s Achse/Status/Owner/Reaktion sind unverändert, Pipeline (§4.7)
+und die drei anderen KPIs (§4.2, Zeilen 1-3) bleiben exakt wie zuvor berechnet. Der Leerzustand
+(„Keine überfälligen Aufgaben — alles im grünen Bereich.") bleibt trotzdem ein realer, testbarer
+Code-Pfad (§7, Abnahme 6) — er ist nur nicht mehr der Demo-Startzustand.
 
 ### 4.5 `TC_WOCHE` — Seed-Zeitreihe für die 4 Trendlinien
 
@@ -177,7 +245,7 @@ const TC_WOCHE={
  aufnahmen:   [0,1,1,1,2,2,2],   // endet bei live Aufnahmen(7T)=2
  conversion:  [58,60,62,64,65,66,67], // endet bei live Conversion=67
  reaktion:    [9,9,8,8,8,7,7],   // endet bei live Ø Reaktionszeit=7
- ueberfaellig:[3,3,2,2,1,1,0]    // endet bei live Überfällig=0
+ ueberfaellig:[3,3,2,2,1,1,1]    // Review-Fix 2: endet bei live Überfällig=1 (Heinz-Vogel-Seed, §4.4), Delta=1-3=-2
 };
 function tcDelta(arr){ return arr[6]-arr[0]; } // Delta-Pfeil: ausschließlich Seed[6]-Seed[0], unabhängig vom Live-Hero-Wert
 ```
@@ -233,8 +301,10 @@ enthält — bestehende Seed-Realität, hier nicht bereinigt).
 Offene Fälle je Mitarbeiter (`offeneFaelle()`, [index.html:4770](../../../index.html#L4770), gefiltert
 nach `f.owner`): S. Koordination 3 (id1,3,13) · M. Belegung 2 (id8,9) · Recovery Manager 1 (id6) ·
 T. Abrechnung 0. Last-Balken-Basis `maxN=3`: S. Koordination 100 %, M. Belegung 67 %, Recovery Manager
-33 %, T. Abrechnung 0 %. Überfällig-Marker je Mitarbeiter: alle **0** (folgt aus §4.4 — kein Fall ist
-echt überfällig, also auch kein Mitarbeiter).
+33 %, T. Abrechnung 0 %. Überfällig-Marker je Mitarbeiter (Review-Fix 2, §4.4): S. Koordination/
+M. Belegung/T. Abrechnung **0**; Recovery Manager **1** (id6, seit der Frist-Justierung) — bleibt aber
+unsichtbar, da ihr einziges Panel „Direkt/Premium" `schmal` ist (kein `.tc-ma-list`, §6.2); der Fall
+selbst ist trotzdem sichtbar über „Braucht Aufmerksamkeit" (§6.3).
 
 ---
 
@@ -276,15 +346,13 @@ function tcKpiKarte(label,val,einheit,trend,gutWennSteigt){
   +"</div>";
 }
 function tcKpiRowHtml(){
- const k=kennzahlen(); // reuse: conv, rzAvg
+ const k=kennzahlen(); // reuse: conv, rzAvg, ueberf (nach Begleit-Fix §4.3 zeitstabil und direkt korrekt)
  const auf7=faelle.filter(f=>f.status==="Aufgenommen"&&f.log.some(([d,t])=>d>=dstr(-7)&&/aufgenommen/i.test(t))).length;
- const offen=offeneFaelle();
- const ueb=offen.filter(f=>f.frist&&Math.round((new Date(f.frist)-heute)/86400000)<0).length;
  return "<div class='tc-kpis'>"
   +tcKpiKarte("Aufnahmen · 7 Tage",auf7,"",TC_WOCHE.aufnahmen,true)
   +tcKpiKarte("Conversion",k.conv,"%",TC_WOCHE.conversion,true)
   +tcKpiKarte("Ø Reaktionszeit",k.rzAvg,"Std.",TC_WOCHE.reaktion,false)
-  +tcKpiKarte("Überfällige Aufgaben",ueb,"",TC_WOCHE.ueberfaellig,false)
+  +tcKpiKarte("Überfällige Aufgaben",k.ueberf,"",TC_WOCHE.ueberfaellig,false)
   +"</div>";
 }
 ```
@@ -292,6 +360,8 @@ function tcKpiRowHtml(){
 `zwSparkline()` ([index.html:5546-5550](../../../index.html#L5546)) unverändert wiederverwendet — bereits
 eine reine, statische Inline-SVG-Polyline (`var(--brass-deep)`-Stroke, kein Keyframe), exakt was die
 Vorgabe „7-Punkte-Trendlinie … KEIN neues Keyframe" verlangt. Kein neuer Sparkline-Code nötig.
+`k.ueberf` ist nach dem Begleit-Fix (§4.3) zeitstabil und exakt die richtige Zahl — anders als im
+ursprünglichen Entwurf dieser Spec ist **keine eigene Parallel-Formel** mehr nötig, nur noch Wiederverwendung.
 
 ### 6.2 Team-Panels (`tcPanelsHtml()`)
 
@@ -310,7 +380,7 @@ function tcPipelineHtml(cases){
 }
 function tcMitarbeiterZeile(t,openCases,maxN){
  const mine=openCases.filter(f=>f.owner===t);
- const ueb=mine.filter(f=>f.frist&&Math.round((new Date(f.frist)-heute)/86400000)<0).length;
+ const ueb=mine.filter(f=>f.frist&&f.frist<dstr(0)).length; // zeitstabil, s. §4.3
  const erledigt=TC_ERLEDIGT[t]||0;
  return "<button type='button' class='tc-ma-row"+(tcFilter===t?" on":"")+"' onclick='tcSetFilter(\""+t+"\")'>"
   +"<span class='ava sm'>"+initialen(t)+"</span>"
@@ -321,13 +391,13 @@ function tcMitarbeiterZeile(t,openCases,maxN){
   +"<span class='tc-ma-erl'>"+erledigt+" diese Woche</span>"
   +"</button>";
 }
-function tcPanel(titel,cases,mitglieder,maxN,schmal){
+function tcPanel(titel,cases,mitglieder,openCases,maxN,schmal){
  return "<div class='card tc-panel"+(schmal?" schmal":"")+"'><h3 class='tc-panel-h'>"+escapeHtml(titel)+"</h3>"
   +tcPipelineHtml(cases)
-  +(schmal?"":"<div class='tc-ma-list'>"+mitglieder.map(t=>tcMitarbeiterZeile(t,cases,maxN)).join("")+"</div>")
+  +(schmal?"":"<div class='tc-ma-list'>"+mitglieder.map(t=>tcMitarbeiterZeile(t,openCases,maxN)).join("")+"</div>")
   +"</div>";
 }
-function tcPanelsHtml(openCases){ // openCases = offeneFaelle()-Ergebnis aus renderTeam(), nur für maxN gebraucht
+function tcPanelsHtml(openCases){ // openCases = offeneFaelle()-Ergebnis aus renderTeam() — GLOBALER Datensatz, s. Review-Fix unten
  const alle=faelle; // Pipeline zählt Status inkl. Verloren (separat ausgewiesen) UND Aufgenommen — daher faelle, nicht openCases
  const ortho=alle.filter(f=>achseZuGruppe(f.achse)==="Orthopädie");
  const ng=alle.filter(f=>achseZuGruppe(f.achse)==="Neuro-Geri");
@@ -335,12 +405,23 @@ function tcPanelsHtml(openCases){ // openCases = offeneFaelle()-Ergebnis aus ren
  const maxN=Math.max(1,...TEAM.map(t=>openCases.filter(f=>f.owner===t).length));
  const mgl=g=>TEAM.filter(t=>(TEAM_ACHSE[t]||[]).map(achseZuGruppe).includes(g));
  return "<div class='tc-panels'>"
-  +tcPanel("Orthopädie",ortho,mgl("Orthopädie"),maxN,false)
-  +tcPanel("Neuro-Geri",ng,mgl("Neuro-Geri"),maxN,false)
-  +tcPanel("Direkt / Premium",direkt,["Recovery Manager"],maxN,true)
+  +tcPanel("Orthopädie",ortho,mgl("Orthopädie"),openCases,maxN,false)
+  +tcPanel("Neuro-Geri",ng,mgl("Neuro-Geri"),openCases,maxN,false)
+  +tcPanel("Direkt / Premium",direkt,["Recovery Manager"],openCases,maxN,true)
   +"</div>";
 }
 ```
+
+**Review-Fix (Finding 2):** `tcPanel()` bekam ursprünglich `cases` (das panel-lokale, nach Achse
+gefilterte, **ungefilterte** Fall-Set — inkl. Verloren/Aufgenommen, exklusive fremder Achsen) auch als
+Datensatz für `tcMitarbeiterZeile()` durchgereicht. Das ist falsch: `tcMitarbeiterZeile()` soll
+personenbezogene **Gesamtwerte** zeigen (§4.7 — „S. Koordination zeigt in beiden Panels dieselbe Zahl"),
+aber mit dem panel-lokalen `cases`-Set hätte sie im Orthopädie-Panel nur ihre Orthopädie-Fälle (id3,id13
+→ 2) und im Neuro-Geri-Panel nur id1 (→ 1) gesehen — zwei **unterschiedliche, beide falsche** Zahlen
+statt der korrekten 3 in beiden. Fix: `tcPanel()` bekommt zusätzlich den **global** vorberechneten
+`openCases`-Datensatz aus `tcPanelsHtml()` als eigenen Parameter und reicht **den** (nicht `cases`) an
+`tcMitarbeiterZeile()` weiter — `cases` bleibt ausschließlich Input für `tcPipelineHtml()` (die *braucht*
+das panel-lokale, ungefilterte Set, inkl. Verloren/Aufgenommen, für die 6-Stufen-Segmentleiste).
 
 `tcPanel()` für „Direkt / Premium" (`schmal=true`) rendert bewusst **keine** Mitarbeiter-Zeilenliste im
 vollen `.tc-ma-list`-Format (Vorgabe: „drittes **schmales** Panel") — stattdessen nur die Pipeline. Die
@@ -361,34 +442,67 @@ Person" (das alte `.tm-list`-Verhalten, nur umbenannt) statt „nur überfällig
 ```js
 let tcFilter="alle"; // ersetzt teamFilter (§9)
 function tcSetFilter(t){ tcFilter=(tcFilter===t?"alle":t); renderTeam(); }
+function tcFristSort(a,b){ // Review-Fix (Finding 3): leere Fristen IMMER ans Ende, unabhängig von der anderen Seite
+ if(!a.frist&&!b.frist)return 0;
+ if(!a.frist)return 1;
+ if(!b.frist)return -1;
+ return a.frist<b.frist?-1:a.frist>b.frist?1:0;
+}
 function tcAufmerksamkeitHtml(){
  const offen=offeneFaelle();
  if(tcFilter!=="alle"){
-   const mine=offen.filter(f=>f.owner===tcFilter)
-     .sort((a,b)=>String(a.frist||"").localeCompare(String(b.frist||"")));
+   const mine=offen.filter(f=>f.owner===tcFilter).sort(tcFristSort);
    return "<div class='chap tc-attn'><h2 class='chap-h2'>Offene Fälle · "+escapeHtml(tcFilter)+"</h2>"
     +"<button class='tc-clear' onclick='tcSetFilter(\""+tcFilter+"\")'>alle zeigen</button>"
-    +"<div class='tc-attn-list'>"+(mine.length?mine.map(tcAttnZeile).join(""):"<p class='empty'>Keine offenen Fälle.</p>")+"</div></div>";
+    +"<div class='tc-attn-list'>"+(mine.length?mine.map(tcFallZeile).join(""):"<p class='empty'>Keine offenen Fälle.</p>")+"</div></div>";
  }
- const ueberfaellig=offen.filter(f=>f.frist&&Math.round((new Date(f.frist)-heute)/86400000)<0)
-   .sort((a,b)=>Math.round((new Date(a.frist)-heute)/86400000)-Math.round((new Date(b.frist)-heute)/86400000));
+ const ueberfaellig=offen.filter(f=>f.frist&&f.frist<dstr(0)).sort(tcFristSort); // zeitstabil, s. §4.3 — frist garantiert gesetzt, tcFristSort trotzdem wiederverwendet statt Duplikat
  return "<div class='chap tc-attn'><h2 class='chap-h2'>Braucht Aufmerksamkeit</h2>"
   +"<div class='tc-attn-list'>"+(ueberfaellig.length?ueberfaellig.map(tcAttnZeile).join(""):"<p class='empty'>Keine überfälligen Aufgaben — alles im grünen Bereich.</p>")+"</div></div>";
 }
-function tcAttnZeile(f){
- const tage=Math.abs(Math.round((new Date(f.frist)-heute)/86400000));
+function tcAttnZeile(f){ // NUR für die überfällig-Liste — durch den Filter oben garantiert f.frist<dstr(0)
+ const tage=Math.round((new Date(dstr(0))-new Date(f.frist))/86400000); // beide Operanden reine Datumsstrings (Mitternacht UTC) — exakter Tageswert, immer positiv, keine Rundungsartefakte
  return "<button type='button' class='tc-attn-row' onclick='openFallakte("+f.id+")'>"
   +"<span class='tc-attn-name'>"+escapeHtml(f.name)+"</span>"
   +"<span class='tc-attn-aufg'>"+escapeHtml(f.aufgabe||"—")+"</span>"
   +"<span class='tc-attn-owner'>"+escapeHtml(f.owner)+"</span>"
-  +"<span class='tc-attn-tage'>"+tage+" "+(tage===1?"Tag":"Tage")+" überfällig</span>"
+  +"<span class='tc-attn-tage bad'>"+tage+" "+(tage===1?"Tag":"Tage")+" überfällig</span>"
+  +"</button>";
+}
+function tcFallZeile(f){ // generische Zeile für den Mitarbeiter-Filter-Zweig — Fälle in JEDEM Frist-Zustand
+ // (überfällig/heute/zukünftig/keine Frist), deshalb NICHT tcAttnZeile() wiederverwendet: die hätte
+ // hier für nicht-überfällige Fälle Unsinn gezeigt ("-2 Tage überfällig" für eine Frist in 2 Tagen,
+ // "NaN Tage überfällig" ohne Frist). fristKlasse()/fristText() (§4.3, jetzt zeitstabil) decken alle
+ // vier Zustände bereits korrekt ab — hier reuse statt eigener Tage-Rechnung.
+ return "<button type='button' class='tc-attn-row' onclick='openFallakte("+f.id+")'>"
+  +"<span class='tc-attn-name'>"+escapeHtml(f.name)+"</span>"
+  +"<span class='tc-attn-aufg'>"+escapeHtml(f.aufgabe||"—")+"</span>"
+  +"<span class='tc-attn-owner'>"+escapeHtml(f.owner)+"</span>"
+  +"<span class='tc-attn-tage "+fristKlasse(f.frist)+"'>"+escapeHtml(f.frist?fristText(f.frist):"—")+"</span>"
   +"</button>";
 }
 ```
 
 `openFallakte()` ([index.html:7044](../../../index.html#L7044)) unverändert wiederverwendet. Sortierung
-der Aufmerksamkeit-Liste nach Tagen überfällig absteigend (dringlichster Fall oben) — mit den aktuellen
-Seeds leer (§4.4).
+der Aufmerksamkeit-Liste nach Frist aufsteigend (früheste/längste überfällige Frist zuerst) — mit den
+aktuellen Seeds (§4.4) genau 1 Zeile, Sortierung also nicht sichtbar prüfbar, aber im Personenfilter-Zweig
+(gleiche `tcFristSort()`) mit 3 Zeilen (§7, Abnahme 4) demonstrierbar.
+
+**Review-Fix (Finding 3, Minor):** Der ursprüngliche Personenfilter-Zweig sortierte über
+`String(a.frist||"").localeCompare(...)` — eine leere Frist (`""`) sortiert lexikographisch **vor** jedem
+Datumsstring, landet also fälschlich **zuerst** statt zuletzt. `tcFristSort()` behandelt die leere Frist
+jetzt explizit als „immer ans Ende", unabhängig von der Gegenseite.
+
+**Zusätzlich selbst gefundener Fix (kein Review-Finding, beim Umsetzen der Sortierung entdeckt):** Der
+ursprüngliche Entwurf dieser Spec ließ den Personenfilter-Zweig ebenfalls `tcAttnZeile()` aufrufen — die
+Funktion nimmt aber an, dass jeder übergebene Fall bereits überfällig ist (Vorbedingung des
+„Braucht Aufmerksamkeit"-Filters). Im Personenfilter sind das aber ALLE offenen Fälle einer Person,
+nicht nur überfällige — mit den echten Seeds hätte das sichtbar falschen Text erzeugt: id3
+(`frist:dstr(2)`, fällig in 2 Tagen) als „2 Tage überfällig" (Vorzeichenfehler durch `Math.round` ohne
+Schutz), id13 (keine Frist) als „NaN Tage überfällig". Root Cause: eine überfällig-spezifische
+Render-Funktion für einen gemischten Datensatz wiederverwendet, kein Symptom-Patch (z. B. `Math.abs()`)
+möglich, da die Kernannahme selbst falsch war. Fix: eigene, generische `tcFallZeile()` (s. o.), die
+`fristKlasse()`/`fristText()` (bereits zeitstabil, §4.3) für alle vier Frist-Zustände korrekt wiederverwendet.
 
 ### 6.4 CSS (neuer Block vor `</style>`, [index.html:3154](../../../index.html#L3154))
 
@@ -432,7 +546,10 @@ Seeds leer (§4.4).
 .tc-attn-name{font:600 13.5px/1.2 Inter;color:var(--ink);flex:0 0 140px}
 .tc-attn-aufg{font-size:12.5px;color:var(--ink-soft);flex:1;min-width:0}
 .tc-attn-owner{font-size:11px;color:var(--brass-deep);font-weight:600;flex:0 0 auto}
-.tc-attn-tage{font:700 11.5px/1 Inter;color:var(--terra);flex:0 0 auto}
+.tc-attn-tage{font:700 11.5px/1 Inter;color:var(--ink-soft);flex:0 0 auto} /* neutral: tcFallZeile() setzt zusätzlich .bad/.warn/.ok via fristKlasse() */
+.tc-attn-tage.bad{color:var(--terra)}
+.tc-attn-tage.warn{color:var(--brass-deep)}
+.tc-attn-tage.ok{color:var(--faint);font-weight:600}
 .tc-clear{font:600 11px/1 Inter;color:var(--brass-deep);text-decoration:underline;margin:0 0 10px;display:inline-block}
 @media(max-width:600px){.tc-attn-row,.tc-ma-row{flex-wrap:wrap}.tc-attn-aufg{flex:1 1 100%;order:3}}
 ```
@@ -446,30 +563,55 @@ Seeds leer (§4.4).
 ## 7. Abnahmekriterien (Browser-Checks)
 
 1. **KPI-Zeile:** 4 Karten zeigen exakt `2` (Aufnahmen · 7 Tage), `67 %` (Conversion), `7 Std.`
-   (Ø Reaktionszeit), `0` (Überfällige Aufgaben) — je Karte eine sichtbare Trendlinie + Delta
-   (`+2`/`+9`/`−2`/`−3`, letztere zwei grün/„gut", da sinkend bei diesen beiden Metriken erwünscht).
+   (Ø Reaktionszeit), `1` (Überfällige Aufgaben — nach Heinz-Vogel-Seed-Justierung §4.4) — je Karte eine
+   sichtbare Trendlinie + Delta `+2`/`+9`/`−2`/`−2`. Mit diesen Seeds werten **alle vier** als „gut"
+   (grün): Aufnahmen/Conversion steigend (steigen ist erwünscht) UND Reaktionszeit/Überfällig fallend
+   (fallen ist erwünscht) — Überfällig-Delta jetzt `-2` statt vorher `-3` (§4.5, Heinz-Vogel-Seed
+   verschiebt den Live-Endwert von 0 auf 1).
 2. **Panels korrekt gruppiert:** Orthopädie-Panel zeigt Pipeline `1/0/0/1/0/1` (Kontaktiert/Unterlagen/
    Aufgenommen je 1) + „1 verloren" Caption; Neuro-Geri zeigt `1/0/0/1/1/1` (Neu/Unterlagen/Aufnahme
    geplant/Aufgenommen je 1); Direkt/Premium zeigt nur Qualifizierung=1, restliche Segmente leer.
-3. **Mitarbeiter-Zeilen:** S. Koordination erscheint in **beiden** Panels (Orthopädie + Neuro-Geri) mit
-   identischer Zahl (3 offene Fälle, Last-Balken 100 %); M. Belegung nur in Neuro-Geri (2, 67 %);
-   Recovery Manager erscheint in keiner `.tc-ma-list` (Direkt/Premium ist `schmal`); T. Abrechnung
-   erscheint nirgends.
-4. **Filter-Klick:** Klick auf „S. Koordination"-Zeile → Liste unten wechselt zu „Offene Fälle ·
-   S. Koordination" mit 3 Zeilen (id1, id3, id13), „alle zeigen"-Button sichtbar; Klick darauf (oder
-   erneut auf dieselbe Mitarbeiter-Zeile) → zurück zu „Braucht Aufmerksamkeit" (leer).
-5. **Leerzustand:** Ohne aktiven Filter zeigt „Braucht Aufmerksamkeit" die Zeile „Keine überfälligen
-   Aufgaben — alles im grünen Bereich." (kein `<button>`-Markup, kein Klick-Handler).
-6. **Klick auf Aufmerksamkeit-Zeile → Fallakte:** (Nur prüfbar durch manuelles Verändern einer `frist`
-   in der Konsole auf `dstr(-2)`, da initial leer) `openFallakte(f.id)` öffnet den erwarteten Fall.
-7. **Entfernte Elemente weg:** kein `<figure>` mehr in `#sub-faelle-team`, kein `.tm-intake`-Banner,
+3. **Mitarbeiter-Zeilen (Review-Fix Finding 2, §6.2):** S. Koordination erscheint in **beiden** Panels
+   (Orthopädie + Neuro-Geri) mit **identischer** Zahl (3 offene Fälle, Last-Balken 100 %, 0 überfällig)
+   — vor dem Fix hätte sie panel-lokal `2` (Orthopädie) bzw. `1` (Neuro-Geri) gezeigt, jetzt korrekt in
+   beiden `3`, weil `tcMitarbeiterZeile()` den global vorberechneten `openCases`-Datensatz bekommt,
+   nicht das panel-lokale `cases`. M. Belegung nur in Neuro-Geri (2, 67 %, 0 überfällig). Recovery
+   Manager erscheint in keiner `.tc-ma-list` (Direkt/Premium ist `schmal`) — obwohl ihr einziger Fall
+   (id6) inzwischen überfällig ist, bleibt ihre Zeile ungerendert (§4.4); T. Abrechnung erscheint
+   nirgends.
+4. **Filter-Klick + Sortierung (Review-Fix Finding 3, §6.3):** Klick auf „S. Koordination"-Zeile →
+   Liste unten wechselt zu „Offene Fälle · S. Koordination" mit genau 3 `tcFallZeile()`-Zeilen in dieser
+   Reihenfolge: Anna Muster (`frist:dstr(0)` → Frist-Badge „heute fällig", Klasse `warn`) → Maria Probst
+   (`frist:dstr(2)` → „in 2 T", Klasse `ok`) → Werner Aumann (keine Frist → „—", keine Farb-Klasse,
+   `tcFristSort()` sortiert sie bewusst ans Ende statt — wie vor dem Fix — lexikographisch an den
+   Anfang). Keine Zeile zeigt „Tage überfällig"-Text, obwohl keiner dieser drei Fälle tatsächlich
+   überfällig ist (Beleg für den selbst gefundenen Zusatz-Fix oben). „alle zeigen"-Button sichtbar;
+   Klick darauf (oder erneut auf dieselbe Mitarbeiter-Zeile) → zurück zu „Braucht Aufmerksamkeit"
+   (1 Zeile, s. Punkt 5).
+5. **„Braucht Aufmerksamkeit" zeigt den Demo-Fall (Review-Fix Finding 2, §4.4):** genau 1 Zeile —
+   „Heinz Vogel — Übernahmefähigkeit Beatmung klären — Recovery Manager — **2 Tage überfällig**"
+   (Zinnober-Text, `.tc-attn-tage`). Klick darauf → `openFallakte(6)` öffnet seine Fallakte.
+6. **Leerzustand bleibt ein realer Code-Pfad:** `eingang`/`faelle` unverändert lassen, aber in der
+   Konsole `faelle.find(f=>f.id===6).frist=dstr(3)` setzen und `renderTeam()` erneut aufrufen → „Braucht
+   Aufmerksamkeit" zeigt jetzt „Keine überfälligen Aufgaben — alles im grünen Bereich." (kein
+   `<button>`-Markup, kein Klick-Handler) — der Leerzustand existiert weiterhin, ist nur nicht mehr der
+   Demo-Startzustand.
+7. **Zeitstabiler Begleit-Fix in der Fallakte sichtbar (Review-Fix Finding 1, §4.3):** Anna Muster
+   (`openFallakte(1)`, `frist:dstr(0)`) öffnen → Aufgaben-Hero zeigt „Frist heute fällig" (CSS-Klasse
+   `warn`), **nicht** „überfällig (1 T)" (Klasse `bad`) — unabhängig davon, zu welcher Tageszeit die
+   Seite geladen wurde (das war der behobene Demo-Killer-Bug: Instant-Vergleich gegen das beim Laden
+   eingefrorene `heute`).
+8. **Entfernte Elemente weg:** kein `<figure>` mehr in `#sub-faelle-team`, kein `.tm-intake`-Banner,
    keine `.tm-card`/`.tm-list`-Elemente im DOM.
-8. **Mobile (390px):** KPI-Zeile 2×2, Panels stapeln einspaltig, Mitarbeiter-/Aufmerksamkeit-Zeilen
+9. **Mobile (390px):** KPI-Zeile 2×2, Panels stapeln einspaltig, Mitarbeiter-/Aufmerksamkeit-Zeilen
    umbrechen ohne horizontalen Überlauf.
-9. **0 Console-Errors**, beide Breiten.
-10. **Unberührte Bereiche:** `.rp-*`/`.rpd-*`/`.rsp-*`/`.mx-*`, `#refOverlay`, `ma-mode`/„Mein Tag"
+10. **0 Console-Errors**, beide Breiten.
+11. **Unberührte Bereiche:** `.rp-*`/`.rpd-*`/`.rsp-*`/`.mx-*`, `#refOverlay`, `ma-mode`/„Mein Tag"
    (`renderMeinTag()`), `renderCharts()`/„Auswertung" unverändert; genau 9 `@keyframes` (`grep -c
-   "@keyframes" index.html` vor/nach identisch).
+   "@keyframes" index.html` vor/nach identisch). Ausnahme vom sonstigen „kennzahlen() unangetastet":
+   `kennzahlen().ueberf` ändert sich um eine Zeile (§4.3, Begleit-Fix) — das „Heute"-View-Badge, das
+   diesen Wert anzeigt, zeigt dadurch jetzt ebenfalls die korrekte (zeitstabile) Zahl, keine optische
+   Änderung an Layout/Markup dort.
 
 ---
 
@@ -480,9 +622,13 @@ Seeds leer (§4.4).
   ohnehin sichtbar, [index.html:1579](../../../index.html#L1579)).
 - „Auswertung"-View (`renderCharts()`, Donut/Balken-Charts) unberührt — andere Kennzahlenebene
   (historische Verlust-/Engpass-Analyse), kein Überschneidungsbedarf mit dem neuen Führungs-Cockpit.
-- Keine Änderung an `kennzahlen()` selbst (nur wiederverwendet, nicht modifiziert) — `k.ueberf` bleibt
-  mit seiner bestehenden (nicht Tage-gerundeten) Semantik unangetastet, wo es heute schon verwendet wird
-  (Heute-View); die Diskrepanz aus §4.3 ist vermerkt, nicht behoben.
+- **Ausnahme vom sonstigen „nur wiederverwenden, nicht ändern":** `kennzahlen()` bekommt genau eine
+  geänderte Zeile (`ueberf`, §4.3, Begleit-Fix aus dem Review) — keine sonstige Änderung an der
+  Funktion, keine neuen Rückgabefelder, keine Änderung an ihrem Aufrufort/ihrer Signatur. `fristKlasse()`/
+  `fristText()` (§4.3) sind die einzigen zwei weiteren Bestandsfunktionen, die diese Spec anfasst — beide
+  je eine chirurgische Ein-Zeilen-Änderung (Grenzfall überfällig/heute), sonst unverändert.
+- Keine Änderung an `renderWichtig()` ([index.html:5661](../../../index.html#L5661)) — nutzt bereits eine
+  Tage-gerundete Formel, nicht dieselbe Bug-Familie, vom Review nicht benannt (§4.3).
 - Keine Persistenz von `tcFilter` über einen Seitenreload hinaus (wie zuvor bei `teamFilter`).
 - Kein Ausbau der Board-Ansicht um einen Owner-Filter — der Mitarbeiter-Filter dieser Spec lebt
   ausschließlich innerhalb der Team-Ansicht selbst (§6.3), analog zum bisherigen `teamFilter`-Verhalten.
@@ -508,9 +654,10 @@ Seeds leer (§4.4).
 `heute`/`dstr()`/`initialen()`: [4258-4260](../../../index.html#L4258) ·
 `faelle[]`-Seeds (9 Einträge): [4263-4274](../../../index.html#L4263) ·
 `offeneFaelle()`: [4770](../../../index.html#L4770) ·
-`kennzahlen()`: [5643-5656](../../../index.html#L5643) ·
-`fristText()`: [4758](../../../index.html#L4758) ·
-`renderWichtig()` (Tage-Rundungs-Präzedenz): [5657-5685](../../../index.html#L5657) ·
+`kennzahlen()` (inkl. `ueberf`-Begleit-Fix §4.3): [5643-5656](../../../index.html#L5643) ·
+`fristKlasse()`/`fristText()` (Begleit-Fix §4.3): [4757](../../../index.html#L4757)/[4758](../../../index.html#L4758) ·
+`aufgabenHeroHtml()` (konsumiert `fristKlasse`/`fristText`, kein eigener Fix-Ort): [6258-6264](../../../index.html#L6258) ·
+`renderWichtig()` (Tage-Rundungs-Präzedenz, nicht Teil des Begleit-Fixes): [5657-5685](../../../index.html#L5657) ·
 `zwSparkline()` (wiederverwendet, unverändert): [5546-5550](../../../index.html#L5546) ·
 `advanceFallStatus()` (Quelle des Log-Texts „Aufgabe erledigt"): [6434-6444](../../../index.html#L6434) ·
 `kpiRing()`: [6066-6072](../../../index.html#L6066) ·
