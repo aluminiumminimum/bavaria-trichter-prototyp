@@ -3126,6 +3126,28 @@ summary.rk::-webkit-details-marker{display:none}
 .tc-attn-tage.ok{color:var(--faint);font-weight:600}
 .tc-clear{font:600 11px/1 Inter;color:var(--brass-deep);text-decoration:underline;margin:0 0 10px;display:inline-block}
 @media(max-width:600px){.tc-attn-row,.tc-ma-row{flex-wrap:wrap}.tc-attn-aufg{flex:1 1 100%;order:3}}
+/* Runde 6 Punkt 4: .irb-* — In-Reha-Karte als BWL-Akte. Nutzt .ir-card/.ir-head/.ir-stay unverändert
+   als Rahmen; kein neues Keyframe (statische Zustände). Achsen-Farbe (--acol) bleibt Akzent
+   (Rand/Text/Punkt), nie Fläche — Kartenhintergrund bleibt var(--paper2)/var(--paper). */
+.irb-tags{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px}
+.irb-achse,.irb-zimmer{font:600 10.5px/1 Inter;letter-spacing:.02em;padding:3px 8px;border-radius:99px;background:var(--paper2)}
+.irb-achse{border:1px solid var(--acol,var(--brass-line));color:var(--acol,var(--ink-soft))}
+.irb-zimmer{border:1px solid var(--hair);color:var(--muted)}
+.irb-stay .lbl span:last-child{display:flex;align-items:center;gap:5px}
+.irb-gold-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--brass)}
+.irb-bwl{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.irb-b{background:var(--paper2);border-radius:3px;border:1px solid var(--hair2);padding:8px 6px;text-align:center}
+.irb-bv{font:700 17px/1 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
+.irb-bl{font:600 9.5px/1.2 Inter;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.irb-ampel{display:flex;align-items:center;gap:6px;font:600 12px/1 Inter;padding:8px 10px;border-radius:8px;margin-bottom:10px}
+.irb-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.irb-ampel.ok{background:var(--sage-soft);color:var(--sage-deep)}.irb-ampel.ok .irb-dot{background:var(--sage-deep)}
+.irb-ampel.warn{background:var(--brass-soft);color:var(--brass-deep)}.irb-ampel.warn .irb-dot{background:var(--brass)}
+.irb-ampel.bad{background:var(--terra-soft);color:var(--terra)}.irb-ampel.bad .irb-dot{background:var(--terra)}
+.irb-foot{display:flex;justify-content:space-between;gap:8px;font-size:12px;flex-wrap:wrap}
+.irb-ms-l{font-weight:600;color:var(--ink-soft)}
+.irb-ms-d{color:var(--faint)}
+@media(max-width:600px){.irb-bwl{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -4552,7 +4574,7 @@ function rpSubmit(zName){
 }
 /* ----- Patienten aktuell in der Reha (in-treatment) — Reha-KPIs ----- */
 let inReha=[
- {personId:"P09",name:"Dieter Franke",alter:66,achse:"Orthopädie",owner:"M. Belegung",icd:"M17.1 — Gonarthrose (sekundär)",aufnahme:dstr(-6),verweildauer:{ist:6,plan:21},barthel:{auf:45,akt:75},fim:{auf:78,akt:101},ziel:60,
+ {personId:"P09",name:"Dieter Franke",alter:66,achse:"Orthopädie",owner:"M. Belegung",icd:"M17.1 — Gonarthrose (sekundär)",aufnahme:dstr(-6),verweildauer:{ist:19,plan:21},barthel:{auf:45,akt:75},fim:{auf:78,akt:101},ziel:60,
    kurzbericht:"Postoperativ reizlos, Mobilisation an Unterarmgehstützen, 30 m Gehstrecke; Schmerz unter Belastung NRS 3.",
    labor:[{k:"CRP",v:"6 mg/l"},{k:"Hb",v:"13,1 g/dl"},{k:"Wunde",v:"reizlos"}],
    eintraege:[{d:dstr(-1),txt:"Mobilisation an Unterarmgehstützen, 30 m Gehstrecke erreicht."},{d:dstr(-2),txt:"Schmerz unter Belastung NRS 3, Lymphdrainage begonnen."}],
@@ -4560,10 +4582,10 @@ let inReha=[
    rehaZiel:"Vollbelastung + selbstständiges Gehen ohne Hilfsmittel erreichbar",
    arztberichtKurz:"Gute postoperative Heilung, Physiotherapie im Plan.",
    drgStatus:"Zusage liegt vor",
-   entlassungGeplant:dstr(15),
+   entlassungGeplant:dstr(2),
    anschlussBedarf:"ambulante Physiotherapie 2×/Woche fortsetzen",
    auffaelligkeiten:""},
- {personId:"P10",name:"Elke Sauer",alter:59,achse:"SalutoCare",owner:"Recovery Manager",icd:"I69.4 — Folgen Schlaganfall",aufnahme:dstr(-4),verweildauer:{ist:4,plan:28},barthel:{auf:30,akt:50},fim:{auf:62,akt:84},ziel:35,
+ {personId:"P10",name:"Elke Sauer",alter:59,achse:"SalutoCare",owner:"Recovery Manager",icd:"I69.4 — Folgen Schlaganfall",aufnahme:dstr(-4),verweildauer:{ist:20,plan:28},barthel:{auf:30,akt:50},fim:{auf:62,akt:84},ziel:35,
    kurzbericht:"Atemtherapie planmäßig, kreislaufstabil; beginnende Eigenmobilität, Schlucken sicher.",
    labor:[{k:"CRP",v:"4 mg/l"},{k:"O₂-Sätt.",v:"96 %"},{k:"Hb",v:"12,4 g/dl"}],
    eintraege:[{d:dstr(-1),txt:"SalutoCare-Suite, Atemtherapie planmäßig, Werte stabil."},{d:dstr(-2),txt:"Erstgespräch Recovery Manager, Zielplan abgestimmt."}],
@@ -4571,7 +4593,7 @@ let inReha=[
    rehaZiel:"Verbesserung Schluckfunktion + aufrechte Sitzposition unabhängig erreichen",
    arztberichtKurz:"Neurorehabilitative Fortschritte sichtbar, kardiopulmonale Stabilität gewährleistet.",
    drgStatus:"Selbstzahler (SalutoCare-Suite)",
-   entlassungGeplant:dstr(24),
+   entlassungGeplant:dstr(8),
    anschlussBedarf:"ambulante Logopädie + Physiotherapie bis zur Selbstständigkeit im Alltag",
    auffaelligkeiten:"Spastik-Entwicklung gut unter Kontrolle mit aktuellem Regimen"},
  {personId:"P11",name:"Lydia Sommer",alter:77,achse:"Neurologie",owner:"M. Belegung",icd:"I63.9 — Hirninfarkt",aufnahme:dstr(-2),verweildauer:{ist:2,plan:25},barthel:{auf:25,akt:35},fim:{auf:55,akt:63},ziel:18,
@@ -6118,9 +6140,9 @@ function kpiRing(val,max,label,sub,hue){
 }
 /* WS3 · Abrechnungs-/Empfehlungs-Demodaten (eigene Ergänzung, greift nicht in geteilte inReha-Felder ein) */
 const RS_BILLING={
- "Dieter Franke":{tagessatz:890,kostenTag:520,kostenzusage:"liegt vor",zusatz:[{label:"Einzelzimmer-Zuschlag",eur:65}],empf:["Röntgen-Verlaufskontrolle Knie in 5 Tagen","Belastungsaufbau Richtung Vollbelastung","Lymphdrainage 2×/Woche fortführen"]},
- "Elke Sauer":{tagessatz:1250,kostenTag:760,kostenzusage:"n.a. (Selbstzahler)",zusatz:[{label:"SalutoCare-Suite",eur:420},{label:"Begleitperson",eur:180}],empf:["Schluckdiagnostik (FEES) Verlaufskontrolle","Logopädie intensivieren (täglich)","Kardiologisches Monitoring fortführen"]},
- "Lydia Sommer":{tagessatz:980,kostenTag:610,kostenzusage:"offen",zusatz:[{label:"Neuro-Wahlleistung",eur:140}],empf:["Karotis-Doppler zur Sekundärprävention","Ergotherapie Feinmotorik links ausbauen","Neuropsychologisches Assessment"]}
+ "Dieter Franke":{tagessatz:890,kostenTag:520,kostenzusage:"liegt vor",zimmer:"Einzelzimmer",verlaengerung:false,zusatz:[{label:"Einzelzimmer-Zuschlag",eur:65}],empf:["Röntgen-Verlaufskontrolle Knie in 5 Tagen","Belastungsaufbau Richtung Vollbelastung","Lymphdrainage 2×/Woche fortführen"]},
+ "Elke Sauer":{tagessatz:1250,kostenTag:760,kostenzusage:"n.a. (Selbstzahler)",zimmer:"SalutoCare-Suite",verlaengerung:true,zusatz:[{label:"SalutoCare-Suite",eur:420},{label:"Begleitperson",eur:180}],empf:["Schluckdiagnostik (FEES) Verlaufskontrolle","Logopädie intensivieren (täglich)","Kardiologisches Monitoring fortführen"]},
+ "Lydia Sommer":{tagessatz:980,kostenTag:610,kostenzusage:"offen",zimmer:"Doppelzimmer",verlaengerung:false,zusatz:[{label:"Neuro-Wahlleistung",eur:140}],empf:["Karotis-Doppler zur Sekundärprävention","Ergotherapie Feinmotorik links ausbauen","Neuropsychologisches Assessment"]}
 };
 function devBar(label,auf,akt,max){
  const pAuf=Math.round(auf/max*100),pAkt=Math.round(akt/max*100);
