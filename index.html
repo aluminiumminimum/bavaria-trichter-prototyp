@@ -3140,6 +3140,21 @@ summary.rk::-webkit-details-marker{display:none}
 .irb-ms-l{font-weight:600;color:var(--ink-soft)}
 .irb-ms-d{color:var(--faint)}
 @media(max-width:600px){.irb-bwl{grid-template-columns:repeat(2,1fr)}}
+/* Runde 6 Punkt 5: .zwa-* — Zuweiser-Anlass-Karten im Etiketten-Stil (Doppelrahmen + Gold-Eckwinkel,
+   Muster wie .mtp-row), ersetzt arCard()/.radar-card für die Zuweiser-Pflege. Keine neue Animation. */
+.zwa-group{margin-bottom:18px}
+.zwa-card{position:relative;background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;
+  padding:14px 16px;margin-bottom:12px;box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
+.zwa-card::before,.zwa-card::after{content:"";position:absolute;width:9px;height:9px;pointer-events:none;opacity:.6}
+.zwa-card::before{top:8px;left:8px;border-top:1px solid var(--brass);border-left:1px solid var(--brass)}
+.zwa-card::after{bottom:8px;right:8px;border-bottom:1px solid var(--brass);border-right:1px solid var(--brass)}
+.zwa-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.zwa-ico{font-size:14px;color:var(--brass-deep)}
+.zwa-typ{font:600 10.5px/1 Inter;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep)}
+.zwa-name{font-family:"Cormorant Garamond",Georgia,serif;font-size:19px;font-weight:700;margin:2px 0 6px;color:var(--ink)}
+.zwa-text{font-size:13.5px;color:var(--ink-soft);line-height:1.45;margin:0 0 10px}
+.zwa-foot{display:flex;align-items:center;justify-content:flex-end}
+.zwa-noster{font:600 12px/1 Inter;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -4318,8 +4333,8 @@ let radar=[
 ];
 
 let zuweiser=[
- {name:"Leopoldina-Krankenhaus",typ:"Akutklinik mit Privatstation",ort:"Schweinfurt (~25 km)",rel:"Ortho (EPZ), Neuro",ap:"Hr. Brenner (Privatstation)",tel:"0971 0000-231",mail:"brenner@demo-klinik.local",faelle:6,letzter:dstr(-1),draht:"●●●",status:"aktiv",seit:"2019-07-15",next:"Quartalsgespräch vereinbaren"},
- {name:"RHÖN-KLINIKUM Campus",typ:"Akutklinik · Maximalversorger",ort:"Bad Neustadt (~20 km)",rel:"Neuro, Ortho, SalutoCare",ap:"Fr. Albrecht (Sozialdienst)",tel:"0971 0000-242",mail:"albrecht@demo-klinik.local",faelle:4,letzter:dstr(-3),draht:"●●○",status:"aktiv",seit:"2020-03-12",next:"Feedback zu letzter Übernahme geben"},
+ {name:"Leopoldina-Krankenhaus",typ:"Akutklinik mit Privatstation",ort:"Schweinfurt (~25 km)",rel:"Ortho (EPZ), Neuro",ap:"Hr. Brenner (Privatstation)",tel:"0971 0000-231",mail:"brenner@demo-klinik.local",faelle:6,letzter:dstr(-1),draht:"●●●",status:"aktiv",seit:"2019-07-23",next:"Quartalsgespräch vereinbaren"},
+ {name:"RHÖN-KLINIKUM Campus",typ:"Akutklinik · Maximalversorger",ort:"Bad Neustadt (~20 km)",rel:"Neuro, Ortho, SalutoCare",ap:"Fr. Albrecht (Sozialdienst)",tel:"0971 0000-242",mail:"albrecht@demo-klinik.local",faelle:4,letzter:dstr(-3),draht:"●●○",status:"aktiv",seit:"2020-03-12",next:"Feedback zu letzter Übernahme geben",letzterAbschluss:dstr(-5)},
  {name:"Dr. Sommer",typ:"Hausarzt-Privatpraxis",ort:"Bad Kissingen",rel:"Innere, Geriatrie",ap:"Dr. Sommer",tel:"0971 0000-301",mail:"praxis-sommer@demo.local",faelle:3,letzter:dstr(-2),draht:"●●●",status:"aktiv",seit:"2021-11-05",next:"Dankesnotiz + Infomaterial"},
  {name:"Thoraxzentrum Münnerstadt",typ:"Weaning-Zentrum (WeanNet)",ort:"Münnerstadt (~10 km)",rel:"SalutoCare (Beatmung)",ap:"Dr. Castelli (Oberarzt)",tel:"0971 0000-271",mail:"castelli@demo-thorax.local",faelle:2,letzter:dstr(-195),draht:"●●○",status:"aufbau",seit:"2022-05-18",next:"Besuch mit Recovery Manager planen"},
  {name:"PRIMO MEDICO",typ:"Premium-Netzwerk",ort:"überregional",rel:"SalutoCare",ap:"Portal-Anfragen",tel:"Portal",mail:"kontakt@demo-primo.local",faelle:2,letzter:dstr(-4),draht:"●●○",status:"aktiv",seit:"2022-08-05",next:"Profil um neue Suiten ergänzen"},
