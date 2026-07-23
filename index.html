@@ -565,13 +565,6 @@
   .mhead h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;font-weight:700;margin:0;line-height:1.1}
   .msub2{font-size:13px;color:var(--ivory-mut);margin-top:3px;line-height:1.4}
   .mbody{padding:18px 20px;overflow:auto;-webkit-overflow-scrolling:touch}
-  .d-track-wrap{margin-bottom:6px}
-  .d-track .kicker{margin-bottom:8px}
-  @media(min-width:900px){
-   .mbody.two-track{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start}
-   .mbody.two-track .mgrid{grid-column:1}
-   .mbody.two-track .d-track-wrap{grid-column:2}
-  }
   .mgrid{display:grid;grid-template-columns:1fr;gap:13px}
   .docs{display:grid;grid-template-columns:1fr;gap:4px;background:var(--paper2);border:1px solid var(--hair2);border-radius:12px;padding:10px 14px}
   .docs label{font-weight:500;font-size:14.5px;color:var(--ink);display:flex;gap:10px;align-items:center;margin:0;
@@ -779,15 +772,8 @@
   .content{max-width:1240px;margin:0 auto;padding:calc(64px + 26px) 40px 64px}
   .tabbar{display:none}
 }
-/* ===== DESKTOP TASK 2 — Fälle Master-Detail (angedockte Schiene) ===== */
+/* ===== DESKTOP TASK 2 — Fälle Master-Detail (angedockte Schiene, #ovDetail entfernt) ===== */
 @media(min-width:1024px){
-  #ovDetail{align-items:stretch;justify-content:flex-end;background:transparent;pointer-events:none}
-  #ovDetail.open{pointer-events:none}
-  #ovDetail .modal{width:460px;max-width:460px;height:100dvh;max-height:100dvh;border-radius:0;
-    border-left:1px solid var(--hair);box-shadow:-12px 0 44px rgba(31,28,28,.16);transform:translateX(28px)}
-  #ovDetail.open .modal{transform:none;pointer-events:auto}
-  #ovDetail .mbody.two-track{display:block}
-  #ovDetail .mbody.two-track .d-track-wrap{margin-top:18px}
   .app{transition:margin-right .28s cubic-bezier(.4,0,.2,1)}
   body.detail-open .app{margin-right:460px}
   body.detail-open .dtopbar{right:460px}
@@ -1880,13 +1866,6 @@ body.ma-mode #view-meintag{display:block}
 .due{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:500;letter-spacing:.04em}
 .due.ok{background:var(--paper);color:var(--muted);border:1px solid var(--hair)}
 
-/* — Fall-Schublade: Akkordeon-Köpfe & Kostenzusage-Kette — */
-#ovDetail .d-acc>summary{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;letter-spacing:.1em}
-/* KZ-Kette: inaktive/„offen"-Stufen als ruhige raised-Pille */
-#ovDetail .status-pill.lock{background:var(--raised);color:var(--muted)}
-/* Composer-Textarea eine Stufe abgesetzt vom Schubladen-Papier */
-#ovDetail .mbody textarea{background:var(--paper2)}
-#ovDetail .mbody textarea:focus{border-color:var(--brass)}
 
 /* — Akte (.pa-*): Lebenszyklus-Pille & Historien-Datumsangaben in Mono — */
 .pa-lz{font-family:"Fragment Mono",ui-monospace,monospace;font-weight:400;letter-spacing:.09em}
@@ -2213,10 +2192,10 @@ body{accent-color:var(--brass)}
    ============================================================================ */
 
 /* — 1 · FROSTED GLASS: Overlay-Sheets über App-Inhalt + Foto-Caption-Pills — */
-#ovDetail .modal,#dbDetail .modal{
+#dbDetail .modal{
   background:rgba(251,248,239,.88);
   backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15)}
-#ovDetail .mfoot,#dbDetail .mfoot{background:rgba(251,248,239,.6)}
+#dbDetail .mfoot{background:rgba(251,248,239,.6)}
 /* Band-Fotos: helle Aurora-Caption-Pill (dunkler Text) für lx-fen, dunkle Pill (heller Text) für au-photo */
 .lx-fen figcaption{padding:7px 12px;border-radius:14px;
   background:rgba(246,242,230,.66);border:1px solid rgba(255,255,255,.5);
@@ -2459,10 +2438,10 @@ body{accent-color:var(--brass)}
 
 /* — (J4.2) EINE CTA-Sprache in den Arbeitsflächen: Primär = Jade-Lack mit Gold-Pinstripe (e5d .btn-p),
    Sekundär = goldgerahmter Ghost (wie J3 Anlass-Gesten). — */
-#view-faelle .btn-brass,#ovDetail .btn-brass{background:var(--sage-deep);border-color:#0D2E28;color:var(--ivory-tx);
+#view-faelle .btn-brass{background:var(--sage-deep);border-color:#0D2E28;color:var(--ivory-tx);
   box-shadow:inset 0 0 0 1px rgba(185,145,73,.4),inset 0 0 0 3px var(--sage-deep),0 2px 8px rgba(18,59,51,.25);
   text-shadow:none}
-#view-faelle .btn-ghost,#ovDetail .btn-ghost{background:transparent;border-color:var(--gold-soft);color:var(--brass-deep)}
+#view-faelle .btn-ghost{background:transparent;border-color:var(--gold-soft);color:var(--brass-deep)}
 
 /* — (J4.3) BOARD: Zonen-Bänder = Elfenbein-Etiketten-Paneele; Kopf = Cormorant-Kapitälchen
    auf Gold-Haarlinie; Karten = kleine Etiketten (4px-Familie — löst die J2-Radius-Spannung:
@@ -2485,18 +2464,8 @@ body{accent-color:var(--brass)}
 #view-faelle .bf-chip{border-radius:3px}
 #view-faelle .bf-chip.active{box-shadow:inset 0 0 0 1px var(--gold-soft)}
 
-/* — (J4.4) FALL-SCHUBLADE: Etiketten-Sprache im Overlay-Maßstab — Jade-Haarlinien-Rahmen
-   + innerer Gold-Pinstripe; Lack-Kopf mit Gold-Haarlinie darunter. — */
-#ovDetail .modal{border:1px solid var(--jade-hair);
-  box-shadow:0 -10px 50px rgba(28,25,22,.3),inset 0 0 0 1px var(--gold-faint)}
-@media(min-width:1024px){
-  #ovDetail .modal{border:0;border-left:1px solid var(--jade-hair);
-    box-shadow:-12px 0 44px rgba(31,28,28,.16),inset 0 0 0 1px var(--gold-faint)}
-}
-#ovDetail .mhead{box-shadow:inset 0 -1px 0 var(--gold-soft)}
 /* Akkordeon + Akte in die 4px-Familie — bewusst OHNE Eckwinkel, nur Haarlinien */
-#ovDetail .d-acc,#ovDetail .docs{border-radius:4px}
-#ovDetail .pa-akte{border-radius:4px;border-top:2px solid var(--gold-soft)}
+#view-fallakte .d-acc,#view-fallakte .docs{border-radius:4px}
 /* KZ-Kette: erteilt/Zusage = Jade-Plakette, offener/abgelehnter Schritt = Zinnober-Text,
    künftige Schritte stumm, Verbinder Gold */
 #dKZ .status-pill{border-radius:3px}
@@ -2504,8 +2473,6 @@ body{accent-color:var(--brass)}
 #dKZ .status-pill.kz-active,#dKZ .status-pill.bad{background:transparent;
   border:1px solid var(--terra-soft);color:var(--terra)}
 #dKZ .kz-sep{color:var(--gold-soft)}
-/* Composer: Papier-Fläche mit Jade-Fokusring */
-#ovDetail .mbody textarea:focus{border-color:var(--sage-deep);box-shadow:0 0 0 2px var(--sage-soft)}
 
 /* — (J4.5) TEAM: Cockpit-Filter aktiv = Jade; Intake-Hinweis = Gold-Plakette mit
    Cormorant-Zahl; Foto-Band → Präparate-Tafel (Doppelrahmen, Caption UNTER dem Foto,
@@ -2978,7 +2945,6 @@ body{accent-color:var(--brass)}
   box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
 .fh-meta{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px}
 .fh-actions{margin-top:15px}
-@media(min-width:900px){.mbody.two-track .fh-hero,.mbody.two-track #dArbeit{grid-column:1/-1}}
 /* Task 1.3 (Punkt 2): Aufgaben-Hero (.ah-*) — reine Präsentation aus aufgabenHeroHtml(f),
    auch in Task 3.1 (Fallakte) wiederverwendet. dOwner/dFrist bleiben echte, editierbare
    native Elemente, nur chip-/pill-artig statt nackt umgestylt (.fh-owner-chip/#dFristWrap). */
@@ -4367,7 +4333,7 @@ const TEAM_ACHSE={"S. Koordination":["Orthopädie","Innere"],"M. Belegung":["Neu
 /* Task 2.1 (Punkt 1): #egDetail — gemeinsamer Schließ-Helper für die drei rechts angedockten
    Detail-Schienen (verhindert zwei gleichzeitig offene 460px-Overlays, s. Plan „Ist"). */
 function _closeSiblingDetailRails(exceptId){
-  ["ovDetail","dbDetail","egDetail"].forEach(function(id){
+  ["dbDetail","egDetail"].forEach(function(id){
     if(id===exceptId)return;
     const e=document.getElementById(id);if(e)e.classList.remove("open");
   });
