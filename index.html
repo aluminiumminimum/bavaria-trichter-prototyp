@@ -6744,6 +6744,8 @@ function renderEgtPool(){
   const meineGruppen=Array.from(new Set((TEAM_ACHSE["S. Koordination"]||[]).map(achseZuGruppe).filter(Boolean)));
   const karte=function(m){
     return "<article class='egt-pool-card'><p class='egt-pool-zsf'>"+escapeHtml(egZusammenfassung(m))+"</p>"
+      +"<details class='pa-fold'><summary class='rk'>Originalnachricht · "+escapeHtml(m.kanal)+"</summary>"
+      +"<div class='eg-original'><div class='mtxt'>"+escapeHtml(m.txt)+"</div></div></details>"
       +sterneHtml(m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt)))
       +"<button class='btn-brass btn-sm' type='button' onclick='egUebernehmenAusPool("+m.id+")'>Übernehmen</button></article>";
   };
