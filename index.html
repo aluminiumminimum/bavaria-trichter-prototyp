@@ -5684,6 +5684,13 @@ function renderRadar(){
         +"</div>";
     }).join("")+"</div>"+renderPatRegelnHtml();
 }
+/* Runde 6 Punkt 6+7 (§6): patAutomatikText() — zeigt, welche PAT_REGELN auf die geöffnete Person
+   zutreffen. Reine Information, kein Button — Stammdaten bleiben eine reine Daten-Ansicht (P7). */
+function patAutomatikText(p){
+ const treffer=PAT_REGELN.filter(r=>patRegelnAn[r.id]&&patRegelEmpfaenger(r).some(e=>e===p));
+ if(!treffer.length)return"Keine aktive Automatik-Regel";
+ return treffer.map(r=>escapeHtml(r.name)+" · nächster Lauf "+paDate(patRegelLaufISO(r))).join("<br>");
+}
 function openDbDetail(i){
   if(!matchMedia("(min-width:1024px)").matches)return;
   const p=bestand[i];if(!p)return;
@@ -5701,6 +5708,7 @@ function openDbDetail(i){
     +"<div class='di-row'><span class='di-k'>Achse</span><span class='di-axis'><span class='ach-dot'></span>"+escapeHtml(p.achse)+"</span></div>"
     +"<div class='di-row'><span class='di-k'>Einstufung</span><span>"+sterneHtml(sterneVon(p))+" <span class='st-lbl'>"+escapeHtml((STERNE[String(sterneVon(p))]||{}).label||"")+"</span></span></div>"
     +((p.personId&&person(p.personId)&&person(p.personId).sterneGrund)?"<div class='di-row'><span class='di-k'>Begründung</span><span>"+escapeHtml(person(p.personId).sterneGrund)+"</span></div>":"")
+    +"<div class='di-row'><span class='di-k'>Automatik-Regeln</span><span>"+patAutomatikText(p)+"</span></div>"
     +"<div class='di-row'><span class='di-k'>Quelle</span><span>"+escapeHtml(p.quelle||"—")+"</span></div>"
     +"</div>"
     +"</div>"+paAkte(p.personId);
