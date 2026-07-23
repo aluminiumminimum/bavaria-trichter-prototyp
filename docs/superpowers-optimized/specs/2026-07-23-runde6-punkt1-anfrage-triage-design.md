@@ -96,7 +96,9 @@ Original, Vollständigkeits-Checkliste, Gruppen-Zuordnung. Echter Backdrop, echt
 2. Neuer Block „Offene Anfragen deiner Gruppe(n)" oberhalb von „Was jetzt dran ist"
    (`#mtJetztChap`, [index.html:3996](../../../index.html#L3996)). Zeigt alle
    `eingang[]`-Einträge mit `m.gruppe` in ihren Gruppen (aus `TEAM_ACHSE["S. Koordination"]`, siehe §5),
-   egal ob `m.autoVerteilt` oder leiter-freigegeben, solange `!m.done`.
+   egal ob `m.autoVerteilt` oder leiter-freigegeben, solange `!m.done`. Der Block ist **zweistufig**
+   (siehe §7.8): oben „Deine Gruppen", darunter eingeklappt (`<details>`) „Weitere Gruppen (N)" mit allen
+   übrigen offenen Pool-Anfragen — jede freigegebene Anfrage ist so erreichbar (kleines Team, aushelfen erlaubt).
 3. Kompakt-Karte je Anfrage: Zusammenfassung (2 Zeilen) + Sterne + „Übernehmen"-Button.
 4. Klick „Übernehmen" → `uebernehmen(id, "S. Koordination")` → Fall entsteht (bestehender Pfad,
    erweitert um `f.sterne`/`f.rueckfragen`, siehe §5) → `openFallakte(fid)`.
