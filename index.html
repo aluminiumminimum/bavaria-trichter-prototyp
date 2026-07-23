@@ -5171,22 +5171,49 @@ function anlaesse(scope){
   const seit=z.letzter?Math.round((heute-new Date(z.letzter))/86400000):9999;
   if(seit<kad)return;
   const key="zuw-rhy:"+z.name;if(_arDone.has(key))return;
-  out.push({key:key,typ:"zuweiser-rhythmus",urg:seit>=kad*1.5?"jetzt":"bald",tage:seit===9999?999:seit,titel:z.name,sub:seit+" Tage kein Kontakt · "+(z.next||""),sterne:null,geste:{label:z.next||"Kontakt aufnehmen",cta:"Kontakt aufnehmen"},zName:z.name});
+  const monate=Math.round(seit/30);
+  out.push({key:key,typ:"zuweiser-rhythmus",urg:seit>=kad*1.5?"jetzt":"bald",tage:seit===9999?999:seit,titel:z.name,sub:"Seit "+monate+" Monaten kein fachlicher Austausch — Anruf mit Belegungs-Update anbieten.",sterne:null,geste:{label:z.next||"Kontakt aufnehmen",cta:"Kontakt aufnehmen"},zName:z.name});
  });
  zuweiser.forEach(z=>{
   if(z.faelle<1)return;
-  const schwellen=[20,10,5].filter(s=>z.faelle>=s);
+  const schwellen=[50,25,10].filter(s=>z.faelle>=s);
   if(!schwellen.length)return;
   const schwelle=schwellen[0];
   const key="zuw-meil:"+z.name+":"+schwelle;if(_arDone.has(key))return;
-  out.push({key:key,typ:"zuweiser-meilenstein",urg:"bald",tage:0,titel:z.name,sub:"Dankeschön-Geste: "+schwelle+". Patient",sterne:null,geste:{label:"Dankeschön senden",cta:"Kontakt aufnehmen"},zName:z.name});
+  out.push({key:key,typ:"zuweiser-meilenstein",urg:"bald",tage:0,titel:z.name,sub:schwelle+". gemeinsamer Patient erreicht — Persönlicher Dank und Outcome-Bilanz der bisherigen Patienten anbieten.",sterne:null,geste:{label:"Dankeschön senden",cta:"Kontakt aufnehmen"},zName:z.name});
  });
  zuweiser.forEach(z=>{
   if(z.faelle<1)return;
+  const partnerTage=Math.round((heute-new Date(z.seit))/86400000);
+  if(partnerTage<350)return;
   const diff=jahrestagDiff(z.seit);
-  if(diff===null||Math.abs(diff)>30)return;
+  if(diff===null||Math.abs(diff)>14)return;
   const key="zuw-jub:"+z.name;if(_arDone.has(key))return;
-  out.push({key:key,typ:"zuweiser-jubilaeum",urg:Math.abs(diff)<=7?"jetzt":"bald",tage:diff,titel:z.name+" — Partnerschafts-Jubiläum",sub:(diff<0?Math.abs(diff)+" Tage vergangen":"in "+diff+" Tagen")+" seit Partnerschaftsbeginn",sterne:null,geste:{label:"Jubiläums-Geste senden",cta:"Kontakt aufnehmen"},zName:z.name});
+  const jahre=Math.round(partnerTage/365.25);
+  out.push({key:key,typ:"zuweiser-jubilaeum",urg:Math.abs(diff)<=7?"jetzt":"bald",tage:diff,titel:z.name,sub:jahre+". Jahrestag der Partnerschaft (seit "+z.seit.slice(0,4)+") — Jahres-Kooperationsgespräch mit Chefarzt/Leitung anbieten.",sterne:null,geste:{label:"Kooperationsgespräch anbieten",cta:"Termin anbieten"},zName:z.name});
+ });
+ /* Runde 6 Punkt 5 (§3.4): zuweiser-bericht — wichtigster After-Sales-Moment. Additives, optionales
+    Feld z.letzterAbschluss (nur bei RHÖN-KLINIKUM Campus gesetzt, s. Task 1/Spec §7). */
+ zuweiser.forEach(z=>{
+  if(!z.letzterAbschluss)return;
+  const tage=Math.round((heute-new Date(z.letzterAbschluss))/86400000);
+  if(tage<0||tage>14)return;
+  const key="zuw-ber:"+z.name;if(_arDone.has(key))return;
+  out.push({key:key,typ:"zuweiser-bericht",urg:tage<=3?"jetzt":"bald",tage:tage,titel:z.name,sub:"Gemeinsamer Patient vor "+tage+" Tagen entlassen — Abschlussbericht und Dank an den Zuweiser senden.",sterne:null,geste:{label:"Abschlussbericht senden",cta:"Abschlussbericht senden"},zName:z.name});
+ });
+ /* Runde 6 Punkt 5 (§3.5): zuweiser-fortbildung — quartalsweise CME-Einladung, Fälligkeit deterministisch
+    aus dem bestehenden zNameHash() abgeleitet (kein Math.random), damit nicht alle qualifizierten
+    Zuweiser am selben Tag feuern. */
+ zuweiser.forEach(z=>{
+  if(z.faelle<3)return;
+  const h=zNameHash(z.name);
+  const qStartMonth=Math.floor(heute.getMonth()/3)*3;
+  const quarterStart=new Date(heute.getFullYear(),qStartMonth,1);
+  const due=new Date(quarterStart);due.setDate(due.getDate()+(h%84));
+  const diff=Math.round((due-new Date(heute.getFullYear(),heute.getMonth(),heute.getDate()))/86400000);
+  if(Math.abs(diff)>7)return;
+  const key="zuw-fb:"+z.name+":"+heute.getFullYear()+"Q"+(qStartMonth/3+1);if(_arDone.has(key))return;
+  out.push({key:key,typ:"zuweiser-fortbildung",urg:diff<0?"jetzt":"bald",tage:Math.max(0,diff),titel:z.name,sub:"Einladung zu Fortbildung/Hospitation (CME) für das laufende Quartal versenden.",sterne:null,geste:{label:"Einladung senden",cta:"Einladung senden"},zName:z.name});
  });
  /* §5.2 Trend-Erkennung — reagiert auf Auffälligkeiten, unabhängig von der Kontakt-Kadenz oben.
     Task 2.3 (Punkt 6): faelle<1-Guard ergänzt — sonst kann die hash-basierte 3-Monats-Historie
@@ -5208,7 +5235,7 @@ function anlaesse(scope){
  const sorted=out.sort((a,b)=>(ord[a.urg]-ord[b.urg])||(a.tage-b.tage));
  /* §5.1 B2B/B2C-Trennung: scope "patienten" = geburtstag/jubilaeum/wiederbedarf, "zuweiser" = zuweiser/zuweiser-trend, sonst alles */
  if(scope==="patienten")return sorted.filter(a=>a.typ==="geburtstag"||a.typ==="jubilaeum"||a.typ==="wiederbedarf");
- if(scope==="zuweiser")return sorted.filter(a=>["zuweiser-rhythmus","zuweiser-meilenstein","zuweiser-jubilaeum","zuweiser-trend"].includes(a.typ));
+ if(scope==="zuweiser")return sorted.filter(a=>["zuweiser-rhythmus","zuweiser-meilenstein","zuweiser-jubilaeum","zuweiser-bericht","zuweiser-fortbildung","zuweiser-trend"].includes(a.typ));
  return sorted;
 }
 function arAktion(key){
@@ -5221,11 +5248,15 @@ function arAktion(key){
  renderRadar();
  renderZuweiser();
 }
-const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf","zuweiser-rhythmus":"Zuweiser-Rhythmus","zuweiser-meilenstein":"Zuweiser-Meilenstein","zuweiser-jubilaeum":"Partnerschafts-Jubiläum","zuweiser-trend":"Zuweiser-Trend"};
+/* TEMPORÄR (Runde 6 Punkt 5, Task 2→5): zuweiser-bericht/-fortbildung hier nur, damit arCard()
+   zwischen Task 2 und Task 4 kein "undefined"-Label rendert. Wird in Task 5 zusammen mit den
+   übrigen zuweiser-*-Einträgen entfernt, sobald renderZuweiserAnlaesse() (Task 4) arCard() für
+   Zuweiser-Anlässe nicht mehr aufruft. */
+const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf","zuweiser-rhythmus":"Zuweiser-Rhythmus","zuweiser-meilenstein":"Zuweiser-Meilenstein","zuweiser-jubilaeum":"Partnerschafts-Jubiläum","zuweiser-bericht":"Zuweiser-Abschlussbericht","zuweiser-fortbildung":"Zuweiser-Fortbildung","zuweiser-trend":"Zuweiser-Trend"};
 const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"],"zuweiser-rhythmus":["kb-arzt.jpg","petrol"]};
 function arCard(a,i){
  const perName=a.pid&&person(a.pid)?person(a.pid).name:a.titel;
- const isZ=["zuweiser-rhythmus","zuweiser-meilenstein","zuweiser-jubilaeum","zuweiser-trend"].includes(a.typ);
+ const isZ=["zuweiser-rhythmus","zuweiser-meilenstein","zuweiser-jubilaeum","zuweiser-bericht","zuweiser-fortbildung","zuweiser-trend"].includes(a.typ); // TEMPORÄR, s. Kommentar bei AR_TYP oben
  const due=isZ?(a.urg==="jetzt"?"überfällig":"fällig"):(a.urg==="beob"?"im Blick":"in "+a.tage+" Tagen");
  const dueCls=a.urg;
  const gLbl=isZ?"Nächste Aktion":"Empfohlene Geste";
