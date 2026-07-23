@@ -4236,14 +4236,16 @@ const passivLead={id:201,name:"Sabine Vogt",alter:54,rolle:"Patient selbst",kana
  ],log:[]};
 
 let eingang=[
- {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Nummer notiert, möchte Rückruf heute. Vermutlich PKV.",zeit:"vor 25 Min.",achse:"Innere",done:false,typ:"qualifiziert",wer:"Ehefrau fragt für Mann (72)",zusammenfassung:"Ehefrau fragt telefonisch für ihren Mann (72) nach Reha nach Herz-OP — PKV, Rückruf heute gewünscht."},
- {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Patient (68), PKV, Entlassung in 4 Tagen. Unterlagen anbei.",zeit:"vor 1 Std.",achse:"Neurologie",done:false,typ:"qualifiziert",wer:"Sozialdienst RHÖN Bad Neustadt meldet Patient (68) nach Schlaganfall an",zusammenfassung:"Sozialdienst RHÖN Bad Neustadt meldet einen Patienten (68) nach Schlaganfall zur AHB an — PKV, Entlassung in 4 Tagen."},
- {id:103,kanal:"Website",tit:"Website-Formular: Selbstzahlerin (55) fragt nach Premium-Reha",txt:"Interessiert an Suite, fragt nach Preisen und freien Terminen.",zeit:"vor 2 Std.",achse:"SalutoCare",done:false,typ:"qualifiziert",wer:"Selbstzahlerin fragt selbst nach Premium-Suite (55)",zusammenfassung:"Selbstzahlerin (55) fragt über die Website nach der Premium-Suite — interessiert an Preisen und freien Terminen."},
+ {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Nummer notiert, möchte Rückruf heute. Vermutlich PKV.",zeit:"vor 25 Min.",achse:"Innere",done:false,typ:"qualifiziert",wer:"Ehefrau fragt für Mann (72)",zusammenfassung:"Ehefrau fragt telefonisch für ihren Mann (72) nach Reha nach Herz-OP — PKV, Rückruf heute gewünscht.",gruppe:null,sterne:null,autoVerteilt:false},
+ {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Patient (68), PKV, Entlassung in 4 Tagen. Unterlagen anbei.",zeit:"vor 1 Std.",achse:"Neurologie",done:false,typ:"qualifiziert",wer:"Sozialdienst RHÖN Bad Neustadt meldet Patient (68) nach Schlaganfall an",zusammenfassung:"Sozialdienst RHÖN Bad Neustadt meldet einen Patienten (68) nach Schlaganfall zur AHB an — PKV, Entlassung in 4 Tagen.",gruppe:"Neurologie",sterne:null,autoVerteilt:true,saluto:false,hinweis:""},
+ {id:103,kanal:"Website",tit:"Website-Formular: Selbstzahlerin (55) fragt nach Premium-Reha",txt:"Interessiert an Suite, fragt nach Preisen und freien Terminen.",zeit:"vor 2 Std.",achse:"SalutoCare",done:false,typ:"qualifiziert",wer:"Selbstzahlerin fragt selbst nach Premium-Suite (55)",zusammenfassung:"Selbstzahlerin (55) fragt über die Website nach der Premium-Suite — interessiert an Preisen und freien Terminen.",gruppe:null,sterne:null,autoVerteilt:false},
  {id:104,kanal:"E-Mail",tit:"E-Mail: Hausarzt Dr. Sommer empfiehlt Patientin (79)",txt:"Geriatrische Reha angefragt, Beihilfe, Tochter koordiniert.",zeit:"gestern",achse:"Geriatrie",done:true,typ:"qualifiziert",wer:"Hausarzt Dr. Sommer empfiehlt Patientin (79), Tochter koordiniert",zusammenfassung:"Hausarzt Dr. Sommer empfiehlt seine Patientin (79) für eine geriatrische Reha — Beihilfe, Tochter koordiniert die Aufnahme."},
  {id:105,kanal:"Recare",tit:"Recare: Klinikum Fulda sucht Neuro-Reha-Platz",txt:"GKV + Komfort-Wunsch, Übernahme in 6 Tagen möglich.",zeit:"gestern",achse:"Neurologie",done:true,typ:"qualifiziert",wer:"Entlassmanagement Klinikum Fulda sucht Reha-Platz",zusammenfassung:"Entlassmanagement Klinikum Fulda sucht über Recare einen Neuro-Reha-Platz — GKV mit Komfort-Wunsch, Übernahme in 6 Tagen möglich."},
  {id:106,kanal:"PRIMO MEDICO",tit:"PRIMO MEDICO: internationale Premium-Anfrage",txt:"Familie fragt für Vater (64) nach Intensiv-Reha mit Beatmung.",zeit:"vor 2 Tagen",achse:"SalutoCare",done:true,typ:"qualifiziert",wer:"Familie fragt für Vater (64)",zusammenfassung:"Familie fragt über PRIMO MEDICO für ihren Vater (64) nach Intensiv-Reha mit Beatmung — internationale Premium-Anfrage."}
  ,{id:107,einzelperson:true,pName:"Carola Diehm",kanal:"Website",tit:"Broschüre-Download: Interessentin (57) lädt Reha-Broschüre",txt:"E-Mail hinterlegt, Kontaktfreigabe erteilt. Keine konkrete Anfrage.",zeit:"vor 40 Min.",achse:"Orthopädie",done:false,typ:"passiv",zusammenfassung:"Interessentin (57) lädt die Reha-Broschüre herunter und erteilt Kontaktfreigabe — noch keine konkrete Anfrage."}
  ,{id:108,einzelperson:false,kanal:"E-Mail",tit:"Lose Mail: Habt ihr eigentlich freie Plätze?",txt:"Einmalige Frage, kein Name, keine Unterlagen, kein Follow-up.",zeit:"vor 3 Std.",achse:"Innere",done:false,typ:"passiv",zusammenfassung:"Anonyme Anfrage per E-Mail nach freien Plätzen — kein Name, kein Follow-up erkennbar."}
+ ,{id:109,kanal:"Zuweiser-Fax",tit:"Fax: Sozialdienst Klinikum Hammelburg, Anmeldung AHB nach Knie-TEP",txt:"Patient (66), GKV, Entlassung in 5 Tagen. Unterlagen vollständig beigefügt.",zeit:"vor 50 Min.",achse:"Orthopädie",done:false,typ:"qualifiziert",wer:"Sozialdienst Klinikum Hammelburg meldet Patient (66) nach Knie-TEP an",zusammenfassung:"Sozialdienst Klinikum Hammelburg meldet einen Patienten (66) nach Knie-TEP zur AHB an — GKV, Entlassung in 5 Tagen.",gruppe:"Orthopädie",sterne:null,autoVerteilt:true,saluto:false,hinweis:""}
+ ,{id:110,kanal:"Recare",tit:"Recare: Entlassmanagement Bad Kissingen sucht Geriatrie-Reha-Platz",txt:"Patientin (81), Beihilfe, Übernahme in 6 Tagen möglich.",zeit:"vor 90 Min.",achse:"Geriatrie",done:false,typ:"qualifiziert",wer:"Entlassmanagement Bad Kissingen sucht Reha-Platz für Patientin (81)",zusammenfassung:"Entlassmanagement Bad Kissingen sucht über Recare einen Geriatrie-Reha-Platz für eine Patientin (81) — Beihilfe, Übernahme in 6 Tagen möglich.",gruppe:"Geriatrie",sterne:null,autoVerteilt:true,saluto:false,hinweis:""}
 ];
 
 let bestand=[
@@ -4326,6 +4328,11 @@ const TEAM=["S. Koordination","M. Belegung","T. Abrechnung","Recovery Manager"];
 
 /* §3.1 Achse↔Team-Zuordnung + Owner-Routing-Vorschlag — Bereich C */
 const TEAM_ACHSE={"S. Koordination":["Orthopädie","Innere"],"M. Belegung":["Neurologie","Geriatrie"],"Recovery Manager":["SalutoCare"],"T. Abrechnung":[]};
+/* Runde 6 Punkt 1 (§5.3): GRUPPEN — reine Ableitung aus TEAM_ACHSE, keine neue Mitgliederliste,
+   keine Änderung an TEAM_ACHSE selbst. */
+const GRUPPEN=Array.from(new Set(Object.values(TEAM_ACHSE).flat()));
+function gruppenMitglieder(g){ return TEAM.filter(t=>(TEAM_ACHSE[t]||[]).includes(g)); }
+function egGruppenPoolGroesse(g){ return eingang.filter(m=>!m.done&&m.gruppe===g).length; }
 /* Task 2.1 (Punkt 1): #egDetail — gemeinsamer Schließ-Helper für die drei rechts angedockten
    Detail-Schienen (verhindert zwei gleichzeitig offene 460px-Overlays, s. Plan „Ist"). */
 function _closeSiblingDetailRails(exceptId){
@@ -4731,12 +4738,14 @@ function erkenneSignale(text){
   const alterMatch=/\b(\d{1,3})\s*(?:jahre|j\.|\))/i.exec(s);
   const fristMatch=/entlassung\s+(?:am\s+)?([\wäöü.]+)|in\s+(\d+)\s+tagen|dringend|möglichst schnell/i.exec(s);
   const konkret=!!(alterMatch||fristMatch||kt);
+  const unsicher=/vermutlich|vielleicht|eventuell|evtl\.?|möglicherweise/i.test(s);
   return {
     premium:premium,
     kostentraeger:kt,
     absage:absage,
     konkret:!absage&&konkret,
-    dringlichkeit:fristMatch?fristMatch[0]:null
+    dringlichkeit:fristMatch?fristMatch[0]:null,
+    unsicher:unsicher
   };
 }
 /* §2.2 Sterne-Ableitung aus Signalen — Bereich B */
@@ -4744,6 +4753,21 @@ function sterneAusSignal(sig){
   if(sig.absage)return 1;
   if(sig.konkret)return sig.premium?4:3;
   return 2;
+}
+/* Runde 6 Punkt 1 (§7.4): Vollständigkeits-Checkliste — 4 Prüfpunkte je Eingang-Anfrage,
+   konsumiert von openEgDetail() (Task 3) und uebernehmen() (Task 3, f.rueckfragen). */
+function egVollstaendigkeit(m){
+  const sig=erkenneSignale(m.txt);
+  return [
+    {label:"Kostenträger", ok:!!sig.kostentraeger&&!sig.unsicher, wert:sig.kostentraeger,
+     frage:"Kostenträger (PKV/GKV/Beihilfe) abklären"},
+    {label:"Diagnose-Achse", ok:!!m.achse&&m.achse!=="Unklar", wert:m.achse,
+     frage:"Medizinische Achse/Indikation erfragen"},
+    {label:"Wunschtermin", ok:!!sig.dringlichkeit, wert:sig.dringlichkeit,
+     frage:"Wunschtermin/Entlassungsdatum erfragen"},
+    {label:"Kontaktdaten", ok:!!m.wer, wert:m.wer,
+     frage:"Vollständige Kontaktdaten (Telefon/E-Mail) erfragen"}
+  ];
 }
 /* §3.2 Kontinuierliche Upsell-Erkennung — Bereich C: bei jedem neuen Werdegang-Eintrag erneut prüfen.
    Duplikat-Schutz: f._upsellVorgeschlagen wird nach der ersten Erkennung gesetzt, danach kein erneutes Überschreiben. */
@@ -6766,7 +6790,7 @@ function renderFallakte(){
   document.getElementById("faAva").textContent=initialen(f.name);
   document.getElementById("faHeadMeta").innerHTML="<span class='pill-a' style='background:"+(ACHSE_COL[f.achse]||"var(--unklar)")+"'>"+escapeHtml(f.achse)+"</span>"
     +"<span class='pill-kt'>"+escapeHtml(f.kt)+"</span>"
-    +sterneHtml(sterneVon({personId:f.personId}))
+    +sterneHtml(f.sterne!=null?f.sterne:sterneVon({personId:f.personId}))
     +(f.saluto?"<span class='star'>★ SalutoCare</span>":"");
   document.getElementById("faStage").innerHTML=stageBandHtml(f);
   document.getElementById("faHinweis").innerHTML=f.zuordnungsHinweis?("<div class='fk-hinweis'><span class='kicker'>Hinweis</span> "+escapeHtml(f.zuordnungsHinweis)+"</div>"):"";
