@@ -4070,7 +4070,40 @@ summary.rk::-webkit-details-marker{display:none}
       <button class="btn-ghost btn-sm" type="button" onclick="go('faelle','board')">‹ Zurück zum Board</button>
     </header>
     <div class="fa-kacheln" id="faKacheln"></div>
-    <div class="fh-hero" id="faNaechste"></div>
+    <div class="fh-hero" id="faNaechste">
+      <div class="kicker">Nächste Aufgabe</div>
+      <div id="faAufgabeView"></div>
+      <input id="dAufgabe" type="hidden">
+      <div class="fh-meta">
+        <div><label for="dFrist">Frist</label><span class="due" id="dFristWrap"><input id="dFrist" type="date"></span></div>
+        <div><label for="dOwner">Verantwortlich</label><span class="fh-owner-chip"><span class="ava" id="dOwnerAva"></span><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></span></div>
+      </div>
+      <div class="fh-actions">
+        <button id="dAdvance" class="btn-brass btn-sm" style="width:100%" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
+      </div>
+    </div>
+    <div id="dArbeit"></div>
+    <div class="chap">
+      <h2 class="chap-h2">Steuerung</h2>
+      <div class="mgrid">
+        <details class="d-acc full">
+          <summary>Details &amp; Status</summary>
+          <div class="d-acc-body">
+            <div><label for="dStatus">Status</label><select id="dStatus"></select></div>
+            <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option><option>abgelehnt</option></select></div>
+            <div><label for="dKT">Kostenträger</label><select id="dKT"><option>PKV</option><option>Selbstzahler</option><option>GKV + Komfort</option><option>Beihilfe</option><option>GKV</option></select></div>
+            <div><label for="dConsent">Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
+            <div class="full"><div class="saluto-toggle"><input type="checkbox" id="dSaluto"><span>★ Für <b>SalutoCare</b> geeignet · Premium-Option aktiv anbieten</span></div></div>
+            <div class="full verlustrow" id="rowVerlust"><label for="dVerlust">Verlustgrund (Pflicht bei „Verloren&#8220;)</label>
+              <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
+            </div>
+          </div>
+        </details>
+        <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
+        <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
+        <div class="full"><button class="btn-brass" id="dSpeichern" style="width:100%">Speichern</button></div>
+      </div>
+    </div>
     <div class="fa-cols">
       <div class="fa-col-l">
         <div class="chap">
@@ -4153,55 +4186,6 @@ summary.rk::-webkit-details-marker{display:none}
 </div>
 
 <!-- ============ FALL-DETAIL ============ -->
-<div class="overlay" id="ovDetail" role="dialog" aria-modal="true" aria-label="Fall-Detail">
-  <div class="modal">
-    <div class="mhead">
-      <div class="ava" id="dAva"></div>
-      <div><h2 id="dName"></h2><div class="msub2" id="dSub"></div></div>
-    </div>
-    <div class="mbody two-track">
-      <div class="fh-hero">
-        <label for="dAufgabe" class="kicker">Nächste Aufgabe</label>
-        <div id="dAufgabeView"></div>
-        <input id="dAufgabe" type="hidden">
-        <div class="fh-meta">
-          <div><label for="dFrist">Frist</label><span class="due" id="dFristWrap"><input id="dFrist" type="date"></span></div>
-          <div><label for="dOwner">Verantwortlich</label><span class="fh-owner-chip"><span class="ava" id="dOwnerAva"></span><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></span></div>
-        </div>
-        <div class="fh-actions">
-          <button id="dAdvance" class="btn-brass btn-sm" style="width:100%;margin-bottom:12px" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
-          <button class="btn-ghost btn-sm" style="width:100%" type="button" onclick="openFallakte(aktuellerFall.id)">Vollständige Fallakte öffnen →</button>
-        </div>
-      </div>
-      <div id="dArbeit"></div>
-      <div class="d-track-wrap">
-        <div id="dWerdegang" class="d-track"></div>
-        <div id="dAkte"></div>
-      </div>
-      <div class="mgrid">
-        <details class="d-acc full">
-          <summary>Details &amp; Unterlagen</summary>
-          <div class="d-acc-body">
-            <div><label for="dStatus">Status</label><select id="dStatus"></select></div>
-            <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option><option>abgelehnt</option></select></div>
-            <div><label for="dKT">Kostenträger</label><select id="dKT"><option>PKV</option><option>Selbstzahler</option><option>GKV + Komfort</option><option>Beihilfe</option><option>GKV</option></select></div>
-            <div><label for="dConsent">Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
-            <div class="full"><div class="saluto-toggle"><input type="checkbox" id="dSaluto"><span>★ Für <b>SalutoCare</b> geeignet · Premium-Option aktiv anbieten</span></div></div>
-            <div class="full verlustrow" id="rowVerlust"><label for="dVerlust">Verlustgrund (Pflicht bei „Verloren&#8220;)</label>
-              <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
-            </div>
-          </div>
-        </details>
-        <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
-        <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
-      </div>
-    </div>
-    <div class="mfoot">
-      <button class="btn-ghost" id="dAbbruch">‹ Zurück</button>
-      <button class="btn-brass" id="dSpeichern">Speichern</button>
-    </div>
-  </div>
-</div>
 <div class="overlay" id="egDetail" role="dialog" aria-modal="true" aria-label="Anfrage-Detail">
   <div class="modal">
     <div id="egdBody"></div>
@@ -6206,19 +6190,19 @@ function kzAnfragen(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="angefragt";
  f.log.push([dstr(0),"Kostenzusage angefragt"]);
- renderAll();openDetail(f.id);
+ renderAll();renderFallakte();
 }
 function kzZusage(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="Zusage liegt vor";
  f.log.push([dstr(0),"Kostenzusage liegt vor"]);
- renderAll();openDetail(f.id);
+ renderAll();renderFallakte();
 }
 function kzAblehnung(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="abgelehnt";
  f.log.push([dstr(0),"Kostenzusage abgelehnt"]);
- renderAll();openDetail(f.id);
+ renderAll();renderFallakte();
 }
 function kzNotizAdd(){
  const f=aktuellerFall;if(!f)return;
@@ -6242,41 +6226,9 @@ function advanceFallStatus(f){
 }
 function advanceFall(){ const f=aktuellerFall;if(!f)return;
  advanceFallStatus(f);
- renderAll(); openDetail(f.id);
+ renderAll(); renderFallakte();
 }
-function openDetail(id){
-  aktuellerFall=faelle.find(x=>x.id===id);const f=aktuellerFall;if(!f)return;
-  document.getElementById("dAva").textContent=initialen(f.name);
-  document.getElementById("dName").textContent=f.name+(f.alter?" ("+f.alter+")":"");
-  document.getElementById("dSub").textContent=f.achse+" · "+f.kt+" · "+f.quelle+" · Kanal: "+f.kanal;
-  document.getElementById("dStatus").innerHTML=STATUS.map(s=>"<option"+(s===f.status?" selected":"")+">"+s+"</option>").join("");
-  document.getElementById("dOwner").value=f.owner;
-  document.getElementById("dAufgabe").value=f.aufgabe||"";
-  document.getElementById("dFrist").value=f.frist||"";
-  document.getElementById("dAufgabeView").innerHTML=aufgabenHeroHtml(f);
-  document.getElementById("dOwnerAva").textContent=initialen(f.owner);
-  document.getElementById("dFristWrap").className="due "+(f.frist?fristKlasse(f.frist):"");
-  document.getElementById("dKosten").value=f.kosten;
-  document.getElementById("dKT").value=f.kt;
-  document.getElementById("dConsent").value=f.consent;
-  document.getElementById("dSaluto").checked=f.saluto;
-  document.getElementById("dVerlust").value=f.verlust||"";
-  document.getElementById("dNotiz").value="";
-  var _dns=document.getElementById("dNotizSofort");if(_dns)_dns.value="";
-  var _dr=document.getElementById("dReply");if(_dr)_dr.value="";
-  document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
-  document.getElementById("dWerdegang").innerHTML="<div class='kicker'>Werdegang</div>"+stepper(f.schritte||deriveSchritte(f));
-  document.getElementById("dArbeit").innerHTML=dArbeitHtml(f);
-  updateDocCnt();
-  document.getElementById("dAkte").innerHTML="<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId)+"</details>";
-  document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
-  toggleVerlust();
-  _closeSiblingDetailRails("ovDetail");
-  document.getElementById("ovDetail").classList.add("open");
-  document.body.classList.add("detail-open");
-  if(!matchMedia("(min-width:1024px)").matches)document.body.classList.add("locked");
-  pushDetailState();
-}
+function openDetail(id){openFallakte(id);}
 function closeDetail(){
   document.getElementById("ovDetail").classList.remove("open");
   document.body.classList.remove("locked","detail-open");
@@ -6290,8 +6242,6 @@ function toggleVerlust(){document.getElementById("rowVerlust").classList.toggle(
 document.getElementById("dStatus").addEventListener("change",toggleVerlust);
 document.getElementById("dOwner").addEventListener("change",function(){document.getElementById("dOwnerAva").textContent=initialen(this.value);});
 document.getElementById("dFrist").addEventListener("change",function(){document.getElementById("dFristWrap").className="due "+(this.value?fristKlasse(this.value):"");});
-document.getElementById("dAbbruch").onclick=dismissDetail;
-document.getElementById("ovDetail").addEventListener("click",e=>{if(e.target===document.getElementById("ovDetail"))dismissDetail();});
 document.getElementById("dSpeichern").onclick=()=>{
   const f=aktuellerFall;if(!f)return;
   const alt=f.status;
@@ -6312,7 +6262,7 @@ document.getElementById("dSpeichern").onclick=()=>{
   const n=document.getElementById("dNotiz").value.trim();
   if(n){f.log.push([dstr(0),n]);pruefeUpsell(f,n);}
   renderAll();
-  dismissDetail();
+  renderFallakte();
   if(ns==="Aufnahme geplant"&&alt!=="Aufnahme geplant")celebratePlanned();
 };
 
@@ -6747,7 +6697,7 @@ document.addEventListener("click",function(e){
  }
 });
 function mtCloseOverlays(){
- ["refOverlay","ovDetail","dbDetail","rsDetail","sheetNeu","kpSheet","rpDocView","egDetail"].forEach(function(id){
+ ["refOverlay","dbDetail","rsDetail","sheetNeu","kpSheet","rpDocView","egDetail"].forEach(function(id){
   const e=document.getElementById(id);if(e)e.classList.remove("open");
  });
  document.body.classList.remove("locked","detail-open");
@@ -6829,7 +6779,7 @@ function applyHash(){
   go(parts[0],parts[1]);
 }
 
-/* §3.4 Hybrid-Fallakte — Bereich C: eigene Top-Level-Route neben der Schublade (#ovDetail).
+/* §3.4 Hybrid-Fallakte — Bereich C: eigene Top-Level-Route, Schublade (#ovDetail) mit Runde 5 Sprint 3 entfernt.
    openFallakte() setzt nur die ID und navigiert; gerendert wird zentral in go()'s Zweig
    "if(dest==='fallakte')renderFallakte();", damit es auch bei direktem Hash-Aufruf/Reload greift. */
 function openFallakte(id){_fallakteId=id;mtCloseOverlays();go('fallakte');}
@@ -6862,7 +6812,24 @@ function renderFallakte(){
      "<div class='fa-kachel'><span class='rk'>Frist</span><span class='due "+fristKlasse(f.frist)+"'>"+(f.frist?escapeHtml(fristText(f.frist)):"—")+"</span></div>"
     +"<div class='fa-kachel'>"+kzChain(f)+"</div>"
     +"<div class='fa-kachel'>"+sterneHtml(sterneVon({personId:f.personId}))+"</div>";
-  document.getElementById("faNaechste").innerHTML="<div class='kicker'>Nächste Aufgabe</div>"+aufgabenHeroHtml(f);
+  document.getElementById("faAufgabeView").innerHTML=aufgabenHeroHtml(f);
+  document.getElementById("dAufgabe").value=f.aufgabe||"";
+  document.getElementById("dFrist").value=f.frist||"";
+  document.getElementById("dFristWrap").className="due "+(f.frist?fristKlasse(f.frist):"");
+  document.getElementById("dOwner").value=f.owner;
+  document.getElementById("dOwnerAva").textContent=initialen(f.owner);
+  document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
+  document.getElementById("dArbeit").innerHTML=dArbeitHtml(f);
+  updateDocCnt();
+  document.getElementById("dStatus").innerHTML=STATUS.map(s=>"<option"+(s===f.status?" selected":"")+">"+s+"</option>").join("");
+  document.getElementById("dKosten").value=f.kosten;
+  document.getElementById("dKT").value=f.kt;
+  document.getElementById("dConsent").value=f.consent;
+  document.getElementById("dSaluto").checked=f.saluto;
+  document.getElementById("dVerlust").value=f.verlust||"";
+  toggleVerlust();
+  document.getElementById("dNotiz").value="";
+  document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
   document.getElementById("faUebersicht").innerHTML="<div class='pa-meta'>"
     +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(f.consent)+"</span></div>"
     +(f.saluto?"<div class='pa-row'><span class='pa-k'>SalutoCare</span><span class='pa-v'>★ Premium-Option geeignet</span></div>":"")
@@ -6896,7 +6863,7 @@ function renderFallakte(){
 let _detailPushed=false;
 /* §3.4 Hybrid-Fallakte — eigenes, von _DETAIL_IDS unabhängiges State: normale go()-Navigation, keine Overlay-Mechanik. */
 let _fallakteId=null;
-const _DETAIL_IDS=["ovDetail","dbDetail","rsDetail","egDetail"];
+const _DETAIL_IDS=["dbDetail","rsDetail","egDetail"];
 function _detailOpen(){
   return _DETAIL_IDS.some(id=>{const e=document.getElementById(id);return e&&e.classList.contains("open");});
 }
