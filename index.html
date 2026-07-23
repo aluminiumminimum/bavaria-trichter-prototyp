@@ -4133,6 +4133,10 @@ summary.rk::-webkit-details-marker{display:none}
           <h2 class="chap-h2">Übersicht</h2>
           <div id="faUebersicht"></div>
         </div>
+        <div class="chap" id="faOriginalChap" style="display:none">
+          <h2 class="chap-h2">Originalanfrage</h2>
+          <div id="faOriginal"></div>
+        </div>
         <div class="chap">
           <h2 class="chap-h2">Medizinische Kurzfelder</h2>
           <div id="faMedizin"></div>
@@ -7060,6 +7064,9 @@ function renderFallakte(){
   document.getElementById("dOwnerAva").textContent=initialen(f.owner);
   document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
   document.getElementById("dArbeit").innerHTML=dArbeitHtml(f);
+  const _zeigeOriginalInKontext=f.originalTxt&&drawerAufgabenTyp(f)!=="rueckruf";
+  document.getElementById("faOriginalChap").style.display=_zeigeOriginalInKontext?"":"none";
+  if(_zeigeOriginalInKontext) document.getElementById("faOriginal").innerHTML=fkwOriginalHtml(f);
   updateDocCnt();
   document.getElementById("dStatus").innerHTML=STATUS.map(s=>"<option"+(s===f.status?" selected":"")+">"+s+"</option>").join("");
   document.getElementById("dKosten").value=f.kosten;
