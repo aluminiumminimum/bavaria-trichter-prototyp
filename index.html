@@ -6269,6 +6269,38 @@ function drawerAufgabenTyp(f){
  if(/anreise|zimmer|aufnahme/i.test(a))return"anreise";
  return"allgemein";
 }
+/* Runde 6 Punkt 2 (§5): sopChecklisteHtml()/sopToggle() — mischt übernommene Rückfragen (getaggt
+   "aus der Anfrage") mit SOP-Standardpunkten in EINER Liste, Reihenfolge: Rückfragen zuerst, SOP
+   danach. .egt-check-item (Punkt 1) wird als Zeilen-Stil wiederverwendet (Flex-Row/Padding/Border
+   passen unverändert auf ein <label> mit Checkbox statt der ursprünglichen Div-Struktur; die
+   dortigen .ok/.missing-Modifier greifen hier nicht, da diese Klassen nicht gesetzt werden).
+   sopDone-Key ist "<typ>:<f.status>:<Index>" (Review-Fix) — ein Punkt gilt je Typ+Status-Stufe
+   einzeln als erledigt, dieselbe Checkliste kann bei späterem Status erneut auftauchen, und ein
+   manuelles Umtexten der Aufgabe ohne Statuswechsel kollidiert nicht mit fremden Häkchen. */
+function sopChecklisteHtml(f,typ){
+  const items=SOP_CHECKLISTE[typ]||[];
+  let extra="";
+  if(typ==="rueckruf"&&f.rueckfragen&&f.rueckfragen.length)
+    extra=f.rueckfragen.map(function(r,i){
+      return "<label class='egt-check-item'><input type='checkbox' "+(r.done?"checked":"")
+        +" onchange='egRueckfrageToggle("+i+")'> "+escapeHtml(r.frage)
+        +" <span class='fkw-tag'>aus der Anfrage</span></label>";
+    }).join("");
+  const sop=items.map(function(label,i){
+    const done=!!(f.sopDone&&f.sopDone[typ+":"+f.status+":"+i]);
+    return "<label class='egt-check-item'><input type='checkbox' "+(done?"checked":"")
+      +" onchange='sopToggle("+i+")'> "+escapeHtml(label)+"</label>";
+  }).join("");
+  if(!extra&&!sop) return "";
+  return "<div class='fkw-check'>"+extra+sop+"</div>";
+}
+function sopToggle(i){
+  const f=aktuellerFall;if(!f)return;
+  if(!f.sopDone)f.sopDone={};
+  const key=drawerAufgabenTyp(f)+":"+f.status+":"+i;
+  f.sopDone[key]=!f.sopDone[key];
+  renderFallakte();
+}
 function dArbeitHtml(f){
  const typ=drawerAufgabenTyp(f);
  if(typ==="kosten")
