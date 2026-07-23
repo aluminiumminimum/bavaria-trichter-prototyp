@@ -5832,6 +5832,114 @@ function tcDelta(arr){ return arr[6]-arr[0]; } // Delta-Pfeil: ausschließlich S
 const TC_ERLEDIGT={"S. Koordination":4,"M. Belegung":3,"Recovery Manager":2,"T. Abrechnung":1};
 
 /* ---------- Render: Auswertung ---------- */
+/* Runde 6 Punkt 3 (§6.1–§6.3): .tc-*-Bausteinfunktionen für das neue Team-Führungs-Cockpit.
+   Additiv — noch von keinem Aufrufer genutzt (altes renderTeam()/teamCockpitHtml() bleiben bis
+   Task 4 unverändert aktiv); Verdrahtung + Entfernung der alten Bausteine folgt atomar in Task 4. */
+function tcKpiKarte(label,val,einheit,trend,gutWennSteigt){
+ const delta=tcDelta(trend), gut=gutWennSteigt?delta>=0:delta<=0;
+ const pfeil=delta===0?"→":(delta>0?"▲":"▼");
+ return "<div class='card tc-kpi'>"
+  +"<div class='tc-kpi-n'>"+val+"<span class='tc-kpi-e'>"+escapeHtml(einheit)+"</span></div>"
+  +"<div class='tc-kpi-l'>"+escapeHtml(label)+"</div>"
+  +zwSparkline(trend)
+  +"<span class='tc-kpi-delta "+(gut?"gut":"schlecht")+"'>"+pfeil+" "+(delta>0?"+":"")+delta+"</span>"
+  +"</div>";
+}
+function tcKpiRowHtml(){
+ const k=kennzahlen(); // reuse: conv, rzAvg, ueberf (nach Begleit-Fix Task 1 zeitstabil und direkt korrekt)
+ const auf7=faelle.filter(f=>f.status==="Aufgenommen"&&f.log.some(([d,t])=>d>=dstr(-7)&&/aufgenommen/i.test(t))).length;
+ return "<div class='tc-kpis'>"
+  +tcKpiKarte("Aufnahmen · 7 Tage",auf7,"",TC_WOCHE.aufnahmen,true)
+  +tcKpiKarte("Conversion",k.conv,"%",TC_WOCHE.conversion,true)
+  +tcKpiKarte("Ø Reaktionszeit",k.rzAvg,"Std.",TC_WOCHE.reaktion,false)
+  +tcKpiKarte("Überfällige Aufgaben",k.ueberf,"",TC_WOCHE.ueberfaellig,false)
+  +"</div>";
+}
+function tcPipelineHtml(cases){
+ const verl=cases.filter(f=>f.status==="Verloren").length;
+ const aktiv=cases.filter(f=>f.status!=="Verloren");
+ const stufen=STATUS.slice(0,6); // Neu…Aufgenommen, Verloren separat
+ return "<div class='tc-pipe'>"+stufen.map(s=>{
+   const n=aktiv.filter(f=>f.status===s).length;
+   return "<div class='tc-pipe-seg' style='flex:"+n+" "+n+" 0;background:"+(STATUS_COL[s]||"var(--hair)")+"' title='"+escapeHtml(s)+": "+n+"'>"
+    +(n?"<span class='tc-pipe-n'>"+n+"</span>":"")+"</div>";
+ }).join("")+"</div>"
+ +"<div class='tc-pipe-legend'>"+stufen.map(s=>"<span>"+escapeHtml(s)+"</span>").join("")+"</div>"
+ +(verl?"<div class='tc-pipe-verl'>"+verl+" verloren (nicht im Trichter)</div>":"");
+}
+function tcMitarbeiterZeile(t,openCases,maxN){
+ const mine=openCases.filter(f=>f.owner===t);
+ const ueb=mine.filter(f=>f.frist&&f.frist<dstr(0)).length; // zeitstabil, s. Task 1
+ const erledigt=TC_ERLEDIGT[t]||0;
+ return "<button type='button' class='tc-ma-row"+(tcFilter===t?" on":"")+"' onclick='tcSetFilter(\""+t+"\")'>"
+  +"<span class='ava sm'>"+initialen(t)+"</span>"
+  +"<span class='tc-ma-name'>"+escapeHtml(t)+"</span>"
+  +"<div class='tc-ma-track'><div class='tc-ma-fill' style='width:"+(mine.length/maxN*100)+"%'></div></div>"
+  +"<span class='tc-ma-n num'>"+mine.length+"</span>"
+  +(ueb?"<span class='tc-ma-ueb'>"+ueb+" überfällig</span>":"")
+  +"<span class='tc-ma-erl'>"+erledigt+" diese Woche</span>"
+  +"</button>";
+}
+function tcPanel(titel,cases,mitglieder,openCases,maxN,schmal){
+ return "<div class='card tc-panel"+(schmal?" schmal":"")+"'><h3 class='tc-panel-h'>"+escapeHtml(titel)+"</h3>"
+  +tcPipelineHtml(cases)
+  +(schmal?"":"<div class='tc-ma-list'>"+mitglieder.map(t=>tcMitarbeiterZeile(t,openCases,maxN)).join("")+"</div>")
+  +"</div>";
+}
+function tcPanelsHtml(openCases){ // openCases = offeneFaelle()-Ergebnis aus renderTeam() — GLOBALER Datensatz (Review-Fix Zählmodell)
+ const alle=faelle; // Pipeline zählt Status inkl. Verloren (separat ausgewiesen) UND Aufgenommen — daher faelle, nicht openCases
+ const ortho=alle.filter(f=>achseZuGruppe(f.achse)==="Orthopädie");
+ const ng=alle.filter(f=>achseZuGruppe(f.achse)==="Neuro-Geri");
+ const direkt=alle.filter(f=>achseZuGruppe(f.achse)===null);
+ const maxN=Math.max(1,...TEAM.map(t=>openCases.filter(f=>f.owner===t).length));
+ const mgl=g=>TEAM.filter(t=>(TEAM_ACHSE[t]||[]).map(achseZuGruppe).includes(g));
+ return "<div class='tc-panels'>"
+  +tcPanel("Orthopädie",ortho,mgl("Orthopädie"),openCases,maxN,false)
+  +tcPanel("Neuro-Geri",ng,mgl("Neuro-Geri"),openCases,maxN,false)
+  +tcPanel("Direkt / Premium",direkt,["Recovery Manager"],openCases,maxN,true)
+  +"</div>";
+}
+let tcFilter="alle"; // ersetzt teamFilter (entfernt in Task 4)
+function tcSetFilter(t){ tcFilter=(tcFilter===t?"alle":t); renderTeam(); }
+function tcFristSort(a,b){ // Review-Fix Sortierung: leere Fristen IMMER ans Ende, unabhängig von der anderen Seite
+ if(!a.frist&&!b.frist)return 0;
+ if(!a.frist)return 1;
+ if(!b.frist)return -1;
+ return a.frist<b.frist?-1:a.frist>b.frist?1:0;
+}
+function tcAufmerksamkeitHtml(){
+ const offen=offeneFaelle();
+ if(tcFilter!=="alle"){
+   const mine=offen.filter(f=>f.owner===tcFilter).sort(tcFristSort);
+   return "<div class='chap tc-attn'><h2 class='chap-h2'>Offene Fälle · "+escapeHtml(tcFilter)+"</h2>"
+    +"<button class='tc-clear' onclick='tcSetFilter(\""+tcFilter+"\")'>alle zeigen</button>"
+    +"<div class='tc-attn-list'>"+(mine.length?mine.map(tcFallZeile).join(""):"<p class='empty'>Keine offenen Fälle.</p>")+"</div></div>";
+ }
+ const ueberfaellig=offen.filter(f=>f.frist&&f.frist<dstr(0)).sort(tcFristSort); // zeitstabil (Task 1) — frist garantiert gesetzt, tcFristSort trotzdem wiederverwendet statt Duplikat
+ return "<div class='chap tc-attn'><h2 class='chap-h2'>Braucht Aufmerksamkeit</h2>"
+  +"<div class='tc-attn-list'>"+(ueberfaellig.length?ueberfaellig.map(tcAttnZeile).join(""):"<p class='empty'>Keine überfälligen Aufgaben — alles im grünen Bereich.</p>")+"</div></div>";
+}
+function tcAttnZeile(f){ // NUR für die überfällig-Liste — durch den Filter oben garantiert f.frist<dstr(0)
+ const tage=Math.round((new Date(dstr(0))-new Date(f.frist))/86400000); // beide Operanden reine Datumsstrings (Mitternacht UTC) — exakter Tageswert, immer positiv
+ return "<button type='button' class='tc-attn-row' onclick='openFallakte("+f.id+")'>"
+  +"<span class='tc-attn-name'>"+escapeHtml(f.name)+"</span>"
+  +"<span class='tc-attn-aufg'>"+escapeHtml(f.aufgabe||"—")+"</span>"
+  +"<span class='tc-attn-owner'>"+escapeHtml(f.owner)+"</span>"
+  +"<span class='tc-attn-tage bad'>"+tage+" "+(tage===1?"Tag":"Tage")+" überfällig</span>"
+  +"</button>";
+}
+function tcFallZeile(f){ // generische Zeile für den Mitarbeiter-Filter-Zweig — Fälle in JEDEM Frist-Zustand
+ // (überfällig/heute/zukünftig/keine Frist), deshalb NICHT tcAttnZeile() wiederverwendet: die hätte
+ // hier für nicht-überfällige Fälle Unsinn gezeigt ("2 Tage überfällig" für eine Frist in 2 Tagen,
+ // "NaN Tage überfällig" ohne Frist). fristKlasse()/fristText() (zeitstabil, Task 1) decken alle
+ // vier Zustände bereits korrekt ab — hier reuse statt eigener Tage-Rechnung.
+ return "<button type='button' class='tc-attn-row' onclick='openFallakte("+f.id+")'>"
+  +"<span class='tc-attn-name'>"+escapeHtml(f.name)+"</span>"
+  +"<span class='tc-attn-aufg'>"+escapeHtml(f.aufgabe||"—")+"</span>"
+  +"<span class='tc-attn-owner'>"+escapeHtml(f.owner)+"</span>"
+  +"<span class='tc-attn-tage "+fristKlasse(f.frist)+"'>"+escapeHtml(f.frist?fristText(f.frist):"—")+"</span>"
+  +"</button>";
+}
 let teamFilter="alle";
 function setTeamFilter(e){teamFilter=(teamFilter===e?"alle":e);renderTeam();}
 function teamCockpitHtml(openCases){
