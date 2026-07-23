@@ -5178,6 +5178,26 @@ function anlaesse(scope){
   const key="jub:"+p.pid;if(_arDone.has(key))return;
   out.push({key:key,typ:"jubilaeum",urg:g.tage<=7?"jetzt":"bald",tage:g.tage,titel:p.name+" — "+g.wird+". Entlass-Jubiläum",sub:"Reha abgeschlossen am "+paDate(ent)+" · Jahrestag in "+g.tage+" Tagen",sterne:p.sterne,geste:geste,pid:p.pid});
  });
+ /* Runde 6 Punkt 6 (§3.1): nachsorge — 6-Wochen-Check nach Entlassung, Premium-Variante ab 5★.
+    Fenster bewusst einmalig 42-56 Tage (6.-8. Woche), analog zum zuweiser-bericht-Fenster [0,14]. */
+ personen.forEach(p=>{
+  if(!p.sterne||p.sterne<2)return;
+  if(!p.einwilligung||p.einwilligung.status!=="erteilt")return;
+  const ent=(p.historie||[]).filter(h=>h.typ==="entlassung").map(h=>h.d).sort().pop();
+  if(!ent)return;
+  const tage=Math.round((heute-new Date(ent))/86400000);
+  if(tage<42||tage>56)return;
+  const key="nach:"+p.pid;if(_arDone.has(key))return;
+  const premium=p.sterne>=5;
+  out.push({key,typ:"nachsorge",urg:tage<=45?"jetzt":"bald",tage,titel:p.name,
+   sub:"Reha vor "+tage+" Tagen abgeschlossen — "+(premium
+    ?"Persönlicher Nachsorge-Anruf durch Bezugstherapeutin anbieten."
+    :"Nachsorge-Check anbieten (6-Wochen-Kontakt)."),
+   sterne:p.sterne,
+   geste:premium?{label:"Persönlicher Nachsorge-Anruf",cta:"Anruf durch Bezugstherapeutin"}
+               :{label:"Nachsorge-Check",cta:"Nachsorge-Check anbieten"},
+   pid:p.pid});
+ });
  radar.forEach(r=>{
   if(r.consent!=="ja")return;
   const key="radar:"+(r.personId||r.name);if(_arDone.has(key))return;
@@ -5257,7 +5277,7 @@ function anlaesse(scope){
  const ord={jetzt:0,bald:1,beob:2};
  const sorted=out.sort((a,b)=>(ord[a.urg]-ord[b.urg])||(a.tage-b.tage));
  /* §5.1 B2B/B2C-Trennung: scope "patienten" = geburtstag/jubilaeum/wiederbedarf, "zuweiser" = zuweiser/zuweiser-trend, sonst alles */
- if(scope==="patienten")return sorted.filter(a=>a.typ==="geburtstag"||a.typ==="jubilaeum"||a.typ==="wiederbedarf");
+ if(scope==="patienten")return sorted.filter(a=>a.typ==="geburtstag"||a.typ==="jubilaeum"||a.typ==="wiederbedarf"||a.typ==="nachsorge");
  if(scope==="zuweiser")return sorted.filter(a=>["zuweiser-rhythmus","zuweiser-meilenstein","zuweiser-jubilaeum","zuweiser-bericht","zuweiser-fortbildung","zuweiser-trend"].includes(a.typ));
  return sorted;
 }
@@ -5271,7 +5291,9 @@ function arAktion(key){
  renderRadar();
  renderZuweiser();
 }
-const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf"};
+/* TEMPORÄR (Runde 6 Punkt 6+7, Task 2→6): nachsorge hier nur, damit arCard() zwischen Task 2 und
+   Task 3 kein "undefined"-Label rendert. Entfällt in Task 6 zusammen mit AR_TYP als Ganzes. */
+const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf",nachsorge:"Nachsorge"};
 const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"]};
 function arCard(a,i){
  const perName=a.pid&&person(a.pid)?person(a.pid).name:a.titel;
