@@ -1477,9 +1477,6 @@ label{font-size:12px;letter-spacing:.08em}
 .pa-head .st-row{font-size:12px}
 /* ---------- Baustein B · Anlass-Radar (.ar-*) ---------- */
 .ar-more{margin-left:auto;background:none;border:none;cursor:pointer;font:600 12px/1 Inter;color:var(--brass-deep);letter-spacing:.03em;padding:6px 2px}
-.ar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
-.ar-grid .radar-card{height:100%;display:flex;flex-direction:column}
-.ar-grid .radar-card .patient-actions{margin-top:auto}
 .ar-card{background:var(--paper);border:1px solid var(--hair);border-top:2px solid var(--brass-line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow-soft);display:flex;flex-direction:column;gap:7px}
 .ar-card.jetzt{border-top-color:var(--brass)}
 .ar-top{display:flex;align-items:center;gap:8px}
@@ -1492,7 +1489,6 @@ label{font-size:12px;letter-spacing:.08em}
 .ar-act .btn-brass{display:block;width:100%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ar-feedhead{font:600 10.5px/1 Inter;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep);margin:18px 0 10px}
 .ar-cardstars{margin:2px 0 4px}
-@media(max-width:520px){.ar-grid{grid-template-columns:1fr}}
 /* ---------- Baustein B · Kampagnen (.kp-*) ---------- */
 .kp-sheet{position:fixed;inset:0;z-index:80;display:none}
 .kp-sheet.open{display:block}
@@ -5291,26 +5287,6 @@ function arAktion(key){
  renderRadar();
  renderZuweiser();
 }
-/* TEMPORÄR (Runde 6 Punkt 6+7, Task 2→6): nachsorge hier nur, damit arCard() zwischen Task 2 und
-   Task 3 kein "undefined"-Label rendert. Entfällt in Task 6 zusammen mit AR_TYP als Ganzes. */
-const AR_TYP={geburtstag:"Geburtstag",jubilaeum:"Entlass-Jubiläum",wiederbedarf:"Wiederbedarf",nachsorge:"Nachsorge"};
-const AR_FOTO={geburtstag:["kb-garten.webp","rose"],wiederbedarf:["kb-haus.webp","sage"]};
-function arCard(a,i){
- const perName=a.pid&&person(a.pid)?person(a.pid).name:a.titel;
- const due=a.urg==="beob"?"im Blick":"in "+a.tage+" Tagen";
- const dueCls=a.urg;
- const strip=(AR_FOTO[a.typ])?"<figure class='au-photo au-photo--"+AR_FOTO[a.typ][1]+"'><img src='assets/"+AR_FOTO[a.typ][0]+"' alt='' loading='lazy'></figure>":"";
- return "<div class='radar-card ar-rc' style='--acol:var(--brass)'>"
-  +strip
-  +"<div class='patient-top'><span class='ava'>"+initialen(perName)+"</span><span class='radar-due "+dueCls+"'>"+due+"</span></div>"
-  +"<h3>"+escapeHtml(a.titel)+"</h3>"
-  +(a.sterne?"<div class='ar-cardstars'>"+sterneHtml(a.sterne)+"</div>":"")
-  +"<div class='patient-meta'>"+AR_TYP[a.typ]+"</div>"
-  +"<div class='radar-prog'><span class='rk'>Anlass</span>"+escapeHtml(a.sub)+"</div>"
-  +"<div class='radar-prog'><span class='rk'>Empfohlene Geste</span>"+escapeHtml(a.geste.label)+"</div>"
-  +"<div class='patient-actions'><button class='btn-ghost btn-sm' onclick='arAktion(\""+a.key.replace(/"/g,"&quot;")+"\")'>"+escapeHtml(a.geste.cta)+" ›</button></div>"
-  +"</div>";
-}
 function renderAnlaesse(){
  const pat=anlaesse("patienten"), zuw=anlaesse("zuweiser");
  const rp=document.getElementById("rlCountPat");if(rp)rp.textContent=pat.length;
@@ -5318,8 +5294,8 @@ function renderAnlaesse(){
 }
 /* Runde 6 Punkt 5 (§5.1): .zwa-* — eigene Etiketten-Karten für die Zuweiser-Anlässe (Kicker+Icon,
    Zuweiser-Name, voller Anlass-Satz, Fälligkeits-Chip, ein Erledigt-Button), ersetzt arCard()/
-   .radar-card für #zAnlaesse. arCard() bleibt für die drei Patienten-Anlass-Typen (renderRadar())
-   unverändert aktiv. */
+   .radar-card für #zAnlaesse. (arCard() selbst seit Runde 6 Punkt 6+7, §8, vollständig entfernt —
+   paaKarte()/renderPatientenAnlaesse() übernimmt die Patienten-Anlass-Typen, s. renderRadar().) */
 const ZWA_TYP={
  "zuweiser-rhythmus":{ico:"⟳",label:"Kontaktpflege"},
  "zuweiser-jubilaeum":{ico:"✦",label:"Jahrestag"},
