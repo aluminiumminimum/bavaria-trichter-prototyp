@@ -116,6 +116,13 @@ Original, Vollständigkeits-Checkliste, Gruppen-Zuordnung. Echter Backdrop, echt
   (`dArbeitHtml()`-Zweig „angebot") erreichbar, sobald ein Fall existiert. Kein Entfernen der Funktion
   selbst, nur kein Aufruf mehr aus `#egDetail`.
 - Keine Änderung an `TEAM`/`TEAM_ACHSE`-Mitgliederliste selbst — `GRUPPEN` ist eine reine Ableitung.
+- `renderTeam()` ([index.html:5621](../../../index.html#L5621)) zählt in `.tm-intake`
+  ([index.html:5625](../../../index.html#L5625): `eingangOffen=eingang.filter(m=>!m.done&&m.typ!=="passiv").length`)
+  weiterhin nach dem alten Modell — „offene Anfragen … warten auf Zuordnung" stimmt nach dieser Spec
+  nicht mehr exakt (auto-verteilte und bereits freigegebene Pool-Einträge warten nicht mehr auf den
+  Leiter, sondern auf eine Koordinatorin). Bewusst hier **nicht** angefasst — Team-Statistiken werden
+  in Runde 6, Punkt 3 neu gebaut; diese Spec beschränkt sich auf `#egDetail`/`renderEingang()`/den
+  Pool-Block.
 
 ---
 
@@ -128,8 +135,8 @@ Original, Vollständigkeits-Checkliste, Gruppen-Zuordnung. Echter Backdrop, echt
 | `m.gruppe` | `String\|null` | `null` | Zugeordnete Gruppe (= Achsenname, s. §5.3). `null` = noch keine Entscheidung. |
 | `m.sterne` | `Number\|null` | `null` | Manueller Override der Sterne-Vorschlag (1–5). `null` = kein Override, Vorschlag aus `sterneAusSignal()` gilt. |
 | `m.autoVerteilt` | `Boolean` | `false` | `true` = System hat `m.gruppe` automatisch gesetzt (Weg 1). `false` bei leiter-freigegebenen Entscheidungsfällen (Weg 2) und bei noch offenen Fällen. |
-| `m.saluto` | `Boolean` | `false` | SalutoCare/Premium-Toggle-Stand zum Zeitpunkt der Freigabe/Auto-Verteilung. Ersetzt die bisherige Nutzung der globalen Variable `egSaluto` als alleinige Quelle — die muss jetzt bis zur Fall-Anlage (die zeitlich später, in einer anderen Ansicht, durch eine andere Person passiert) irgendwo persistiert werden. |
-| `m.hinweis` | `String` | `""` | Bearbeitungshinweis, analog `m.saluto` — ersetzt die alleinige Nutzung der globalen `egHinweis` als Zwischenspeicher. |
+| `m.saluto` | `Boolean` | `false` | SalutoCare/Premium-Toggle-Stand. `egToggleSaluto(id)` schreibt ab jetzt **direkt** auf `m.saluto` (kein transienter Zwischenspeicher mehr) — nötig, weil der Toggle-Stand bis zur Fall-Anlage überleben muss, die zeitlich später, in einer anderen Ansicht, durch eine andere Person passiert (Pool-Pull, §7.8). Die bisherige globale Variable `egSaluto` entfällt (§7.5, §9). |
+| `m.hinweis` | `String` | `""` | Bearbeitungshinweis, analog `m.saluto`: eine neue Funktion `egHinweisSetzen(id,val)` schreibt direkt auf `m.hinweis`. Die bisherige globale Variable `egHinweis` entfällt (§7.5, §9). |
 
 Bestehende Felder (`id,wer,kanal,zeit,txt,typ,achse,done,fallId,zusammenfassung,notiz`) bleiben
 unangetastet.
@@ -217,9 +224,67 @@ gehedged**, keine Absage-Signale.
 **Entscheidungsfall** — jede Verletzung einer der obigen Bedingungen (Achse fehlt, SalutoCare/Premium,
 Kostenträger unklar/gehedged, widersprüchlich/Absage-Signal in einer sonst qualifizierten Anfrage).
 
-Ausführung bei Eintreffen (Seed-Ladezeit wie in §5.4 vorbelegt; `simulateInbound()` ruft
-`klassifiziereEingang(m)` unmittelbar nach `eingang.unshift(...)` auf und setzt bei `"auto"` sofort
-`m.gruppe=m.achse; m.autoVerteilt=true; m.saluto=false; m.hinweis=""`).
+Ausführung bei Eintreffen: Seed-Ladezeit wie in §5.4 vorbelegt; `simulateInbound()` ruft
+`klassifiziereEingang(m)` und routet entsprechend — siehe konkreter Diff in §6.1.
+
+### 6.1 `simulateInbound()` — Diff (Altpfad entfällt ersatzlos)
+
+Der bestehende `setTimeout`-Zweig ([index.html:4759-4789](../../../index.html#L4759)) legt heute nach
+1,6s **direkt einen Fall an** (`faelle.push(...)`, [index.html:4776](../../../index.html#L4776)), sobald
+`sterneAusSignal(sig)>=3` — das umgeht die gesamte neue Gruppen-/Pool-Logik komplett, eine simulierte
+Anfrage würde sofort einen Fall erzeugen statt erst automatisch verteilt oder zum Entscheidungsfall zu
+werden. Dieser Zweig wird **ersatzlos entfernt** und durch die Triage-Routing-Logik ersetzt:
+
+```js
+function simulateInbound(){
+ const t=INBOUND_POOL[_inbN%INBOUND_POOL.length];_inbN++;
+ const mid=_inbId++;
+ const m={id:mid,kanal:t.kanal,tit:t.tit,txt:t.txt,zeit:"gerade eben",achse:t.achse,done:false,
+   typ:"qualifiziert",wer:t.wer||"",zusammenfassung:t.zusammenfassung,_neu:true,
+   gruppe:null,sterne:null,autoVerteilt:false,saluto:false,hinweis:""};
+ eingang.unshift(m);
+ renderEingang();
+ inbToast("in","<b>Neue Anfrage</b> über "+escapeHtml(t.kanal),"landet im Eingang — wird automatisch verarbeitet …",null);
+ setTimeout(()=>{
+  m._neu=false;
+  if(klassifiziereEingang(m)==="auto"){
+   m.gruppe=m.achse; m.autoVerteilt=true;
+   renderEingang();
+   inbToast("done","<b>Automatisch verteilt</b>","an Gruppe "+escapeHtml(m.gruppe)+" · "+escapeHtml(t.kanal),null);
+  }else{
+   renderEingang();
+   inbToast("done","<b>Braucht Entscheidung</b>","Achse/Kostenträger nicht eindeutig · "+escapeHtml(t.kanal),null);
+  }
+ },1600);
+}
+```
+
+**Entfernt:** die komplette Auswertung zwischen dem alten `const sig=erkenneSignale(t.txt);`
+([index.html:4767](../../../index.html#L4767)) und dem schließenden `else`-Toast
+([index.html:4786](../../../index.html#L4786)) — inklusive `findeOderErstellePerson(...)`-Aufruf
+([index.html:4771](../../../index.html#L4771)), `pHist(...)`-Aufrufe und `faelle.push(...)`. Kein
+automatisches Fall-Anlegen mehr aus `simulateInbound()`; Fälle entstehen ab jetzt ausschließlich über
+`uebernehmen()` — entweder per Pool-Pull (§7.8) oder (unverändert, betrifft nur `typ:"passiv"`, hier
+nicht einschlägig, da alle `INBOUND_POOL`-Einträge `typ:"qualifiziert"` sind) über `inDatenbank()`.
+
+**Bekannter Nebeneffekt, hier bewusst nicht behoben:** Mit den drei bestehenden
+`INBOUND_POOL`-Einträgen ([index.html:4705-4709](../../../index.html#L4705)) klassifizieren aktuell
+alle drei als `"entscheidung"` (Familie Hoffmann: Premium-Signal trotz Neurologie-Achse; Herr
+Reinhardt: SalutoCare-Achse; Dr. Kessler: „Privatpatientin" matcht nicht das `\bpkv\b`-Keyword in
+`erkenneSignale()`). `simulateInbound()` demonstriert damit live nur den Entscheidungsfall-Toast, nie
+den Auto-Toast — der Auto-Pfad ist bereits deterministisch über die Seeds 102/109/110 (§5.4)
+abgedeckt, kein zusätzlicher Handlungsbedarf für diese Spec.
+
+**Weiterer Nebeneffekt:** `ownerVorschlag()` ([index.html:4411](../../../index.html#L4411)) verliert
+mit dieser Änderung seine letzte verbliebene Aufrufstelle ([index.html:4777](../../../index.html#L4777)
+— die anderen beiden, [index.html:4377](../../../index.html#L4377) und
+[index.html:4390](../../../index.html#L4390), entfallen bereits durch §7.5) und wird vollständig
+unbenutzt — da alle drei Aufrufstellen durch diese Spec selbst eliminiert werden (nicht
+vorbestehender toter Code), wird die Funktion mit entfernt (§9). `findeOderErstellePerson()`
+([index.html:4592](../../../index.html#L4592)) verliert ebenfalls ihre einzige Aufrufstelle, bleibt
+aber unangetastet stehen — sie ist generische Personen-Matching-Infrastruktur außerhalb des
+Zuschnitts dieser Spec (mögliche künftige Wiederverwendung bei Personen-Verknüpfung im Pool-Pull,
+Punkt 8), kein Löschauftrag hier.
 
 ---
 
@@ -318,9 +383,18 @@ function egVollstaendigkeit(m){
 }
 ```
 
-Markup je Punkt: `<div class="egt-check-item ok|missing"><span class="egt-check-ic">✓|✗</span>
-<span class="egt-check-lbl">Kostenträger</span><span class="egt-check-val">PKV</span></div>` (bei ✗
-kein `egt-check-val`, stattdessen die `frage` als kleiner Hinweistext).
+Markup je Punkt (String-Baustein, wie an allen anderen Stellen mit `escapeHtml()` um jeden
+Nutzer-/Erkennungswert):
+
+```js
+"<div class='egt-check-item "+(c.ok?"ok":"missing")+"'><span class='egt-check-ic'>"+(c.ok?"✓":"✗")+"</span>"
++"<span class='egt-check-lbl'>"+escapeHtml(c.label)+"</span>"
++(c.ok?"<span class='egt-check-val'>"+escapeHtml(c.wert)+"</span>":"<span class='egt-check-frage'>"+escapeHtml(c.frage)+"</span>")
++"</div>"
+```
+
+Bei ✓ zeigt `.egt-check-val` den erkannten Wert (z. B. „PKV", „Neurologie"), bei ✗ zeigt
+`.egt-check-frage` stattdessen die generierte Rückfrage als kleinen Hinweistext.
 
 Mit den Seeds aus §5.4 zeigt **101** zwei ✗ (Kostenträger gehedged, kein Wunschtermin-Match), **103**
 zwei ✗ (kein Kostenträger-Keyword, kein Wunschtermin-Match) — beide demonstrieren den
@@ -339,33 +413,52 @@ Ersetzt den `TEAM.map(...)`-Owner-Buttons-Block ([index.html:4388-4395](../../..
 }).join("")+"</div>"
 ```
 
-`egGruppe` ist die neue transiente UI-State-Variable (Pendant zu `egOwner`, deklariert neben
-`_egId`/`egOwner`/`egSaluto`/`egHinweis`, [index.html:4663](../../../index.html#L4663)-Umfeld).
-`egGruppeWaehlen(id,g){ egGruppe=g; openEgDetail(id); }` (analog `egSetOwner()`,
-[index.html:4409](../../../index.html#L4409)). SalutoCare-Toggle (`egToggleSaluto`,
-[index.html:4410](../../../index.html#L4410)) und Hinweis-Textarea bleiben unverändert im Markup, nur
-die abschließende Aktion ändert sich:
+`egGruppe` ist die einzige verbleibende transiente UI-State-Variable dieses Zweigs (deklariert neben
+`_egId`, [index.html:4663](../../../index.html#L4663)-Umfeld — hält nur „welche Gruppe ist gerade
+angeklickt, bevor Freigeben gedrückt wird" für die aktuell offene Anfrage, wird von `egFreigeben()`
+sofort konsumiert). `egGruppeWaehlen(id,g){ egGruppe=g; openEgDetail(id); }` (analog dem bisherigen
+`egSetOwner()`, [index.html:4409](../../../index.html#L4409), der zusammen mit `egOwner` entfällt, §9).
+
+**Sterne, SalutoCare-Toggle und Hinweis schreiben ab jetzt direkt auf `m`, nie mehr auf eine
+transiente globale Variable** (Konsequenz aus §7.2, konsistent zu Ende geführt) — sie müssen den
+zeitlichen Abstand zwischen Freigabe (Leiter) und Übernahme (Koordinatorin, ggf. viel später) ohne
+Zwischenspeicher überstehen:
+
+```js
+function egToggleSaluto(id){ const m=eingang.find(x=>x.id===id); if(!m)return; m.saluto=!m.saluto; openEgDetail(id); }
+function egHinweisSetzen(id,val){ const m=eingang.find(x=>x.id===id); if(m) m.hinweis=val; }
+```
+
+(`egToggleSaluto()` ersetzt die bisherige Implementierung an [index.html:4410](../../../index.html#L4410),
+gleicher Funktionsname/gleiche Aufrufstelle im Markup, nur der Rumpf ändert sich. Die Hinweis-Textarea
+ruft neu `oninput='egHinweisSetzen("+m.id+",this.value)'` statt `oninput='egHinweis=this.value'`.)
+
+`openEgDetail()`s bisherige Initialisierung `egSaluto=m.achse==="SalutoCare";egHinweis="";` beim ersten
+Öffnen einer Zeile ([index.html:4377](../../../index.html#L4377)) wird zu einer einmaligen
+Lazy-Initialisierung auf `m` selbst: `if(m.saluto===undefined)m.saluto=(m.achse==="SalutoCare");
+if(m.hinweis===undefined)m.hinweis="";` — greift nur, falls Seed/`simulateInbound()` noch keinen
+Wert gesetzt haben (beide setzen laut §5.4/§6.1 immer explizit `saluto:false,hinweis:""`, der Zweig ist
+also nur eine Absicherung). Ein positiver Nebeneffekt: ein Hinweistext geht jetzt nicht mehr verloren,
+wenn der Leiter zwischendurch eine andere Anfrage öffnet und zurückkommt — er lebt auf `m`, nicht in
+einer Variable, die vom nächsten `openEgDetail()`-Aufruf überschrieben wird.
+
+Abschließende Aktion bleibt ein Button, der jetzt aber **nichts mehr an Sterne/Saluto/Hinweis
+schreiben muss** (steht schon live auf `m`) — er setzt ausschließlich die Gruppe:
 
 ```js
 +"<button class='btn-brass' style='width:100%;margin-top:4px' onclick='egFreigeben("+m.id+")'>Gruppe zuweisen &amp; freigeben</button>"
 ```
 
-`egFreigeben(id)`:
-
 ```js
 function egFreigeben(id){
   const m=eingang.find(x=>x.id===id); if(!m||!egGruppe) return;
-  m.gruppe=egGruppe; m.autoVerteilt=false; m.sterne=egSterneOverride; // egSterneOverride: s.u.
-  m.saluto=egSaluto; m.hinweis=egHinweis;
+  m.gruppe=egGruppe; m.autoVerteilt=false;
   renderEingang(); openEgDetail(id); // re-rendert jetzt im "bereits verteilt"-Lesezweig (§7.6)
 }
 ```
 
-(`egSterneOverride` = die transiente Variable, die `egSterneUeberschreiben()` aus §7.2 setzt; `null`
-wenn nie geklickt.)
-
 Der bisherige `uebernehmen(m.id,egOwner)`-Aufruf aus dem alten Owner-Zweig entfällt aus `#egDetail` —
-`uebernehmen()` selbst bleibt bestehen und wird jetzt ausschließlich vom Pull-Pool (§7.7) aufgerufen.
+`uebernehmen()` selbst bleibt bestehen und wird jetzt ausschließlich vom Pull-Pool (§7.8) aufgerufen.
 
 ### 7.6 „Bereits verteilt"-Lesezweig
 
@@ -390,13 +483,22 @@ Kopfbereich neu strukturiert, drei Zonen statt einer flachen Liste:
 
 ### 7.8 Pool-Block Koordinationsansicht (`.egt-pool`)
 
-Neuer Block in `#mtpPaneTag`, vor `#mtJetztChap` ([index.html:3996](../../../index.html#L3996)):
+**Zwei Ebenen, nicht eine** — kleines Team, jede Koordinatorin darf aushelfen; primär zieht man aus
+den eigenen Gruppen, aber jede freigegebene/auto-verteilte Anfrage bleibt für alle erreichbar (kein
+Fall bleibt liegen, nur weil gerade niemand aus der zuständigen Gruppe online ist — das schließt auch
+den Fall, dass die einzige `Recovery Manager`-Gruppe SalutoCare für `S. Koordination` fremd ist, s.
+Abnahme 5). Neuer Block in `#mtpPaneTag`, vor `#mtJetztChap`
+([index.html:3996](../../../index.html#L3996)):
 
 ```html
 <div class="chap egt-pool" id="egtPoolChap">
   <div class="kicker">Pool</div>
   <h2 class="chap-h2">Offene Anfragen deiner Gruppe(n)</h2>
   <div class="mt-grid" id="egtPoolList"></div>
+  <details class="egt-pool-weitere">
+    <summary class="rk">Weitere Gruppen (<span id="egtPoolWeitereCount">0</span>)</summary>
+    <div class="mt-grid" id="egtPoolWeitereList"></div>
+  </details>
 </div>
 ```
 
@@ -407,20 +509,26 @@ Gefüllt in einer neuen `renderEgtPool()`, aufgerufen aus `renderMeinTag()`
 ```js
 function renderEgtPool(){
   const meineGruppen=TEAM_ACHSE["S. Koordination"]||[]; // ["Orthopädie","Innere"]
-  const pool=eingang.filter(m=>!m.done&&m.gruppe&&meineGruppen.includes(m.gruppe));
-  document.getElementById("egtPoolList").innerHTML=pool.length?pool.map(function(m){
+  const karte=function(m){
     return "<article class='egt-pool-card'><p class='egt-pool-zsf'>"+escapeHtml(egZusammenfassung(m))+"</p>"
       +sterneHtml(m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt)))
       +"<button class='btn-brass btn-sm' type='button' onclick='egUebernehmenAusPool("+m.id+")'>Übernehmen</button></article>";
-  }).join(""):"<p class='empty'>Keine offenen Anfragen in deiner Gruppe.</p>";
+  };
+  const eigene=eingang.filter(m=>!m.done&&m.gruppe&&meineGruppen.includes(m.gruppe));
+  const weitere=eingang.filter(m=>!m.done&&m.gruppe&&!meineGruppen.includes(m.gruppe));
+  document.getElementById("egtPoolList").innerHTML=eigene.length?eigene.map(karte).join(""):"<p class='empty'>Keine offenen Anfragen in deiner Gruppe.</p>";
+  document.getElementById("egtPoolWeitereList").innerHTML=weitere.map(karte).join("");
+  document.getElementById("egtPoolWeitereCount").textContent=weitere.length;
 }
-function egUebernehmenAusPool(id){ uebernehmen(id,"S. Koordination"); openFallakte(faelle[faelle.length-1].id); }
+function egUebernehmenAusPool(id){ uebernehmen(id,"S. Koordination"); }
 ```
 
-(`uebernehmen()` selbst pusht bereits ans Ende von `faelle` und ruft aktuell `openDetail(fid)`
-[index.html:4814](../../../index.html#L4814) — dieser Aufruf wird auf `openFallakte(fid)` umgestellt,
-`fid` ist innerhalb von `uebernehmen()` bereits bekannt, kein `faelle[faelle.length-1]`-Umweg nötig;
-Beispiel oben nur zur Verdeutlichung des Rückgabewerts.)
+Kein `openFallakte(...)`-Zusatzaufruf nötig: `openDetail()` ist bereits ein reiner Alias auf
+`openFallakte()` (`function openDetail(id){openFallakte(id);}`,
+[index.html:6193](../../../index.html#L6193)), und `uebernehmen()` ruft an seinem Ende bereits
+`renderAll();openDetail(fid);` ([index.html:4814](../../../index.html#L4814)) — der Aufruf
+`uebernehmen(id,"S. Koordination")` öffnet die Fallakte also schon von selbst, ohne dass an
+`uebernehmen()` etwas geändert werden müsste.
 
 ### 7.9 Fallakte — Rückfragen-Checkliste im Werkbank-Typ „rueckruf"
 
@@ -445,8 +553,40 @@ if(typ==="rueckruf"&&f.rueckfragen&&f.rueckfragen.length)
 ([index.html:6293](../../../index.html#L6293)). Fällt `f.rueckfragen` leer/`undefined` aus (Fall nicht
 aus einem Entscheidungsfall entstanden), greift der bisherige generische Zweig unverändert.
 
-`f.rueckfragen` wird in `uebernehmen()` ([index.html:4802](../../../index.html#L4802)) beim
-Fall-Anlegen befüllt: `rueckfragen: egVollstaendigkeit(m).filter(c=>!c.ok).map(c=>({frage:c.frage,done:false}))`.
+### 7.10 `uebernehmen()` — vollständiger Diff
+
+`uebernehmen()` ([index.html:4802-4815](../../../index.html#L4802)) ist nach §7.5/§6.1 die **einzige**
+verbleibende Stelle, die Fälle anlegt, und muss jetzt vom Eingang-Objekt lesen statt von den
+entfallenden Globalen (`egSaluto`/`egHinweis`, §9) — plus zwei neue Felder:
+
+```diff
+ function uebernehmen(id,owner){
+   const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
+   owner=owner||TEAM[0];
+   m.done=true;
+   const fid=Math.max(...faelle.map(x=>x.id))+1;
+   const _log=[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit+" — zugewiesen an "+owner]];
+-  if(egHinweis)_log.push([dstr(0),"[Hinweis bei Zuordnung] "+egHinweis]);
++  if(m.hinweis)_log.push([dstr(0),"[Hinweis bei Zuordnung] "+m.hinweis]);
+   faelle.push({id:fid,name:"Neuer Fall (aus Eingang)",alter:null,rolle:"offen",kanal:m.kanal,quelle:m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.kanal,
+     achse:m.achse,kt:"Unklar",status:"Neu",owner:owner,aufgabe:STATUS_AUFGABE["Neu"],frist:dstr(0),
+-    saluto:egSaluto,zuordnungsHinweis:egHinweis||"",docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
++    saluto:m.saluto===true,zuordnungsHinweis:m.hinweis||"",
++    sterne:m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt)),
++    rueckfragen:egVollstaendigkeit(m).filter(c=>!c.ok).map(c=>({frage:c.frage,done:false})),
++    docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
+     log:_log});
+   m.fallId=fid;
+   renderAll();openDetail(fid);
+ }
+```
+
+Feldname `zuordnungsHinweis` bleibt unverändert (bestehender Konsument:
+`faHinweis`-Anzeige in `renderFallakte()`, [index.html:6772](../../../index.html#L6772)) — nur die
+Quelle rechts vom Doppelpunkt ändert sich von der globalen Variable auf `m.hinweis`. `saluto` liest
+`m.saluto===true` statt `egSaluto`, um einen etwaigen `undefined`-Zustand (Anfrage nie geöffnet, s.
+Lazy-Init in §7.5) hart auf `false` zu normalisieren. `openDetail(fid)` bleibt unverändert — bereits
+Alias auf `openFallakte(fid)` ([index.html:6193](../../../index.html#L6193), s. §7.8).
 
 ---
 
@@ -462,26 +602,36 @@ Fall-Anlegen befüllt: `rueckfragen: egVollstaendigkeit(m).filter(c=>!c.ok).map(
 3. **Genau 2 Entscheidungsfälle:** „Braucht Entscheidung (2)" zeigt exakt die Ids 101 und 103; 103 zeigt
    beim Öffnen SalutoCare als Achse/Premium-Signal.
 4. **Checkliste + Rückfragen-Übertrag:** id 101 öffnen → Checkliste zeigt mindestens ein ✗. Gruppe
-   „Innere" wählen, freigeben. In `ma-mode`/Koordinatorin-Pool erscheint die Anfrage unter „Innere". Auf
+   „Innere" wählen, freigeben. In `ma-mode`/Koordinatorin-Pool erscheint die Anfrage im **oberen**
+   Block „Offene Anfragen deiner Gruppe(n)" (Innere gehört zu `TEAM_ACHSE["S. Koordination"]`). Auf
    „Übernehmen" klicken → Fallakte öffnet direkt, Werkbank-Typ „rueckruf" zeigt eine abhakbare Liste mit
    genau den zuvor als ✗ markierten Punkten, Checkbox-Klick hakt ab und bleibt nach `renderFallakte()`
    erhalten (`f.rueckfragen[i].done` persistiert am Fall-Objekt).
-5. **Sterne-Override wandert in den Fall:** In id 103 die Sterne manuell auf 5 setzen, Gruppe
-   „SalutoCare" wählen, freigeben, im Pool übernehmen → Fallakte-Kopf zeigt 5 Sterne (nicht den
-   Default aus `sterneVon()`).
+5. **Sterne-Override wandert in den Fall, Pool-Erreichbarkeit über Gruppengrenzen:** In id 103 die
+   Sterne manuell auf 5 setzen, Gruppe „SalutoCare" wählen, freigeben. Da SalutoCare **nicht** zu
+   `TEAM_ACHSE["S. Koordination"]` gehört, erscheint die Anfrage **nicht** im oberen Block, sondern nur
+   im eingeklappten „Weitere Gruppen (N)" — aufklappen, dort übernehmen → Fallakte-Kopf zeigt 5 Sterne
+   (nicht den Default aus `sterneVon()`).
 6. **Pull-Prinzip / keine vorzeitige Fall-Anlage:** Nach Schritt 3 der Abnahme (Gruppe zugewiesen,
    noch nicht übernommen) existiert **kein** neuer Eintrag in `faelle[]` mit `owner==="S. Koordination"`
    für diese `m.id` — erst nach Klick auf „Übernehmen" im Pool-Block entsteht der Fall.
 7. **SalutoCare/Hinweis überleben den Zeitversatz:** Bei id 103 den SalutoCare-Toggle aktiv lassen und
-   einen Hinweistext eintragen, freigeben, **danach** eine andere Anfrage öffnen und schließen (um die
-   globalen `egSaluto`/`egHinweis`-Variablen zu überschreiben), dann erst im Pool übernehmen → der
-   entstandene Fall zeigt trotzdem `saluto:true` und den ursprünglichen Hinweistext (Beweis, dass
-   `m.saluto`/`m.hinweis` und nicht die globalen Variablen gelesen wurden).
-8. **Mobile (390px):** Alle obigen Schritte 1–7 wiederholt bei 390px Breite — `#egDetail` als
+   einen Hinweistext eintragen, freigeben, **danach** eine andere Entscheidungsfall-Anfrage öffnen,
+   dort ebenfalls Toggle/Hinweis anders setzen (um zu beweisen, dass es keine gemeinsame globale
+   Variable mehr gibt, die beide Zeilen teilen), dann erst id 103 im Pool übernehmen → der entstandene
+   Fall zeigt `saluto:true` und den ursprünglich für id 103 eingetragenen Hinweistext, unbeeinflusst von
+   der zwischenzeitlichen Interaktion mit der anderen Zeile (Beweis, dass `m.saluto`/`m.hinweis`
+   pro Eingang-Objekt und nicht in einer einzigen globalen Variable gehalten werden).
+8. **`simulateInbound()` legt keinen Fall mehr direkt an:** Simulation auslösen → nach dem
+   „in"-Toast folgt nach 1,6s entweder „Automatisch verteilt" (mit Gruppenname) oder „Braucht
+   Entscheidung" — in keinem Fall ein Eintrag in `faelle[]` direkt aus dieser Funktion heraus
+   (`faelle.length` vor/nach dem Auslösen unverändert, bis eine tatsächliche Übernahme über den
+   Pool erfolgt).
+9. **Mobile (390px):** Alle obigen Schritte 1–8 wiederholt bei 390px Breite — `#egDetail` als
    Bottom-Sheet (bestehendes `.overlay`-Verhalten, kein Docking-Media-Query aktiv), Pool-Karten im
-   `ma-mode` einspaltig, keine horizontale Überlauf.
-9. **0 Console-Errors** bei allen obigen Schritten, in beiden Breiten.
-10. **Unberührte Bereiche:** `.rp-*`/`.rpd-*`/`.rsp-*`/`.mx-*`-Elemente, `#refOverlay`,
+   `ma-mode` einspaltig (beide Ebenen), keine horizontale Überlauf.
+10. **0 Console-Errors** bei allen obigen Schritten, in beiden Breiten.
+11. **Unberührte Bereiche:** `.rp-*`/`.rpd-*`/`.rsp-*`/`.mx-*`-Elemente, `#refOverlay`,
     `#dbDetail`/`#rsDetail`-Verhalten unverändert; Anzahl der `@keyframes`-Blöcke im Stylesheet weiterhin
     genau 9.
 
@@ -496,6 +646,9 @@ Fall-Anlegen befüllt: `rueckfragen: egVollstaendigkeit(m).filter(c=>!c.ok).map(
 - `egSummaryHtml()`: [index.html:4344](../../../index.html#L4344)
 - `openEgDetail()`: [index.html:4375](../../../index.html#L4375)
 - `egSetOwner()`/`egToggleSaluto()`/`ownerVorschlag()`: [index.html:4409-4417](../../../index.html#L4409)
+  — `egSetOwner()` und `ownerVorschlag()` werden von dieser Spec vollständig entfernt (letzte
+  Aufrufstellen entfallen, §6.1/§7.5); `egToggleSaluto()` bleibt namensgleich bestehen, nur ihr Rumpf
+  ändert sich (§7.5).
 - `eingang[]` Seeds: [index.html:4238-4247](../../../index.html#L4238)
 - `INBOUND_POOL`/`simulateInbound()`: [index.html:4705](../../../index.html#L4705)/[index.html:4759](../../../index.html#L4759)
 - `erkenneSignale()`/`sterneAusSignal()`/`sterneHtml()`: [index.html:4723](../../../index.html#L4723)/[index.html:4743](../../../index.html#L4743)/[index.html:4924](../../../index.html#L4924)
@@ -512,3 +665,18 @@ Fall-Anlegen befüllt: `rueckfragen: egVollstaendigkeit(m).filter(c=>!c.ok).map(
 - `sterneVon()`: [index.html:4922](../../../index.html#L4922); `MT_NOTIZ_LABEL`: [index.html:6293](../../../index.html#L6293); `ACHSE_COL`/`STATUS`: [index.html:4201](../../../index.html#L4201)/[index.html:4174](../../../index.html#L4174)
 - Obsolet werdende CSS (`.eg-triage`/`.eg-row`/`.eg-v`/`.eg-grund`/`.egd-owners`/`.egd-owner*`), einzige
   Verwender bestätigt in `egSummaryHtml()`/`openEgDetail()`: [index.html:2987-2996,3041-3047](../../../index.html#L2987)
+- `openDetail()` — bereits Alias auf `openFallakte()`, keine Änderung nötig (§7.8/§7.10):
+  [index.html:6193](../../../index.html#L6193)
+- `findeOderErstellePerson()`: [index.html:4592](../../../index.html#L4592) (verliert einzige
+  Aufrufstelle durch §6.1, bleibt bewusst unangetastet stehen, s. §6.1)
+
+### Zu entfernende JS-Symbole (durch diese Spec vollständig unbenutzt)
+
+- `egOwner`, `egSetOwner()` — ersetzt durch `egGruppe`/`egGruppeWaehlen()` (§7.5)
+- `egSaluto`, `egHinweis` (globale Zwischenspeicher-Variablen) — ersetzt durch direkte Schreibzugriffe
+  auf `m.saluto`/`m.hinweis` (§7.5); `egToggleSaluto()`/eine neue `egHinweisSetzen()` schreiben direkt
+  auf das jeweilige `eingang[]`-Objekt
+- `ownerVorschlag()` — alle drei Aufrufstellen ([index.html:4377](../../../index.html#L4377),
+  [index.html:4390](../../../index.html#L4390), [index.html:4777](../../../index.html#L4777)) entfallen
+  durch §7.5 bzw. §6.1; die Funktion selbst wird mitentfernt, da sie ausschließlich durch diese Spec
+  orphaned wird (kein vorbestehender toter Code)
