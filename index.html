@@ -3135,6 +3135,15 @@ summary.rk::-webkit-details-marker{display:none}
 .egt-group-name{font-weight:600}
 .egt-group-pool{font-size:12.5px;color:var(--muted)}
 .egt-verteilt{padding:12px 14px;background:var(--paper2);border:1px solid var(--hair);border-radius:8px;font-size:13.5px;color:var(--ink-soft)}
+/* Runde 6 Punkt 1 (§7.7): .egt-entscheidung/.egt-protokoll — Leiter-Eingangsliste in drei Zonen
+   statt einer flachen Liste (Braucht Entscheidung / aggregiertes Auto-Verteilungs-Protokoll / Rest). */
+.egt-entscheidung{margin-bottom:8px}
+.egt-entscheidung .kicker{margin-bottom:8px}
+.egt-protokoll{margin:14px 0;padding:12px 14px;background:var(--paper2);border:1px solid var(--hair);border-radius:8px}
+.egt-protokoll p{margin:0;font-size:13.5px;color:var(--ink-soft)}
+.egt-protokoll details{margin-top:8px}
+.egt-protokoll-row{font-size:12.5px;color:var(--muted);padding:4px 0;border-top:1px solid var(--hair)}
+.egt-protokoll-row:first-of-type{border-top:0}
 </style>
 </head>
 <body>
@@ -4856,7 +4865,7 @@ function simulateInbound(){
  },1600);
 }
 function renderEingang(){
-  document.getElementById("inbox").innerHTML=eingang.map(m=>{
+  function mailRow(m){
     const head="<button class='mrow' onclick='openEgDetail("+m.id+")'>"
       +"<span class='chico'>"+(CHAN_ICON[m.kanal]||CHAN_ICON["E-Mail"])+"</span>"
       +"<span class='mhtxt'><span class='mtit'>"+escapeHtml(m.tit)+"</span>"
@@ -4865,7 +4874,19 @@ function renderEingang(){
       +(m.done?"<span class='ok-chip mini'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall")+"</span>":"")+"</span></span>"
       +"<span class='mail-chev'>›</span></button>";
     return "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"+head+"</article>";
-  }).join("");
+  }
+  const entscheidung=eingang.filter(m=>!m.done&&m.typ!=="passiv"&&!m.gruppe);
+  const autoV=eingang.filter(m=>m.autoVerteilt);
+  const rest=eingang.filter(m=>m.done||m.typ==="passiv");
+  let html="<div class='egt-entscheidung'><div class='kicker'>Braucht Entscheidung ("+entscheidung.length+")</div>"
+    +(entscheidung.length?entscheidung.map(mailRow).join(""):"<p class='empty'>Keine offenen Entscheidungsfälle.</p>")+"</div>";
+  const gruppenZeile=GRUPPEN.map(function(g){const n=autoV.filter(m=>m.gruppe===g).length;return n?escapeHtml(g)+" "+n:null;}).filter(Boolean).join(" · ");
+  html+="<div class='egt-protokoll'><p>Heute automatisch verteilt: "+autoV.length+(gruppenZeile?" · "+gruppenZeile:"")+"</p>"
+    +"<details><summary class='rk'>Einzelne Anfragen ("+autoV.length+")</summary>"
+    +autoV.map(function(m){return "<div class='egt-protokoll-row'>"+escapeHtml(m.wer||m.tit)+" · <b>"+escapeHtml(m.gruppe)+"</b> · "+escapeHtml(m.zeit)+"</div>";}).join("")
+    +"</details></div>";
+  html+=rest.map(mailRow).join("");
+  document.getElementById("inbox").innerHTML=html;
 }
 function uebernehmen(id,owner){
   const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
