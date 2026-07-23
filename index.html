@@ -2972,17 +2972,14 @@ body{accent-color:var(--brass)}
 #view-fallakte .pa-row{font-size:14.5px;padding:9px 0}
 #view-fallakte .pa-k{font-size:11.5px;flex-basis:150px}
 #view-fallakte .pa-v{font-size:14.5px}
-/* Task 3.1 (Punkt 3): Fallakte-Dashboard — Kennzahl-Kacheln (Muster analog .rs-kpi/.g-stat,
-   große Serif-/Statuswerte statt 10px-Label-Listen) + zweispaltiges Layout ab 1024px.
-   #faKacheln/#faNaechste(.fh-hero, wiederverwendet aus Task 1.3) laufen bewusst außerhalb
-   von .fa-cols volle Breite; darunter Werdegang links, restliche Chaps rechts gestapelt. */
-.fa-kacheln{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:18px}
-.fa-kachel{background:var(--paper2);border:1px solid var(--hair2);border-radius:8px;padding:14px 16px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
-.fa-kachel .rk{display:block;font:700 10.5px/1 Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep)}
+/* Task E (Runde 5 Sprint 3, §5/§7): .fk-cols — Zwei-Zonen-Layout Arbeit|Kontext ab 1024px,
+   Arbeit steht als erstes Kind im Markup → Mobile-Stapelreihenfolge "Arbeit zuerst" ohne
+   order/Flex-Reorder-CSS. Ersetzt die alte Kennzahl-Kacheln-Reihe (.fa-kacheln/.fa-kachel,
+   jetzt redundant: Frist ist editierbar in der Hero, Sterne/Achse/KT/Saluto stehen im Kopf,
+   kzChain steht lesend in Abrechnung) sowie die alte .fa-cols/.fa-col-l/.fa-col-r-Aufteilung
+   (Werdegang links/Rest rechts) durch die neue Arbeit/Kontext-Aufteilung. */
 @media(min-width:1024px){
-  .fa-kacheln{grid-template-columns:repeat(3,1fr)}
-  .fa-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+  .fk-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
 }
 /* Task 2.1 (Punkt 1): Eingang-Triage-Karte (Wer/Woher/Was/Wie-konkret) — Doppelrahmen-Etikette
    analog #view-fallakte .chap (Gold-Eckwinkel + Jade-Hairline), eigener Namespace (.eg-*);
@@ -4035,49 +4032,48 @@ summary.rk::-webkit-details-marker{display:none}
       <div id="faHinweis"></div>
       <button class="btn-ghost btn-sm" type="button" onclick="go('faelle','board')">‹ Zurück zum Board</button>
     </header>
-    <div class="fa-kacheln" id="faKacheln"></div>
-    <div class="fh-hero" id="faNaechste">
-      <div class="kicker">Nächste Aufgabe</div>
-      <div id="faAufgabeView"></div>
-      <input id="dAufgabe" type="hidden">
-      <div class="fh-meta">
-        <div><label for="dFrist">Frist</label><span class="due" id="dFristWrap"><input id="dFrist" type="date"></span></div>
-        <div><label for="dOwner">Verantwortlich</label><span class="fh-owner-chip"><span class="ava" id="dOwnerAva"></span><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></span></div>
-      </div>
-      <div class="fh-actions">
-        <button id="dAdvance" class="btn-brass btn-sm" style="width:100%" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
-      </div>
-    </div>
-    <div id="dArbeit"></div>
-    <div class="chap">
-      <h2 class="chap-h2">Steuerung</h2>
-      <div class="mgrid">
-        <details class="d-acc full">
-          <summary>Details &amp; Status</summary>
-          <div class="d-acc-body">
-            <div><label for="dStatus">Status</label><select id="dStatus"></select></div>
-            <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option><option>abgelehnt</option></select></div>
-            <div><label for="dKT">Kostenträger</label><select id="dKT"><option>PKV</option><option>Selbstzahler</option><option>GKV + Komfort</option><option>Beihilfe</option><option>GKV</option></select></div>
-            <div><label for="dConsent">Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
-            <div class="full"><div class="saluto-toggle"><input type="checkbox" id="dSaluto"><span>★ Für <b>SalutoCare</b> geeignet · Premium-Option aktiv anbieten</span></div></div>
-            <div class="full verlustrow" id="rowVerlust"><label for="dVerlust">Verlustgrund (Pflicht bei „Verloren&#8220;)</label>
-              <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
-            </div>
+    <div class="fk-cols">
+      <div class="fk-col-arbeit">
+        <div class="fh-hero" id="faNaechste">
+          <div class="kicker">Nächste Aufgabe</div>
+          <div id="faAufgabeView"></div>
+          <input id="dAufgabe" type="hidden">
+          <div class="fh-meta">
+            <div><label for="dFrist">Frist</label><span class="due" id="dFristWrap"><input id="dFrist" type="date"></span></div>
+            <div><label for="dOwner">Verantwortlich</label><span class="fh-owner-chip"><span class="ava" id="dOwnerAva"></span><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></span></div>
           </div>
-        </details>
-        <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
-        <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
-        <div class="full"><button class="btn-brass" id="dSpeichern" style="width:100%">Speichern</button></div>
+          <div class="fh-actions">
+            <button id="dAdvance" class="btn-brass btn-sm" style="width:100%" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
+          </div>
+        </div>
+        <div id="dArbeit"></div>
+        <div class="chap">
+          <h2 class="chap-h2">Steuerung</h2>
+          <div class="mgrid">
+            <details class="d-acc full">
+              <summary>Details &amp; Status</summary>
+              <div class="d-acc-body">
+                <div><label for="dStatus">Status</label><select id="dStatus"></select></div>
+                <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option><option>abgelehnt</option></select></div>
+                <div><label for="dKT">Kostenträger</label><select id="dKT"><option>PKV</option><option>Selbstzahler</option><option>GKV + Komfort</option><option>Beihilfe</option><option>GKV</option></select></div>
+                <div><label for="dConsent">Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
+                <div class="full"><div class="saluto-toggle"><input type="checkbox" id="dSaluto"><span>★ Für <b>SalutoCare</b> geeignet · Premium-Option aktiv anbieten</span></div></div>
+                <div class="full verlustrow" id="rowVerlust"><label for="dVerlust">Verlustgrund (Pflicht bei „Verloren&#8220;)</label>
+                  <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
+                </div>
+              </div>
+            </details>
+            <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
+            <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
+            <div class="full"><button class="btn-brass" id="dSpeichern" style="width:100%">Speichern</button></div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="fa-cols">
-      <div class="fa-col-l">
+      <div class="fk-col-kontext">
         <div class="chap">
           <h2 class="chap-h2">Werdegang</h2>
           <div id="faWerdegang"></div>
         </div>
-      </div>
-      <div class="fa-col-r">
         <div class="chap">
           <h2 class="chap-h2">Übersicht</h2>
           <div id="faUebersicht"></div>
@@ -6774,10 +6770,6 @@ function renderFallakte(){
     +(f.saluto?"<span class='star'>★ SalutoCare</span>":"");
   document.getElementById("faStage").innerHTML=stageBandHtml(f);
   document.getElementById("faHinweis").innerHTML=f.zuordnungsHinweis?("<div class='fk-hinweis'><span class='kicker'>Hinweis</span> "+escapeHtml(f.zuordnungsHinweis)+"</div>"):"";
-  document.getElementById("faKacheln").innerHTML=
-     "<div class='fa-kachel'><span class='rk'>Frist</span><span class='due "+fristKlasse(f.frist)+"'>"+(f.frist?escapeHtml(fristText(f.frist)):"—")+"</span></div>"
-    +"<div class='fa-kachel'>"+kzChain(f)+"</div>"
-    +"<div class='fa-kachel'>"+sterneHtml(sterneVon({personId:f.personId}))+"</div>";
   document.getElementById("faAufgabeView").innerHTML=aufgabenHeroHtml(f);
   document.getElementById("dAufgabe").value=f.aufgabe||"";
   document.getElementById("dFrist").value=f.frist||"";
@@ -6799,7 +6791,7 @@ function renderFallakte(){
   document.getElementById("faUebersicht").innerHTML="<div class='pa-meta'>"
     +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(f.consent)+"</span></div>"
     +(f.saluto?"<div class='pa-row'><span class='pa-k'>SalutoCare</span><span class='pa-v'>★ Premium-Option geeignet</span></div>":"")
-    +"</div>"+paAkteSlot(f.personId);
+    +"</div>"+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId)+"</details>";
   document.getElementById("faWerdegang").innerHTML=stepper(f.schritte||deriveSchritte(f))
     +"<div class='timeline'>"+f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("")+"</div>";
   const med=inReha.find(p=>p.personId===f.personId);
