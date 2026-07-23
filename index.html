@@ -5534,6 +5534,71 @@ function kpSend(){
  kpClose();
  if(typeof inbToast==="function")inbToast("done","<b>"+emp.length+" Newsletter versendet</b> (Demo)",escapeHtml(_kp.betreff),null);
 }
+/* Runde 6 Punkt 6+7 (§3.2): PAT_REGELN — Automatik-Regeln für Patienten-Gruppen (Newsletter/
+   Gesundheitsbrief/Jahresimpuls/Reaktivierung). Empfänger-Pool = bestand[] (identisch mit
+   dbCockpit()/Stammdaten) — aktive Patienten (lebenszyklus:"patient") sind bewusst NICHT im Pool. */
+const PAT_REGELN=[
+ {id:"newsletter-q",name:"Quartals-Newsletter",zielSterne:[3,4,5],
+  zielLabel:"3★ und mehr, mit Einwilligung",rhythmus:"quartalsweise",
+  aktion:"Quartals-Newsletter mit Reha-/Gesundheitsthemen versenden",anker:"quartal"},
+ {id:"gesundheitsbrief",name:"Gesundheitsbrief & Broschüre",zielSterne:[2,3,4,5],
+  zielLabel:"2★ und mehr, mit Einwilligung",rhythmus:"halbjährlich",
+  aktion:"Gesundheitsbrief + Broschüre versenden",anker:"halbjahr"},
+ {id:"jahresimpuls",name:"SalutoCare-Jahresimpuls",zielSterne:[5],
+  zielLabel:"5★, mit Einwilligung",rhythmus:"jährlich, persönlich",
+  aktion:"Persönlichen Jahresimpuls (Brief + Anruf durch Recovery Manager) senden",
+  anker:{monat:11,tag:1}},
+ {id:"reaktivierung",name:"Reaktivierung ruhender Kontakte",zielSterne:[1,2],
+  zielLabel:"1-2★, ohne Kontakt seit über 12 Monaten, mit Einwilligung",rhythmus:"jährlich",
+  aktion:"Reaktivierungs-Anschreiben senden",anker:{monat:1,tag:1},ruhendAbTage:365}
+];
+let patRegelnAn={"newsletter-q":true,"gesundheitsbrief":true,"jahresimpuls":true,"reaktivierung":true};
+function parToggle(id){patRegelnAn[id]=!patRegelnAn[id];renderRadar();}
+/* patRegelLauf() — nächster Kalenderanker ab heute, rein datumsbasiert, kein Math.random. */
+function patRegelLauf(regel){
+ if(regel.anker==="quartal"){const qm=Math.floor(heute.getMonth()/3)*3;return new Date(heute.getFullYear(),qm+3,1);}
+ if(regel.anker==="halbjahr")return heute.getMonth()<6?new Date(heute.getFullYear(),6,1):new Date(heute.getFullYear()+1,0,1);
+ let d=new Date(heute.getFullYear(),regel.anker.monat,regel.anker.tag);
+ if(d<heute)d=new Date(heute.getFullYear()+1,regel.anker.monat,regel.anker.tag);
+ return d;
+}
+/* patRegelLaufISO() — Datumsformatierung nach lokalen Kalender-Feldern (kein .toISOString(), das würde
+   bei UTC+X-Zeitzonen den lokalen Mitternachts-Anker einen Tag zu früh ausgeben, s. dstr()-Kommentar
+   an heute/Zeile 4272 zur selben UTC/Lokal-Falle). Wird von parKarte() (Task 4) und patAutomatikText()
+   (Task 5) genutzt. */
+function patRegelLaufISO(regel){const d=patRegelLauf(regel);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+/* patRegelEmpfaenger() — live gegen bestand[]: consent=ja + Sterne-Bucket + optionales Ruhe-Kriterium. */
+function patRegelEmpfaenger(regel){
+ return bestand.filter(p=>{
+  if(p.consent!=="ja")return false;
+  if(!regel.zielSterne.includes(sterneVon(p)))return false;
+  if(regel.ruhendAbTage){
+   const per=p.personId?person(p.personId):null;
+   const h=per&&per.historie&&per.historie.length?per.historie[per.historie.length-1].d:null;
+   const tage=h?Math.round((heute-new Date(h))/86400000):0;
+   if(tage<regel.ruhendAbTage)return false;
+  }
+  return true;
+ });
+}
+function parKarte(regel){
+ const empf=patRegelEmpfaenger(regel);
+ const an=patRegelnAn[regel.id];
+ const laufTxt=an
+  ?"Nächster Lauf: "+paDate(patRegelLaufISO(regel))+" · "+empf.length+" Empfänger"
+  :"Pausiert — kein automatischer Lauf";
+ return "<div class='zwa-card'>"
+  +"<div class='zwa-head'><span class='zwa-name' style='margin:0;font-size:17px'>"+escapeHtml(regel.name)+"</span>"
+  +"<label class='par-toggle'><input type='checkbox' "+(an?"checked":"")+" onchange='parToggle(\""+regel.id+"\")'><span class='par-slider'></span></label></div>"
+  +"<p class='zwa-text'>Zielgruppe: "+escapeHtml(regel.zielLabel)+" · Aktion: "+escapeHtml(regel.aktion)+" ("+escapeHtml(regel.rhythmus)+")</p>"
+  +"<div class='par-foot"+(an?"":" muted")+"'>"+laufTxt+"</div>"
+  +"</div>";
+}
+function renderPatRegelnHtml(){
+ return "<div class='ar-feedhead'>Automatik-Regeln</div>"
+  +"<p class='db-intro'>Regeln laufen automatisch — Versand nur an Kontakte mit Einwilligung.</p>"
+  +"<div class='zwa-group'>"+PAT_REGELN.map(parKarte).join("")+"</div>";
+}
 function dbCockpit(){
   const c=b=>bestand.filter(p=>bucketOf(p)===b).length;
   const n5=c("5"),n4=c("4"),n3=c("3"),n2=c("2"),n1=c("1"),nG=c("gesperrt");
@@ -5617,7 +5682,7 @@ function renderRadar(){
         +"<div class='radar-when'><span class='rk'>Voraussichtlich fällig</span><b><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='16' rx='2'/><path d='M3 9h18M8 3v4M16 3v4'/></svg>"+(ok?fmt(r.faelligInTagen):"—")+"</b></div>"
         +"<div class='patient-actions'>"+(ok?"<button class='btn-ghost btn-sm' onclick='arAktion(\"radar:"+(r.personId||escapeHtml(r.name))+"\")'>Wiedervorlage planen</button>":"<button class='btn-brass btn-sm' disabled>Kontaktfreigabe fehlt</button>")+"</div>"
         +"</div>";
-    }).join("")+"</div>";
+    }).join("")+"</div>"+renderPatRegelnHtml();
 }
 function openDbDetail(i){
   if(!matchMedia("(min-width:1024px)").matches)return;
