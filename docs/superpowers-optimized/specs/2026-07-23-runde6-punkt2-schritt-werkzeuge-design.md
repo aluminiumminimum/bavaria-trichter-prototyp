@@ -49,7 +49,7 @@ bekommen einen sprechenden Namen statt „Neuer Fall (aus Eingang)".
 | `f.originalTxt` | `String` | Originalnachricht der Anfrage. Aus `uebernehmen()` kopiert (§6) oder manuell an 3 Bestands-Seeds ergänzt (§7). |
 | `f.originalKanal` | `String` | Eingangskanal der Originalnachricht (z. B. `"Telefon"`), nur Anzeige. |
 | `f.originalZeit` | `String` | Nur bei `uebernehmen()`-erzeugten Fällen (`m.zeit`, z. B. `"vor 25 Min."`); bei den 3 nachgerüsteten Bestands-Seeds bewusst weggelassen — dort ist die Anfrage historisch, ein relativer „vor N Min."-Zeitstempel wäre irreführend neben Fällen, die bereits Tage im Log stehen. |
-| `f.sopDone` | `Object<string,Boolean>` | Persistenter Häkchen-Zustand der SOP-Checkliste, Key `"<f.status>:<Index>"` (z. B. `"Neu:0"`). Ein Punkt gilt je Status-Stufe einzeln als erledigt, nicht fallweit — dieselbe Checkliste kann bei einem späteren Status erneut auftauchen (§5). |
+| `f.sopDone` | `Object<string,Boolean>` | Persistenter Häkchen-Zustand der SOP-Checkliste, Key `"<typ>:<f.status>:<Index>"` (z. B. `"rueckruf:Neu:0"`, typ aus `drawerAufgabenTyp(f)`). Ein Punkt gilt je Typ+Status-Stufe einzeln als erledigt — dieselbe Checkliste kann bei späterem Status erneut auftauchen (§5), und ein manuelles Umtexten der Aufgabe ohne Statuswechsel (Typ-Wechsel via `#dAufgabe`+Speichern) kollidiert nicht mit fremden Häkchen (Review-Fund). |
 | `f.stammOk` | `Boolean` | `true`, sobald die Stammdaten-Zeile im rueckruf-Werkzeug bestätigt wurde. Blendet die Zeile dauerhaft aus. |
 
 Bestehende Felder unangetastet. `f.rueckfragen` (Punkt 1) bleibt unverändert Datenquelle für den
@@ -168,7 +168,7 @@ function sopChecklisteHtml(f,typ){
         +" <span class='fkw-tag'>aus der Anfrage</span></label>";
     }).join("");
   const sop=items.map(function(label,i){
-    const done=!!(f.sopDone&&f.sopDone[f.status+":"+i]);
+    const done=!!(f.sopDone&&f.sopDone[typ+":"+f.status+":"+i]);
     return "<label class='egt-check-item'><input type='checkbox' "+(done?"checked":"")
       +" onchange='sopToggle("+i+")'> "+escapeHtml(label)+"</label>";
   }).join("");
@@ -178,7 +178,7 @@ function sopChecklisteHtml(f,typ){
 function sopToggle(i){
   const f=aktuellerFall;if(!f)return;
   if(!f.sopDone)f.sopDone={};
-  const key=f.status+":"+i;
+  const key=drawerAufgabenTyp(f)+":"+f.status+":"+i;
   f.sopDone[key]=!f.sopDone[key];
   renderFallakte();
 }
@@ -252,6 +252,17 @@ Namen wie „Anna Muster" enthalten so ein Muster nie, ihr Verhalten ändert sic
 ```diff
 -  document.getElementById("faName").textContent=f.name+(f.alter?" ("+f.alter+")":"");
 +  document.getElementById("faName").textContent=f.name+(f.alter&&!/\(\d+\)/.test(f.name)?" ("+f.alter+")":"");
+```
+
+**Zweite Fundstelle (Review-Fund, gleiche Guard-Bedingung):** die Board-Karte in `makeBoardCol()`
+([index.html:4984](../../../index.html#L4984)) verkettet Name+Alter nach demselben Muster
+(`escapeHtml(x.name)+" <span class='alter'>"+(x.alter?"("+x.alter+")":"")`). Ohne Guard zeigt das
+Board für übernommene Fälle mit konstruiertem Namen (ids 101/103) „Patient/Patientin (72) · Innere (72)".
+Fix analog:
+
+```diff
+-  ...+(x.alter?"("+x.alter+")":"")...
++  ...+(x.alter&&!/\(\d+\)/.test(x.name)?"("+x.alter+")":"")...
 ```
 
 ---
@@ -393,9 +404,10 @@ Verhalten, kein Sonderfall nötig).
 ```diff
  function advanceFallStatus(f){
   const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return false;
-+  const _items=SOP_CHECKLISTE[drawerAufgabenTyp(f)];
++  const _typ=drawerAufgabenTyp(f);
++  const _items=SOP_CHECKLISTE[_typ];
 +  if(_items){
-+    const _erledigt=_items.filter((label,i)=>f.sopDone&&f.sopDone[f.status+":"+i]);
++    const _erledigt=_items.filter((label,i)=>f.sopDone&&f.sopDone[_typ+":"+f.status+":"+i]);
 +    if(_erledigt.length) f.log.push([dstr(0),"Erledigt: "+_erledigt.join(" · ")]);
 +  }
   const ns=STATUS[cur+1]; f.log.push([dstr(0),"Aufgabe erledigt · Status: "+f.status+" → "+ns]);
