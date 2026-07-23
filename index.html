@@ -3144,6 +3144,13 @@ summary.rk::-webkit-details-marker{display:none}
 .egt-protokoll details{margin-top:8px}
 .egt-protokoll-row{font-size:12.5px;color:var(--muted);padding:4px 0;border-top:1px solid var(--hair)}
 .egt-protokoll-row:first-of-type{border-top:0}
+/* Runde 6 Punkt 1 (§7.8): .egt-pool-card — Kompakt-Karte im Koordinations-Pool, wiederverwendet
+   .mt-grid für das Grid-Layout (bereits vorhanden), eigene Karten-Optik analog .radar-card. */
+.egt-pool-card{background:var(--paper2);border:1px solid var(--hair);border-radius:18px;
+  box-shadow:var(--shadow-soft);padding:16px;display:flex;flex-direction:column;gap:8px}
+.egt-pool-zsf{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.egt-pool-weitere{margin-top:16px}
 </style>
 </head>
 <body>
@@ -4027,6 +4034,16 @@ summary.rk::-webkit-details-marker{display:none}
     <div class="mt-termine" id="mtTermine"></div>
 
     <figure class="au-photo au-photo--gold"><img src="assets/kb-komfort-wall.webp" alt="" loading="lazy"><figcaption>Komfort · Klinik Bavaria</figcaption></figure>
+
+    <div class="chap egt-pool" id="egtPoolChap">
+      <div class="kicker">Pool</div>
+      <h2 class="chap-h2">Offene Anfragen deiner Gruppe(n)</h2>
+      <div class="mt-grid" id="egtPoolList"></div>
+      <details class="egt-pool-weitere">
+        <summary class="rk">Weitere Gruppen (<span id="egtPoolWeitereCount">0</span>)</summary>
+        <div class="mt-grid" id="egtPoolWeitereList"></div>
+      </details>
+    </div>
 
     <div class="chap" id="mtJetztChap">
       <div class="kicker">Jetzt</div>
@@ -6559,6 +6576,23 @@ function mtTermineHtml(){
   }).join("")
   +"</div>";
 }
+/* Runde 6 Punkt 1 (§3.2, §7.8): Pool-Block Koordinationsansicht — zweistufig: oben eigene
+   Gruppe(n) (aus TEAM_ACHSE["S. Koordination"]), darunter eingeklappt alle übrigen offenen
+   Pool-Anfragen (kleines Team, aushelfen erlaubt — jede freigegebene Anfrage bleibt erreichbar). */
+function renderEgtPool(){
+  const meineGruppen=TEAM_ACHSE["S. Koordination"]||[];
+  const karte=function(m){
+    return "<article class='egt-pool-card'><p class='egt-pool-zsf'>"+escapeHtml(egZusammenfassung(m))+"</p>"
+      +sterneHtml(m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt)))
+      +"<button class='btn-brass btn-sm' type='button' onclick='egUebernehmenAusPool("+m.id+")'>Übernehmen</button></article>";
+  };
+  const eigene=eingang.filter(m=>!m.done&&m.gruppe&&meineGruppen.includes(m.gruppe));
+  const weitere=eingang.filter(m=>!m.done&&m.gruppe&&!meineGruppen.includes(m.gruppe));
+  document.getElementById("egtPoolList").innerHTML=eigene.length?eigene.map(karte).join(""):"<p class='empty'>Keine offenen Anfragen in deiner Gruppe.</p>";
+  document.getElementById("egtPoolWeitereList").innerHTML=weitere.map(karte).join("");
+  document.getElementById("egtPoolWeitereCount").textContent=weitere.length;
+}
+function egUebernehmenAusPool(id){ uebernehmen(id,"S. Koordination"); }
 function renderMeinTag(){
  const el=document.getElementById("view-meintag");if(!el)return;
  const {jetzt,woche,gut}=mtTodos();
@@ -6579,6 +6613,7 @@ function renderMeinTag(){
  document.getElementById("mtWocheList").innerHTML=woche.length?woche.map(mtCard).join(""):"<p class='empty'>Keine weiteren Aufgaben diese Woche.</p>";
  document.getElementById("mtGutList").innerHTML=gut.length?gut.map(mtInfoCard).join(""):"<p class='empty'>Nichts Besonderes vorgemerkt.</p>";
  renderMtProtokolle();
+ renderEgtPool();
 }
 /* Task 6.1 (Punkt 6+7): Segment-Toggle Mein Tag ⇄ Protokolle — reines classList-Toggle,
    kein Routing/Hash, kein neuer Top-Level-View, ma-mode-Gate bleibt unangetastet. */
