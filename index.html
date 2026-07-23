@@ -4856,6 +4856,57 @@ function egVollstaendigkeit(m){
      frage:"Vollständige Kontaktdaten (Telefon/E-Mail) erfragen"}
   ];
 }
+/* Runde 6 Punkt 2 (§4): fallFakten()/fallAbsenderTyp() — deterministische Kernfakten-Extraktion
+   (Alter/Diagnose/Kostenträger/Frist/Absender-Typ) aus Originaltext oder Fall-Feldern. Nimmt
+   wahlweise einen Fall (f.originalTxt) oder ein Eingang-Objekt (m.txt, für die Namenskonstruktion
+   in uebernehmen(), Task 6) — daher liest sie f.originalTxt||f.txt. */
+const KT_LABEL={pkv:"PKV",gkv:"GKV",beihilfe:"Beihilfe",selbstzahler:"Selbstzahler"};
+const DIAG_LABEL={schlaganfall:"Schlaganfall","hüft-tep":"Hüft-TEP","knie-tep":"Knie-TEP",
+  "herz-op":"Herz-OP",beatmung:"Beatmung",weaning:"Weaning",hirnblutung:"Hirnblutung"};
+
+function fallAbsenderTyp(f){
+  // 1) saubere Rolle direkt am Fall (statische faelle[]-Seeds wie Anna Muster) — höchste Priorität
+  if(f.rolle==="Angehörige") return "Angehörige";
+  if(f.rolle==="Patient selbst") return "Patient/in selbst";
+  if(f.rolle==="Zuweiser") return /sozialdienst|entlassmanagement/i.test((f.quelle||"")+" "+(f.wer||""))?"Sozialdienst":"Zuweisende:r Arzt";
+  // 2) Fallback über wer/Text — nötig für Eingang-Objekte UND für uebernehmen()-erzeugte Fälle,
+  //    deren f.rolle bis heute hart "offen" ist und nie in eine der obigen drei Kategorien fällt
+  //    (bekannter Bestandszustand, hier bewusst nicht angefasst, s. Spec §9/§11).
+  const ctx=(f.wer||"")+" "+(f.originalTxt||f.txt||"");
+  if(/sozialdienst|entlassmanagement/i.test(ctx)) return "Sozialdienst";
+  if(/ehefrau|ehemann|tochter|sohn|familie|angehörige/i.test(ctx)) return "Angehörige";
+  if(/hausarzt|privatärztin|privatarzt|\bdr\.|\bärztin\b|\barzt\b/i.test(ctx)) return "Zuweisende:r Arzt";
+  if(/fragt selbst|ich (bin|interessiere)|selbstzahler/i.test(ctx)) return "Patient/in selbst";
+  return null;
+}
+
+function fallFakten(f){
+  const txt=String(f.originalTxt||f.txt||"");
+  const out=[];
+  const alterM=/\((\d{1,3})\)|(\d{1,3})\s*(?:jahre|j\.)\b/i.exec(txt);
+  const patientAlter=f.patient&&f.patient.alter!=null?f.patient.alter:null;
+  const alter=alterM?+(alterM[1]||alterM[2]):(f.alter!=null?f.alter:patientAlter);
+  if(alter) out.push({typ:"alter",text:alter+" J.",raw:alter});
+
+  const diagM=/(schlaganfall|hüft-tep|knie-tep|herz-op|beatmung|weaning|hirnblutung)/i.exec(txt);
+  if(diagM) out.push({typ:"diagnose",text:DIAG_LABEL[diagM[0].toLowerCase()]});
+  else if(f.achse&&f.achse!=="Unklar") out.push({typ:"diagnose",text:f.achse});
+
+  const ktM=/\bpkv\b|\bgkv\b|beihilfe|selbstzahler/i.exec(txt);
+  if(ktM) out.push({typ:"kt",text:KT_LABEL[ktM[0].toLowerCase()]});
+  else if(f.kt&&f.kt!=="Unklar") out.push({typ:"kt",text:f.kt});
+
+  // eigenes, volleres Muster — NICHT identisch mit erkenneSignale()s fristMatch: dessen
+  // "entlassung\s+(?:am\s+)?([\wäöü.]+)" matcht bei "Entlassung in 4 Tagen" nur "Entlassung in"
+  // (Tage-Zahl geht verloren), hier deshalb die Tage-Varianten bewusst vor die generische gestellt.
+  const fristM=/entlassung\s+in\s+\d+\s+tagen|entlassung\s+am\s+[\wäöü.]+|übernahme\s+in\s+\d+\s+tagen|in\s+\d+\s+tagen|dringend|möglichst schnell/i.exec(txt);
+  if(fristM) out.push({typ:"frist",text:fristM[0]});
+
+  const absender=fallAbsenderTyp(f);
+  if(absender) out.push({typ:"absender",text:absender});
+
+  return out; // fehlende Fakten werden einfach nicht gepusht — keine leeren Chips
+}
 /* Runde 6 Punkt 1 (§6): klassifiziereEingang() — dreigleisiges Triage-Modell (auto/entscheidung/passiv),
    konsumiert von simulateInbound() (Task 3.8) und egSummaryHtml()/openEgDetail() (Task 3.4/3.5). */
 function klassifiziereEingang(m){
