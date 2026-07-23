@@ -4091,7 +4091,7 @@ summary.rk::-webkit-details-marker{display:none}
       <div class="pa-head" id="faHeadMeta"></div>
       <div id="faStage"></div>
       <div id="faHinweis"></div>
-      <button class="btn-ghost btn-sm" type="button" onclick="go('faelle','board')">‹ Zurück zum Board</button>
+      <button class="btn-ghost btn-sm" type="button" id="faBackBtn" onclick="faZurueck()">‹ Zurück zum Board</button>
     </header>
     <div class="fk-cols">
       <div class="fk-col-arbeit">
@@ -7341,6 +7341,14 @@ function applyHash(){
    openFallakte() setzt nur die ID und navigiert; gerendert wird zentral in go()'s Zweig
    "if(dest==='fallakte')renderFallakte();", damit es auch bei direktem Hash-Aufruf/Reload greift. */
 function openFallakte(id){_fallakteId=id;mtCloseOverlays();go('fallakte');}
+/* Runde 6 Punkt 8: gemeinsamer Zurück-Handler des Fallakte-Buttons — Leitung-Verhalten unverändert
+   (go('faelle','board')); im ma-mode zusätzlich renderMeinTag(), damit Aufgabenliste/Fortschritt nach
+   einem Fallakte-Besuch (advanceFall()/Pool-Übernahme) sofort aktuell sind, statt erst beim nächsten
+   mtEnter(). Label wird in renderFallakte() gesetzt. */
+function faZurueck(){
+ go('faelle','board');
+ if(document.body.classList.contains("ma-mode"))renderMeinTag();
+}
 /* Task A (Runde 5 Sprint 3, §3): Kopf-Prozessband — horizontale Variante von stepper()/deriveSchritte(f),
    keine neue Datenquelle, nur andere Darstellung derselben 6 Werdegang-Stufen. Identische Semantik zum
    vertikalen .stepper in der Kontext-Zone: Jade gefüllt = done, Gold = current, hohl = zukünftig. */
@@ -7357,6 +7365,7 @@ function renderFallakte(){
   const f=faelle.find(x=>x.id===_fallakteId);
   if(!f){go('faelle','board');return;}
   aktuellerFall=f;
+  document.getElementById("faBackBtn").textContent=document.body.classList.contains("ma-mode")?"‹ Zurück zu Mein Tag":"‹ Zurück zum Board";
   document.getElementById("faName").textContent=f.name+(f.alter&&!/\(\d+\)/.test(f.name)?" ("+f.alter+")":"");
   document.getElementById("faSub").textContent=f.achse+" · "+f.kt+" · "+f.quelle+" · Kanal: "+f.kanal;
   document.getElementById("faAva").textContent=initialen(f.name);
