@@ -3105,8 +3105,8 @@ summary.rk::-webkit-details-marker{display:none}
 .egd-saluto{display:block;width:100%;min-height:44px;margin-bottom:8px;font:600 13.5px/1 Inter;
   border:1px solid var(--hair);border-radius:12px;background:var(--paper);color:var(--ink-soft);cursor:pointer}
 .egd-saluto.on{border-color:var(--brass);background:var(--brass-soft);color:var(--brass-deep)}
-.ah-hinweis,.mt-shinweis{margin-top:8px;font-size:12.5px;color:var(--ink-soft)}
-.ah-hinweis .kicker,.mt-shinweis .kicker{display:inline;margin:0 6px 0 0;font-size:10.5px}
+.mt-shinweis{margin-top:8px;font-size:12.5px;color:var(--ink-soft)}
+.mt-shinweis .kicker{display:inline;margin:0 6px 0 0;font-size:10.5px}
 /* Task 1.4 (Punkt 5): .pa-fold — Stammdaten-Akte im Fall-Drawer/In-Reha-Overlay standardmäßig zugeklappt */
 .pa-fold{margin-top:14px}
 .pa-fold>summary::after{content:"›";display:inline-block;margin-left:6px;font-size:15px;line-height:1;color:var(--faint);transition:transform .2s}
@@ -3129,6 +3129,23 @@ summary.rk::-webkit-details-marker{display:none}
 .ts-achse{display:flex;gap:8px;flex-wrap:wrap}
 .ts-achse-chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:6px 11px;border-radius:99px;border:1px solid var(--hair);background:var(--paper)}
 .ts-achse-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* Task A (Runde 5 Sprint 3, §3): .fk-stageband — horizontales Prozessband im Fallakte-Kopf +
+   .fk-hinweis — goldene Zuordnungs-Hinweis-Zeile, nur hier, nicht mehr zusätzlich in aufgabenHeroHtml(). */
+.fk-stageband{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin:10px 0 2px}
+.fk-stage{display:inline-flex;align-items:center;gap:6px;font:600 11px/1 Inter;letter-spacing:.01em;color:var(--muted);white-space:nowrap}
+.fk-stage-dot{width:9px;height:9px;border-radius:50%;border:2px solid var(--brass);background:transparent;flex-shrink:0}
+.fk-stage.done .fk-stage-dot{background:var(--sage);border-color:var(--sage)}
+.fk-stage.current .fk-stage-dot{background:var(--brass);border-color:var(--brass);box-shadow:0 0 0 3px rgba(185,145,73,.25)}
+.fk-stage.current .fk-stage-label{color:var(--brass-deep);font-weight:700}
+.fk-stage.done .fk-stage-label{color:var(--ink-soft)}
+.fk-stage-sep{width:16px;height:2px;background:var(--brass-line);margin:0 6px;flex-shrink:0}
+.fk-hinweis{margin-top:8px;display:inline-block;font-size:12.5px;color:var(--brass-deep);
+  background:var(--brass-soft);border:1px solid var(--brass-line);border-radius:8px;padding:6px 10px}
+.fk-hinweis .kicker{display:inline;margin:0 6px 0 0;font-size:10.5px}
+@media(max-width:479px){
+  .fk-stage-label{display:none}
+  .fk-stage-sep{width:10px;margin:0 3px}
+}
 </style>
 </head>
 <body>
@@ -4048,6 +4065,8 @@ summary.rk::-webkit-details-marker{display:none}
       <h1><span class="ava" id="faAva"></span> <span id="faName"></span></h1>
       <p class="lblline" id="faSub"></p>
       <div class="pa-head" id="faHeadMeta"></div>
+      <div id="faStage"></div>
+      <div id="faHinweis"></div>
       <button class="btn-ghost btn-sm" type="button" onclick="go('faelle','board')">‹ Zurück zum Board</button>
     </header>
     <div class="fa-kacheln" id="faKacheln"></div>
@@ -6111,8 +6130,7 @@ function aufgabenHeroHtml(f){
   +"<div class='ah-meta'>"
   +"<span class='ah-owner'><span class='ava'>"+initialen(f.owner)+"</span>"+escapeHtml(f.owner)+"</span>"
   +(f.frist?"<span class='due "+fk+"'>Frist "+escapeHtml(ft)+"</span>":"")
-  +"</div>"
-  +(f.zuordnungsHinweis?"<div class='ah-hinweis'><span class='kicker'>Hinweis</span> "+escapeHtml(f.zuordnungsHinweis)+"</div>":"");
+  +"</div>";
 }
 /* Task 1.1 (Punkt 2): #dArbeit — aufgabentyp-abhängiger Arbeitsbereich im Fall-Drawer.
    drawerAufgabenTyp() klassifiziert f.aufgabe per Regex (Stil analog aufgabeIcon()/mtTyp()),
@@ -6815,14 +6833,31 @@ function applyHash(){
    openFallakte() setzt nur die ID und navigiert; gerendert wird zentral in go()'s Zweig
    "if(dest==='fallakte')renderFallakte();", damit es auch bei direktem Hash-Aufruf/Reload greift. */
 function openFallakte(id){_fallakteId=id;mtCloseOverlays();go('fallakte');}
+/* Task A (Runde 5 Sprint 3, §3): Kopf-Prozessband — horizontale Variante von stepper()/deriveSchritte(f),
+   keine neue Datenquelle, nur andere Darstellung derselben 6 Werdegang-Stufen. Identische Semantik zum
+   vertikalen .stepper in der Kontext-Zone: Jade gefüllt = done, Gold = current, hohl = zukünftig. */
+function stageBandHtml(f){
+ const schritte=f.schritte||deriveSchritte(f);
+ return "<div class='fk-stageband'>"+schritte.map(function(s,i){
+   const cls=s.done?"done":(s.current?"current":"");
+   return (i>0?"<span class='fk-stage-sep'></span>":"")
+    +"<span class='fk-stage "+cls+"'><span class='fk-stage-dot'></span><span class='fk-stage-label'>"+escapeHtml(s.label)+"</span></span>";
+ }).join("")+"</div>";
+}
 function renderFallakte(){
   if(!_fallakteId){go('faelle','board');return;}
   const f=faelle.find(x=>x.id===_fallakteId);
   if(!f){go('faelle','board');return;}
+  aktuellerFall=f;
   document.getElementById("faName").textContent=f.name+(f.alter?" ("+f.alter+")":"");
   document.getElementById("faSub").textContent=f.achse+" · "+f.kt+" · "+f.quelle+" · Kanal: "+f.kanal;
   document.getElementById("faAva").textContent=initialen(f.name);
-  document.getElementById("faHeadMeta").innerHTML="<span class='pill-a' style='background:"+(ACHSE_COL[f.achse]||"var(--unklar)")+"'>"+escapeHtml(f.achse)+"</span>"+sterneHtml(sterneVon({personId:f.personId}));
+  document.getElementById("faHeadMeta").innerHTML="<span class='pill-a' style='background:"+(ACHSE_COL[f.achse]||"var(--unklar)")+"'>"+escapeHtml(f.achse)+"</span>"
+    +"<span class='pill-kt'>"+escapeHtml(f.kt)+"</span>"
+    +sterneHtml(sterneVon({personId:f.personId}))
+    +(f.saluto?"<span class='star'>★ SalutoCare</span>":"");
+  document.getElementById("faStage").innerHTML=stageBandHtml(f);
+  document.getElementById("faHinweis").innerHTML=f.zuordnungsHinweis?("<div class='fk-hinweis'><span class='kicker'>Hinweis</span> "+escapeHtml(f.zuordnungsHinweis)+"</div>"):"";
   document.getElementById("faKacheln").innerHTML=
      "<div class='fa-kachel'><span class='rk'>Frist</span><span class='due "+fristKlasse(f.frist)+"'>"+(f.frist?escapeHtml(fristText(f.frist)):"—")+"</span></div>"
     +"<div class='fa-kachel'>"+kzChain(f)+"</div>"
