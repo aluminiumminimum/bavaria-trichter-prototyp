@@ -6301,14 +6301,47 @@ function sopToggle(i){
   f.sopDone[key]=!f.sopDone[key];
   renderFallakte();
 }
+/* Runde 6 Punkt 2 (§8.2): .fkw-*-Helper für dArbeitHtml() — Kernfakten-Chips, zugeklapptes
+   Original, Stammdaten-Bestätigungszeile. Reihenfolge im rueckruf-Zweig (Chips → Stammdaten →
+   Original → Checkliste → Notiz) ist eine Design-Entscheidung dieser Spec: Identität zuerst
+   bestätigen, dann Kontext lesen, dann handeln. */
+function fkwFaktenHtml(f){
+  const fk=fallFakten(f);
+  if(!fk.length) return "";
+  return "<div class='fkw-fakten'>"+fk.map(c=>"<span class='fkw-chip'>"+escapeHtml(c.text)+"</span>").join("")+"</div>";
+}
+function fkwOriginalHtml(f){
+  if(!f.originalTxt) return "";
+  return "<details class='pa-fold'><summary class='rk'>Originalnachricht"
+    +(f.originalKanal?" · "+escapeHtml(f.originalKanal):"")+"</summary>"
+    +"<div class='eg-original'><div class='mtxt'>"+escapeHtml(f.originalTxt)+"</div></div></details>";
+}
+function fkwStammHtml(f){
+  if(f.stammOk) return "";
+  return "<div class='fkw-stamm'>"
+   +"<div><label for='fkwName'>Name</label><input id='fkwName' value=\""+escapeHtml(f.name||"")+"\"></div>"
+   +"<div><label for='fkwAlter'>Alter</label><input id='fkwAlter' type='number' min='18' max='105' value=\""+(f.alter||"")+"\" style='width:70px'></div>"
+   +"<button class='btn-ghost btn-sm' type='button' onclick='fkwStammBestaetigen()'>Bestätigen</button>"
+   +"</div>";
+}
+function fkwStammBestaetigen(){
+ const f=aktuellerFall;if(!f)return;
+ const nameEl=document.getElementById("fkwName"),alterEl=document.getElementById("fkwAlter");
+ const name=(nameEl?nameEl.value:"").trim(); if(!name)return;
+ f.name=name; f.alter=alterEl&&alterEl.value?+alterEl.value:f.alter; f.stammOk=true;
+ f.log.push([dstr(0),"Stammdaten im Erstkontakt bestätigt"]);
+ renderAll();renderFallakte();
+}
 function dArbeitHtml(f){
  const typ=drawerAufgabenTyp(f);
+ const fakten=fkwFaktenHtml(f);
  if(typ==="kosten")
-   return "<div id='dKZ' class='kz-block'><div class='kicker'>Kostenzusage</div>"+kzChain(f)+kzActions(f)+"</div>"
+   return fakten+"<div id='dKZ' class='kz-block'><div class='kicker'>Kostenzusage</div>"+kzChain(f)+kzActions(f)+"</div>"
+    +sopChecklisteHtml(f,"kosten")
     +"<div class='full' style='margin-top:12px'><label>Kostenzusage-Dokument</label>"
     +"<button class='btn-ghost btn-sm' type='button' onclick='dArbeitKostenUpload()'>⇪ Dokument hochladen (Demo)</button></div>";
  if(typ==="unterlagen")
-   return "<div class='full'><label>Unterlagen <span id='docCnt' style='color:var(--brass-deep)'></span></label>"
+   return fakten+"<div class='full'><label>Unterlagen <span id='docCnt' style='color:var(--brass-deep)'></span></label>"
     +"<div class='docs'>"
     +"<label><input type='checkbox' id='u1' "+(f.docs[0]?"checked":"")+" onchange='updateDocCnt()'> Entlassbrief</label>"
     +"<label><input type='checkbox' id='u2' "+(f.docs[1]?"checked":"")+" onchange='updateDocCnt()'> Befunde</label>"
@@ -6316,25 +6349,21 @@ function dArbeitHtml(f){
     +"<label><input type='checkbox' id='u4' "+(f.docs[3]?"checked":"")+" onchange='updateDocCnt()'> Kostenzusage</label>"
     +"</div></div><button class='btn-ghost btn-sm' type='button' onclick='dArbeitUnterlagenAnfordern()'>Fehlende anfordern</button>";
  if(typ==="angebot")
-   return "<div class='komm-block'><label>Antwort senden</label>"
+   return fakten+sopChecklisteHtml(f,"angebot")+"<div class='komm-block'><label>Antwort senden</label>"
     +"<div class='komm-row'><select id='dReplyKanal'><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select>"
     +"<button class='btn-brass btn-sm' type='button' onclick='sendReply()'><svg viewBox='0 0 24 24' width='14' height='14' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>Antwort senden</button></div>"
     +"<textarea id='dReply' rows='2' placeholder='Antwort an die anfragende Person verfassen … (Demo)'></textarea></div>";
  if(typ==="anreise")
-   return "<div class='kicker'>Anreise-Checkliste</div>"
+   return fakten+"<div class='kicker'>Anreise-Checkliste</div>"
     +"<label><input type='checkbox'> Zimmer reserviert</label>"
     +"<label><input type='checkbox'> Transport geklärt</label>"
     +"<label><input type='checkbox'> Aufnahmetag bestätigt</label>";
- if(typ==="rueckruf"&&f.rueckfragen&&f.rueckfragen.length)
-   return "<div class='egt-rueckfragen'><span class='kicker'>Offene Rückfragen</span>"
-     +f.rueckfragen.map(function(r,i){
-       return "<label><input type='checkbox' "+(r.done?"checked":"")+" onchange='egRueckfrageToggle("+i+")'> "+escapeHtml(r.frage)+"</label>";
-     }).join("")
-     +"</div>"
-     +"<div class='full' style='margin-top:12px'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL.rueckruf)+"</label>"
-     +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
-     +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>";
- return "<div class='full'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL[typ]||MT_NOTIZ_LABEL.allgemein)+"</label>"
+ if(typ==="rueckruf")
+   return fakten+fkwStammHtml(f)+fkwOriginalHtml(f)+sopChecklisteHtml(f,"rueckruf")
+    +"<div class='full' style='margin-top:12px'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL.rueckruf)+"</label>"
+    +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
+    +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>";
+ return fakten+"<div class='full'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL[typ]||MT_NOTIZ_LABEL.allgemein)+"</label>"
    +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
    +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>";
 }
