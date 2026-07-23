@@ -3109,6 +3109,32 @@ summary.rk::-webkit-details-marker{display:none}
   .fk-stage-label{display:none}
   .fk-stage-sep{width:10px;margin:0 3px}
 }
+/* Runde 6 Punkt 1 (§7.2–§7.6): .egt-* — Anfrage-Triage-Werkzeug in #egDetail, ersetzt das alte
+   personenbasierte .egd-owners-Modell durch Sterne-Override + Vollständigkeits-Checkliste +
+   Gruppen-Zuordnung + Verteilt-Lesezweig. .egd-saluto bleibt unverändert bestehen (nur die
+   Datenquelle wechselt von der früheren globalen Toggle-Variable auf m.saluto, s. Plan Task 3.5). */
+.egt-sterne{margin:2px 0 14px}
+.egt-sterne-stars{display:flex;gap:2px}
+.egt-star{background:transparent;border:0;padding:2px;font-size:22px;line-height:1;color:var(--hair2);cursor:pointer;min-width:32px;min-height:32px}
+.egt-star.on{color:var(--brass)}
+@media(hover:hover){.egt-star:hover{color:var(--brass-deep)}}
+.egt-star:focus-visible{outline:2px solid var(--brass);outline-offset:2px;border-radius:4px}
+.egt-sterne-grund{margin:4px 0 0;font-size:12px;color:var(--muted)}
+.egt-check{display:flex;flex-direction:column;gap:8px;margin:10px 0 14px}
+.egt-check-item{display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 10px;border-radius:8px;background:var(--paper2);border:1px solid var(--hair)}
+.egt-check-item.ok .egt-check-ic{color:var(--sage-deep)}
+.egt-check-item.missing .egt-check-ic{color:var(--alert)}
+.egt-check-ic{font-weight:700;width:16px;flex-shrink:0;text-align:center}
+.egt-check-lbl{font-weight:600;color:var(--ink-soft)}
+.egt-check-val{margin-left:auto;color:var(--muted)}
+.egt-check-frage{margin-left:auto;color:var(--brass-deep);font-size:12px}
+.egt-groups{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.egt-group{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;background:var(--paper);
+  border:1px solid var(--hair);border-radius:12px;padding:10px 12px;font:inherit;color:inherit;cursor:pointer;min-height:44px}
+.egt-group.sel{border-color:var(--brass);background:var(--brass-soft)}
+.egt-group-name{font-weight:600}
+.egt-group-pool{font-size:12.5px;color:var(--muted)}
+.egt-verteilt{padding:12px 14px;background:var(--paper2);border:1px solid var(--hair);border-radius:8px;font-size:13.5px;color:var(--ink-soft)}
 </style>
 </head>
 <body>
@@ -4348,32 +4374,41 @@ function egZusammenfassung(m){
  const sig=erkenneSignale(m.txt);
  return (m.wer||"Anfrage")+" — "+[sig.kostentraeger,sig.dringlichkeit?"Frist "+sig.dringlichkeit:null,sig.konkret?"konkrete Anfrage":null].filter(Boolean).join(" · ");
 }
+/* Runde 6 Punkt 1 (§7.2, offener Punkt a): Sterne-Vorschlag-Widget in #egDetail — fünf einzeln
+   klickbare Sterne (nicht ein einziges Span), je mit eigenem onclick/aria-label. Override gewinnt
+   über den aus erkenneSignale() abgeleiteten Vorschlag. */
+function egtSterneHtml(m,sig){
+  const n=m.sterne!=null?m.sterne:sterneAusSignal(sig);
+  const grund=[sig.kostentraeger?sig.kostentraeger+" erkannt":null,sig.dringlichkeit?"Frist "+sig.dringlichkeit:null,sig.konkret?"konkrete Anfrage":null].filter(Boolean).join(" · ");
+  let stars="";
+  for(let i=1;i<=5;i++){
+    stars+="<button type='button' class='egt-star"+(i<=n?" on":"")+"' onclick='egSterneUeberschreiben("+m.id+","+i+")' aria-label='"+i+" von 5 Sternen'>★</button>";
+  }
+  return "<div class='egt-sterne'><div class='egt-sterne-stars' role='group' aria-label='Sterne-Einstufung überschreiben'>"+stars+"</div>"
+    +(grund?"<p class='egt-sterne-grund'>"+escapeHtml(grund)+"</p>":"")+"</div>";
+}
+function egSterneUeberschreiben(id,n){ const m=eingang.find(x=>x.id===id); if(m){m.sterne=n; openEgDetail(id);} }
 function egSummaryHtml(m){
  const sig=erkenneSignale(m.txt);
- const sterneBlock=sterneHtml(sterneAusSignal(sig));
  const achsePill=m.achse?"<span class='pill-a' style='background:"+(ACHSE_COL[m.achse]||"var(--unklar)")+"'>"+escapeHtml(m.achse)+"</span>":"";
  let mid;
- if(m.typ!=="passiv"){
-   const inst=zuweiser.find(z=>m.txt.includes(z.name));
-   const grund=[sig.kostentraeger?sig.kostentraeger+" erkannt":null,sig.dringlichkeit?"Frist "+sig.dringlichkeit:null,sig.konkret?"konkrete Anfrage":null].filter(Boolean).join(" · ");
-   mid="<div class='eg-triage'>"
-     +"<div class='eg-row'><div class='kicker'>Wer</div><div class='eg-v'><span class='ava'>"+initialen(m.wer||"")+"</span>"+escapeHtml(m.wer||"")+"</div></div>"
-     +"<div class='eg-row'><div class='kicker'>Woher</div><div class='eg-v'>"+escapeHtml(m.kanal)+(inst?" · "+escapeHtml(inst.name):"")+"</div></div>"
-     +"<div class='eg-row'><div class='kicker'>Was</div><div class='eg-v'>"+(achsePill||"—")+"</div></div>"
-     +"<div class='eg-row'><div class='kicker'>Wie konkret</div><div class='eg-v'>"+sterneBlock+(grund?"<span class='eg-grund'>"+escapeHtml(grund)+"</span>":"")+"</div></div>"
-     +"</div>";
- }else{
+ if(m.typ==="passiv"){
+   const sterneBlock=sterneHtml(sterneAusSignal(sig));
    mid="<div class='pills'>"+achsePill
      +(sig.kostentraeger?"<span class='pill-kt'>"+escapeHtml(sig.kostentraeger)+"</span>":"")
      +(sig.dringlichkeit?"<span class='due'>"+escapeHtml(sig.dringlichkeit)+"</span>":"")
      +"</div>"+sterneBlock;
+ }else if(!m.done&&!m.gruppe){
+   mid=egtSterneHtml(m,sig);
+ }else{
+   mid="";
  }
  return "<div class='mhead'><div class='ava'>"+initialen(m.wer||"")+"</div><div><h2>"+escapeHtml(m.wer||m.tit)+"</h2>"
    +"<div class='msub2'><span class='chtag'>"+escapeHtml(m.kanal)+"</span> · <span class='mtime'>"+escapeHtml(m.zeit)+"</span> · "
    +"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span></div></div></div>"
    +"<div style='padding:16px 20px'>"+mid
    +"<div class='eg-zsf'><span class='kicker'>Zusammenfassung</span><p>"+escapeHtml(egZusammenfassung(m))+"</p></div>"
-   +"<div class='eg-original'><span class='kicker'>Originalanfrage</span><div class='mtxt'>"+escapeHtml(m.txt)+"</div></div>"
+   +"<details class='egt-original'><summary class='rk'>Originalnachricht</summary><div class='eg-original'><div class='mtxt'>"+escapeHtml(m.txt)+"</div></div></details>"
    +(m.notiz?"<div class='mt-eingang-notiz'>Notiz: "+escapeHtml(m.notiz)+"</div>":"")+"</div>";
 }
 /* Task 2.2 (Punkt 1): #egDetail öffnen — Kopf+Zusammenfassung aus egSummaryHtml(), darunter je nach
@@ -4381,7 +4416,9 @@ function egSummaryHtml(m){
    oder ein schreibgeschützter Verweis (m.done). */
 function openEgDetail(id){
  const m=eingang.find(x=>x.id===id);if(!m)return;
- if(_egId!==id){_egId=id;egOwner=(m.typ!=="passiv"&&!m.done)?ownerVorschlag(m.achse):null;egSaluto=m.achse==="SalutoCare";egHinweis="";}
+ if(m.saluto===undefined)m.saluto=(m.achse==="SalutoCare");
+ if(m.hinweis===undefined)m.hinweis="";
+ if(_egId!==id){_egId=id;egGruppe=null;}
  _closeSiblingDetailRails("egDetail");
  let actions;
  if(m.done){
@@ -4390,20 +4427,26 @@ function openEgDetail(id){
      :"<span class='ok-chip'>✓ in Datenbank</span>";
  }else if(m.typ==="passiv"){
    actions="<button class='btn-brass' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>";
+ }else if(m.gruppe){
+   actions="<div class='egt-verteilt'>Im Pool von <b>"+escapeHtml(m.gruppe)+"</b> — wartet auf Übernahme"+(m.autoVerteilt?" (automatisch verteilt)":" (zugewiesen)")+"</div>";
  }else{
-   actions="<button type='button' class='egd-saluto"+(egSaluto?" on":"")+"' onclick='egToggleSaluto("+m.id+")'>★ SalutoCare / Premium</button>"
-   +"<div class='egd-owners'>"+TEAM.map(function(t,i){
-     const n=faelle.filter(f=>f.owner===t&&f.status!=="Aufgenommen"&&f.status!=="Verloren").length;
-     const sel=egOwner===t,vor=t===ownerVorschlag(m.achse);
-     return "<button type='button' class='egd-owner"+(sel?" sel":"")+"' onclick='egSetOwner("+m.id+","+i+")'>"
-       +"<span class='ava'>"+initialen(t)+"</span><span class='egd-ownername'>"+escapeHtml(t)
-       +(vor?"<span class='egd-vorschlag'>Vorschlag — Achse "+escapeHtml(m.achse)+", geringste Auslastung</span>":"")
-       +"</span><span class='egd-load'>"+n+" offene "+(n===1?"Fall":"Fälle")+"</span></button>";
+   const check=egVollstaendigkeit(m);
+   actions="<div class='egt-check'>"+check.map(function(c){
+     return "<div class='egt-check-item "+(c.ok?"ok":"missing")+"'><span class='egt-check-ic'>"+(c.ok?"✓":"✗")+"</span>"
+       +"<span class='egt-check-lbl'>"+escapeHtml(c.label)+"</span>"
+       +(c.ok?"<span class='egt-check-val'>"+escapeHtml(c.wert)+"</span>":"<span class='egt-check-frage'>"+escapeHtml(c.frage)+"</span>")
+       +"</div>";
+   }).join("")+"</div>"
+   +"<button type='button' class='egd-saluto"+(m.saluto?" on":"")+"' onclick='egToggleSaluto("+m.id+")'>★ SalutoCare / Premium</button>"
+   +"<div class='egt-groups'>"+GRUPPEN.map(function(g){
+     const sel=egGruppe===g, n=egGruppenPoolGroesse(g);
+     return "<button type='button' class='egt-group"+(sel?" sel":"")+"' onclick='egGruppeWaehlen("+m.id+",\""+g+"\")'>"
+       +"<span class='egt-group-name'>"+escapeHtml(g)+"</span>"
+       +"<span class='egt-group-pool'>"+n+" offen</span></button>";
    }).join("")+"</div>"
    +"<label class='kicker' style='margin-top:10px;display:block'>Hinweis für die Bearbeitung (optional)</label>"
-   +"<textarea id='egdHinweis' class='rsz-textarea' placeholder='Worauf muss geachtet werden?' oninput='egHinweis=this.value'>"+escapeHtml(egHinweis)+"</textarea>"
-   +"<button class='btn-brass' style='width:100%;margin-top:4px' onclick='uebernehmen("+m.id+",egOwner)'>Als Fall anlegen &amp; zuordnen</button>"
-   +"<button class='btn-ghost' style='width:100%' onclick='antwortenEingang("+m.id+",egOwner)'>✉ Antworten</button>";
+   +"<textarea id='egdHinweis' class='rsz-textarea' placeholder='Worauf muss geachtet werden?' oninput='egHinweisSetzen("+m.id+",this.value)'>"+escapeHtml(m.hinweis)+"</textarea>"
+   +"<button class='btn-brass' style='width:100%;margin-top:4px' onclick='egFreigeben("+m.id+")'>Gruppe zuweisen &amp; freigeben</button>";
  }
  document.getElementById("egdBody").innerHTML=egSummaryHtml(m)
    +"<div class='mfoot' style='flex-direction:column;align-items:stretch;gap:8px'>"+actions
@@ -4413,14 +4456,13 @@ function openEgDetail(id){
  if(!matchMedia("(min-width:1024px)").matches)document.body.classList.add("locked");
  pushDetailState();
 }
-function egSetOwner(id,idx){ egOwner=TEAM[idx]; openEgDetail(id); }
-function egToggleSaluto(id){ egSaluto=!egSaluto; openEgDetail(id); }
-function ownerVorschlag(achse){
-  const kandidaten=TEAM.filter(t=>(TEAM_ACHSE[t]||[]).includes(achse));
-  if(!kandidaten.length)return"S. Koordination";
-  const zaehlung=kandidaten.map(t=>({t:t,n:faelle.filter(f=>f.owner===t&&f.status!=="Aufgenommen"&&f.status!=="Verloren").length}));
-  zaehlung.sort((a,b)=>a.n-b.n);
-  return zaehlung[0].t;
+function egGruppeWaehlen(id,g){ egGruppe=g; openEgDetail(id); }
+function egToggleSaluto(id){ const m=eingang.find(x=>x.id===id); if(!m)return; m.saluto=!m.saluto; openEgDetail(id); }
+function egHinweisSetzen(id,val){ const m=eingang.find(x=>x.id===id); if(m) m.hinweis=val; }
+function egFreigeben(id){
+  const m=eingang.find(x=>x.id===id); if(!m||!egGruppe) return;
+  m.gruppe=egGruppe; m.autoVerteilt=false;
+  renderEingang(); openEgDetail(id);
 }
 
 /* ----- Zuweiser-Premium-Suite: Demo-Daten (synthetisch) ----- */
@@ -4667,10 +4709,11 @@ function paAkteSlot(pid){
 }
 
 let aktuellerFall=null;let zFilter="krankenhaus";let boardStageFilter=null;let horizont=9;
-/* Task 2.1 (Punkt 1): #egDetail-State — aktuell offene Eingangs-Zeile + gewählter Owner */
-let egOwner=null,_egId=null;
-/* Task 1.3 (Punkt 2): SalutoCare-Toggle + Bearbeitungs-Hinweis bei der Eingangs-Zuordnung */
-let egSaluto=false,egHinweis="";
+/* Runde 6 Punkt 1 (§7.5): #egDetail-State — aktuell offene Eingangs-Zeile + gewählte Gruppe
+   (vor Freigeben). Saluto/Hinweis leben jetzt direkt auf dem eingang[]-Objekt (m.saluto/m.hinweis),
+   keine transienten globalen Zwischenspeicher mehr — sie müssen den Zeitversatz zwischen
+   Leiter-Freigabe und späterer Koordinatorin-Übernahme überstehen. */
+let egGruppe=null,_egId=null;
 /* §5.3 Archiv-Split-Filter — Bereich D */
 let zArchivAnzeigen=false;let bestandArchivAnzeigen=false;
 
@@ -4769,6 +4812,17 @@ function egVollstaendigkeit(m){
      frage:"Vollständige Kontaktdaten (Telefon/E-Mail) erfragen"}
   ];
 }
+/* Runde 6 Punkt 1 (§6): klassifiziereEingang() — dreigleisiges Triage-Modell (auto/entscheidung/passiv),
+   konsumiert von simulateInbound() (Task 3.8) und egSummaryHtml()/openEgDetail() (Task 3.4/3.5). */
+function klassifiziereEingang(m){
+  if(m.typ==="passiv") return "passiv";
+  const sig=erkenneSignale(m.txt);
+  if(!m.achse||m.achse==="Unklar") return "entscheidung";
+  if(m.achse==="SalutoCare"||sig.premium) return "entscheidung";
+  if(!sig.kostentraeger||sig.unsicher) return "entscheidung";
+  if(sig.absage) return "entscheidung";
+  return "auto";
+}
 /* §3.2 Kontinuierliche Upsell-Erkennung — Bereich C: bei jedem neuen Werdegang-Eintrag erneut prüfen.
    Duplikat-Schutz: f._upsellVorgeschlagen wird nach der ersten Erkennung gesetzt, danach kein erneutes Überschreiben. */
 function pruefeUpsell(f,text){
@@ -4783,31 +4837,21 @@ function pruefeUpsell(f,text){
 function simulateInbound(){
  const t=INBOUND_POOL[_inbN%INBOUND_POOL.length];_inbN++;
  const mid=_inbId++;
- eingang.unshift({id:mid,kanal:t.kanal,tit:t.tit,txt:t.txt,zeit:"gerade eben",achse:t.achse,done:false,typ:"qualifiziert",wer:t.wer||"",zusammenfassung:t.zusammenfassung,_neu:true});
+ const m={id:mid,kanal:t.kanal,tit:t.tit,txt:t.txt,zeit:"gerade eben",achse:t.achse,done:false,
+   typ:"qualifiziert",wer:t.wer||"",zusammenfassung:t.zusammenfassung,_neu:true,
+   gruppe:null,sterne:null,autoVerteilt:false,saluto:false,hinweis:""};
+ eingang.unshift(m);
  renderEingang();
  inbToast("in","<b>Neue Anfrage</b> über "+escapeHtml(t.kanal),"landet im Eingang — wird automatisch verarbeitet …",null);
  setTimeout(()=>{
-  const m=eingang.find(x=>x.id===mid); if(m){m.done=true;m._neu=false;}
-  const sig=erkenneSignale(t.txt);
-  const sterne=sterneAusSignal(sig);
-  let _pid=null;
-  if(t.einzelperson){
-   const r=findeOderErstellePerson(t.name,{},{kt:t.kt==="Privat"?"PKV":t.kt,sterne:sterne,sterneGrund:"Automatisch aus Eingangssignal: "+(sig.konkret?"konkrete Anfrage":"schwaches Signal")});
-   if(r){_pid=r.pid;pHist(_pid,"anfrage","Anfrage über "+t.kanal+" ("+t.quelle+")");}
-  }
-  if(sterne>=3){
-   const fid=Math.max(0,...faelle.map(x=>x.id))+1;
-   faelle.push({id:fid,personId:_pid,name:t.name,alter:t.alter,rolle:t.rolle,kanal:t.kanal,quelle:t.quelle,achse:t.achse,kt:t.kt,
-     status:"Neu",owner:ownerVorschlag(t.achse),aufgabe:STATUS_AUFGABE["Neu"],frist:dstr(0),saluto:t.achse==="SalutoCare",
-     docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
-     log:[[dstr(0),"Automatisch als Fall angelegt aus "+t.kanal+": "+t.txt]]});
-   if(m)m.fallId=fid;
-   if(_pid)pHist(_pid,"fall","Automatisch als Fall angelegt");
-   renderAll();
-   inbToast("done","<b>Automatisch als Fall angelegt</b>",escapeHtml(t.name)+" · "+escapeHtml(t.achse)+" · "+escapeHtml(t.kanal),fid);
-  } else {
-   renderAll();
-   inbToast("done","<b>Als Kontakt gespeichert</b> (schwaches Signal, kein Fall)",escapeHtml(t.name)+" · "+sterne+"★",null);
+  m._neu=false;
+  if(klassifiziereEingang(m)==="auto"){
+   m.gruppe=m.achse; m.autoVerteilt=true;
+   renderEingang();
+   inbToast("done","<b>Automatisch verteilt</b>","an Gruppe "+escapeHtml(m.gruppe)+" · "+escapeHtml(t.kanal),null);
+  }else{
+   renderEingang();
+   inbToast("done","<b>Braucht Entscheidung</b>","Achse/Kostenträger nicht eindeutig · "+escapeHtml(t.kanal),null);
   }
  },1600);
 }
@@ -4829,10 +4873,13 @@ function uebernehmen(id,owner){
   m.done=true;
   const fid=Math.max(...faelle.map(x=>x.id))+1;
   const _log=[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit+" — zugewiesen an "+owner]];
-  if(egHinweis)_log.push([dstr(0),"[Hinweis bei Zuordnung] "+egHinweis]);
+  if(m.hinweis)_log.push([dstr(0),"[Hinweis bei Zuordnung] "+m.hinweis]);
   faelle.push({id:fid,name:"Neuer Fall (aus Eingang)",alter:null,rolle:"offen",kanal:m.kanal,quelle:m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.kanal,
     achse:m.achse,kt:"Unklar",status:"Neu",owner:owner,aufgabe:STATUS_AUFGABE["Neu"],frist:dstr(0),
-    saluto:egSaluto,zuordnungsHinweis:egHinweis||"",docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
+    saluto:m.saluto===true,zuordnungsHinweis:m.hinweis||"",
+    sterne:m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt)),
+    rueckfragen:egVollstaendigkeit(m).filter(c=>!c.ok).map(c=>({frage:c.frage,done:false})),
+    docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
     log:_log});
   m.fallId=fid;
   renderAll();openDetail(fid);
