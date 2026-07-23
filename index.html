@@ -3812,7 +3812,6 @@ summary.rk::-webkit-details-marker{display:none}
     </div>
     <div class="sub" id="sub-faelle-team">
       <p class="lblline">Alle Anfragen aus allen Kanälen — an einem Ort gebündelt, klar zugeteilt, zügig beantwortet.</p>
-      <figure class="au-photo au-photo--sage"><img src="assets/kb-haus.webp" alt="" loading="lazy"><figcaption>Das Team · Klinik Bavaria</figcaption></figure>
       <div id="teamGrid"></div>
     </div>
   </section>
@@ -5940,63 +5939,11 @@ function tcFallZeile(f){ // generische Zeile für den Mitarbeiter-Filter-Zweig �
   +"<span class='tc-attn-tage "+fristKlasse(f.frist)+"'>"+escapeHtml(f.frist?fristText(f.frist):"—")+"</span>"
   +"</button>";
 }
-let teamFilter="alle";
-function setTeamFilter(e){teamFilter=(teamFilter===e?"alle":e);renderTeam();}
-function teamCockpitHtml(openCases){
- const heuteFaellig=openCases.filter(f=>f.frist===dstr(0)).length;
- const ueberf=openCases.filter(f=>f.frist&&new Date(f.frist)<heute).length;
- const avg=(openCases.length/TEAM.length).toFixed(1);
- const kpis="<div class='ts-kpis'>"
-   +"<div class='ts-kpi'><div class='ts-kpi-n num'>"+openCases.length+"</div><div class='ts-kpi-l'>Offene Fälle gesamt</div></div>"
-   +"<div class='ts-kpi'><div class='ts-kpi-n num'>"+heuteFaellig+"</div><div class='ts-kpi-l'>Heute fällig</div></div>"
-   +"<div class='ts-kpi"+(ueberf?" jetzt":"")+"'><div class='ts-kpi-n num'>"+ueberf+"</div><div class='ts-kpi-l'>Überfällig</div></div>"
-   +"<div class='ts-kpi'><div class='ts-kpi-n num'>"+avg+"</div><div class='ts-kpi-l'>Ø offene Fälle / Kopf</div></div>"
-   +"</div>";
- const counts=TEAM.map(t=>openCases.filter(f=>f.owner===t).length);
- const maxN=Math.max(1,...counts);
- const bal="<div class='ts-bal'>"+TEAM.map((t,i)=>{
-   const n=counts[i];
-   const ueb=openCases.filter(f=>f.owner===t&&f.frist&&new Date(f.frist)<heute).length;
-   return "<div class='ts-bal-row'><span class='ts-bal-name'>"+escapeHtml(t)+"</span>"
-     +"<div class='ts-bal-track'><div class='ts-bal-fill' style='width:"+(n/maxN*100)+"%'></div>"
-     +(ueb?"<div class='ts-bal-ueb'></div>":"")+"</div>"
-     +"<span class='ts-bal-n num'>"+n+"</span></div>";
- }).join("")+"</div>";
- const achsen=[...new Set(openCases.map(f=>f.achse))];
- const ach="<div class='ts-achse'>"+achsen.map(a=>{
-   const n=openCases.filter(f=>f.achse===a).length;
-   return "<span class='ts-achse-chip'><span class='ts-achse-dot' style='background:"+(ACHSE_COL[a]||"var(--unklar)")+"'></span>"+escapeHtml(a)+" <b class='num'>"+n+"</b></span>";
- }).join("")+"</div>";
- return kpis+bal+ach;
-}
 function renderTeam(){
  const el=document.getElementById("teamGrid"); if(!el)return;
  const offen=f=>!["Aufgenommen","Verloren"].includes(f.status);
  const openCases=faelle.filter(offen);
- const eingangOffen=eingang.filter(m=>!m.done&&m.typ!=="passiv").length;
- const cards=TEAM.map(emp=>{
-   const mine=openCases.filter(f=>f.owner===emp);
-   const tasks=mine.filter(f=>f.aufgabe).length;
-   const fr=mine.map(f=>f.frist).filter(Boolean).sort()[0]||"—";
-   return "<button class='tm-card"+(teamFilter===emp?" on":"")+"' onclick='setTeamFilter(\""+emp+"\")'>"
-     +"<div class='tm-h'><span class='ava'>"+initialen(emp)+"</span><div class='tm-n'>"+escapeHtml(emp)+"</div></div>"
-     +"<div class='tm-kpis'><span><span class='num'>"+mine.length+"</span> Fälle</span><span><span class='num'>"+tasks+"</span> Aufgaben</span></div>"
-     +"<div class='tm-fr'>Frist: "+(fr==="—"?"—":fristText(fr))+"</div></button>";
- }).join("");
- const list=openCases.filter(f=>teamFilter==="alle"||f.owner===teamFilter)
-   .sort((a,b)=>String(a.frist||"").localeCompare(String(b.frist||"")))
-   .map(f=>"<button class='tm-task' onclick='openDetail("+f.id+")'>"
-     +"<span class='ava sm'>"+initialen(f.name)+"</span>"
-     +"<div class='tm-tmain'><div class='tm-tt'>"+escapeHtml(f.name)+" <span class='tm-ach'>· "+escapeHtml(f.achse)+"</span></div>"
-     +"<div class='tm-ts'>"+escapeHtml(f.aufgabe||"—")+"</div></div>"
-     +"<div class='tm-meta'><span class='tm-owner'>"+escapeHtml(f.owner||"—")+"</span><span>"+(f.frist?fristText(f.frist):"—")+"</span><span class='tm-status'>"+escapeHtml(f.status)+"</span></div>"
-     +"<span class='db-c-chev'>›</span></button>").join("")||"<p class='empty'>Keine offenen Aufgaben.</p>";
- el.innerHTML=
-   "<div class='tm-intake'><div><span class='num'>"+eingangOffen+"</span> offene Anfragen im zentralen Eingang · warten auf Zuordnung</div><button class='btn-ghost btn-sm' onclick='go(\"faelle\",\"anfragen\")'>Zum Eingang ›</button></div>"
-   +teamCockpitHtml(openCases)
-   +"<div class='tm-cards'>"+cards+"</div>"
-   +"<div class='tm-listhead'>Offene Aufgaben"+(teamFilter!=="alle"?" · "+escapeHtml(teamFilter)+" <button class='tm-clear' onclick='setTeamFilter(\""+teamFilter+"\")'>alle zeigen</button>":"")+"</div>"
-   +"<div class='tm-list'>"+list+"</div>";
+ el.innerHTML = tcKpiRowHtml() + tcPanelsHtml(openCases) + tcAufmerksamkeitHtml();
 }
 function renderCharts(){
   const k=kennzahlen();
