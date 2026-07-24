@@ -6,8 +6,13 @@ const https = require("node:https");
 const PORT = process.env.PORT || 3000;
 const KEY = process.env.KIMI_API_KEY || "";
 const SHARED = process.env.KI_SHARED_TOKEN || "kb-demo";
-const MODEL = process.env.KIMI_MODEL || "kimi-k2-turbo-preview";
+const MODEL = process.env.KIMI_MODEL || "kimi-for-coding";
 const VISION_MODEL = process.env.KIMI_VISION_MODEL || MODEL;
+// Endpunkt konfigurierbar: Kimi Code (api.kimi.com/coding/v1) vs Moonshot (api.moonshot.ai/v1).
+const HOST = process.env.KIMI_HOST || "api.kimi.com";
+const APIPATH = process.env.KIMI_PATH || "/coding/v1/chat/completions";
+// kimi-for-coding erlaubt nur temperature=1; via Env übersteuerbar für andere Modelle.
+const TEMP = process.env.KIMI_TEMP ? Number(process.env.KIMI_TEMP) : 1;
 const ORIGINS = ["https://aluminiumminimum.github.io", "http://localhost:8765", "http://127.0.0.1:8765"];
 
 // simples Rate-Limit: max 30 Requests / 5 min / IP
@@ -32,7 +37,7 @@ function kimi(payload) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify(payload);
     const rq = https.request({
-      hostname: "api.moonshot.ai", path: "/v1/chat/completions", method: "POST",
+      hostname: HOST, path: APIPATH, method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + KEY, "Content-Length": Buffer.byteLength(body) },
       timeout: 45000
     }, r => { let d = ""; r.on("data", c => d += c); r.on("end", () => { try { resolve(JSON.parse(d)); } catch (e) { reject(new Error("bad upstream json: " + d.slice(0, 200))); } }); });
@@ -61,15 +66,16 @@ http.createServer(async (req, res) => {
       const b = JSON.parse(raw || "{}");
       let payload;
       if (req.url === "/ai/vision") {
-        payload = { model: VISION_MODEL, temperature: 0.2, messages: [{ role: "user", content: [
+        payload = { model: VISION_MODEL, temperature: TEMP, max_tokens: 4096, messages: [{ role: "user", content: [
           { type: "image_url", image_url: { url: b.image } },
           { type: "text", text: b.prompt || "" } ] }] };
       } else {
-        payload = { model: b.model || MODEL, temperature: b.temperature ?? 0.3, max_tokens: b.max_tokens || 1200, messages: b.messages || [] };
+        payload = { model: b.model || MODEL, temperature: b.temperature ?? TEMP, max_tokens: b.max_tokens || 4096, messages: b.messages || [] };
       }
       if (b.json) payload.response_format = { type: "json_object" };
       const out = await kimi(payload);
-      const text = out?.choices?.[0]?.message?.content || "";
+      const msg = out?.choices?.[0]?.message || {};
+      const text = msg.content || msg.reasoning_content || "";
       if (!text) return send(res, 502, { error: "empty upstream", detail: out?.error?.message || "" });
       const resp = { text };
       if (b.json) { try { resp.data = JSON.parse(text.replace(/^```json?\s*|\s*```$/g, "")); } catch (e) { /* Client parst defensiv nach */ } }
