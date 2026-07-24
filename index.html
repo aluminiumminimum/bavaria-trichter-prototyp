@@ -7142,6 +7142,7 @@ function renderMtProtokolle(){
      +"<label>FIM <input type='number' id='mtpFi"+i+"' min='18' max='126' value='"+p.fim.akt+"'></label>"
    +"</div>"
    +"<div class='mtp-chips'>"+MT_KB_CHIPS.map((c,ci)=>"<button type='button' class='chip-sm' onclick='mtChip(\"kb\","+i+","+ci+")'>"+escapeHtml(c)+"</button>").join("")+"</div>"
+   +"<button type='button' class='btn-ghost btn-sm' onclick='kiKurzbericht("+i+")'>✦ KI: Kurzbericht entwerfen</button><div id='kiPanelMtp"+i+"'></div>"
    +"<label class='mtp-lbl'>Kurzbericht</label><textarea id='mtpKb"+i+"' class='rsz-textarea'>"+escapeHtml(p.kurzbericht||"")+"</textarea>"
    +"<div class='mtp-chips'>"+MT_VP_CHIPS.map((c,ci)=>"<button type='button' class='chip-sm' onclick='mtChip(\"vp\","+i+","+ci+")'>"+escapeHtml(c)+"</button>").join("")+"</div>"
    +"<label class='mtp-lbl'>Weiterer Verlauf / Plan</label><textarea id='mtpVp"+i+"' class='rsz-textarea'>"+escapeHtml(p.verlaufPlan||"")+"</textarea>"
@@ -7588,6 +7589,32 @@ function kiAnalyseUebernehmen(id){
  if(d.hinweis&&!m.hinweis)m.hinweis=d.hinweis+(d.sterneGrund?" ("+d.sterneGrund+")":"");
  rpToast("KI-Vorschlag übernommen — "+(m.sterne||"?")+"★, Gruppe "+(egGruppe||"?"));
  openEgDetail(id); /* Re-Render zeigt Sterne-Widget, vorgewählte Gruppe + Hinweis */
+}
+function kiKurzbericht(i){
+ const p=inReha[i];if(!p)return;
+ kiRun("kiPanelMtp"+i,async()=>{
+  const notizen=(p.eintraege||[]).map(e=>e.d+": "+e.txt).join("\n");
+  const out=await kiComplete([
+   {role:"system",content:"Du bist Case-Manager-Assistent einer Reha-Klinik. Erzeuge aus Verlaufsdaten einen Wochen-Kurzbericht. Antworte NUR mit JSON: {kurzbericht (3-4 Sätze, sachlich, deutsch), verlaufPlan (2-3 Sätze: nächste Schritte)}. Nur Fakten aus den Daten."},
+   {role:"user",content:"Patient: "+p.name+", Achse "+p.achse+", ICD "+(p.icd||"?")+", Tag "+p.verweildauer.ist+"/"+p.verweildauer.plan
+    +"\nBarthel: Aufnahme "+p.barthel.auf+" → aktuell "+p.barthel.akt+"\nFIM: Aufnahme "+p.fim.auf+" → aktuell "+p.fim.akt
+    +"\nZiel: "+(p.ziel||"?")+"\nTagesnotizen:\n"+notizen}
+  ],{json:true});
+  return out.data;
+ },KI_FALLBACK.kurzbericht,(d,off)=>{
+  inReha[i]._kiKb=d;
+  return "<div class='ki-body'><b>Kurzbericht:</b>\n"+escapeHtml(d.kurzbericht||"")+"\n\n<b>Weiterer Verlauf:</b>\n"+escapeHtml(d.verlaufPlan||"")+"</div>"
+   +"<div class='ki-cta'><button class='btn-brass btn-sm' onclick='kiKurzberichtUebernehmen("+i+")'>In Felder übernehmen</button>"
+   +"<button class='btn-ghost btn-sm' onclick='document.getElementById(\"kiPanelMtp"+i+"\").innerHTML=\"\"'>Verwerfen</button></div>"
+   +"<div class='ki-note'>Übernahme füllt die Textfelder — gespeichert wird erst über „Speichern“.</div>";
+ });
+}
+function kiKurzberichtUebernehmen(i){
+ const p=inReha[i],d=p&&p._kiKb;if(!d)return;
+ const kb=document.getElementById("mtpKb"+i),vp=document.getElementById("mtpVp"+i);
+ if(kb&&d.kurzbericht)kb.value=d.kurzbericht;
+ if(vp&&d.verlaufPlan)vp.value=d.verlaufPlan;
+ rpToast("KI-Entwurf in die Felder übernommen — bitte prüfen und speichern.");
 }
 </script>
 </body>
