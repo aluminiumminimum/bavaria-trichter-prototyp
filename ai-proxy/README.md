@@ -33,11 +33,12 @@ PassengerNodejs /opt/alt/alt-nodejs20/root/bin/node
 PassengerStartupFile server.js
 PassengerBaseURI /
 PassengerRestartDir /home/<USER>/domains/quintia.de/ai-nodejs/tmp
-SetEnv KI_SHARED_TOKEN "kb-demo"
+SetEnv KI_SHARED_TOKEN "<FRISCHER_ZUGANGSCODE>"
 SetEnv KIMI_API_KEY "<DEIN_KIMI_CODE_KEY>"
 SetEnv KIMI_HOST "api.kimi.com"
 SetEnv KIMI_PATH "/coding/v1/chat/completions"
 SetEnv KIMI_MODEL "kimi-for-coding"
+SetEnv KI_DAILY_MAX "400"
 ```
 `SetEnv` reicht die Werte an `process.env` des Node-Prozesses. Der Key steht NUR
 hier auf dem Server, nie im Repo. LiteSpeed serviert `.htaccess` nicht (403).
@@ -76,5 +77,16 @@ curl -s -i -X OPTIONS https://ai.quintia.de/ai \
 # → 204 mit Access-Control-Allow-Origin: https://aluminiumminimum.github.io
 ```
 
-## Spend-Cap
-Im Kimi-Konto ein Ausgabenlimit setzen — Schutz bei öffentlich erreichbarem Proxy.
+## Missbrauchs-Schutz (öffentlich erreichbarer Proxy)
+Kein Kimi-Spend-Cap verfügbar → drei Schichten im Proxy:
+1. **Zugangscode-Gate:** `X-KI-Token` muss `KI_SHARED_TOKEN` matchen. Der Client
+   hält den Code in `localStorage` (gesetzt via `?kicode=…` oder `kiUnlock()`),
+   NICHT im Quelltext. Ohne/falscher Code → 401, **kein LLM-Call**. Ist
+   `KI_SHARED_TOKEN` ungesetzt, fällt das Gate **zu** (503). Code frisch wählen
+   (nicht `kb-demo` — in Git-History). Rotieren = `.htaccess`-Wert ändern + Neustart.
+2. **Origin-Pflicht:** POSTs ohne erlaubte `Origin` → 403 (blockt naive curl-Bots;
+   spoofbar, daher nur Defense-in-Depth).
+3. **Globales Tageslimit:** `KI_DAILY_MAX` Calls/Tag (dateibasiert in `tmp/`,
+   fail-closed). Hartes Ceiling statt Spend-Cap. Modell + `max_tokens` sind
+   serverseitig gepinnt/gedeckelt → ein Code-Inhaber kann Kosten pro Call nicht
+   hochdrehen. Reihenfolge Token→Origin→IP→Tageslimit: 401/403 kosten kein Budget.

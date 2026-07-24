@@ -7,7 +7,7 @@ const path = require("node:path");
 
 const PORT = process.env.PORT || 3000;
 const KEY = process.env.KIMI_API_KEY || "";
-const SHARED = process.env.KI_SHARED_TOKEN || "kb-demo";
+const SHARED = process.env.KI_SHARED_TOKEN || ""; // KEIN Default — ohne gesetzten Code fällt das Gate zu (503).
 const MODEL = process.env.KIMI_MODEL || "kimi-for-coding";
 const VISION_MODEL = process.env.KIMI_VISION_MODEL || MODEL;
 // Endpunkt konfigurierbar: Kimi Code (api.kimi.com/coding/v1) vs Moonshot (api.moonshot.ai/v1).
@@ -20,6 +20,13 @@ const ORIGINS = ["https://aluminiumminimum.github.io", "http://localhost:8765", 
 // (append-1-Byte/Call, Größe = Zähler) → race-tolerant über Passenger-Worker, resettet je Tag.
 const DAILY_MAX = process.env.KI_DAILY_MAX ? Number(process.env.KI_DAILY_MAX) : 400;
 const USAGE_DIR = path.join(__dirname, "tmp");
+// tmp anlegen (falls nicht da) + alte Tages-Logs aufräumen — beim Start.
+try {
+  fs.mkdirSync(USAGE_DIR, { recursive: true });
+  const heute = "usage-" + new Date().toISOString().slice(0, 10) + ".log";
+  for (const f of fs.readdirSync(USAGE_DIR))
+    if (/^usage-\d{4}-\d\d-\d\d\.log$/.test(f) && f !== heute) { try { fs.unlinkSync(path.join(USAGE_DIR, f)); } catch (e) {} }
+} catch (e) {}
 function dailyExceeded() {
   try {
     const f = path.join(USAGE_DIR, "usage-" + new Date().toISOString().slice(0, 10) + ".log");
@@ -27,7 +34,7 @@ function dailyExceeded() {
     if (n >= DAILY_MAX) return true;
     fs.appendFileSync(f, ".");
     return false;
-  } catch (e) { return false; } // fs-Fehler darf die Demo nie blockieren
+  } catch (e) { return true; } // FAIL-CLOSED: kann der Zähler nicht schreiben, blockieren (Kostenschutz > Verfügbarkeit)
 }
 
 // simples Rate-Limit: max 30 Requests / 5 min / IP
@@ -68,6 +75,7 @@ http.createServer(async (req, res) => {
   if (req.method === "OPTIONS") { res.writeHead(204); return res.end(); }
   if (req.method === "GET" && req.url === "/health") return send(res, 200, { ok: true, model: MODEL });
   if (req.method !== "POST" || !(req.url === "/ai" || req.url === "/ai/vision")) return send(res, 404, { error: "not found" });
+  if (!SHARED) return send(res, 503, { error: "gate not configured" }); // fail-closed: kein Code gesetzt → dicht
   if ((req.headers["x-ki-token"] || "") !== SHARED) return send(res, 401, { error: "token" });
   // Origin-Pflicht: echte Aufrufe kommen aus dem Browser der erlaubten Seite; blockt naive curl-Bots.
   if (!ORIGINS.includes(req.headers.origin || "")) return send(res, 403, { error: "origin" });
@@ -88,7 +96,8 @@ http.createServer(async (req, res) => {
           { type: "image_url", image_url: { url: b.image } },
           { type: "text", text: b.prompt || "" } ] }] };
       } else {
-        payload = { model: b.model || MODEL, temperature: b.temperature ?? TEMP, max_tokens: b.max_tokens || 4096, messages: b.messages || [] };
+        // Modell/Temperatur serverseitig gepinnt, max_tokens gedeckelt → Client kann Kosten pro Call nicht hochdrehen.
+        payload = { model: MODEL, temperature: TEMP, max_tokens: Math.min(Number(b.max_tokens) || 4096, 4096), messages: b.messages || [] };
       }
       if (b.json) payload.response_format = { type: "json_object" };
       const out = await kimi(payload);
