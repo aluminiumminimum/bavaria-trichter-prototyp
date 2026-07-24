@@ -6657,7 +6657,7 @@ function dArbeitHtml(f){
  const typ=drawerAufgabenTyp(f);
  const fakten=fkwFaktenHtml(f);
  if(typ==="kosten")
-   return fakten+"<div id='dKZ' class='kz-block'><div class='kicker'>Kostenzusage</div>"+kzChain(f)+kzActions(f)+"</div>"
+   return fakten+"<div id='dKZ' class='kz-block'><div class='kicker'>Kostenzusage</div>"+kzChain(f)+kzActions(f)+"<div class='ki-scan'><label class='btn-ghost btn-sm' style='display:inline-block;cursor:pointer'>✦ KI: Dokument scannen<input type='file' accept='image/*' style='display:none' onchange='kiScan(event,"+f.id+")'></label><div id='kiPanelScan'></div></div>"+"</div>"
     +sopChecklisteHtml(f,"kosten")
     +"<div class='full' style='margin-top:12px'><label>Kostenzusage-Dokument</label>"
     +"<button class='btn-ghost btn-sm' type='button' onclick='dArbeitKostenUpload()'>⇪ Dokument hochladen (Demo)</button></div>";
@@ -7615,6 +7615,39 @@ function kiKurzberichtUebernehmen(i){
  if(kb&&d.kurzbericht)kb.value=d.kurzbericht;
  if(vp&&d.verlaufPlan)vp.value=d.verlaufPlan;
  rpToast("KI-Entwurf in die Felder übernommen — bitte prüfen und speichern.");
+}
+/* F2 — Dokument-Scan (Vision) im Kostenklärungs-Werkzeug */
+function kiScan(ev,fallId){
+ const file=ev.target.files&&ev.target.files[0];if(!file)return;
+ const rd=new FileReader();
+ rd.onload=function(){
+  const dataUrl=rd.result;
+  kiRun("kiPanelScan",async()=>{
+   const out=await kiVision(dataUrl,
+    "Dies ist ein Dokument aus dem Klinik-Alltag (z. B. Bewilligungsbescheid, Arztbrief, Fax). Extrahiere als JSON: {versicherung, kostentraeger (PKV|Selbstzahler|Beihilfe|GKV + Komfort|GKV), diagnose, leistung, gueltigBis}. Nur was wirklich im Dokument steht — fehlende Felder leer lassen.",
+    {json:true});
+   return out.data;
+  },KI_FALLBACK.vision,(d,off)=>{
+   const f=faelle.find(x=>x.id===fallId);if(f)f._kiScan=d;
+   return "<div class='ki-fields'>"
+    +"<b>Versicherung</b><span>"+escapeHtml(d.versicherung||"—")+"</span>"
+    +"<b>Kostenträger</b><span>"+escapeHtml(d.kostentraeger||"—")+"</span>"
+    +"<b>Diagnose</b><span>"+escapeHtml(d.diagnose||"—")+"</span>"
+    +"<b>Leistung</b><span>"+escapeHtml(d.leistung||"—")+"</span>"
+    +"<b>Gültig bis</b><span>"+escapeHtml(d.gueltigBis||"—")+"</span></div>"
+    +"<div class='ki-cta'><button class='btn-brass btn-sm' onclick='kiScanUebernehmen("+fallId+")'>Übernehmen</button>"
+    +"<button class='btn-ghost btn-sm' onclick='document.getElementById(\"kiPanelScan\").innerHTML=\"\"'>Verwerfen</button></div>"
+    +"<div class='ki-note'>Setzt Kostenträger im Fall und vermerkt den Extrakt im Verlauf.</div>";
+  });
+ };
+ rd.readAsDataURL(file);
+}
+function kiScanUebernehmen(fallId){
+ const f=faelle.find(x=>x.id===fallId),d=f&&f._kiScan;if(!d)return;
+ if(d.kostentraeger){f.kt=d.kostentraeger;const sel=document.getElementById("dKT");if(sel)sel.value=d.kostentraeger;}
+ f.log=f.log||[];f.log.push([dstr(0),"KI-Scan: "+[d.versicherung,d.diagnose,d.leistung].filter(Boolean).join(" · ")]);
+ rpToast("Dokument-Daten übernommen — Kostenträger "+(f.kt||"?"));
+ openDetail(fallId); /* Drawer re-rendern */
 }
 </script>
 </body>
