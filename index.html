@@ -3174,6 +3174,16 @@ summary.rk::-webkit-details-marker{display:none}
 .ki-spin{display:inline-block;width:12px;height:12px;border:2px solid var(--brass-line);border-top-color:var(--sage-deep);border-radius:50%;animation:kiSpin .8s linear infinite}
 @keyframes kiSpin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion: reduce){.ki-spin{animation:none;border-top-color:var(--brass-line)}}
+.ki-fab{position:fixed;right:18px;bottom:84px;z-index:60;width:48px;height:48px;border-radius:50%;background:var(--espresso-grad);color:var(--ivory-tx);border:1px solid var(--jade-line);box-shadow:var(--shadow);font-size:20px;cursor:pointer}
+@media (min-width:1024px){.ki-fab{bottom:24px}}
+#kiChat{align-items:stretch;justify-content:flex-end}
+#kiChat .modal{width:420px;max-width:92vw;height:100dvh;max-height:100dvh;border-radius:0;display:flex;flex-direction:column}
+.ki-log{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.ki-msg{max-width:88%;padding:9px 12px;border-radius:4px;font-size:13.5px;white-space:pre-wrap}
+.ki-msg.user{align-self:flex-end;background:var(--sage-soft);border:1px solid var(--jade-hair)}
+.ki-msg.ai{align-self:flex-start;background:var(--paper);border:1px solid var(--hair)}
+.ki-inrow{display:flex;gap:8px;padding:12px;border-top:1px solid var(--hair)}
+.ki-inrow input{flex:1;font:inherit;padding:10px 12px;border:1px solid var(--hair);border-radius:8px;background:var(--paper2);color:var(--ink)}
 </style>
 </head>
 <body>
@@ -4233,6 +4243,16 @@ summary.rk::-webkit-details-marker{display:none}
   </div>
 </div>
 
+<div class="overlay" id="kiChat" role="dialog" aria-modal="true" aria-label="KI-Copilot">
+  <div class="modal">
+    <div class="mhead"><div class="ava" style="background:var(--espresso-grad);color:var(--ivory-tx)">✦</div><div><h2>KI-Copilot</h2><div class="msub2" id="kiChatSub">Fragen zu Fällen, Zuweisern, Belegung</div></div></div>
+    <div class="ki-log" id="kiLog"></div>
+    <div class="ki-inrow"><input id="kiInput" placeholder="z. B. Fasse offene PKV-Fälle zusammen" onkeydown="if(event.key==='Enter')kiChatSend()"><button class="btn-brass btn-sm" onclick="kiChatSend()">Senden</button></div>
+    <div class="mfoot"><button class="btn-ghost" onclick="dismissDetail()">‹ Zurück</button></div>
+  </div>
+</div>
+<button class="ki-fab" onclick="kiChatOpen()" aria-label="KI-Copilot öffnen">✦</button>
+
 <!-- ============ DATENBANK-INSPECTOR (Desktop) ============ -->
 <div class="overlay dbrail" id="dbDetail" role="dialog" aria-modal="false" aria-label="Datenbank-Detail">
   <div class="modal">
@@ -4421,7 +4441,7 @@ function egGruppenPoolGroesse(g){ return eingang.filter(m=>!m.done&&m.gruppe===g
 /* Task 2.1 (Punkt 1): #egDetail — gemeinsamer Schließ-Helper für die drei rechts angedockten
    Detail-Schienen (verhindert zwei gleichzeitig offene 460px-Overlays, s. Plan „Ist"). */
 function _closeSiblingDetailRails(exceptId){
-  ["dbDetail","egDetail"].forEach(function(id){
+  ["dbDetail","egDetail","kiChat"].forEach(function(id){
     if(id===exceptId)return;
     const e=document.getElementById(id);if(e)e.classList.remove("open");
   });
@@ -7445,7 +7465,7 @@ function renderFallakte(){
 let _detailPushed=false;
 /* §3.4 Hybrid-Fallakte — eigenes, von _DETAIL_IDS unabhängiges State: normale go()-Navigation, keine Overlay-Mechanik. */
 let _fallakteId=null;
-const _DETAIL_IDS=["dbDetail","rsDetail","egDetail"];
+const _DETAIL_IDS=["dbDetail","rsDetail","egDetail","kiChat"];
 function _detailOpen(){
   return _DETAIL_IDS.some(id=>{const e=document.getElementById(id);return e&&e.classList.contains("open");});
 }
@@ -7648,6 +7668,42 @@ function kiScanUebernehmen(fallId){
  f.log=f.log||[];f.log.push([dstr(0),"KI-Scan: "+[d.versicherung,d.diagnose,d.leistung].filter(Boolean).join(" · ")]);
  rpToast("Dokument-Daten übernommen — Kostenträger "+(f.kt||"?"));
  openDetail(fallId); /* Drawer re-rendern */
+}
+/* F4 — KI-Copilot (Chat-Overlay) mit Daten-Snapshot; nur lesend, kein Verlauf über Reload */
+let _kiChatHist=[];
+function kiSnapshot(){
+ const of=faelle.filter(f=>f.status!=="Aufgenommen"&&f.status!=="Verloren");
+ return "OFFENE FÄLLE:\n"+of.map(f=>"- "+f.name+" ("+f.achse+", "+f.kt+", Status "+f.status+", Aufgabe: "+(f.aufgabe||"—")+", Owner "+f.owner+")").join("\n")
+  +"\n\nEINGANG (offen):\n"+eingang.filter(m=>!m.done).map(m=>"- "+(m.tit||m.kanal)+" ["+m.kanal+"]").join("\n")
+  +"\n\nIN REHA:\n"+inReha.map(p=>"- "+p.name+" ("+p.achse+", Tag "+p.verweildauer.ist+"/"+p.verweildauer.plan+", Barthel "+p.barthel.akt+")").join("\n")
+  +"\n\nTOP-ZUWEISER:\n"+zuweiser.slice(0,6).map(z=>"- "+z.name+" ("+z.faelle+" Fälle, letzter Kontakt "+(z.letzter||"?")+")").join("\n");
+}
+function kiChatOpen(){
+ _closeSiblingDetailRails&&_closeSiblingDetailRails("kiChat");
+ document.getElementById("kiChat").classList.add("open");
+ document.body.classList.add("detail-open");
+ if(!matchMedia("(min-width:1024px)").matches)document.body.classList.add("locked");
+ pushDetailState();
+ if(!_kiChatHist.length)kiChatAppend("ai","Guten Tag! Ich kenne den aktuellen Demo-Datenstand — fragen Sie mich z. B. nach offenen PKV-Fällen, stockenden Vorgängen oder einem Antwort-Entwurf.");
+}
+function kiChatAppend(who,txt){
+ _kiChatHist.push({who:who,txt:txt});
+ const el=document.getElementById("kiLog");
+ el.innerHTML=_kiChatHist.map(m=>"<div class='ki-msg "+m.who+"'>"+escapeHtml(m.txt)+"</div>").join("");
+ el.scrollTop=el.scrollHeight;
+}
+async function kiChatSend(){
+ const inp=document.getElementById("kiInput"),q=(inp.value||"").trim();if(!q)return;
+ inp.value="";kiChatAppend("user",q);kiChatAppend("ai","…");
+ let antwort;
+ try{
+  const out=await kiComplete([
+   {role:"system",content:"Du bist der Copilot eines Klinik-CRM (Demo, synthetische Daten). Antworte knapp, deutsch, konkret; nur auf Basis des Datenstands. Entwürfe (Mails etc.) direkt ausformulieren.\n\nDATENSTAND:\n"+kiSnapshot()},
+   ..._kiChatHist.filter(m=>m.txt!=="…").slice(-8).map(m=>({role:m.who==="user"?"user":"assistant",content:m.txt}))
+  ]);
+  antwort=out.text||"(keine Antwort)";
+ }catch(e){console.warn("KI-Fallback:",e.message);antwort=KI_FALLBACK.chat;}
+ _kiChatHist.pop();kiChatAppend("ai",antwort);
 }
 </script>
 </body>
