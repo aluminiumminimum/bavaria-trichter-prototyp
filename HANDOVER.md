@@ -49,6 +49,7 @@ Interaktiver **Investor-Pitch-Prototyp** einer „Privatpatienten-Maschine" für
 | **Team** | `renderTeam()`, `setTeamFilter()` | `.tm-*`, `.tm-cv` | `TEAM[]`, abgeleitet aus `faelle[]`/`eingang[]` |
 | **Netzwerk** | `renderZuweiser()`, `networkDot()` (⚠ Karten enthalten Cofounder-Button `openReferrer` — Karten-Markup nur chirurgisch) | `.z*`, `#view-netzwerk` | `zuweiser[]` |
 | **Helper** | `fristText()`, `fristKlasse()`, `dstr()`, `escapeHtml()`, `initialen()`, `kpiRing()` | — | — |
+| **KI** | `kiComplete()/kiVision()/kiRun()`, `kiAnalyse*`, `kiKurzbericht*`, `kiScan*`, `kiChat*`/`kiSnapshot()` | `.ki-*`, `#kiChat`, `.ki-fab` | additiv: `eingang[].kiVorschlag`, `inReha[]._kiKb`, `faelle[]._kiScan`; Proxy `ai-proxy/` → `ai.quintia.de` |
 
 ### Cofounder-Bereiche (READ-ONLY für uns)
 `view-matrix` / `renderMatrix` (2×3-Grid), `openReferrer`/`refOverlay` (Zuweiser-Portal mit 3 Tabs), `.rpd-*` Dokument-Viewer (Arztbrief/QR), `.rsp-*` Reha-Verlaufscharts. **Nach jeder Änderung verifizieren, dass diese noch funktionieren.**
@@ -321,6 +322,27 @@ Fallakte → zurück) ist damit geschlossen.
 **Dokumentiert unter:** `docs/superpowers-optimized/{specs,plans}/2026-07-2[23]-runde5-*`
 und `2026-07-23-runde6-punkt{1..8}-*` (je Design-Spec + Umsetzungsplan mit
 Commit-Zuordnung).
+
+---
+
+## 4f. KI-Integration (23./24.07., Branch `feat/ki`)
+
+Echte KI im Prototyp: Demo ruft **Kimi (Moonshot)** über einen dünnen Node-Proxy
+(`ai-proxy/`, deployt als Hostinger-Node-App auf `ai.quintia.de`; `KIMI_API_KEY` NUR als
+Server-Env). Client-Fundament `.ki-*`: `kiComplete()/kiVision()` (fetch+Timeout),
+`kiRun()` (Spinner→Ergebnis-Panel mit Übernehmen/Verwerfen), Health-Ping → `KI_ONLINE`,
+`KI_FALLBACK`-Registry = gescriptete Pitch-Ergebnisse, falls Proxy/LLM ausfällt.
+Vier Funktionen: **F1** Anfrage-Analyse im `#egDetail` (füllt numerische Sterne,
+Gruppen-Vorwahl, Hinweis — `egFreigeben` bleibt manuell) · **F3** Kurzbericht-Generator im
+Protokoll-Board (füllt NUR die Textareas; Save weiterhin `rsSaveZwischenstand`, dadurch
+fließt `p.kurzbericht` unverändert ins Zuweiserportal `.rp-kurz`) · **F2** Dokument-Scan
+(Vision) im Kostenklärungs-Werkzeug von `dArbeitHtml()` (Demo-Asset
+`assets/demo-bewilligung.png`; erreichbar, sobald ein Fall die Aufgabe „Kostenzusage
+anfragen" trägt) · **F4** KI-Copilot (`#kiChat`-Overlay + `.ki-fab`, read-only über
+`kiSnapshot()`). Registriert in `_closeSiblingDetailRails` + `_DETAIL_IDS` (`"kiChat"`).
+Cofounder-Namespaces unangetastet; einzige Berührungen fremder Funktionen: je 1
+String-Einfügung in `openEgDetail`/`renderMtProtokolle`/`dArbeitHtml` + die 2
+Array-Einträge. Spec/Plan: `docs/superpowers-optimized/{specs,plans}/2026-07-23-ki-integration*`.
 
 ---
 
