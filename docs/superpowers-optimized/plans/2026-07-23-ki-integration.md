@@ -36,13 +36,13 @@
 
 **Files:** Modify: — (nur git)
 
-- [ ] **Step 1:** `git checkout -b feat/ki` (Basis: aktueller `main` = `25b9783` oder neuer — vorher `git pull origin main`).
-- [ ] **Step 2:** Commit Spec + Plan:
+- [x] **Step 1:** `git checkout -b feat/ki` (Basis: aktueller `main` = `25b9783` oder neuer — vorher `git pull origin main`).
+- [x] **Step 2:** Commit Spec + Plan:
 ```bash
 git add docs/superpowers-optimized/specs/2026-07-23-ki-integration-design.md docs/superpowers-optimized/plans/2026-07-23-ki-integration.md
 git commit -m "docs: Spec + Plan KI-Integration (Kimi via Proxy, F1-F4)"
 ```
-- [ ] **Step 3:** Verify: `git log --oneline -1` zeigt den docs-Commit; `git branch --show-current` = `feat/ki`.
+- [x] **Step 3:** Verify: `git log --oneline -1` zeigt den docs-Commit; `git branch --show-current` = `feat/ki`.
 
 ---
 
@@ -52,7 +52,7 @@ git commit -m "docs: Spec + Plan KI-Integration (Kimi via Proxy, F1-F4)"
 
 **Does NOT cover:** Deployment (T2). Kein npm-Paket — nur `node:http`/`node:https`, damit Hostinger ohne Build läuft.
 
-- [ ] **Step 1: server.js schreiben** — vollständiger Inhalt:
+- [x] **Step 1: server.js schreiben** — vollständiger Inhalt:
 
 ```js
 // ai-proxy — Kimi(Moonshot)-Proxy für den Klinik-Bavaria-Demo-Prototyp.
@@ -132,13 +132,13 @@ http.createServer(async (req, res) => {
 }).listen(PORT, () => console.log("ai-proxy on :" + PORT));
 ```
 
-- [ ] **Step 2: package.json**:
+- [x] **Step 2: package.json**:
 ```json
 { "name": "kb-ai-proxy", "private": true, "version": "1.0.0", "main": "server.js", "scripts": { "start": "node server.js" }, "engines": { "node": ">=18" } }
 ```
-- [ ] **Step 3: `.env.example`** (`KIMI_API_KEY=`, `KI_SHARED_TOKEN=`, `KIMI_MODEL=`, `KIMI_VISION_MODEL=`) + **`.gitignore`** (`.env`, `node_modules/`).
-- [ ] **Step 4: README.md** — Ops-Runbook: (a) hPanel: Node.js-Web-App für Subdomain `ai.quintia.de` anlegen, Startdatei `server.js`, Env-Vars aus `.env.example` setzen; (b) Deploy per SSH/git aus diesem Repo-Ordner; (c) Smoke-Tests (curl-Zeilen aus T2); (d) Hinweis Spend-Cap im Kimi-Konto setzen. Keine Secrets ins Repo.
-- [ ] **Step 5: Lokaler Smoke** (ohne Key — health muss trotzdem gehen):
+- [x] **Step 3: `.env.example`** (`KIMI_API_KEY=`, `KI_SHARED_TOKEN=`, `KIMI_MODEL=`, `KIMI_VISION_MODEL=`) + **`.gitignore`** (`.env`, `node_modules/`).
+- [x] **Step 4: README.md** — Ops-Runbook: (a) hPanel: Node.js-Web-App für Subdomain `ai.quintia.de` anlegen, Startdatei `server.js`, Env-Vars aus `.env.example` setzen; (b) Deploy per SSH/git aus diesem Repo-Ordner; (c) Smoke-Tests (curl-Zeilen aus T2); (d) Hinweis Spend-Cap im Kimi-Konto setzen. Keine Secrets ins Repo.
+- [x] **Step 5: Lokaler Smoke** (ohne Key — health muss trotzdem gehen):
 ```bash
 node ai-proxy/server.js & sleep 1
 curl -s localhost:3000/health            # → {"ok":true,...}
@@ -146,7 +146,7 @@ curl -s -X POST localhost:3000/ai -H 'Content-Type: application/json' -H 'X-KI-T
 kill %1
 ```
 Expected: beide Antworten wie kommentiert; Prozess sauber beendet.
-- [ ] **Step 6: Commit** `git add ai-proxy && git commit -m "feat(ai-proxy): Kimi-Proxy — /health, /ai, /ai/vision, CORS+Token+Rate-Limit"`.
+- [x] **Step 6: Commit** `git add ai-proxy && git commit -m "feat(ai-proxy): Kimi-Proxy — /health, /ai, /ai/vision, CORS+Token+Rate-Limit"`.
 
 ---
 
@@ -179,7 +179,7 @@ Expected: `{"text":"OK"...}`. Danach CORS-Preflight: `curl -s -i -X OPTIONS http
 
 **Does NOT cover:** Feature-Buttons (T4–T7). Kein Aufruf-Ort außer dem Health-Ping.
 
-- [ ] **Step 1: CSS-Block** vor `</style>` (Anker: `grep -n '</style>'`):
+- [x] **Step 1: CSS-Block** vor `</style>` (Anker: `grep -n '</style>'`):
 ```css
 /* ===== KI (Kimi) · .ki-* — additiv, Jade-Etikett-Optik ===== */
 .ki-panel{position:relative;background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;padding:12px 14px;margin-top:10px}
@@ -197,7 +197,7 @@ Expected: `{"text":"OK"...}`. Danach CORS-Preflight: `curl -s -i -X OPTIONS http
 @media (prefers-reduced-motion: reduce){.ki-spin{animation:none;border-top-color:var(--brass-line)}}
 ```
 *(Hinweis: `kiSpin` ist funktionaler Lade-Indikator, RM-Block deckt ihn ab — Endzustand statischer Ring, korrekt.)*
-- [ ] **Step 2: JS-Block** vor `</script>`:
+- [x] **Step 2: JS-Block** vor `</script>`:
 ```js
 /* ===== KI (Kimi via Proxy ai.quintia.de) — Fundament =====
    Kein Key im Client. Degradiert graceful: Proxy weg → "KI offline" bzw. Pitch-Fallback. */
@@ -253,13 +253,13 @@ async function kiRun(containerId,fn,fallback,render){
  el.innerHTML="<div class='ki-panel"+(off?" ki-off":"")+"'>"+kiHeadHtml(off)+render(data,off)+"</div>";
 }
 ```
-- [ ] **Step 3: Syntax-Gate:** Script-Block extrahieren und parsen:
+- [x] **Step 3: Syntax-Gate:** Script-Block extrahieren und parsen:
 ```bash
 node -e 'const s=require("fs").readFileSync("index.html","utf8");const m=[...s.matchAll(/<script>([\s\S]*?)<\/script>/g)];new (require("vm").Script)(m[m.length-1][1]);console.log("JS OK")'
 ```
 Expected: `JS OK`.
-- [ ] **Step 4: Browser-Gate:** Preview `bavaria-proto` @1440 + @390 — 0 Console-Errors (der Health-Ping darf im Netz-Tab fehlschlagen, aber KEIN uncaught error), App rendert unverändert, Cofounder-Checks (Matrix 6 Zellen, `openReferrer('portal','Leopoldina-Krankenhaus')`, `rsp`-Charts) intakt.
-- [ ] **Step 5: Commit** `feat(ki): Fundament — kiComplete/kiVision, Health-Ping, Fallback-Registry, .ki-Panel-UI`.
+- [x] **Step 4: Browser-Gate:** Preview `bavaria-proto` @1440 + @390 — 0 Console-Errors (der Health-Ping darf im Netz-Tab fehlschlagen, aber KEIN uncaught error), App rendert unverändert, Cofounder-Checks (Matrix 6 Zellen, `openReferrer('portal','Leopoldina-Krankenhaus')`, `rsp`-Charts) intakt.
+- [x] **Step 5: Commit** `feat(ki): Fundament — kiComplete/kiVision, Health-Ping, Fallback-Registry, .ki-Panel-UI`.
 
 ---
 
