@@ -3209,6 +3209,11 @@ summary.rk::-webkit-details-marker{display:none}
 @keyframes kiBlink{50%{opacity:0}}
 .ki-msg.ki-fade{animation:kiFade .35s ease}
 @keyframes kiFade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+/* F1-Triage: KI-Zusammenfassung im #egDetail */
+.eg-zsf.eg-ki{border-left:2px solid var(--sage-deep);padding-left:10px;background:var(--sage-soft);border-radius:4px;animation:kiFade .35s ease}
+.eg-zsf.eg-ki .kicker{color:var(--sage-deep)}
+.eg-ki-extract{font-family:"Fragment Mono",ui-monospace,monospace;font-size:11px;color:var(--brass-deep);margin-top:5px}
+.eg-ki-hint{font-size:11.5px;color:var(--faint);font-style:italic;margin-top:4px}
 /* Premium „denkt nach"-Indikator */
 .ki-think{display:flex;align-items:center;gap:10px}
 .ki-think .spark{font-size:16px;color:var(--brass);animation:kiSpark 1.5s ease-in-out infinite}
@@ -4532,47 +4537,59 @@ function egSummaryHtml(m){
    +"<details class='egt-original'><summary class='rk'>Originalnachricht</summary><div class='eg-original'><div class='mtxt'>"+escapeHtml(m.txt)+"</div></div></details>"
    +(m.notiz?"<div class='mt-eingang-notiz'>Notiz: "+escapeHtml(m.notiz)+"</div>":"")+"</div>";
 }
+/* KI-Umbau (F1): Triage-Layout für offene Anfragen — Original OBEN, KI-Zusammenfassung darunter,
+   dann die Felder (Sterne/Gruppe/Hinweis/Checkliste). Der Analyse-Button füllt alles direkt. */
+function egTriageHtml(m){
+ const sig=erkenneSignale(m.txt);
+ const check=egVollstaendigkeit(m);
+ let summaryBlock;
+ if(m.kiDone){
+  const d=m.kiFelder||{};
+  const extract=[d.kt?"Kostenträger: "+d.kt:null,d.diagnose?"Diagnose: "+d.diagnose:null,d.dringlichkeit?"Dringlichkeit: "+d.dringlichkeit:null].filter(Boolean).join(" · ");
+  summaryBlock="<div id='kiSummary' class='eg-zsf eg-ki'><span class='kicker'>✦ KI-Zusammenfassung</span><p>"+escapeHtml(m.kiSummary||"")+"</p>"+(extract?"<p class='eg-ki-extract'>"+escapeHtml(extract)+"</p>":"")+"</div>";
+ }else{
+  summaryBlock="<div id='kiSummary' class='eg-zsf'><span class='kicker'>Zusammenfassung</span><p>"+escapeHtml(egZusammenfassung(m))+"</p><p class='eg-ki-hint'>KI-Analyse noch nicht ausgeführt</p></div>";
+ }
+ return "<div class='mhead'><div class='ava'>"+initialen(m.wer||"")+"</div><div><h2>"+escapeHtml(m.wer||m.tit)+"</h2>"
+  +"<div class='msub2'><span class='chtag'>"+escapeHtml(m.kanal)+"</span> · <span class='mtime'>"+escapeHtml(m.zeit)+"</span> · <span class='typ-chip qual'>qualifiziert</span></div></div></div>"
+  +"<div style='padding:16px 20px'>"
+  +"<div class='eg-zsf'><span class='kicker'>Originalnachricht</span><div class='eg-original'><div class='mtxt'>"+escapeHtml(m.txt)+"</div></div></div>"
+  +summaryBlock
+  +"<button type='button' class='btn-ghost' style='width:100%' onclick='kiAnalyse("+m.id+")'>✦ KI: Anfrage "+(m.kiDone?"neu ":"")+"analysieren</button><div id='kiPanelEg'></div>"
+  +"<label class='kicker' style='margin-top:12px;display:block'>Einstufung</label>"+egtSterneHtml(m,sig)
+  +"<button type='button' class='egd-saluto"+(m.saluto?" on":"")+"' onclick='egToggleSaluto("+m.id+")'>★ SalutoCare / Premium</button>"
+  +"<label class='kicker' style='margin-top:10px;display:block'>Belegungs-Gruppe</label>"
+  +"<div class='egt-groups'>"+GRUPPEN.map(function(g){const sel=egGruppe===g,n=egGruppenPoolGroesse(g);return "<button type='button' class='egt-group"+(sel?" sel":"")+"' onclick='egGruppeWaehlen("+m.id+",\""+g+"\")'><span class='egt-group-name'>"+escapeHtml(g)+"</span><span class='egt-group-pool'>"+n+" offen</span></button>";}).join("")+"</div>"
+  +"<label class='kicker' style='margin-top:10px;display:block'>Vollständigkeit</label>"
+  +"<div class='egt-check'>"+check.map(function(c){return "<div class='egt-check-item "+(c.ok?"ok":"missing")+"'><span class='egt-check-ic'>"+(c.ok?"✓":"✗")+"</span><span class='egt-check-lbl'>"+escapeHtml(c.label)+"</span>"+(c.ok?"<span class='egt-check-val'>"+escapeHtml(c.wert)+"</span>":"<span class='egt-check-frage'>"+escapeHtml(c.frage)+"</span>")+"</div>";}).join("")+"</div>"
+  +"<label class='kicker' style='margin-top:10px;display:block'>Hinweis für die Bearbeitung</label>"
+  +"<textarea id='egdHinweis' class='rsz-textarea' placeholder='Worauf muss geachtet werden?' oninput='egHinweisSetzen("+m.id+",this.value)'>"+escapeHtml(m.hinweis)+"</textarea>"
+  +"<div class='mfoot' style='flex-direction:column;align-items:stretch;gap:8px;margin-top:12px'>"
+  +"<button class='btn-brass' style='width:100%' onclick='egFreigeben("+m.id+")'>Gruppe zuweisen &amp; freigeben</button>"
+  +"<button class='btn-ghost' onclick='dismissDetail()'>‹ Zurück</button></div>"
+  +"</div>";
+}
 /* Task 2.2 (Punkt 1): #egDetail öffnen — Kopf+Zusammenfassung aus egSummaryHtml(), darunter je nach
    Zustand entweder Team-Zuordnung (qualifiziert, offen), ein einzelner Aufnahme-Button (passiv, offen)
-   oder ein schreibgeschützter Verweis (m.done). */
+   oder ein schreibgeschützter Verweis (m.done). Offene Anfragen: neues KI-Triage-Layout (egTriageHtml). */
 function openEgDetail(id){
  const m=eingang.find(x=>x.id===id);if(!m)return;
  if(m.saluto===undefined)m.saluto=(m.achse==="SalutoCare");
  if(m.hinweis===undefined)m.hinweis="";
  if(_egId!==id){_egId=id;egGruppe=null;}
  _closeSiblingDetailRails("egDetail");
- let actions;
+ const foot=function(x){return "<div class='mfoot' style='flex-direction:column;align-items:stretch;gap:8px'>"+x+"<button class='btn-ghost' onclick='dismissDetail()'>‹ Zurück</button></div>";};
+ let inner;
  if(m.done){
-   actions=m.fallId
-     ?"<button class='btn-brass' onclick='openDetail("+m.fallId+")'>Fall öffnen ›</button>"
-     :"<span class='ok-chip'>✓ in Datenbank</span>";
+   inner=egSummaryHtml(m)+foot(m.fallId?"<button class='btn-brass' onclick='openDetail("+m.fallId+")'>Fall öffnen ›</button>":"<span class='ok-chip'>✓ in Datenbank</span>");
  }else if(m.typ==="passiv"){
-   actions="<button class='btn-brass' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>";
+   inner=egSummaryHtml(m)+foot("<button class='btn-brass' onclick='inDatenbank("+m.id+")'>In Datenbank aufnehmen</button>");
  }else if(m.gruppe){
-   actions="<div class='egt-verteilt'>Im Pool von <b>"+escapeHtml(m.gruppe)+"</b> — wartet auf Übernahme"+(m.autoVerteilt?" (automatisch verteilt)":" (zugewiesen)")+"</div>";
+   inner=egSummaryHtml(m)+foot("<div class='egt-verteilt'>Im Pool von <b>"+escapeHtml(m.gruppe)+"</b> — wartet auf Übernahme"+(m.autoVerteilt?" (automatisch verteilt)":" (zugewiesen)")+"</div>");
  }else{
-   const check=egVollstaendigkeit(m);
-   actions="<button type='button' class='btn-ghost' style='width:100%' onclick='kiAnalyse("+m.id+")'>✦ KI: Anfrage analysieren</button><div id='kiPanelEg'></div>"
-   +"<div class='egt-check'>"+check.map(function(c){
-     return "<div class='egt-check-item "+(c.ok?"ok":"missing")+"'><span class='egt-check-ic'>"+(c.ok?"✓":"✗")+"</span>"
-       +"<span class='egt-check-lbl'>"+escapeHtml(c.label)+"</span>"
-       +(c.ok?"<span class='egt-check-val'>"+escapeHtml(c.wert)+"</span>":"<span class='egt-check-frage'>"+escapeHtml(c.frage)+"</span>")
-       +"</div>";
-   }).join("")+"</div>"
-   +"<button type='button' class='egd-saluto"+(m.saluto?" on":"")+"' onclick='egToggleSaluto("+m.id+")'>★ SalutoCare / Premium</button>"
-   +"<div class='egt-groups'>"+GRUPPEN.map(function(g){
-     const sel=egGruppe===g, n=egGruppenPoolGroesse(g);
-     return "<button type='button' class='egt-group"+(sel?" sel":"")+"' onclick='egGruppeWaehlen("+m.id+",\""+g+"\")'>"
-       +"<span class='egt-group-name'>"+escapeHtml(g)+"</span>"
-       +"<span class='egt-group-pool'>"+n+" offen</span></button>";
-   }).join("")+"</div>"
-   +"<label class='kicker' style='margin-top:10px;display:block'>Hinweis für die Bearbeitung (optional)</label>"
-   +"<textarea id='egdHinweis' class='rsz-textarea' placeholder='Worauf muss geachtet werden?' oninput='egHinweisSetzen("+m.id+",this.value)'>"+escapeHtml(m.hinweis)+"</textarea>"
-   +"<button class='btn-brass' style='width:100%;margin-top:4px' onclick='egFreigeben("+m.id+")'>Gruppe zuweisen &amp; freigeben</button>";
+   inner=egTriageHtml(m);
  }
- document.getElementById("egdBody").innerHTML=egSummaryHtml(m)
-   +"<div class='mfoot' style='flex-direction:column;align-items:stretch;gap:8px'>"+actions
-   +"<button class='btn-ghost' onclick='dismissDetail()'>‹ Zurück</button></div>";
+ document.getElementById("egdBody").innerHTML=inner;
  document.getElementById("egDetail").classList.add("open");
  document.body.classList.add("detail-open");
  if(!matchMedia("(min-width:1024px)").matches)document.body.classList.add("locked");
@@ -7609,9 +7626,10 @@ async function kiVision(image,prompt,opts){opts=opts||{};
 })();
 /* Pitch-Fallbacks: pro Funktion ein plausibles gescriptetes Ergebnis (Spec §4). */
 const KI_FALLBACK={
- analyse:{achse:"Orthopädie",gruppe:"Orthopädie",kt:"PKV",diagnose:"Z. n. Hüft-TEP rechts",dringlichkeit:"hoch",
-  sterne:5,sterneGrund:"Privat versichert, konkreter OP-Termin, Angehörige aktiv eingebunden",
-  hinweis:"Rückruf priorisieren — OP-Termin steht, Komfortzimmer-Wunsch ansprechen."},
+ analyse:{summary:"Angehörige fragen über die Website nach einem dringenden Wechsel ihres 74-jährigen Vaters in die Premium-Neuro-Reha — sie sind mit der aktuellen Einrichtung unzufrieden. Kontakt und Dringlichkeit sind klar, Kostenträger und Diagnose fehlen noch.",
+  achse:"Neurologie",gruppe:"Neuro-Geri",kt:"",diagnose:"",dringlichkeit:"hoch",
+  sterne:4,sterneGrund:"Konkrete Anfrage mit familiärer Dringlichkeit; Kostenträger und Befund noch offen",
+  hinweis:"Rückruf priorisieren — Kostenträger klären und aktuellen Befund anfordern."},
  kurzbericht:{kurzbericht:"Patientin macht gute Fortschritte: Barthel-Index von 45 auf 70 gestiegen, FIM deutlich verbessert. Schmerzen unter Belastung rückläufig, Gehstrecke am Rollator auf 200 m gesteigert. Motivation hoch, Teilnahme an allen Therapieeinheiten.",
   verlaufPlan:"Belastung schrittweise steigern, Treppentraining ab kommender Woche. Entlassung zum geplanten Termin realistisch; ambulante Anschlussversorgung einleiten."},
  vision:{versicherung:"ARKADIA Private Krankenversicherung (Demo)",kostentraeger:"PKV",
@@ -7673,38 +7691,26 @@ function kiStatusRender(){
  el.title=s==="on"?"KI-Copilot aktiv — klicken zum Öffnen":s==="locked"?"KI gesperrt — Zugangscode nötig":"KI offline";
 }
 function kiStatusClick(){ if(kiStatusState()==="locked"){ kiPromptCode(); return; } kiChatOpen(); }
-/* F1 — Anfrage-Analyse im #egDetail: Felder + Sterne + Übernehmen (Freigabe bleibt manuell) */
+/* F1 — Anfrage-Analyse im #egDetail: ein Klick → analysiert Text → füllt Zusammenfassung + Felder DIREKT. */
 function kiAnalyse(id){
  const m=eingang.find(x=>x.id===id);if(!m)return;
- kiRun("kiPanelEg",async()=>{
-  const out=await kiComplete([
-   {role:"system",content:"Du bist Triage-Assistent einer Premium-Reha-Klinik (Achsen: Orthopädie, Neurologie, Geriatrie, Innere, SalutoCare; Belegungs-Gruppen: Orthopädie, Neuro-Geri). Antworte NUR mit einem JSON-Objekt: {achse, gruppe (Orthopädie|Neuro-Geri), kt (PKV|Selbstzahler|Beihilfe|GKV + Komfort|GKV), diagnose, dringlichkeit (hoch|mittel|niedrig), sterne (1-5 als Zahl; 5=PKV+konkret+dringend), sterneGrund, hinweis (1 Satz Bearbeitungshinweis)}. Keine erfundenen Fakten — fehlt etwas, lass das Feld leer."},
-   {role:"user",content:"Kanal: "+m.kanal+"\nBetreff: "+(m.tit||"")+"\nText: "+(m.txt||"")+(m.originalTxt?"\nOriginal:\n"+m.originalTxt:"")}
-  ],{json:true});
-  return out.data;
- },KI_FALLBACK.analyse,(d,off)=>{
-  m.kiVorschlag=d;
-  return "<div class='ki-fields'>"
-   +"<b>Achse</b><span>"+escapeHtml(d.achse||"—")+"</span>"
-   +"<b>Gruppe</b><span>"+escapeHtml(d.gruppe||"—")+"</span>"
-   +"<b>Kostenträger</b><span>"+escapeHtml(d.kt||"—")+"</span>"
-   +"<b>Diagnose</b><span>"+escapeHtml(d.diagnose||"—")+"</span>"
-   +"<b>Dringlichkeit</b><span>"+escapeHtml(d.dringlichkeit||"—")+"</span>"
-   +"<b>Einstufung</b><span>"+sterneHtml(parseInt(d.sterne||3,10))+" — "+escapeHtml(d.sterneGrund||"")+"</span>"
-   +"</div><div class='ki-cta'>"
-   +"<button class='btn-brass btn-sm' onclick='kiAnalyseUebernehmen("+m.id+")'>Übernehmen</button>"
-   +"<button class='btn-ghost btn-sm' onclick='document.getElementById(\"kiPanelEg\").innerHTML=\"\"'>Verwerfen</button>"
-   +"</div><div class='ki-note'>KI schlägt vor — Übernahme füllt Sterne, Gruppe und Hinweis; freigeben tust weiterhin du.</div>";
- });
+ const panel=document.getElementById("kiPanelEg");
+ if(panel)panel.innerHTML="<div class='ki-panel'><div class='ki-kicker'><span class='ki-spin'></span>KI analysiert die Anfrage …</div></div>";
+ kiComplete([
+  {role:"system",content:"Du bist Triage-Assistent einer Premium-Reha-Klinik (Achsen: Orthopädie, Neurologie, Geriatrie, Innere, SalutoCare; Belegungs-Gruppen: Orthopädie, Neuro-Geri). Antworte NUR mit einem JSON-Objekt: {summary (2-3 Sätze, sachliche Zusammenfassung der Anfrage auf Deutsch), achse, gruppe (Orthopädie|Neuro-Geri), kt (PKV|Selbstzahler|Beihilfe|GKV + Komfort|GKV), diagnose, dringlichkeit (hoch|mittel|niedrig), sterne (1-5 als Zahl; 5=PKV+konkret+dringend), sterneGrund, hinweis (1 Satz Bearbeitungshinweis)}. Keine erfundenen Fakten — fehlt etwas, lass das Feld leer."},
+  {role:"user",content:"Kanal: "+m.kanal+"\nBetreff: "+(m.tit||"")+"\nText: "+(m.txt||"")+(m.originalTxt?"\nOriginal:\n"+m.originalTxt:"")}
+ ],{json:true}).then(function(out){ kiAnalyseFuellen(m,out.data||{},false); })
+  .catch(function(e){ console.warn("KI-Fallback:",e.message); kiAnalyseFuellen(m,KI_FALLBACK.analyse,true); });
 }
-function kiAnalyseUebernehmen(id){
- const m=eingang.find(x=>x.id===id),d=m&&m.kiVorschlag;if(!d)return;
- if(d.achse)m.achse=d.achse;                                   /* bestehende Felder, neue Werte */
- if(d.sterne)m.sterne=parseInt(d.sterne,10);                   /* numerisches Override-Feld (egtSterneHtml) */
- if(d.gruppe&&GRUPPEN.includes(d.gruppe))egGruppe=d.gruppe;    /* Gruppen-Button vorwählen */
- if(d.hinweis&&!m.hinweis)m.hinweis=d.hinweis+(d.sterneGrund?" ("+d.sterneGrund+")":"");
- rpToast("KI-Vorschlag übernommen — "+(m.sterne||"?")+"★, Gruppe "+(egGruppe||"?"));
- openEgDetail(id); /* Re-Render zeigt Sterne-Widget, vorgewählte Gruppe + Hinweis */
+/* Ergebnis direkt in die Felder + Zusammenfassung schreiben, dann #egDetail neu rendern. */
+function kiAnalyseFuellen(m,d,off){
+ m.kiDone=true; m.kiFelder=d; m.kiSummary=d.summary||"";
+ if(d.achse)m.achse=d.achse;
+ if(d.sterne)m.sterne=parseInt(d.sterne,10);
+ if(d.gruppe&&GRUPPEN.includes(d.gruppe))egGruppe=d.gruppe;
+ if(d.hinweis)m.hinweis=d.hinweis+(d.sterneGrund?" ("+d.sterneGrund+")":"");
+ openEgDetail(m.id);
+ rpToast(off?"KI offline — Demo-Analyse übernommen":"KI-Analyse übernommen — Felder vorbefüllt");
 }
 function kiKurzbericht(i){
  const p=inReha[i];if(!p)return;
