@@ -2,6 +2,8 @@
 // Hält KIMI_API_KEY serverseitig. Wegwerf-Demo-Infra, kein Produktionsanspruch.
 const http = require("node:http");
 const https = require("node:https");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const PORT = process.env.PORT || 3000;
 const KEY = process.env.KIMI_API_KEY || "";
@@ -14,6 +16,19 @@ const APIPATH = process.env.KIMI_PATH || "/coding/v1/chat/completions";
 // kimi-for-coding erlaubt nur temperature=1; via Env übersteuerbar für andere Modelle.
 const TEMP = process.env.KIMI_TEMP ? Number(process.env.KIMI_TEMP) : 1;
 const ORIGINS = ["https://aluminiumminimum.github.io", "http://localhost:8765", "http://127.0.0.1:8765"];
+// Globales Tageslimit als hartes Ceiling (kein Kimi-Spend-Cap verfügbar). Dateibasiert
+// (append-1-Byte/Call, Größe = Zähler) → race-tolerant über Passenger-Worker, resettet je Tag.
+const DAILY_MAX = process.env.KI_DAILY_MAX ? Number(process.env.KI_DAILY_MAX) : 400;
+const USAGE_DIR = path.join(__dirname, "tmp");
+function dailyExceeded() {
+  try {
+    const f = path.join(USAGE_DIR, "usage-" + new Date().toISOString().slice(0, 10) + ".log");
+    let n = 0; try { n = fs.statSync(f).size; } catch (e) {}
+    if (n >= DAILY_MAX) return true;
+    fs.appendFileSync(f, ".");
+    return false;
+  } catch (e) { return false; } // fs-Fehler darf die Demo nie blockieren
+}
 
 // simples Rate-Limit: max 30 Requests / 5 min / IP
 const hits = new Map();
@@ -54,8 +69,11 @@ http.createServer(async (req, res) => {
   if (req.method === "GET" && req.url === "/health") return send(res, 200, { ok: true, model: MODEL });
   if (req.method !== "POST" || !(req.url === "/ai" || req.url === "/ai/vision")) return send(res, 404, { error: "not found" });
   if ((req.headers["x-ki-token"] || "") !== SHARED) return send(res, 401, { error: "token" });
+  // Origin-Pflicht: echte Aufrufe kommen aus dem Browser der erlaubten Seite; blockt naive curl-Bots.
+  if (!ORIGINS.includes(req.headers.origin || "")) return send(res, 403, { error: "origin" });
   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
   if (limited(String(ip).split(",").pop().trim())) return send(res, 429, { error: "rate limit" });
+  if (dailyExceeded()) return send(res, 429, { error: "daily limit" });
   if (!KEY) return send(res, 503, { error: "no api key configured" });
 
   let raw = "", over = false;

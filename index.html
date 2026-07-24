@@ -7526,13 +7526,22 @@ setTimeout(simulateInbound,3200);
 })();
 /* ===== KI (Kimi via Proxy ai.quintia.de) — Fundament =====
    Kein Key im Client. Degradiert graceful: Proxy weg → "KI offline" bzw. Pitch-Fallback. */
-const KI_CONFIG={endpoint:"https://ai.quintia.de",token:"kb-demo"};
+const KI_CONFIG={endpoint:"https://ai.quintia.de"};
+/* Zugangscode-Gate: KEIN fixer Token im Quelltext. Der Code (= Server-KI_SHARED_TOKEN) wird
+   zur Laufzeit gesetzt — via ?kicode=… (einmal öffnen/bookmarken) oder kiUnlock() — und in
+   localStorage gehalten. Ohne/falscher Code → Proxy 401 → kein LLM-Call, Demo zeigt Fallback. */
+function kiCode(){ try{ return localStorage.getItem('kiCode')||''; }catch(e){ return ''; } }
+window.kiUnlock=function(c){ try{ localStorage.setItem('kiCode',String(c||'')); }catch(e){} location.reload(); };
+function kiPromptCode(){ const c=prompt('KI-Zugangscode eingeben:'); if(c) window.kiUnlock(c); }
+(function(){ try{ const p=new URLSearchParams(location.search); const c=p.get('kicode');
+  if(c){ localStorage.setItem('kiCode',c); p.delete('kicode'); const q=p.toString();
+    history.replaceState(null,'',location.pathname+(q?'?'+q:'')+location.hash); } }catch(e){} })();
 let KI_ONLINE=null; /* null=ungeprüft, true/false nach Health-Ping */
 async function kiFetch(path,body,timeoutMs){
  const c=new AbortController();const t=setTimeout(()=>c.abort(),timeoutMs||20000);
  try{
   const r=await fetch(KI_CONFIG.endpoint+path,{method:"POST",signal:c.signal,
-   headers:{"Content-Type":"application/json","X-KI-Token":KI_CONFIG.token},body:JSON.stringify(body)});
+   headers:{"Content-Type":"application/json","X-KI-Token":kiCode()},body:JSON.stringify(body)});
   if(!r.ok)throw new Error("HTTP "+r.status);
   return await r.json();
  }finally{clearTimeout(t);}
@@ -7568,7 +7577,7 @@ const KI_FALLBACK={
 };
 /* UI-Bausteine */
 function kiSpinnerHtml(label){return "<div class='ki-kicker'><span class='ki-spin'></span>"+escapeHtml(label||"KI arbeitet …")+"</div>";}
-function kiHeadHtml(off){return "<div class='ki-kicker"+(off?" ki-off":"")+"'><span class='dot'></span>KI"+(off?" · offline (Demo-Fallback)":" · Kimi")+"</div>";}
+function kiHeadHtml(off){return "<div class='ki-kicker"+(off?" ki-off":"")+"'><span class='dot'></span>KI"+(off?" · offline (Demo-Fallback)":" · Kimi")+(off?" <span onclick='kiPromptCode()' style='cursor:pointer;text-decoration:underline;letter-spacing:0'>freischalten</span>":"")+"</div>";}
 /* Generischer Runner: rendert Spinner in Container, ruft fn(), rendert via render(result, offline) */
 async function kiRun(containerId,fn,fallback,render){
  const el=document.getElementById(containerId);if(!el)return;
