@@ -11,6 +11,10 @@ Interaktiver Produkt-Prototyp („Privatpatienten-Maschine") für einen Investor
 ## Harte Regeln
 - **Nur synthetische Demo-Daten.** Namen/Kontakte/Zahlen frei erfunden, Mails auf `@demo-*.local`.
   Kein echtes Backend, kein Absenden — Aktionen geben Demo-Feedback (`rpToast`/`refToast`).
+- **KI (einzige Netz-Ausnahme, 07/2026):** `.ki-*`-Features rufen NUR den Proxy `ai.quintia.de`
+  (`ai-proxy/`, Kimi-Key ausschließlich serverseitig als Env — nie im Repo). Jede KI-Funktion hat
+  ein gescriptetes Pitch-Fallback und degradiert ohne Proxy fehlerfrei („KI offline"); KI schlägt
+  nur vor, Übernahme ist immer ein expliziter Klick (Human-in-the-loop).
 - **Mobile-first (390px) UND Desktop-App (≥1024px).** Jede Änderung bei **beiden** Breiten prüfen:
   0 horizontaler Overflow, lesbar, **0 Console-Errors**. Desktop 1440 ist die Pitch-Bühne.
 - **Animationen reduced-motion-safe:** Start-Zustand (opacity/transform 0) NUR im Keyframe-`from`,
@@ -40,7 +44,8 @@ Interaktiver Produkt-Prototyp („Privatpatienten-Maschine") für einen Investor
 ## Konventionen im Code
 - CSS additiv per **kommentierten Blöcken vor `</style>`** + klaren Namespaces:
   `.rp-*` Zuweiser-Suite · `.rpd-*` Dokument-Viewer · `.rsp-*` Reha-Charts · `.mx-*` Matrix ·
-  `.ds-*` Desktop-Sidebar · `.rs-*`/`.ir-*` Reha-Steuerung · `.db-*` Datenbank · `.tabbar` Mobil-Nav.
+  `.ds-*` Desktop-Sidebar · `.rs-*`/`.ir-*` Reha-Steuerung · `.db-*` Datenbank · `.tabbar` Mobil-Nav ·
+  `.ki-*` KI/Kimi (Panel, FAB, `#kiChat`-Overlay).
 - Views schalten via `go(view[,sub])`; Sidebar/Tabbar-Buttons tragen `data-nav`. **IA (seit 07/2026,
   Prozess-Achse):** `heute` · `faelle`(anfragen/board/team) · `inreha` · `netzwerk`(zuweiser/patienten) ·
   `auswertung` · `konzept`(idee/matrix/sops). Alt-Routen (team/matrix/system/…, sowie

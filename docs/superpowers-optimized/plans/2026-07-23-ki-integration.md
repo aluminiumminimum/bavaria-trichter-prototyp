@@ -269,13 +269,13 @@ Expected: `JS OK`.
 
 **Does NOT cover:** Passiv-Zweig (`m.typ==="passiv"`), bereits verteilte (`m.gruppe`) und erledigte (`m.done`) Anfragen — nur der Entscheidungs-Zweig (die `else`-Kaskade mit Checkliste+Gruppen). Das **Freigeben bleibt beim Menschen** (`egFreigeben` unangetastet).
 
-- [ ] **Step 1: Hook (1 Einfügung).** In `openEgDetail` (Anker: `grep -n "function openEgDetail" index.html`, Z.~4462), im letzten `else`-Zweig die `actions`-Zuweisung **vorn** ergänzen — vor der `egVollstaendigkeit`-Checkliste:
+- [x] **Step 1: Hook (1 Einfügung).** In `openEgDetail` (Anker: `grep -n "function openEgDetail" index.html`, Z.~4462), im letzten `else`-Zweig die `actions`-Zuweisung **vorn** ergänzen — vor der `egVollstaendigkeit`-Checkliste:
 ```js
 actions="<button type='button' class='btn-ghost' style='width:100%' onclick='kiAnalyse("+m.id+")'>✦ KI: Anfrage analysieren</button><div id='kiPanelEg'></div>"
  +"<div class='egt-check'>"+check.map(function(c){ /* … bestehender Code unverändert weiter … */
 ```
 *(Konkret: das String-Literal `"<div class='egt-check'>"` um das vorangestellte Button+Container-Fragment erweitern — 1 zusammenhängende Einfügung, kein Umbau.)*
-- [ ] **Step 2: `kiAnalyse` im KI-Block** ergänzen (angepasst an Triage-Modell: numerische Sterne, Gruppen, Hinweis-Feld):
+- [x] **Step 2: `kiAnalyse` im KI-Block** ergänzen (angepasst an Triage-Modell: numerische Sterne, Gruppen, Hinweis-Feld):
 ```js
 function kiAnalyse(id){
  const m=eingang.find(x=>x.id===id);if(!m)return;
@@ -310,9 +310,9 @@ function kiAnalyseUebernehmen(id){
  openEgDetail(id); /* Re-Render zeigt Sterne-Widget, vorgewählte Gruppe + Hinweis */
 }
 ```
-- [ ] **Step 3: Syntax-Gate** (Befehl aus T3 Step 3) → `JS OK`.
-- [ ] **Step 4: Browser-Gate** @1440+@390: `go('faelle','anfragen')` → Anfrage öffnen → „KI: analysieren" → (a) MIT laufendem Proxy: echtes Ergebnis; (b) OHNE (Proxy-Endpoint temporär auf `https://invalid.local` biegen ODER offline): Fallback-Panel mit „offline (Demo-Fallback)". Beidesmal: Übernehmen setzt Sterne-Widget (numerisch), wählt Gruppe vor, füllt Hinweis-Feld + Toast — Freigeben bleibt manuell; 0 Console-Errors; Cofounder-Checks.
-- [ ] **Step 5: Commit** `feat(ki): F1 — Anfrage-Analyse im egDetail (Felder+Sterne+Übernehmen)`. **→ Welle vorzeigbar.**
+- [x] **Step 3: Syntax-Gate** (Befehl aus T3 Step 3) → `JS OK`.
+- [x] **Step 4: Browser-Gate** @1440+@390: `go('faelle','anfragen')` → Anfrage öffnen → „KI: analysieren" → (a) MIT laufendem Proxy: echtes Ergebnis; (b) OHNE (Proxy-Endpoint temporär auf `https://invalid.local` biegen ODER offline): Fallback-Panel mit „offline (Demo-Fallback)". Beidesmal: Übernehmen setzt Sterne-Widget (numerisch), wählt Gruppe vor, füllt Hinweis-Feld + Toast — Freigeben bleibt manuell; 0 Console-Errors; Cofounder-Checks.
+- [x] **Step 5: Commit** `feat(ki): F1 — Anfrage-Analyse im egDetail (Felder+Sterne+Übernehmen)`. **→ Welle vorzeigbar.**
 
 ---
 
@@ -322,11 +322,11 @@ function kiAnalyseUebernehmen(id){
 
 **Does NOT cover:** Direktes Schreiben in `p.kurzbericht` — der KI-Text landet in den **Textareas**; speichern tut weiterhin der Mensch über den bestehenden `rsSaveZwischenstand(i)`-Button (Human-in-the-loop, geteiltes `inReha[]` bleibt unberührt bis zum bewussten Save).
 
-- [ ] **Step 1: Hook.** In `renderMtProtokolle()` (Anker: `grep -n "renderMtProtokolle" index.html`), direkt VOR `"<label class='mtp-lbl'>Kurzbericht</label>"` einfügen:
+- [x] **Step 1: Hook.** In `renderMtProtokolle()` (Anker: `grep -n "renderMtProtokolle" index.html`), direkt VOR `"<label class='mtp-lbl'>Kurzbericht</label>"` einfügen:
 ```js
 +"<button type='button' class='btn-ghost btn-sm' onclick='kiKurzbericht("+i+")'>✦ KI: Kurzbericht entwerfen</button><div id='kiPanelMtp"+i+"'></div>"
 ```
-- [ ] **Step 2: `kiKurzbericht` im KI-Block:**
+- [x] **Step 2: `kiKurzbericht` im KI-Block:**
 ```js
 function kiKurzbericht(i){
  const p=inReha[i];if(!p)return;
@@ -361,9 +361,9 @@ function kiKurzberichtUebernehmen(i){
  rpToast("KI-Entwurf in die Felder übernommen — bitte prüfen und speichern.");
 }
 ```
-- [ ] **Step 3: Syntax-Gate** → `JS OK`.
-- [ ] **Step 4: Browser-Gate** @1440+@390: Rollen-Schalter → `ma-mode` → Reiter „Protokolle" → Button je Zeile → Live + Fallback-Pfad; Übernehmen füllt beide Textareas, „Speichern" schreibt wie bisher (`p.kurzbericht` → Leitungs-Overlay `#rsErfolg` + `.rp-kurz` im Zuweiserportal zeigen den Text); 0 Console-Errors; Cofounder-Checks (v. a. `.rp-kurz` liest unverändert!).
-- [ ] **Step 5: Commit** `feat(ki): F3 — Kurzbericht-Generator im Protokoll-Board (Entwurf in Felder, Save bleibt manuell)`. **→ Welle vorzeigbar.**
+- [x] **Step 3: Syntax-Gate** → `JS OK`.
+- [x] **Step 4: Browser-Gate** @1440+@390: Rollen-Schalter → `ma-mode` → Reiter „Protokolle" → Button je Zeile → Live + Fallback-Pfad; Übernehmen füllt beide Textareas, „Speichern" schreibt wie bisher (`p.kurzbericht` → Leitungs-Overlay `#rsErfolg` + `.rp-kurz` im Zuweiserportal zeigen den Text); 0 Console-Errors; Cofounder-Checks (v. a. `.rp-kurz` liest unverändert!).
+- [x] **Step 5: Commit** `feat(ki): F3 — Kurzbericht-Generator im Protokoll-Board (Entwurf in Felder, Save bleibt manuell)`. **→ Welle vorzeigbar.**
 
 ---
 
@@ -373,11 +373,11 @@ function kiKurzberichtUebernehmen(i){
 
 **Does NOT cover:** Cofounder-`rpUpload` (Portal, tabu). Kein echter Dokument-Speicher — das Bild lebt nur im Moment der Analyse.
 
-- [ ] **Step 1: Anker:** `dArbeitHtml(f)` (Anker: `grep -n "function dArbeitHtml" index.html`, Z.~6641) — im **kosten**-Zweig (`return fakten+"<div id='dKZ' class='kz-block'>…kzChain(f)+kzActions(f)+"</div>"`) direkt NACH `kzActions(f)` und VOR dem schließenden `</div>` additiv anhängen. Hinweis: Die Fallakte ist seit R5 eine **Vollansicht** (`#view-fallakte`); `openDetail(id)` ist Alias auf `openFallakte(id)` — der Re-Render-Aufruf im Code unten funktioniert unverändert:
+- [x] **Step 1: Anker:** `dArbeitHtml(f)` (Anker: `grep -n "function dArbeitHtml" index.html`, Z.~6641) — im **kosten**-Zweig (`return fakten+"<div id='dKZ' class='kz-block'>…kzChain(f)+kzActions(f)+"</div>"`) direkt NACH `kzActions(f)` und VOR dem schließenden `</div>` additiv anhängen. Hinweis: Die Fallakte ist seit R5 eine **Vollansicht** (`#view-fallakte`); `openDetail(id)` ist Alias auf `openFallakte(id)` — der Re-Render-Aufruf im Code unten funktioniert unverändert:
 ```js
 +"<div class='ki-scan'><label class='btn-ghost btn-sm' style='display:inline-block;cursor:pointer'>✦ KI: Dokument scannen<input type='file' accept='image/*' style='display:none' onchange='kiScan(event,"+f.id+")'></label><div id='kiPanelScan'></div></div>"
 ```
-- [ ] **Step 2: `kiScan` + Übernahme im KI-Block:**
+- [x] **Step 2: `kiScan` + Übernahme im KI-Block:**
 ```js
 function kiScan(ev,fallId){
  const file=ev.target.files&&ev.target.files[0];if(!file)return;
@@ -412,9 +412,9 @@ function kiScanUebernehmen(fallId){
  openDetail(fallId); /* Drawer re-rendern */
 }
 ```
-- [ ] **Step 3: Demo-Asset:** ein synthetisches Bewilligungs-Demo-Bild (selbst generiert/gerendert, KEIN echtes Dokument) unter `assets/demo-bewilligung.png` ablegen fürs Vorführen.
-- [ ] **Step 4: Syntax-Gate** → `JS OK`; **Browser-Gate** @1440+@390: Fall mit Aufgabentyp Kostenklärung öffnen → Scan mit Demo-Asset (live) + Fallback-Pfad; Übernehmen setzt `f.kt`+`#dKT`+Log-Eintrag; 0 Console-Errors; Cofounder-Checks.
-- [ ] **Step 5: Commit** `feat(ki): F2 — Dokument-Scan (Vision) im Kostenklärungs-Werkzeug`. **→ Welle vorzeigbar.**
+- [x] **Step 3: Demo-Asset:** ein synthetisches Bewilligungs-Demo-Bild (selbst generiert/gerendert, KEIN echtes Dokument) unter `assets/demo-bewilligung.png` ablegen fürs Vorführen.
+- [x] **Step 4: Syntax-Gate** → `JS OK`; **Browser-Gate** @1440+@390: Fall mit Aufgabentyp Kostenklärung öffnen → Scan mit Demo-Asset (live) + Fallback-Pfad; Übernehmen setzt `f.kt`+`#dKT`+Log-Eintrag; 0 Console-Errors; Cofounder-Checks.
+- [x] **Step 5: Commit** `feat(ki): F2 — Dokument-Scan (Vision) im Kostenklärungs-Werkzeug`. **→ Welle vorzeigbar.**
 
 ---
 
@@ -424,7 +424,7 @@ function kiScanUebernehmen(fallId){
 
 **Does NOT cover:** Schreibende Aktionen aus dem Chat (nur Antworten/Entwürfe als Text). Kein Verlauf über Reload hinaus.
 
-- [ ] **Step 1: CSS ergänzen** (im `.ki-*`-Block):
+- [x] **Step 1: CSS ergänzen** (im `.ki-*`-Block):
 ```css
 .ki-fab{position:fixed;right:18px;bottom:84px;z-index:60;width:48px;height:48px;border-radius:50%;background:var(--espresso-grad);color:var(--ivory-tx);border:1px solid var(--jade-line);box-shadow:var(--shadow);font-size:20px;cursor:pointer}
 @media (min-width:1024px){.ki-fab{bottom:24px}}
@@ -437,7 +437,7 @@ function kiScanUebernehmen(fallId){
 .ki-inrow{display:flex;gap:8px;padding:12px;border-top:1px solid var(--hair)}
 .ki-inrow input{flex:1;font:inherit;padding:10px 12px;border:1px solid var(--hair);border-radius:8px;background:var(--paper2);color:var(--ink)}
 ```
-- [ ] **Step 2: Markup** — direkt nach dem `#egDetail`-Div (Anker: `grep -n 'id="egDetail"'`):
+- [x] **Step 2: Markup** — direkt nach dem `#egDetail`-Div (Anker: `grep -n 'id="egDetail"'`):
 ```html
 <div class="overlay" id="kiChat" role="dialog" aria-modal="true" aria-label="KI-Copilot">
   <div class="modal">
@@ -449,7 +449,7 @@ function kiScanUebernehmen(fallId){
 </div>
 <button class="ki-fab" onclick="kiChatOpen()" aria-label="KI-Copilot öffnen">✦</button>
 ```
-- [ ] **Step 3: Registrierung + Logik im KI-Block:**
+- [x] **Step 3: Registrierung + Logik im KI-Block:**
 ```js
 /* kiChat an die bestehende Detail-Mechanik hängen (Anker: _closeSiblingDetailRails / _rawCloseDetails):
    1-Zeilen-Erweiterung dort, wo ["ovDetail","dbDetail","egDetail"] iteriert wird → "kiChat" ergänzen.
@@ -490,9 +490,9 @@ async function kiChatSend(){
  _kiChatHist.pop();kiChatAppend("ai",antwort);
 }
 ```
-- [ ] **Step 4: 2 Arrayeinträge setzen:** (a) `_closeSiblingDetailRails` (Anker: `grep -n '\["dbDetail","egDetail"\]'`, Z.~4410): Array zu `["dbDetail","egDetail","kiChat"]`; (b) `_DETAIL_IDS` (Anker: `grep -n '_DETAIL_IDS='`, Z.~7432): zu `["dbDetail","rsDetail","egDetail","kiChat"]` — damit schließen Escape/Zurück/popstate den Chat wie die anderen Rails. Grep-verifizieren, sonst nichts anfassen.
-- [ ] **Step 5: Syntax-Gate** → `JS OK`; **Browser-Gate** @1440+@390: FAB sichtbar (kollidiert nicht mit Tabbar @390 — `bottom:84px`), Chat auf/zu via Button/Escape/Zurück (History-Mechanik!), Frage live + Fallback; 0 Console-Errors; Cofounder-Checks.
-- [ ] **Step 6: Commit** `feat(ki): F4 — KI-Copilot-Overlay mit Daten-Snapshot`. **→ Welle vorzeigbar.**
+- [x] **Step 4: 2 Arrayeinträge setzen:** (a) `_closeSiblingDetailRails` (Anker: `grep -n '\["dbDetail","egDetail"\]'`, Z.~4410): Array zu `["dbDetail","egDetail","kiChat"]`; (b) `_DETAIL_IDS` (Anker: `grep -n '_DETAIL_IDS='`, Z.~7432): zu `["dbDetail","rsDetail","egDetail","kiChat"]` — damit schließen Escape/Zurück/popstate den Chat wie die anderen Rails. Grep-verifizieren, sonst nichts anfassen.
+- [x] **Step 5: Syntax-Gate** → `JS OK`; **Browser-Gate** @1440+@390: FAB sichtbar (kollidiert nicht mit Tabbar @390 — `bottom:84px`), Chat auf/zu via Button/Escape/Zurück (History-Mechanik!), Frage live + Fallback; 0 Console-Errors; Cofounder-Checks.
+- [x] **Step 6: Commit** `feat(ki): F4 — KI-Copilot-Overlay mit Daten-Snapshot`. **→ Welle vorzeigbar.**
 
 ---
 
