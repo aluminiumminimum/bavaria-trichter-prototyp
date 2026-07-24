@@ -3184,6 +3184,48 @@ summary.rk::-webkit-details-marker{display:none}
 .ki-msg.ai{align-self:flex-start;background:var(--paper);border:1px solid var(--hair)}
 .ki-inrow{display:flex;gap:8px;padding:12px;border-top:1px solid var(--hair)}
 .ki-inrow input{flex:1;font:inherit;padding:10px 12px;border:1px solid var(--hair);border-radius:8px;background:var(--paper2);color:var(--ink)}
+/* ===== KI-Copilot Premium: Blur-Backdrop + Rechts-Slide, Rich-Text/Tabellen, Denk-Animation, Topbar-Status ===== */
+#kiChat{background:rgba(18,28,25,.34);backdrop-filter:blur(9px) saturate(1.05);-webkit-backdrop-filter:blur(9px) saturate(1.05)}
+#kiChat .modal{transform:translateX(102%);transition:transform .44s cubic-bezier(.22,.61,.36,1);box-shadow:-24px 0 60px rgba(18,28,25,.4)}
+#kiChat.open .modal{transform:none}
+.ki-log{scroll-behavior:smooth}
+/* Rich-Text im AI-Turn */
+.ki-msg.ai{max-width:96%;white-space:normal;line-height:1.5}
+.ki-msg.ai p{margin:0 0 8px}.ki-msg.ai p:last-child{margin-bottom:0}
+.ki-msg.ai strong{font-weight:600;color:var(--ink)}
+.ki-msg.ai em{font-style:italic}
+.ki-msg.ai h4{margin:8px 0 4px;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:15px;color:var(--sage-deep)}
+.ki-msg.ai ul,.ki-msg.ai ol{margin:4px 0 8px;padding-left:18px}.ki-msg.ai li{margin:2px 0}
+.ki-msg.ai code{font-family:"Fragment Mono",ui-monospace,monospace;font-size:12px;background:var(--cream2);padding:1px 5px;border-radius:3px}
+.ki-msg.ai pre{background:var(--sage-deep);color:var(--ivory-tx);padding:9px 11px;border-radius:4px;overflow-x:auto;margin:6px 0}
+.ki-msg.ai pre code{background:none;color:inherit;padding:0}
+.ki-msg.ai .ki-tbl{overflow-x:auto;margin:7px 0;border-radius:4px}
+.ki-msg.ai table{border-collapse:collapse;width:100%;font-size:12.5px}
+.ki-msg.ai th,.ki-msg.ai td{border:1px solid var(--jade-hair);padding:5px 9px;text-align:left;vertical-align:top}
+.ki-msg.ai th{background:var(--sage-soft);font-family:"Fragment Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--brass-deep);font-weight:600}
+.ki-msg.ai tbody tr:nth-child(even) td{background:var(--cream)}
+/* Streaming-Cursor */
+.ki-cursor{display:inline-block;width:6px;height:14px;background:var(--sage-deep);margin-left:2px;vertical-align:text-bottom;border-radius:1px;animation:kiBlink 1s step-end infinite}
+@keyframes kiBlink{50%{opacity:0}}
+.ki-msg.ki-fade{animation:kiFade .35s ease}
+@keyframes kiFade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+/* Premium „denkt nach"-Indikator */
+.ki-think{display:flex;align-items:center;gap:10px}
+.ki-think .spark{font-size:16px;color:var(--brass);animation:kiSpark 1.5s ease-in-out infinite}
+.ki-think .dots{display:inline-flex;gap:5px}
+.ki-think .dots i{width:6px;height:6px;border-radius:50%;background:var(--sage-deep);opacity:.3;animation:kiDot 1.2s ease-in-out infinite}
+.ki-think .dots i:nth-child(2){animation-delay:.16s}.ki-think .dots i:nth-child(3){animation-delay:.32s}
+.ki-think small{font-family:"Fragment Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+@keyframes kiSpark{0%,100%{transform:scale(1) rotate(0);opacity:.75}50%{transform:scale(1.22) rotate(18deg);opacity:1}}
+@keyframes kiDot{0%,100%{opacity:.28;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+/* Topbar KI-Status-Pill */
+.kist{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;font-family:"Fragment Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;border:1px solid var(--hair);background:var(--paper);color:var(--muted);white-space:nowrap;transition:color .35s,border-color .35s,background .35s}
+.kist .kd{width:8px;height:8px;border-radius:50%;background:var(--faint);transition:background .35s}
+.kist.on{color:var(--sage-deep);border-color:var(--jade-hair);background:var(--sage-soft)}
+.kist.on .kd{background:var(--sage-deep);animation:kiPulse 2.1s ease-out infinite}
+.kist.locked{color:var(--brass-deep);border-color:var(--gold-soft);background:var(--brass-soft)}
+.kist.locked .kd{background:var(--brass)}
+@keyframes kiPulse{0%{box-shadow:0 0 0 0 rgba(18,59,51,.45)}70%{box-shadow:0 0 0 7px rgba(18,59,51,0)}100%{box-shadow:0 0 0 0 rgba(18,59,51,0)}}
 </style>
 </head>
 <body>
@@ -3211,7 +3253,7 @@ summary.rk::-webkit-details-marker{display:none}
 </aside>
 <header class="dtopbar">
   <div class="dt-titles"><h2 id="dtopTitle" class="serif">Heute</h2><span id="dtopSub"></span></div>
-  <div class="dt-actions"><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button></div>
+  <div class="dt-actions"><span id="kiStatus" class="kist" role="button" tabindex="0" title="KI-Copilot" onclick="kiStatusClick()"><span class="kd"></span><span id="kiStatusTxt">KI …</span></span><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button></div>
 </header>
 <div class="app">
 <main class="content">
@@ -4243,7 +4285,7 @@ summary.rk::-webkit-details-marker{display:none}
   </div>
 </div>
 
-<div class="overlay" id="kiChat" role="dialog" aria-modal="true" aria-label="KI-Copilot">
+<div class="overlay" id="kiChat" role="dialog" aria-modal="true" aria-label="KI-Copilot" onclick="if(event.target===this)dismissDetail()">
   <div class="modal">
     <div class="mhead"><div class="ava" style="background:var(--espresso-grad);color:var(--ivory-tx)">✦</div><div><h2>KI-Copilot</h2><div class="msub2" id="kiChatSub">Fragen zu Fällen, Zuweisern, Belegung</div></div></div>
     <div class="ki-log" id="kiLog"></div>
@@ -7322,6 +7364,7 @@ function go(dest,seg){
     const _t=TITLES[dest]||TITLES.heute;
     const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
     const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
+    if(typeof kiStatusRender==="function")kiStatusRender();
     if(SEGS[dest]){
       const cur=navState.segs[dest];
       document.querySelectorAll("#view-"+dest+" .seg").forEach(b=>b.classList.toggle("active",b.dataset.seg===cur));
@@ -7536,7 +7579,7 @@ function kiPromptCode(){ const c=prompt('KI-Zugangscode eingeben:'); if(c) windo
 (function(){ try{ const p=new URLSearchParams(location.search); const c=p.get('kicode');
   if(c){ localStorage.setItem('kiCode',c); p.delete('kicode'); const q=p.toString();
     history.replaceState(null,'',location.pathname+(q?'?'+q:'')+location.hash); } }catch(e){} })();
-let KI_ONLINE=null; /* null=ungeprüft, true/false nach Health-Ping */
+var KI_ONLINE=null; /* var (nicht let): go()→kiStatusRender() läuft beim Start VOR dieser Zeile — var vermeidet TDZ */
 async function kiFetch(path,body,timeoutMs){
  const c=new AbortController();const t=setTimeout(()=>c.abort(),timeoutMs||20000);
  try{
@@ -7561,8 +7604,8 @@ async function kiVision(image,prompt,opts){opts=opts||{};
  return out;
 }
 (function kiHealth(){ /* einmaliger Ping; Fehler sind erwartbar und leise */
- try{fetch(KI_CONFIG.endpoint+"/health",{method:"GET"}).then(r=>{KI_ONLINE=r.ok;}).catch(()=>{KI_ONLINE=false;});}
- catch(e){KI_ONLINE=false;}
+ try{fetch(KI_CONFIG.endpoint+"/health",{method:"GET"}).then(r=>{KI_ONLINE=r.ok;kiStatusRender();}).catch(()=>{KI_ONLINE=false;kiStatusRender();});}
+ catch(e){KI_ONLINE=false;kiStatusRender();}
 })();
 /* Pitch-Fallbacks: pro Funktion ein plausibles gescriptetes Ergebnis (Spec §4). */
 const KI_FALLBACK={
@@ -7573,7 +7616,7 @@ const KI_FALLBACK={
   verlaufPlan:"Belastung schrittweise steigern, Treppentraining ab kommender Woche. Entlassung zum geplanten Termin realistisch; ambulante Anschlussversorgung einleiten."},
  vision:{versicherung:"ARKADIA Private Krankenversicherung (Demo)",kostentraeger:"PKV",
   diagnose:"M16.1 Coxarthrose, Z. n. Hüft-TEP",leistung:"Stationäre Anschlussheilbehandlung, 21 Tage",gueltigBis:"31.10.2026"},
- chat:"(Demo-Fallback) Aktuell 3 offene PKV-Fälle: L. Bauer (Unterlagen), S. Meier-Benecke (Kostenzusage angefragt), T. Eggers (Wiedervorlage). Empfehlung: Eggers heute nachfassen — Frist läuft."
+ chat:"**Aktueller Stand — offene Privatfälle**\n\n| Patient | Phase | Nächster Schritt |\n|---|---|---|\n| L. Bauer | Unterlagen | Befunde nachfordern |\n| S. Meier-Benecke | Kostenzusage angefragt | Rückmeldung abwarten |\n| T. Eggers | Wiedervorlage | **heute nachfassen** — Frist läuft |\n\n*Empfehlung:* Herrn Eggers priorisieren — die Frist läuft heute ab.\n\n_(Demo-Antwort — mit Zugangscode live via Kimi)_"
 };
 /* UI-Bausteine */
 function kiSpinnerHtml(label){return "<div class='ki-kicker'><span class='ki-spin'></span>"+escapeHtml(label||"KI arbeitet …")+"</div>";}
@@ -7586,6 +7629,50 @@ async function kiRun(containerId,fn,fallback,render){
  try{data=await fn();}catch(e){console.warn("KI-Fallback:",e.message);data=fallback;off=true;}
  el.innerHTML="<div class='ki-panel"+(off?" ki-off":"")+"'>"+kiHeadHtml(off)+render(data,off)+"</div>";
 }
+/* Mini-Markdown → HTML (XSS-sicher: erst escapen, dann nur eigene Tags). Bold/Italic/Code/
+   Überschriften/Listen/GFM-Tabellen/Absätze. */
+function kiMarkdown(md){
+ md=String(md==null?"":md);
+ const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+ const blocks=[]; md=md.replace(/```(?:\w+)?\n?([\s\S]*?)```/g,function(m,code){blocks.push("<pre><code>"+esc(code.replace(/\n$/,""))+"</code></pre>");return " B"+(blocks.length-1)+" ";});
+ const inline=s=>{ s=esc(s);
+  s=s.replace(/`([^`]+)`/g,"<code>$1</code>");
+  s=s.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
+  s=s.replace(/(^|[^*])\*([^*\n]+)\*/g,"$1<em>$2</em>");
+  s=s.replace(/(^|[^_])_([^_\n]+)_/g,"$1<em>$2</em>");
+  return s; };
+ const lines=md.split(/\r?\n/); let html="",i=0;
+ const isTblSep=s=>/\|/.test(s)&&/^\s*\|?[\s:|-]*-[\s:|-]*$/.test(s);
+ while(i<lines.length){
+  const ln=lines[i];
+  if(/^ B\d+ $/.test(ln.trim())){ html+=blocks[+ln.replace(/\D/g,"")]; i++; continue; }
+  if(/\|/.test(ln)&&i+1<lines.length&&isTblSep(lines[i+1])){
+   const row=r=>r.replace(/^\s*\|/,"").replace(/\|\s*$/,"").split("|").map(c=>c.trim());
+   let t="<table><thead><tr>"+row(ln).map(h=>"<th>"+inline(h)+"</th>").join("")+"</tr></thead><tbody>"; i+=2;
+   while(i<lines.length&&/\|/.test(lines[i])&&lines[i].trim()){ t+="<tr>"+row(lines[i]).map(c=>"<td>"+inline(c)+"</td>").join("")+"</tr>"; i++; }
+   html+="<div class='ki-tbl'>"+t+"</tbody></table></div>"; continue;
+  }
+  const h=ln.match(/^(#{1,6})\s+(.*)$/); if(h){ html+="<h4>"+inline(h[2])+"</h4>"; i++; continue; }
+  if(/^\s*[-*]\s+/.test(ln)){ let t="<ul>"; while(i<lines.length&&/^\s*[-*]\s+/.test(lines[i])){ t+="<li>"+inline(lines[i].replace(/^\s*[-*]\s+/,""))+"</li>"; i++; } html+=t+"</ul>"; continue; }
+  if(/^\s*\d+\.\s+/.test(ln)){ let t="<ol>"; while(i<lines.length&&/^\s*\d+\.\s+/.test(lines[i])){ t+="<li>"+inline(lines[i].replace(/^\s*\d+\.\s+/,""))+"</li>"; i++; } html+=t+"</ol>"; continue; }
+  if(!ln.trim()){ i++; continue; }
+  const para=[ln]; i++;
+  while(i<lines.length&&lines[i].trim()&&!/^\s*[-*]\s+/.test(lines[i])&&!/^\s*\d+\.\s+/.test(lines[i])&&!/^#{1,6}\s/.test(lines[i])&&!/^ B\d+ $/.test(lines[i].trim())&&!(/\|/.test(lines[i])&&i+1<lines.length&&isTblSep(lines[i+1]))){ para.push(lines[i]); i++; }
+  html+="<p>"+para.map(inline).join("<br>")+"</p>";
+ }
+ return html;
+}
+/* Topbar-KI-Status */
+function kiStatusState(){ if(KI_ONLINE!==true)return "off"; return kiCode()?"on":"locked"; }
+function kiStatusRender(){
+ const el=document.getElementById("kiStatus");if(!el)return;
+ const s=kiStatusState();
+ el.className="kist"+(s==="on"?" on":s==="locked"?" locked":"");
+ const t=document.getElementById("kiStatusTxt");
+ if(t)t.textContent=s==="on"?"KI aktiv":s==="locked"?"KI gesperrt":"KI offline";
+ el.title=s==="on"?"KI-Copilot aktiv — klicken zum Öffnen":s==="locked"?"KI gesperrt — Zugangscode nötig":"KI offline";
+}
+function kiStatusClick(){ if(kiStatusState()==="locked"){ kiPromptCode(); return; } kiChatOpen(); }
 /* F1 — Anfrage-Analyse im #egDetail: Felder + Sterne + Übernehmen (Freigabe bleibt manuell) */
 function kiAnalyse(id){
  const m=eingang.find(x=>x.id===id);if(!m)return;
@@ -7695,24 +7782,52 @@ function kiChatOpen(){
  pushDetailState();
  if(!_kiChatHist.length)kiChatAppend("ai","Guten Tag! Ich kenne den aktuellen Demo-Datenstand — fragen Sie mich z. B. nach offenen PKV-Fällen, stockenden Vorgängen oder einem Antwort-Entwurf.");
 }
+function kiChatRender(m){ return "<div class='ki-msg "+m.who+"'>"+(m.who==="ai"?kiMarkdown(m.txt):escapeHtml(m.txt))+"</div>"; }
 function kiChatAppend(who,txt){
  _kiChatHist.push({who:who,txt:txt});
  const el=document.getElementById("kiLog");
- el.innerHTML=_kiChatHist.map(m=>"<div class='ki-msg "+m.who+"'>"+escapeHtml(m.txt)+"</div>").join("");
+ el.innerHTML=_kiChatHist.map(kiChatRender).join("");
  el.scrollTop=el.scrollHeight;
+}
+/* SSE-Streaming: liest Token-Deltas vom Proxy; onDelta(text) je Content-Chunk. */
+async function kiChatStream(messages,onDelta){
+ const r=await fetch(KI_CONFIG.endpoint+"/ai",{method:"POST",
+  headers:{"Content-Type":"application/json","X-KI-Token":kiCode()},
+  body:JSON.stringify({messages:messages,stream:true})});
+ if(!r.ok||!r.body)throw new Error("HTTP "+r.status);
+ const reader=r.body.getReader(),dec=new TextDecoder(); let buf="";
+ while(true){
+  const rd=await reader.read(); if(rd.done)break;
+  buf+=dec.decode(rd.value,{stream:true}); let nl;
+  while((nl=buf.indexOf("\n"))>=0){
+   const line=buf.slice(0,nl).trim(); buf=buf.slice(nl+1);
+   if(!line.startsWith("data:"))continue;
+   const data=line.slice(5).trim(); if(data==="[DONE]")return;
+   try{ const j=JSON.parse(data),d=j.choices&&j.choices[0]&&j.choices[0].delta,c=d&&d.content; if(c)onDelta(c); }catch(e){}
+  }
+ }
 }
 async function kiChatSend(){
  const inp=document.getElementById("kiInput"),q=(inp.value||"").trim();if(!q)return;
- inp.value="";kiChatAppend("user",q);kiChatAppend("ai","…");
- let antwort;
+ inp.value=""; kiChatAppend("user",q);
+ const log=document.getElementById("kiLog");
+ const bubble=document.createElement("div"); bubble.className="ki-msg ai";
+ bubble.innerHTML="<div class='ki-think'><span class='spark'>✦</span><span class='dots'><i></i><i></i><i></i></span><small>denkt nach</small></div>";
+ log.appendChild(bubble); log.scrollTop=log.scrollHeight;
+ const messages=[{role:"system",content:"Du bist der Copilot eines Klinik-CRM (Demo, synthetische Daten). Antworte knapp, deutsch, konkret; nutze Markdown (Fettung, Listen, Tabellen) wo es hilft; nur auf Basis des Datenstands. Entwürfe (Mails etc.) direkt ausformulieren.\n\nDATENSTAND:\n"+kiSnapshot()},
+  ..._kiChatHist.filter(m=>m.who==="user"||m.who==="ai").slice(-8).map(m=>({role:m.who==="user"?"user":"assistant",content:m.txt}))];
+ let acc="";
  try{
-  const out=await kiComplete([
-   {role:"system",content:"Du bist der Copilot eines Klinik-CRM (Demo, synthetische Daten). Antworte knapp, deutsch, konkret; nur auf Basis des Datenstands. Entwürfe (Mails etc.) direkt ausformulieren.\n\nDATENSTAND:\n"+kiSnapshot()},
-   ..._kiChatHist.filter(m=>m.txt!=="…").slice(-8).map(m=>({role:m.who==="user"?"user":"assistant",content:m.txt}))
-  ]);
-  antwort=out.text||"(keine Antwort)";
- }catch(e){console.warn("KI-Fallback:",e.message);antwort=KI_FALLBACK.chat;}
- _kiChatHist.pop();kiChatAppend("ai",antwort);
+  await kiChatStream(messages,function(chunk){ acc+=chunk; bubble.innerHTML=kiMarkdown(acc)+"<span class='ki-cursor'></span>"; log.scrollTop=log.scrollHeight; });
+  if(!acc.trim())acc="_(keine Antwort)_";
+  bubble.innerHTML=kiMarkdown(acc); bubble.classList.add("ki-fade");
+  _kiChatHist.push({who:"ai",txt:acc});
+ }catch(e){
+  console.warn("KI-Fallback:",e.message);
+  bubble.innerHTML=kiMarkdown(KI_FALLBACK.chat); bubble.classList.add("ki-fade");
+  _kiChatHist.push({who:"ai",txt:KI_FALLBACK.chat});
+ }
+ log.scrollTop=log.scrollHeight;
 }
 </script>
 </body>

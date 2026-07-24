@@ -100,6 +100,19 @@ http.createServer(async (req, res) => {
         payload = { model: MODEL, temperature: TEMP, max_tokens: Math.min(Number(b.max_tokens) || 4096, 4096), messages: b.messages || [] };
       }
       if (b.json) payload.response_format = { type: "json_object" };
+      // Token-Streaming: SSE vom Upstream 1:1 an den Client durchreichen (nur Chat /ai).
+      if (b.stream && req.url === "/ai") {
+        payload.stream = true;
+        const body2 = JSON.stringify(payload);
+        res.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no" });
+        const up = https.request({ hostname: HOST, path: APIPATH, method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + KEY, "Content-Length": Buffer.byteLength(body2) }, timeout: 60000 },
+          r2 => { r2.on("data", c => res.write(c)); r2.on("end", () => res.end()); });
+        up.on("error", () => { try { res.end(); } catch (e) {} });
+        up.on("timeout", () => up.destroy());
+        up.end(body2);
+        return;
+      }
       const out = await kimi(payload);
       const msg = out?.choices?.[0]?.message || {};
       const text = msg.content || msg.reasoning_content || "";
