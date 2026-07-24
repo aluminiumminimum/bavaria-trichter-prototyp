@@ -3160,6 +3160,24 @@ summary.rk::-webkit-details-marker{display:none}
 .par-toggle input:checked+.par-slider::before{transform:translateX(16px)}
 .par-foot{font:600 12px/1.4 Inter;color:var(--ink-soft);margin-top:8px}
 .par-foot.muted{opacity:.55;font-style:italic}
+/* Textbaustein-Chips (angebot-Werkzeug, dArbeitHtml) — keine neue Animation. */
+.tb-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tb-chip{font:inherit;font-size:12px;padding:4px 10px;border:1px solid var(--brass-deep,#7E6230);border-radius:4px;background:transparent;color:var(--brass-deep,#7E6230);cursor:pointer}
+.tb-chip:hover{background:rgba(126,98,48,.08)}
+/* Fix 4+6 (Anlass-Feedback): .akd-* — Anlass-Arbeits-Akte (#akDetail), Kontakt/Nachricht direkt
+   im Overlay, keine neue Animation. */
+.akd-kicker{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:6px}
+.akd-name{font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;font-weight:700;margin:2px 0 2px;color:var(--ink)}
+.akd-sub{font-size:13px;color:var(--muted);margin-bottom:12px}
+.akd-contact{margin-bottom:12px}
+.akd-desc{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 14px}
+/* Fix 5 (Zuweiser-Ranking): .zwt-* — 3-Stufen-Ranking-Chip (ersetzt Sterne für Zuweiser), Papier-
+   Etikett mit Jade-Hairline, keine neue Animation. */
+.zwt-chip{display:inline-flex;align-items:center;gap:6px;font:600 11px/1 "Fragment Mono",monospace;letter-spacing:.03em;padding:5px 9px;border-radius:4px;background:var(--paper);border:1px solid var(--jade-line);color:var(--ink-soft)}
+.zwt-dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto}
+.zwt-aktiv .zwt-dot{background:var(--sage-deep)}
+.zwt-geleg .zwt-dot{background:var(--brass)}
+.zwt-ruhend .zwt-dot{background:#7A7265}
 </style>
 </head>
 <body>
@@ -4124,7 +4142,6 @@ summary.rk::-webkit-details-marker{display:none}
                 </div>
               </div>
             </details>
-            <div class="full"><label>Verlauf</label><div class="timeline" id="dLog"></div></div>
             <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
             <div class="full"><button class="btn-brass" id="dSpeichern" style="width:100%">Speichern</button></div>
           </div>
@@ -4132,7 +4149,7 @@ summary.rk::-webkit-details-marker{display:none}
       </div>
       <div class="fk-col-kontext">
         <div class="chap">
-          <h2 class="chap-h2">Werdegang</h2>
+          <h2 class="chap-h2">Kommunikation &amp; Verlauf</h2>
           <div id="faWerdegang"></div>
         </div>
         <div class="chap">
@@ -4219,6 +4236,13 @@ summary.rk::-webkit-details-marker{display:none}
   </div>
 </div>
 
+<!-- ============ ANLASS-ARBEITS-AKTE (Zuweiser-/Patienten-Anlässe) ============ -->
+<div class="overlay" id="akDetail" role="dialog" aria-modal="true" aria-label="Anlass-Akte" onclick="if(event.target===this)akClose()">
+  <div class="modal">
+    <div id="akdBody"></div>
+  </div>
+</div>
+
 <!-- ============ DATENBANK-INSPECTOR (Desktop) ============ -->
 <div class="overlay dbrail" id="dbDetail" role="dialog" aria-modal="false" aria-label="Datenbank-Detail">
   <div class="modal">
@@ -4272,14 +4296,14 @@ function initialen(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpp
 let faelle=[
  {id:1,personId:"P01",name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]],originalTxt:"Kurzanmeldung Sozialdienst RHÖN Campus Bad Neustadt, Station Neurologie, Az. N-1187/26. Patientin Anna Muster, 67 Jahre, Diagnose Schlaganfall, Kostenträger PKV. Aufnahme zur AHB möglichst schnell gewünscht, Tochter organisiert und bittet um Rückruf. Unterlagen folgen per Fax.",originalKanal:"Zuweiser direkt"},
  {id:3,personId:"P02",name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"]],originalTxt:"Hallo, ich hatte vor Kurzem eine Hüft-TEP und suche jetzt eine Reha-Klinik für die Anschlussbehandlung. Ich bin Selbstzahlerin, 58 Jahre alt, und hätte gerne ein Komfortzimmer, wenn das geht am liebsten mit Blick ins Grüne. Einen Termin bräuchte ich möglichst schnell, weil ich zuhause gerade nicht gut zurechtkomme. Viele Grüße, Maria Probst, 0170 4471182",originalKanal:"Website-Formular"},
- {id:6,personId:"P03",name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(-2),saluto:true,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss"],[dstr(-4),"Med. Rückfrage an Oberarzt"]]},
- {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage"],[dstr(-4),"Entlassbrief liegt vor"]]},
+ {id:6,personId:"P03",name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(-2),saluto:true,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss: Thoraxzentrum fragt, ob Beatmungspatient (69, PKV) übernommen werden kann — Entwöhnung läuft, Entlassung geplant"],[dstr(-4),"↦ Rückfrage an Oberarzt Dr. Castelli: aktuelle Beatmungsparameter + Entwöhnungsstand erbeten"],[dstr(-3),"Antwort Thoraxzentrum: Parameter übermittelt, Spontanatmung bereits 8 Std./Tag"]],originalTxt:"Kurzanmeldung Thoraxzentrum Münnerstadt, Station Weaning, Az. TZ-0512/26. Oberarzt Dr. Castelli meldet Patient Heinz Vogel (69) zur Übernahme nach Langzeitbeatmung an, Kostenträger PKV. Frage: Ist eine Aufnahme als Beatmungspatient zur weiteren Entwöhnung bei Ihnen möglich? Um Rückruf wird gebeten unter 0971 0000-271, castelli@demo-thorax.local.",originalKanal:"Zuweiser direkt"},
+ {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage: Entlassmanagement Klinikum Fulda meldet Patient (63, GKV) mit Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich"],[dstr(-4),"Entlassbrief liegt vor — von Entlassmanagement per Recare nachgereicht"],[dstr(-2),"↦ Rückfrage an Entlassmanagement: Komfort-Upgrade und Zusatzkosten angeboten, Rückmeldung ausstehend"]],originalTxt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · Patient Peter Hofmann (63), GKV, Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich. · Bitte um Rückmeldung zur Kapazität und zu den Komfort-Optionen.",originalKanal:"Recare"},
  {id:9,personId:"P05",name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]],originalTxt:"Anruf Tochter Winkler, 11:40 · ruft für ihre Mutter Ruth (77) an, liegt Station 2 Nord UKW Würzburg · Diagnose Schlaganfall, PKV-versichert · möchte möglichst schnell einen Platz in der Neuro-Reha, am liebsten Privatzimmer · Rückrufnummer hinterlegt",originalKanal:"Telefon"},
- {id:12,personId:"P06",name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage"],[dstr(-11),"Rückruf erst nach 26 Std."],[dstr(-8),"Familie hat anderes Haus gewählt"]]},
- {id:10,personId:"P07",name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-12),"Anfrage nach Hüft-TEP (Sozialdienst)"],[dstr(-9),"Kostenzusage PKV"],[dstr(-2),"Aufgenommen — Privatzimmer"]]},
- {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:8,log:[[dstr(-15),"Website-Anfrage Neuro-Reha"],[dstr(-10),"Beratung geführt, Zusage erhalten"],[dstr(-3),"Aufgenommen"]]},
+ {id:12,personId:"P06",name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage: Sohn ruft für Hrn. Keller (70) an, Empfehlung, Beihilfe, sucht schnellen Termin"],[dstr(-11),"↦ Rückruf erst nach 26 Std. — Verzögerung durch hohes Anfrageaufkommen"],[dstr(-8),"Familie hat anderes Haus gewählt — zu lange Wartezeit"]],originalTxt:"Anruf Sohn Keller, 14:20 · ruft für seinen Vater Hans (70) an · sucht Reha-Platz nach Empfehlung, orthopädische Diagnose, Kostenträger Beihilfe · möchte schnellstmöglich einen Termin, Rückrufnummer hinterlegt",originalKanal:"Telefon"},
+ {id:10,personId:"P07",name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-12),"Anfrage nach Hüft-TEP: Sozialdienst Leopoldina meldet Patienten (71, PKV) zur AHB an, Az. O-0847/26"],[dstr(-9),"Kostenzusage PKV eingegangen — vom Sozialdienst übermittelt"],[dstr(-2),"Aufgenommen — Privatzimmer, Sozialdienst per Telefon informiert"]],originalTxt:"Kurzanmeldung Sozialdienst Leopoldina-Krankenhaus Schweinfurt, Station Orthopädie, Az. O-0847/26. Patient Ludwig Bauer, 71 Jahre, Diagnose Hüft-TEP links, Kostenträger PKV. Aufnahme zur Anschlussheilbehandlung gewünscht, Unterlagen folgen. Rückmeldung zur Aufnahmefähigkeit erbeten.",originalKanal:"Zuweiser direkt"},
+ {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:8,log:[[dstr(-15),"Website-Anfrage Neuro-Reha: Patientin fragt selbst nach Platz nach Schlaganfall, PKV"],[dstr(-10),"Beratung geführt, Zusage erhalten — Rückruf, Fragen zur Station beantwortet"],[dstr(-3),"Aufgenommen"]],originalTxt:"Guten Tag, ich hatte vor einigen Wochen einen Schlaganfall und bin jetzt auf der Suche nach einer Reha-Klinik mit Schwerpunkt Neurologie. Ich bin 66 Jahre alt und privat versichert. Können Sie mir sagen, ob und wann bei Ihnen ein Platz frei wäre? Über eine Rückmeldung würde ich mich sehr freuen. Viele Grüße, Elisabeth Cramer, 0171 5583421",originalKanal:"Website-Formular"},
  /* Seed-Ergänzung Mein Tag (Baustein Mitarbeiter-Dashboard): Kostenklärung ohne eigene Frist, additiv am Muster der Nachbarn */
- {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:5,log:[[dstr(-4),"Anfrage über Empfehlung (Knie-TEP, AHB gesucht)"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend"]]}
+ {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:5,log:[[dstr(-4),"Anfrage über Empfehlung: Anruf Hr. Aumann, 10:05, Knie-TEP, AHB gesucht, PKV"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend — telefonisch nachgefragt"],[dstr(0),"↦ Erinnerung an fehlende Kostenzusage verschickt"]],originalTxt:"Anruf Hr. Aumann, 10:05 · ruft selbst an, wurde von Bekannten empfohlen · sucht AHB nach Knie-TEP, 72 Jahre, privat versichert · bittet um Information zu Ablauf und Kosten, Rückrufnummer hinterlegt",originalKanal:"Telefon"}
 ];
 
 /* Werdegang-Beispielschritte (nur für Demo-Fälle gesetzt; Rest wird generisch abgeleitet) */
@@ -4743,26 +4767,29 @@ function jahrestagDiff(datum){
 }
 const PA_TYP={anfrage:"Anfrage",fall:"Fall",aufnahme:"Aufnahme",entlassung:"Entlassung",kontakt:"Kontakt"};
 const PA_ZW={behandlung:"Behandlung",newsletter:"Newsletter",post:"Post/Geschenk"};
-function paAkte(pid){
+function paAkte(pid,opts){
  const p=person(pid);if(!p)return"";
+ const o=Object.assign({verlauf:true,einwilligung:true,sterne:true},opts||{});
  const g=paGeb(p.geb),ew=p.einwilligung||{zwecke:[]};
  const LZ={interessent:"Interessent",patient:"Patient",altpatient:"Altpatient"};
  const ewTxt=ew.status==="erteilt"?("erteilt"+(ew.form?" · "+ew.form:"")):ew.status==="widerruf"?"Widerruf":"offen";
  const hist=(p.historie||[]).slice(-6).reverse().map(h=>"<div class='pa-ev'><span class='pa-dot'></span><div class='pa-evb'><div class='pa-evm'><span class='pa-evt'>"+escapeHtml(PA_TYP[h.typ]||h.typ)+"</span><small>"+escapeHtml(paDate(h.d))+"</small></div><p>"+escapeHtml(h.text)+"</p></div></div>").join("");
  return "<div class='pa-akte'>"
-  +"<div class='pa-head'><span class='pa-title'>Akte</span><span class='pa-lz lz-"+p.lebenszyklus+"'><span class='pa-lzdot'></span>"+(LZ[p.lebenszyklus]||p.lebenszyklus)+"</span><span class='pa-ktchip'>"+escapeHtml(p.kt)+"</span>"+(p.sterne?sterneHtml(p.sterne):"")+"</div>"
+  +"<div class='pa-head'><span class='pa-title'>Akte</span><span class='pa-lz lz-"+p.lebenszyklus+"'><span class='pa-lzdot'></span>"+(LZ[p.lebenszyklus]||p.lebenszyklus)+"</span><span class='pa-ktchip'>"+escapeHtml(p.kt)+"</span>"+(o.sterne&&p.sterne?sterneHtml(p.sterne):"")+"</div>"
   +((g&&g.tage<=30)?"<div class='pa-anlass'>✦ <b>Wird "+g.wird+" am "+g.datum+"</b> — Geburtstag in "+g.tage+" Tagen. Anlass für eine persönliche Aufmerksamkeit.</div>":"")
   +"<div class='pa-meta'>"
   +(p.geb?"<div class='pa-row'><span class='pa-k'>Geboren</span><span class='pa-v'>"+escapeHtml(paDate(p.geb))+"</span></div>":"")
-  +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(ewTxt)+((ew.zwecke&&ew.zwecke.length)?"<span class='pa-zwr'>"+ew.zwecke.map(z=>"<span class='pa-zw'>"+escapeHtml(PA_ZW[z]||z)+"</span>").join("")+"</span>":"")+"</span></div>"
+  +((p.kontakt&&p.kontakt.tel)?"<div class='pa-row'><span class='pa-k'>Telefon</span><span class='pa-v'>"+escapeHtml(p.kontakt.tel)+"</span></div>":"")
+  +((p.kontakt&&p.kontakt.mail)?"<div class='pa-row'><span class='pa-k'>E-Mail</span><span class='pa-v'>"+escapeHtml(p.kontakt.mail)+"</span></div>":"")
+  +(o.einwilligung?"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(ewTxt)+((ew.zwecke&&ew.zwecke.length)?"<span class='pa-zwr'>"+ew.zwecke.map(z=>"<span class='pa-zw'>"+escapeHtml(PA_ZW[z]||z)+"</span>").join("")+"</span>":"")+"</span></div>":"")
   +((p.angehoerige&&p.angehoerige.length)?"<div class='pa-row'><span class='pa-k'>Angehörige</span><span class='pa-v'>"+p.angehoerige.map(a=>escapeHtml(a.name)+" ("+escapeHtml(a.bezug)+")").join(", ")+"</span></div>":"")
   +(p.zuweiserRef?"<div class='pa-row'><span class='pa-k'>Zuweiser</span><span class='pa-v'>"+escapeHtml(p.zuweiserRef)+"</span></div>":"")
   +"</div>"
-  +(hist?"<div class='pa-histhead'>Verlauf der Beziehung</div><div class='pa-hist'>"+hist+"</div>":"")
+  +(o.verlauf&&hist?"<div class='pa-histhead'>Verlauf der Beziehung</div><div class='pa-hist'>"+hist+"</div>":"")
   +"</div>";
 }
-function paAkteSlot(pid){
- return pid?paAkte(pid):"<div class='pa-akte'><div class='pa-head'><span class='kicker'>Akte</span></div><div class='pa-hint'>Noch keine Einzelperson qualifiziert — die Akte entsteht bei der Qualifizierung.</div></div>";
+function paAkteSlot(pid,opts){
+ return pid?paAkte(pid,opts):"<div class='pa-akte'><div class='pa-head'><span class='kicker'>Akte</span></div><div class='pa-hint'>Noch keine Einzelperson qualifiziert — die Akte entsteht bei der Qualifizierung.</div></div>";
 }
 
 let aktuellerFall=null;let zFilter="krankenhaus";let boardStageFilter=null;let horizont=9;
@@ -4876,7 +4903,11 @@ function egVollstaendigkeit(m){
     {label:"Wunschtermin", ok:!!sig.dringlichkeit, wert:sig.dringlichkeit,
      frage:"Wunschtermin/Entlassungsdatum erfragen"},
     {label:"Kontaktdaten", ok:!!m.wer, wert:m.wer,
-     frage:"Vollständige Kontaktdaten (Telefon/E-Mail) erfragen"}
+     frage:"Vollständige Kontaktdaten (Telefon/E-Mail) erfragen"},
+    {label:"Kontakt-Einwilligung",
+     ok: !!(m.consent && m.consent!=="offen" && m.consent!==""),
+     wert: (m.consent||""),
+     frage:"Einwilligung zur Kontaktaufnahme einholen (DSGVO)"}
   ];
 }
 /* Runde 6 Punkt 2 (§4): fallFakten()/fallAbsenderTyp() — deterministische Kernfakten-Extraktion
@@ -5312,7 +5343,7 @@ function zwaKarte(a){
   +"<span class='radar-due "+a.urg+"' style='margin-left:auto'>"+dueTxt+"</span></div>"
   +"<div class='zwa-name'>"+escapeHtml(a.zName)+"</div>"
   +"<p class='zwa-text'>"+escapeHtml(a.sub)+"</p>"
-  +"<div class='zwa-foot'><button class='btn-ghost btn-sm' onclick='arAktion(\""+a.key.replace(/"/g,"&quot;")+"\")'>Erledigt ✓</button></div>"
+  +"<div class='zwa-foot'><button class='btn-brass btn-sm' onclick='akOpen(\""+a.key.replace(/"/g,"&quot;")+"\")'>Bearbeiten ›</button></div>"
   +"</div>";
 }
 function renderZuweiserAnlaesse(){
@@ -5339,7 +5370,7 @@ function paaKarte(a){
   +"<div class='zwa-name'>"+escapeHtml(a.titel)+"</div>"
   +(a.sterne?"<div class='ar-cardstars'>"+sterneHtml(a.sterne)+"</div>":"")
   +"<p class='zwa-text'>"+escapeHtml(a.sub)+"</p>"
-  +"<div class='zwa-foot'><button class='btn-ghost btn-sm' onclick='arAktion(\""+a.key.replace(/"/g,"&quot;")+"\")'>Erledigt ✓</button></div>"
+  +"<div class='zwa-foot'><button class='btn-brass btn-sm' onclick='akOpen(\""+a.key.replace(/"/g,"&quot;")+"\")'>Bearbeiten ›</button></div>"
   +"</div>";
 }
 function renderPatientenAnlaesse(){
@@ -5351,6 +5382,98 @@ function renderPatientenAnlaesse(){
   +(demnaechst.length?"<div class='ar-feedhead'>Demnächst</div><div class='zwa-group'>"+demnaechst.map(paaKarte).join("")+"</div>":"")
   +"<div class='ar-feedhead'>Wiederbedarf (medizinische Prognose)</div>";
 }
+/* Fix 4+6 (Anlass-Feedback): Anlass-Arbeits-Akte — Overlay #akDetail, öffnet aus zwaKarte()/paaKarte()
+   statt des direkten "Erledigt ✓"-Buttons. Kontaktdaten stehen direkt da (kein Suchen mehr nötig),
+   plus vorbefüllte Nachricht + Kanalwahl, analog egSummaryHtml/openEgDetail (Punkt 1). */
+const AK_LZ={interessent:"Interessent",patient:"Patient",altpatient:"Altpatient"};
+const AKD_TEMPLATES={
+ geburtstag:"Sehr geehrte/r {name},\n\nzu Ihrem Geburtstag senden wir Ihnen die herzlichsten Glückwünsche aus der Klinik Bavaria. Wir wünschen Ihnen Gesundheit und alles Gute.\n\nIhr Team der Klinik Bavaria",
+ jubilaeum:"Sehr geehrte/r {name},\n\nvor einem Jahr durften wir Sie bei uns begleiten. Wir denken gern an Ihre Zeit bei uns zurück und würden uns freuen zu hören, wie es Ihnen heute geht.\n\nIhr Team der Klinik Bavaria",
+ nachsorge:"Sehr geehrte/r {name},\n\nim Rahmen Ihrer Nachsorge möchten wir uns erkundigen, wie es Ihnen seit Ihrer Entlassung ergangen ist. Gerne vereinbaren wir einen Termin für einen Jahres-Check.\n\nIhr Team der Klinik Bavaria",
+ wiederbedarf:"Sehr geehrte/r {name},\n\nbei Ihrer letzten Reha haben wir besprochen, dass eine weitere Behandlung absehbar werden könnte. Gern beraten wir Sie zu einem passenden Zeitpunkt — melden Sie sich einfach.\n\nIhr Team der Klinik Bavaria",
+ "zuweiser-rhythmus":"Gesprächsnotiz-Vorlage — Anruf bei {ap}:\n- Dank für die bisherige Zusammenarbeit\n- Aktuelle Belegungssituation / freie Kapazitäten nennen\n- Rückfragen zu laufenden Fällen aufnehmen\n- Nächsten Kontakt vereinbaren",
+ "zuweiser-jubilaeum":"Sehr geehrte/r {ap},\n\nzum Jahrestag unserer Zusammenarbeit möchten wir uns herzlich für die vertrauensvolle Partnerschaft zwischen unseren Häusern bedanken.\n\nMit freundlichen Grüßen\nKlinik Bavaria",
+ "zuweiser-meilenstein":"Sehr geehrte/r {ap},\n\nwir möchten uns für die vertrauensvolle Zusammenarbeit bedanken — kürzlich durften wir den {n}. Patienten aus Ihrem Haus bei uns begrüßen.\n\nMit freundlichen Grüßen\nKlinik Bavaria",
+ "zuweiser-bericht":"Sehr geehrte/r {ap},\n\nanbei erhalten Sie den Abschlussbericht zu Ihrem Patienten. Für Rückfragen stehen wir jederzeit zur Verfügung.\n\nMit freundlichen Grüßen\nKlinik Bavaria",
+ "zuweiser-fortbildung":"Sehr geehrte/r {ap},\n\nwir laden Sie herzlich zu unserer Fortbildung (CME-zertifiziert) in die Klinik Bavaria ein. Gern reservieren wir Ihnen einen Platz — auch eine Hospitation ist möglich.\n\nMit freundlichen Grüßen\nKlinik Bavaria",
+ "zuweiser-trend":"Gesprächsnotiz-Vorlage — Anruf bei {ap}:\n- Fallzahl-Entwicklung ansprechen (rückläufig)\n- Nach Gründen fragen (Zufriedenheit? Prozesse? Kapazität?)\n- Konkretes Angebot: Fast-Lane / fester Ansprechpartner\n- Follow-up-Termin vereinbaren"
+};
+function akdText(a,name,ap){
+ const tpl=AKD_TEMPLATES[a.typ];
+ if(!tpl)return ((a.geste&&a.geste.label)||"Notiz")+"\n\n";
+ let txt=tpl;
+ if(a.typ==="zuweiser-meilenstein"){
+   const m=/^(\d+)\./.exec(a.sub||"");
+   txt=m?txt.replace("{n}",m[1]):txt.replace("den {n}. Patienten","weitere Patienten");
+ }
+ // Klammerzusatz ("Hr. Brenner (Privatstation)") gehört nicht in eine Brief-Anrede
+ const apRein=(ap||"").replace(/\s*\([^)]*\)\s*$/,"");
+ return txt.replace(/\{name\}/g,name||"").replace(/\{ap\}/g,apRein);
+}
+function akOpen(key){
+ const a=anlaesse().find(x=>x.key===key);if(!a)return;
+ let name="",sub="",kontakt={};
+ if(a.zName){
+   const z=zuweiser.find(x=>x.name===a.zName);
+   name=a.zName;
+   sub=z?(z.typ+" · "+z.ort):"";
+   kontakt={ap:z?z.ap:"",tel:z?z.tel:"",mail:z?z.mail:""};
+ }else if(a.pid){
+   const p=person(a.pid);
+   name=p?p.name:a.titel;
+   sub=p?(p.kt+" · "+(AK_LZ[p.lebenszyklus]||p.lebenszyklus)):"";
+   kontakt={tel:(p&&p.kontakt)?p.kontakt.tel:"",mail:(p&&p.kontakt)?p.kontakt.mail:""};
+ }else{
+   name=a.titel;
+ }
+ const t=ZWA_TYP[a.typ]||PAA_TYP[a.typ]||{ico:"•",label:""};
+ const dueTxt=a.zName?(a.urg==="jetzt"?"überfällig":"in "+a.tage+" Tagen"):(a.tage===0?"heute":"in "+a.tage+" Tagen");
+ const keyEsc=key.replace(/"/g,"&quot;");
+ document.getElementById("akdBody").innerHTML=
+   "<div style='padding:16px 20px'>"
+  +"<div class='akd-kicker'><span class='kicker'>"+escapeHtml(t.label)+"</span><span class='radar-due "+a.urg+"'>"+dueTxt+"</span></div>"
+  +"<h2 class='akd-name'>"+escapeHtml(name)+"</h2>"
+  +(sub?"<div class='akd-sub'>"+escapeHtml(sub)+"</div>":"")
+  +"<div class='pa-meta akd-contact'>"
+  +(kontakt.ap?"<div class='pa-row'><span class='pa-k'>Ansprechpartner</span><span class='pa-v'>"+escapeHtml(kontakt.ap)+"</span></div>":"")
+  +(kontakt.tel?"<div class='pa-row'><span class='pa-k'>Telefon</span><span class='pa-v'>"+escapeHtml(kontakt.tel)+"</span></div>":"")
+  +(kontakt.mail?"<div class='pa-row'><span class='pa-k'>E-Mail</span><span class='pa-v'>"+escapeHtml(kontakt.mail)+"</span></div>":"")
+  +"</div>"
+  +"<p class='akd-desc'>"+escapeHtml(a.sub)+"</p>"
+  +"<label class='kicker' style='margin-top:10px;display:block'>Vorbereitete Nachricht</label>"
+  +"<textarea id='akdText' rows='6'></textarea>"
+  +"<label class='kicker' style='margin-top:10px;display:block'>Kanal</label>"
+  +"<select id='akdKanal'><option>E-Mail</option><option>Telefon (Notiz)</option><option>Post</option></select>"
+  +"</div>"
+  +"<div class='mfoot' style='flex-direction:column;align-items:stretch;gap:8px'>"
+  +"<button class='btn-brass' type='button' onclick='akSenden(\""+keyEsc+"\")'>Senden &amp; erledigt</button>"
+  +"<button class='btn-ghost' type='button' onclick='akNurErledigt(\""+keyEsc+"\")'>Nur als erledigt markieren</button>"
+  +"<button class='btn-ghost' type='button' onclick='akClose()'>‹ Zurück</button>"
+  +"</div>";
+ const ta=document.getElementById("akdText");
+ if(ta)ta.value=akdText(a,name,kontakt.ap);
+ document.getElementById("akDetail").classList.add("open");
+ document.body.classList.add("detail-open");
+ if(!matchMedia("(min-width:1024px)").matches)document.body.classList.add("locked");
+ pushDetailState();
+}
+function akSenden(key){
+ const a=anlaesse().find(x=>x.key===key);if(!a)return;
+ const taEl=document.getElementById("akdText"),kEl=document.getElementById("akdKanal");
+ const text=(taEl?taEl.value:"").trim();
+ const kanal=kEl?kEl.value:"E-Mail";
+ const kurz=text.length>80?text.slice(0,80)+"…":text;
+ const p=a.pid?person(a.pid):null;
+ const name=a.zName||(p?p.name:a.titel);
+ if(a.pid)pHist(a.pid,"kontakt","↦ "+kanal+": "+kurz);
+ if(a.zName)zuweiserEvents.push({zName:a.zName,d:dstr(0),typ:"gespraech",text:"↦ "+kanal+": "+kurz});
+ _arDone.add(key);
+ inbToast("done","<b>Gesendet &amp; erledigt</b> (Demo)","per "+escapeHtml(kanal)+" an "+escapeHtml(name),null);
+ akClose();
+ renderAnlaesse();renderRadar();renderZuweiser();
+}
+function akNurErledigt(key){ arAktion(key); akClose(); }
+function akClose(){ dismissDetail(); }
 /* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
 const FC_BETTEN=7; // Komfort-Kontingent (Privat-/Selbstzahler + Komfort-Aufzahler)
 const FC_ZIEL=FC_BETTEN-1; // Ziel-Belegung (Demo): eine Stufe unter Vollbelegung → gestrichelte Ziel-Linie im Forecast
@@ -5681,13 +5804,11 @@ function openDbDetail(i){
     +(p.kontext?"<div class='di-ctx'>"+escapeHtml(p.kontext)+"</div>":"")
     +"<div class='di-rows'>"
     +"<div class='di-row'><span class='di-k'>Einwilligung</span><span>"+cons+"</span></div>"
-    +"<div class='di-row'><span class='di-k'>Achse</span><span class='di-axis'><span class='ach-dot'></span>"+escapeHtml(p.achse)+"</span></div>"
     +"<div class='di-row'><span class='di-k'>Einstufung</span><span>"+sterneHtml(sterneVon(p))+" <span class='st-lbl'>"+escapeHtml((STERNE[String(sterneVon(p))]||{}).label||"")+"</span></span></div>"
     +((p.personId&&person(p.personId)&&person(p.personId).sterneGrund)?"<div class='di-row'><span class='di-k'>Begründung</span><span>"+escapeHtml(person(p.personId).sterneGrund)+"</span></div>":"")
     +"<div class='di-row'><span class='di-k'>Automatik-Regeln</span><span>"+patAutomatikText(p)+"</span></div>"
-    +"<div class='di-row'><span class='di-k'>Quelle</span><span>"+escapeHtml(p.quelle||"—")+"</span></div>"
     +"</div>"
-    +"</div>"+paAkte(p.personId);
+    +"</div>"+paAkte(p.personId,{einwilligung:false,sterne:false});
   document.getElementById("dbDetail").classList.add("open");
   document.body.classList.add("detail-open");
   pushDetailState();
@@ -5767,27 +5888,23 @@ function networkDot(z,i){
     +"<text x='"+pos[0]+"' y='"+(pos[1]+4)+"' text-anchor='middle' font-family='Inter' font-size='11' font-weight='700' fill='#faf8f4'>"+(i+1)+"</text>"
     +"<text x='"+pos[0]+"' y='"+(pos[1]+r+18)+"' text-anchor='middle' font-family='Inter' font-size='11' font-weight='600' fill='#5c554c'>"+escapeHtml(mapOrt(z.ort))+"</text></g>";
 }
-/* Runde 6 Punkt 5 (§4): zwSterne() — deterministische 1-5-Sterne-Einstufung aus Fallvolumen,
-   Draht-Stärke (gleiche Zählweise wie rhythmusPflege()) und Trend (aus dem bestehenden
-   verlaufAusFaellen()/verlauf3M). faelle<1 (Archiv/Nie-Kontaktierte) liefert null — kein Ranking. */
-function zwSterne(z){
+/* Fix 5 (Zuweiser-Ranking): zwTier() ersetzt die alte 5-Sterne-Logik (zwSterne, Runde 6) durch 3
+   nachvollziehbare Stufen — Sterne für PATIENTEN (sterneHtml/STERNE) bleiben unverändert. */
+function zwTier(z){
  if(z.faelle<1)return null;
- const volumen=z.faelle>=5?3:z.faelle>=3?2:1;
- const staerke=((z.draht||"").match(/●/g)||[]).length;
- const draht=staerke>=3?2:staerke===2?1:0;
- const v=z.verlauf3M||[0,0,0];
- const trend=(v[2]>v[1]&&v[1]>v[0])?1:(v[2]<v[1]&&v[1]<v[0])?-1:0;
- const score=volumen+draht+trend;
- if(score>=6)return 5;
- if(score>=4)return 4;
- if(score===3)return 3;
- if(score===2)return 2;
- return 1;
+ if(z.letzter>=dstr(-45)&&z.faelle>=3)return "aktiv";
+ if(z.letzter>=dstr(-120))return "gelegentlich";
+ return "ruhend";
 }
-/* Runde 6 Punkt 5 (§5.3): zwChip() — Sterne-Filter-Chips, analog renderBestand()s chip()-Vorbild
+const ZW_TIER={aktiv:{label:"Aktiver Zuweiser",cls:"zwt-aktiv"},gelegentlich:{label:"Gelegentlicher Zuweiser",cls:"zwt-geleg"},ruhend:{label:"War aktiv — ruht",cls:"zwt-ruhend"}};
+const ZW_TIER_RANK={aktiv:3,gelegentlich:2,ruhend:1};
+function zwTierChip(t){
+ return "<span class='zwt-chip "+ZW_TIER[t].cls+"'><span class='zwt-dot'></span>"+ZW_TIER[t].label+"</span>";
+}
+/* Runde 6 Punkt 5 (§5.3): zwChip() — Ranking-Filter-Chips, analog renderBestand()s chip()-Vorbild
    (index.html renderBestand()), nutzt bestehende .tier-chips/.tchip-CSS (keine neue Klasse). */
 function zwChip(key,lbl,pool){
- const n=key==="alle"?pool.length:pool.filter(z=>zwSterne(z)===+key).length;
+ const n=key==="alle"?pool.length:pool.filter(z=>zwTier(z)===key).length;
  return "<button class='tchip"+(zwSterneFilter===key?" on":"")+"' onclick='zwSterneFilter=\""+key+"\";renderZuweiser()'>"+lbl+" <b class='num'>"+n+"</b></button>";
 }
 function renderZuweiser(){
@@ -5825,14 +5942,14 @@ function renderZuweiser(){
   /* Runde 6 Punkt 5 (§5.1): eigene Etiketten-Karten (.zwa-*) statt arCard()/.radar-card */
   renderZuweiserAnlaesse();
   const chipsHtml="<div class='tier-chips'>"+zwChip("alle","Alle",primaryFiltered)
-    +["5","4","3","2","1"].map(k=>zwChip(k,k+"★",primaryFiltered)).join("")+"</div>";
+    +["aktiv","gelegentlich","ruhend"].map(k=>zwChip(k,k.charAt(0).toUpperCase()+k.slice(1),primaryFiltered)).join("")+"</div>";
   const zwChipsEl=document.getElementById("zwSterneChips");if(zwChipsEl)zwChipsEl.innerHTML=chipsHtml;
-  const sorted=[...filtered].filter(z=>zwSterneFilter==="alle"||zwSterne(z)===+zwSterneFilter)
-    .sort((a,b)=>(zwSterne(b)||0)-(zwSterne(a)||0)||b.faelle-a.faelle);
+  const sorted=[...filtered].filter(z=>zwSterneFilter==="alle"||zwTier(z)===zwSterneFilter)
+    .sort((a,b)=>((ZW_TIER_RANK[zwTier(b)]||0)-(ZW_TIER_RANK[zwTier(a)]||0))||b.faelle-a.faelle);
   const trendMap=new Map(anlaesse().filter(a=>a.typ==="zuweiser-trend").map(a=>[a.zName,a]));
   document.getElementById("zgrid").innerHTML=sorted.length?sorted.map(z=>
     "<div class='zcard'>"
-   +"<div class='zw-rankline'>"+(zwSterne(z)!=null?sterneHtml(zwSterne(z)):"<span class='zwa-noster'>kein Ranking</span>")+zwSparkline(z.verlauf3M)+"</div>"
+   +"<div class='zw-rankline'>"+(zwTier(z)!=null?zwTierChip(zwTier(z)):"<span class='zwa-noster'>kein Ranking</span>")+zwSparkline(z.verlauf3M)+"</div>"
    +"<div class='zname'>"+escapeHtml(z.name)+"</div><div class='ztyp'>"+escapeHtml(z.typ)+"</div>"
    +"<div class='zcontact'><span><small>Telefon</small>"+escapeHtml(z.tel||"offen")+"</span><a href='mailto:"+escapeHtml(z.mail||"")+"'><small>E-Mail</small>"+escapeHtml(z.mail||"offen")+"</a></div>"
    +"<div class='zrow'><span>Ort</span><b>"+escapeHtml(z.ort)+"</b></div>"
@@ -6396,10 +6513,9 @@ function openRsDetail(i){
   +"<div class='rs-rows'>"
     +"<div class='rs-row'><span class='rs-k'>Kostenzusage</span><span class='rs-pill "+kzCls+"'>"+escapeHtml(kz)+"</span></div>"
     +"<div class='rs-row'><span class='rs-k'>Tagessatz / Kosten je Tag</span><span>"+ts.toLocaleString('de-DE')+" € / "+kt.toLocaleString('de-DE')+" €</span></div>"
-    +"<div class='rs-row'><span class='rs-k'>Diagnose (ICD)</span><span>"+escapeHtml(p.icd)+"</span></div>"
     +"<div class='rs-row'><span class='rs-k'>Aufnahme</span><span>"+escapeHtml(p.aufnahme)+"</span></div>"
   +"</div>"
-  +((bill.zusatz&&bill.zusatz.length)?"<div class='rs-empf'><span class='rk'>Zusatzerlöse / Wahlleistungen</span><ul>"+bill.zusatz.map(z=>"<li>"+escapeHtml(z.label)+" · +"+z.eur+" €/Tag</li>").join("")+"</ul></div>":"")+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkte(p.personId)+"</details>";
+  +((bill.zusatz&&bill.zusatz.length)?"<div class='rs-empf'><span class='rk'>Zusatzerlöse / Wahlleistungen</span><ul>"+bill.zusatz.map(z=>"<li>"+escapeHtml(z.label)+" · +"+z.eur+" €/Tag</li>").join("")+"</ul></div>":"")+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkte(p.personId,{verlauf:false})+"</details>";
  /* §6+7: Kurzbericht-Eingabe wandert exklusiv nach Mein Tag (mtSheetRender/rsSaveZwischenstand) —
     hier nur Lese-Hinweis, wann/von wem zuletzt aktualisiert wurde. */
  document.getElementById("rsZwischenstand").innerHTML=
@@ -6555,12 +6671,7 @@ function deriveSchritte(f){
    im Fall-Detail-Drawer zusätzlich zu den funktionalen dOwner/dAufgabe/dFrist-IDs aufgerufen,
    in Task 3.1 (Fallakte) als alleinige Darstellung wiederverwendet. */
 function aufgabenHeroHtml(f){
- const fk=fristKlasse(f.frist), ft=f.frist?fristText(f.frist):"—";
- return "<div class='ah-typ'>"+aufgabeIcon(f.aufgabe)+"<b>"+escapeHtml(f.aufgabe||"Keine offene Aufgabe")+"</b></div>"
-  +"<div class='ah-meta'>"
-  +"<span class='ah-owner'><span class='ava'>"+initialen(f.owner)+"</span>"+escapeHtml(f.owner)+"</span>"
-  +(f.frist?"<span class='due "+fk+"'>Frist "+escapeHtml(ft)+"</span>":"")
-  +"</div>";
+ return "<div class='ah-typ'>"+aufgabeIcon(f.aufgabe)+"<b>"+escapeHtml(f.aufgabe||"Keine offene Aufgabe")+"</b></div>";
 }
 /* Task 1.1 (Punkt 2): #dArbeit — aufgabentyp-abhängiger Arbeitsbereich im Fall-Drawer.
    drawerAufgabenTyp() klassifiziert f.aufgabe per Regex (Stil analog aufgabeIcon()/mtTyp()),
@@ -6612,7 +6723,7 @@ function sopToggle(i){
    Original → Checkliste → Notiz) ist eine Design-Entscheidung dieser Spec: Identität zuerst
    bestätigen, dann Kontext lesen, dann handeln. */
 function fkwFaktenHtml(f){
-  const fk=fallFakten(f);
+  const fk=fallFakten(f).filter(c=>c.typ!=="kt"&&c.typ!=="alter");
   if(!fk.length) return "";
   return "<div class='fkw-fakten'>"+fk.map(c=>"<span class='fkw-chip'>"+escapeHtml(c.text)+"</span>").join("")+"</div>";
 }
@@ -6641,11 +6752,13 @@ function fkwStammBestaetigen(){
 function dArbeitHtml(f){
  const typ=drawerAufgabenTyp(f);
  const fakten=fkwFaktenHtml(f);
- if(typ==="kosten")
-   return fakten+"<div id='dKZ' class='kz-block'><div class='kicker'>Kostenzusage</div>"+kzChain(f)+kzActions(f)+"</div>"
+ if(typ==="kosten"){
+   const istSelbstzahler=(f.kt==="Selbstzahler");
+   return fakten+"<div id='dKZ' class='kz-block'><div class='kicker'>"+(istSelbstzahler?"Selbstzahlung":"Kostenzusage")+"</div>"+kzChain(f)+kzActions(f)+"</div>"
     +sopChecklisteHtml(f,"kosten")
-    +"<div class='full' style='margin-top:12px'><label>Kostenzusage-Dokument</label>"
-    +"<button class='btn-ghost btn-sm' type='button' onclick='dArbeitKostenUpload()'>⇪ Dokument hochladen (Demo)</button></div>";
+    +(istSelbstzahler?"":"<div class='full' style='margin-top:12px'><label>Kostenzusage-Dokument</label>"
+    +"<button class='btn-ghost btn-sm' type='button' onclick='dArbeitKostenUpload()'>⇪ Dokument hochladen (Demo)</button></div>");
+ }
  if(typ==="unterlagen")
    return fakten+"<div class='full'><label>Unterlagen <span id='docCnt' style='color:var(--brass-deep)'></span></label>"
     +"<div class='docs'>"
@@ -6656,14 +6769,27 @@ function dArbeitHtml(f){
     +"</div></div><button class='btn-ghost btn-sm' type='button' onclick='dArbeitUnterlagenAnfordern()'>Fehlende anfordern</button>";
  if(typ==="angebot")
    return fakten+sopChecklisteHtml(f,"angebot")+"<div class='komm-block'><label>Antwort senden</label>"
+    +"<div class='tb-row'>"
+    +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('beihilfe')\">Beihilfe 30/70</button>"
+    +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('pkv')\">PKV-Vollversicherung</button>"
+    +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('selbst')\">Selbstzahler</button>"
+    +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('unterlagen')\">Unterlagen anfordern</button>"
+    +"</div>"
     +"<div class='komm-row'><select id='dReplyKanal'><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select>"
     +"<button class='btn-brass btn-sm' type='button' onclick='sendReply()'><svg viewBox='0 0 24 24' width='14' height='14' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>Antwort senden</button></div>"
     +"<textarea id='dReply' rows='2' placeholder='Antwort an die anfragende Person verfassen … (Demo)'></textarea></div>";
  if(typ==="anreise")
-   return fakten+"<div class='kicker'>Anreise-Checkliste</div>"
-    +"<label><input type='checkbox'> Zimmer reserviert</label>"
-    +"<label><input type='checkbox'> Transport geklärt</label>"
-    +"<label><input type='checkbox'> Aufnahmetag bestätigt</label>";
+   return fakten+"<div class='kicker'>Vor-Aufnahme-Checkliste</div>"
+    +aufnahmeCheckliste(f).map(function(c){
+      return "<label class='egt-check-item'><input type='checkbox' "+(c.ok?"checked":"")
+        +(c.manuell?" onchange=\"aufnahmeToggle('"+c.key+"')\"":" disabled")+"> "+escapeHtml(c.label)+"</label>";
+    }).join("")
+    +(f.stammOk?"":"<div class='full' style='margin-top:10px'><label>Stammdaten bestätigen</label>"+fkwStammHtml(f)+"</div>")
+    +"<div class='full' style='margin-top:12px'><label>Einladungspaket (Checkliste, Anfahrt, Hausprospekt)</label>"
+    +"<div class='kz-actions'>"
+    +"<button class='btn-ghost btn-sm' type='button' onclick=\"paketErstellen('E-Mail')\">Digital senden</button>"
+    +"<button class='btn-ghost btn-sm' type='button' onclick=\"paketErstellen('Post')\">Per Post senden</button>"
+    +"</div></div>";
  if(typ==="rueckruf")
    return fakten+fkwStammHtml(f)+fkwOriginalHtml(f)+sopChecklisteHtml(f,"rueckruf")
     +"<div class='full' style='margin-top:12px'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL.rueckruf)+"</label>"
@@ -6682,9 +6808,59 @@ function dArbeitKostenUpload(){
 function dArbeitUnterlagenAnfordern(){
  inbToast("done","<b>Fehlende Unterlagen angefordert</b> (Demo)","",null);
 }
+/* Vor-Aufnahme-Checkliste (anreise-Werkzeug) — 3 gespiegelte, read-only Punkte (Stammdaten/
+   Kosten/Unterlagen) + 3 manuelle Punkte (f.aufnahmeCheck), Gate für advanceFallStatus(). */
+function aufnahmeCheckliste(f){
+ return [
+   {key:"stamm", label:"Stammdaten bestätigt", ok:!!f.stammOk, manuell:false},
+   {key:"kosten", label:"Kostenzusage bzw. Selbstzahlung geklärt", ok:(f.kosten==="Zusage liegt vor"||f.kosten==="Selbstzahler bestätigt"), manuell:false},
+   {key:"unterlagen", label:"Unterlagen vollständig", ok:Array.isArray(f.docs)&&f.docs.every(Boolean), manuell:false},
+   {key:"zimmer", label:"Zimmer reserviert", ok:!!(f.aufnahmeCheck&&f.aufnahmeCheck.zimmer), manuell:true},
+   {key:"transport", label:"Transport geklärt", ok:!!(f.aufnahmeCheck&&f.aufnahmeCheck.transport), manuell:true},
+   {key:"tag", label:"Aufnahmetag bestätigt", ok:!!(f.aufnahmeCheck&&f.aufnahmeCheck.tag), manuell:true}
+ ];
+}
+function aufnahmeToggle(key){
+ const f=aktuellerFall;if(!f)return;
+ if(!f.aufnahmeCheck)f.aufnahmeCheck={};
+ f.aufnahmeCheck[key]=!f.aufnahmeCheck[key];
+ renderFallakte();
+}
+function paketErstellen(kanal){
+ const f=aktuellerFall;if(!f)return;
+ f.log.push([dstr(0),"↦ Einladungspaket (Checkliste, Anfahrt, Hausprospekt) per "+kanal+" an "+f.name]);
+ inbToast("done","<b>Einladungspaket erstellt</b> (Demo)","per "+escapeHtml(kanal)+" an "+escapeHtml(f.name),null);
+ renderAll();renderFallakte();
+}
+/* Standard-Textbausteine (angebot-Werkzeug) — parametrisiert mit Kostenträger/Name, schreiben
+   direkt in #dReply.value (kein escapeHtml nötig, .value statt innerHTML). */
+function bausteinEinfuegen(key){
+ const f=aktuellerFall;if(!f)return;
+ const _fk=fallFakten(f);
+ const ktC=_fk.find(c=>c.typ==="kt");
+ const kt=(ktC&&ktC.text)||f.kt||"Ihre Versicherung";
+ const name=f.name;
+ const TEXTE={
+   beihilfe:"Guten Tag "+name+",\n\nSie haben die Konstellation, dass Ihre private Krankenversicherung ("+kt+") 30% der Kosten übernimmt, während die Beihilfe 70% übernimmt. Das bedeutet ...\n\nFür Sie bedeuten die nächsten Schritte ...\n\nMit freundlichen Grüßen\nKlinik Bavaria",
+   pkv:"Guten Tag "+name+",\n\nIhre private Krankenversicherung ("+kt+") übernimmt die Kosten Ihrer Reha gemäß Ihrem Tarif. Das bedeutet ...\n\nFür Sie bedeuten die nächsten Schritte ...\n\nMit freundlichen Grüßen\nKlinik Bavaria",
+   selbst:"Guten Tag "+name+",\n\nals Selbstzahler tragen Sie die Kosten Ihres Aufenthalts selbst. Der Tagessatz beträgt ... €. Das bedeutet ...\n\nFür Sie bedeuten die nächsten Schritte ...\n\nMit freundlichen Grüßen\nKlinik Bavaria",
+   unterlagen:"Guten Tag "+name+",\n\nfür Ihre Aufnahme benötigen wir noch folgende Unterlagen:\n- Entlassbrief\n- Aktuelle Befunde\n- Versicherungsdaten\n- Kostenzusage\n\nBitte senden Sie uns diese ...\n\nMit freundlichen Grüßen\nKlinik Bavaria"
+ };
+ const el=document.getElementById("dReply");
+ if(el&&TEXTE[key])el.value=TEXTE[key];
+}
 /* ---------- Kostenzusage-Workflow (nur aktive Station gefüllt, kein kumulativer Fortschritt) ---------- */
 const KZ_STAGES=[["offen","Offen"],["angefragt","Angefragt"],["Zusage liegt vor","Zusage"],["abgelehnt","Abgelehnt"]];
 function kzChain(f){
+ const istSelbstzahler=(f.kt==="Selbstzahler");
+ if(istSelbstzahler){
+   const erledigt=f.kosten==="Selbstzahler bestätigt";
+   const stages=[["offen","Offen"],["Selbstzahler bestätigt","Selbstzahlung bestätigt"]];
+   return "<div class='kz-chain'>"+stages.map(function(s,i){
+     const cls=erledigt?(s[0]==="offen"?"lock":"ok"):(s[0]==="offen"?"kz-active":"lock");
+     return (i>0?"<span class='kz-sep'>›</span>":"")+"<span class='status-pill "+cls+"'>"+escapeHtml(s[1])+"</span>";
+   }).join("")+"</div>";
+ }
  return "<div class='kz-chain'>"+KZ_STAGES.map(function(s,i){
    const active=f.kosten===s[0];
    const cls=!active?"lock":(s[0]==="abgelehnt"?"bad":s[0]==="Zusage liegt vor"?"ok":"kz-active");
@@ -6692,6 +6868,12 @@ function kzChain(f){
  }).join("")+"</div>";
 }
 function kzActions(f){
+ const istSelbstzahler=(f.kt==="Selbstzahler");
+ if(istSelbstzahler){
+   if(f.kosten!=="Selbstzahler bestätigt")
+     return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzSelbstzahler()'>Selbstzahlung bestätigen</button></div>";
+   return "";
+ }
  if(f.kosten==="offen"){
    const aufgabeHatKosten=/kosten/i.test(f.aufgabe||"");
    if(aufgabeHatKosten)
@@ -6721,6 +6903,12 @@ function kzAblehnung(){
  f.log.push([dstr(0),"Kostenzusage abgelehnt"]);
  renderAll();renderFallakte();
 }
+function kzSelbstzahler(){
+ const f=aktuellerFall;if(!f)return;
+ f.kosten="Selbstzahler bestätigt";
+ f.log.push([dstr(0),"Selbstzahlung bestätigt — keine Kostenzusage nötig"]);
+ renderAll();renderFallakte();
+}
 function kzNotizAdd(){
  const f=aktuellerFall;if(!f)return;
  const el=document.getElementById("dNotizSofort");
@@ -6732,6 +6920,13 @@ function kzNotizAdd(){
 }
 function advanceFallStatus(f){
  const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return false;
+ if(f.status==="Aufnahme geplant"){
+   const _offen=aufnahmeCheckliste(f).filter(c=>!c.ok);
+   if(_offen.length){
+     inbToast("done","<b>Aufnahme noch nicht möglich</b>","Offen: "+_offen.map(c=>escapeHtml(c.label)).join(" · "),null);
+     return false;
+   }
+ }
  const _typ=drawerAufgabenTyp(f);
  const _items=SOP_CHECKLISTE[_typ];
  if(_items){
@@ -7222,13 +7417,14 @@ function mtAbschliessen(key){
  }else{
   const f=item.ref;
   const desc=f.aufgabe||MT_TYP_LABEL[item.typ];
-  f.log.push([dstr(0),desc+": "+notiz]);
-  if(advanceFallStatus(f)){
-   const naechstes=mtFallAufgabeItem(f);
-   if(naechstes)_mtSheetKey=naechstes.key;
-  }else{
-   f.aufgabe="";f.frist="";
+  if(!advanceFallStatus(f)){
+   // Statuswechsel geblockt (z. B. Vor-Aufnahme-Checkliste unvollständig) — Aufgabe bleibt offen, kein Abschluss
+   renderAll();renderMeinTag();mtSheetRender();
+   return;
   }
+  f.log.push([dstr(0),desc+": "+notiz]);
+  const naechstes=mtFallAufgabeItem(f);
+  if(naechstes)_mtSheetKey=naechstes.key;
  }
  _mtDone.add(key);
  renderAll();
@@ -7367,7 +7563,7 @@ function renderFallakte(){
   aktuellerFall=f;
   document.getElementById("faBackBtn").textContent=document.body.classList.contains("ma-mode")?"‹ Zurück zu Mein Tag":"‹ Zurück zum Board";
   document.getElementById("faName").textContent=f.name+(f.alter&&!/\(\d+\)/.test(f.name)?" ("+f.alter+")":"");
-  document.getElementById("faSub").textContent=f.achse+" · "+f.kt+" · "+f.quelle+" · Kanal: "+f.kanal;
+  document.getElementById("faSub").textContent=f.quelle+" · Kanal: "+f.kanal;
   document.getElementById("faAva").textContent=initialen(f.name);
   document.getElementById("faHeadMeta").innerHTML="<span class='pill-a' style='background:"+(ACHSE_COL[f.achse]||"var(--unklar)")+"'>"+escapeHtml(f.achse)+"</span>"
     +"<span class='pill-kt'>"+escapeHtml(f.kt)+"</span>"
@@ -7395,13 +7591,11 @@ function renderFallakte(){
   document.getElementById("dVerlust").value=f.verlust||"";
   toggleVerlust();
   document.getElementById("dNotiz").value="";
-  document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
   document.getElementById("faUebersicht").innerHTML="<div class='pa-meta'>"
     +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(f.consent)+"</span></div>"
     +(f.saluto?"<div class='pa-row'><span class='pa-k'>SalutoCare</span><span class='pa-v'>★ Premium-Option geeignet</span></div>":"")
-    +"</div>"+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId)+"</details>";
-  document.getElementById("faWerdegang").innerHTML=stepper(f.schritte||deriveSchritte(f))
-    +"<div class='timeline'>"+f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("")+"</div>";
+    +"</div>"+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId,{verlauf:false})+"</details>";
+  document.getElementById("faWerdegang").innerHTML="<div class='timeline' id='dLog'>"+f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("")+"</div>";
   const med=inReha.find(p=>p.personId===f.personId);
   document.getElementById("faMedizin").innerHTML=med?("<div class='pa-meta'>"
     +"<div class='pa-row'><span class='pa-k'>Reha-Ziel</span><span class='pa-v'>"+escapeHtml(med.rehaZiel||"—")+"</span></div>"
@@ -7414,7 +7608,6 @@ function renderFallakte(){
     +"</div>"):"<p class='empty'>Noch nicht in Reha aufgenommen — keine medizinischen Kurzfelder vorhanden.</p>";
   document.getElementById("faAbrechnung").innerHTML=kzChain(f)
     +"<div class='pa-meta'>"
-    +"<div class='pa-row'><span class='pa-k'>Kostenstatus</span><span class='pa-v'>"+escapeHtml(f.kosten)+"</span></div>"
     +(med?"<div class='pa-row'><span class='pa-k'>DRG-Status</span><span class='pa-v'>"+escapeHtml(med.drgStatus||"offen")+"</span></div>":"")
     +"</div>";
   const DOC_LABELS=["Entlassbrief","Befunde","Versicherungsdaten","Kostenzusage"];
@@ -7429,7 +7622,7 @@ function renderFallakte(){
 let _detailPushed=false;
 /* §3.4 Hybrid-Fallakte — eigenes, von _DETAIL_IDS unabhängiges State: normale go()-Navigation, keine Overlay-Mechanik. */
 let _fallakteId=null;
-const _DETAIL_IDS=["dbDetail","rsDetail","egDetail"];
+const _DETAIL_IDS=["dbDetail","rsDetail","egDetail","akDetail"];
 function _detailOpen(){
   return _DETAIL_IDS.some(id=>{const e=document.getElementById(id);return e&&e.classList.contains("open");});
 }
