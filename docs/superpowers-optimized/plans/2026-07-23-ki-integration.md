@@ -500,11 +500,11 @@ async function kiChatSend(){
 
 **Files:** Modify: `CLAUDE.md`, `HANDOVER.md`, `session-log.md`
 
-- [ ] **Step 1: CLAUDE.md** — im Konventionen-Block Namespace-Liste um `.ki-*` (KI/Kimi) ergänzen + 1 Satz unter „Harte Regeln": KI läuft über Proxy `ai.quintia.de`, Key nie im Repo, Fallback-Pflicht.
-- [ ] **Step 2: HANDOVER.md** — §3-Tabelle um Zeile „KI | kiComplete/kiVision/kiRun, kiAnalyse/kiKurzbericht/kiScan/kiChat* | `.ki-*` | eingang/faelle/inReha (additiv: `kiVorschlag`,`_kiKb`,`_kiScan`)" + §4-Absatz „4d KI-Integration" (3 Sätze) ergänzen.
-- [ ] **Step 3: Voll-Verifikation** (HANDOVER §5): beide Breiten, alle 6 Views, alle 3 Overlays + `kiChat`, `openReferrer`, `rsp`-Charts, Matrix; Screenshots.
-- [ ] **Step 4: Merge:** `git pull origin main` (Cofounder!) → Konflikte lösen (unwahrscheinlich: eigener Namespace) → FF-Merge `feat/ki` → `main` → Push. Live-Check nach ~1 min (`gh api repos/aluminiumminimum/bavaria-trichter-prototyp/pages/builds/latest`).
-- [ ] **Step 5:** session-log `[saved]`-Eintrag (context-management) + Branch löschen.
+- [x] **Step 1: CLAUDE.md** — im Konventionen-Block Namespace-Liste um `.ki-*` (KI/Kimi) ergänzen + 1 Satz unter „Harte Regeln": KI läuft über Proxy `ai.quintia.de`, Key nie im Repo, Fallback-Pflicht.
+- [x] **Step 2: HANDOVER.md** — §3-Tabelle um Zeile „KI | kiComplete/kiVision/kiRun, kiAnalyse/kiKurzbericht/kiScan/kiChat* | `.ki-*` | eingang/faelle/inReha (additiv: `kiVorschlag`,`_kiKb`,`_kiScan`)" + §4-Absatz „4d KI-Integration" (3 Sätze) ergänzen.
+- [x] **Step 3: Voll-Verifikation** (HANDOVER §5): beide Breiten, alle 6 Views, alle 3 Overlays + `kiChat`, `openReferrer`, `rsp`-Charts, Matrix; Screenshots.
+- [x] **Step 4: Merge:** `git pull origin main` (Cofounder!) → Konflikte lösen (unwahrscheinlich: eigener Namespace) → FF-Merge `feat/ki` → `main` → Push. Live-Check nach ~1 min (`gh api repos/aluminiumminimum/bavaria-trichter-prototyp/pages/builds/latest`).
+- [x] **Step 5:** session-log `[saved]`-Eintrag (context-management) + Branch löschen.
 
 ---
 
