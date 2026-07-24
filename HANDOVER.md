@@ -346,6 +346,39 @@ Array-Einträge. Spec/Plan: `docs/superpowers-optimized/{specs,plans}/2026-07-23
 
 ---
 
+## 4g. Runde 7 — Belegungs-Features, Redundanz-Pass & KI-Merge (24.07., `8f0b228`+`1bb55e4`, live)
+
+Basis: Interview mit Belegungsmanagement (Elena) + Nutzer-Feedback + systematisches
+Redundanz-Audit. **Neu:** Selbstzahler-Zweig im Kosten-Werkzeug (`kzSelbstzahler()`,
+2-Pill-Kette „Offen → Selbstzahlung bestätigt", kein Kassen-Flow) · Kontakt-Einwilligung
+als 5. Prüfpunkt in `egVollstaendigkeit()` (erscheint automatisch in F1s `egTriageHtml`-
+Checkliste + wird bei Übernahme zur Rückfrage) · Vor-Aufnahme-Checkliste
+(`aufnahmeCheckliste()`, 6 Punkte: stamm/kosten/unterlagen abgeleitet, zimmer/transport/tag
+manuell via `f.aufnahmeCheck`) — **gated** `advanceFallStatus()` beim Übergang
+„Aufnahme geplant"→„Aufgenommen"; Stammdaten-Bestätigung (`fkwStammHtml`) rendert jetzt
+auch im Anreise-Schritt · Einladungspaket-Generator (`paketErstellen`, digital/Post) ·
+Textbausteine im Angebot-Werkzeug (`bausteinEinfuegen`: Beihilfe 30/70, PKV, Selbstzahler,
+Unterlagen — Name/KT automatisch aus `fallFakten()`) · Anlass-Arbeits-Akte `#akDetail`
+(`akOpen/akSenden`, `.akd-*`): Zuweiser-/Patienten-Anlässe öffnen ein Overlay mit
+Kontaktdaten + vorbefüllter Nachricht je Typ (`AKD_TEMPLATES`) · **Zuweiser-Ranking auf
+3 Stufen umgestellt** (`zwTier()`: aktiv/gelegentlich/ruhend nach `letzter`+`faelle`;
+`zwSterne()` GELÖSCHT — Patienten-Sterne unberührt) · alle 9 `faelle[]`-Seeds haben jetzt
+`originalTxt`/`originalKanal` + angereicherte `log[]`-Kommunikation.
+
+**Redundanz-Pass** (Prinzip: 1 Ort pro Info/Ansicht): `f.log` nur noch 1× — `#dLog` lebt
+jetzt IN der Fallakte-Spalte „Kommunikation & Verlauf" (Steuerung-Duplikat entfernt,
+vertikaler `stepper()`-Call raus → Funktion ist Orphan); `paAkte(pid,opts)` mit
+`{verlauf,einwilligung,sterne}`-Gates (Fallakte/rsDetail: `verlauf:false`, dbDetail:
+`einwilligung:false,sterne:false`); Kopfzeile/Hero/Kostenstatus/di-rows/rs-row entdoppelt.
+
+**Merge-Entscheidungen KI×R7** (Commit `1bb55e4`): F2-Scan-Button rendert NUR im
+Kassen-Zweig (Selbstzahler scannen keine Kostenzusage); `_DETAIL_IDS` =
+`[dbDetail,rsDetail,egDetail,akDetail,kiChat]`; `akDetail` auch in
+`_closeSiblingDetailRails` registriert (+ `akOpen()` ruft ihn). `mtAbschliessen()`: bei
+geblocktem Statuswechsel (Gate) bleibt die Aufgabe offen statt fälschlich abzuschließen.
+
+---
+
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"
 - Server: `.claude/launch.json` → **`bavaria-proto`** (homebrew python3 `http.server`, Port 8765, `--directory` = Repo). Start via preview-Tool mit `{name:"bavaria-proto"}`.
 - Desktop braucht **≥1024px** (sonst sind `dbDetail` etc. gated). Preset „desktop" liefert teils <1024 → **eigene Größe 1440×900** setzen. Mobile-Preset 375/390 für die Mobil-QA.
