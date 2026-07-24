@@ -42,17 +42,21 @@ function kimi(payload) {
 }
 
 http.createServer(async (req, res) => {
+  req.on("error", () => {});
+  res.on("error", () => {});
   cors(req, res);
   if (req.method === "OPTIONS") { res.writeHead(204); return res.end(); }
   if (req.method === "GET" && req.url === "/health") return send(res, 200, { ok: true, model: MODEL });
   if (req.method !== "POST" || !(req.url === "/ai" || req.url === "/ai/vision")) return send(res, 404, { error: "not found" });
   if ((req.headers["x-ki-token"] || "") !== SHARED) return send(res, 401, { error: "token" });
   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
-  if (limited(String(ip).split(",")[0])) return send(res, 429, { error: "rate limit" });
+  if (limited(String(ip).split(",").pop().trim())) return send(res, 429, { error: "rate limit" });
   if (!KEY) return send(res, 503, { error: "no api key configured" });
 
-  let raw = ""; req.on("data", c => { raw += c; if (raw.length > 8e6) req.destroy(); });
+  let raw = "", over = false;
+  req.on("data", c => { raw += c; if (raw.length > 16e6 && !over) { over = true; send(res, 413, { error: "body too large" }); req.destroy(); } });
   req.on("end", async () => {
+    if (over) return;
     try {
       const b = JSON.parse(raw || "{}");
       let payload;
