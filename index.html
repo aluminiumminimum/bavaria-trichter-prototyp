@@ -4490,7 +4490,8 @@ function openEgDetail(id){
    actions="<div class='egt-verteilt'>Im Pool von <b>"+escapeHtml(m.gruppe)+"</b> — wartet auf Übernahme"+(m.autoVerteilt?" (automatisch verteilt)":" (zugewiesen)")+"</div>";
  }else{
    const check=egVollstaendigkeit(m);
-   actions="<div class='egt-check'>"+check.map(function(c){
+   actions="<button type='button' class='btn-ghost' style='width:100%' onclick='kiAnalyse("+m.id+")'>✦ KI: Anfrage analysieren</button><div id='kiPanelEg'></div>"
+   +"<div class='egt-check'>"+check.map(function(c){
      return "<div class='egt-check-item "+(c.ok?"ok":"missing")+"'><span class='egt-check-ic'>"+(c.ok?"✓":"✗")+"</span>"
        +"<span class='egt-check-lbl'>"+escapeHtml(c.label)+"</span>"
        +(c.ok?"<span class='egt-check-val'>"+escapeHtml(c.wert)+"</span>":"<span class='egt-check-frage'>"+escapeHtml(c.frage)+"</span>")
@@ -7554,6 +7555,39 @@ async function kiRun(containerId,fn,fallback,render){
  let data=null,off=false;
  try{data=await fn();}catch(e){console.warn("KI-Fallback:",e.message);data=fallback;off=true;}
  el.innerHTML="<div class='ki-panel"+(off?" ki-off":"")+"'>"+kiHeadHtml(off)+render(data,off)+"</div>";
+}
+/* F1 — Anfrage-Analyse im #egDetail: Felder + Sterne + Übernehmen (Freigabe bleibt manuell) */
+function kiAnalyse(id){
+ const m=eingang.find(x=>x.id===id);if(!m)return;
+ kiRun("kiPanelEg",async()=>{
+  const out=await kiComplete([
+   {role:"system",content:"Du bist Triage-Assistent einer Premium-Reha-Klinik (Achsen: Orthopädie, Neurologie, Geriatrie, Innere, SalutoCare; Belegungs-Gruppen: Orthopädie, Neuro-Geri). Antworte NUR mit einem JSON-Objekt: {achse, gruppe (Orthopädie|Neuro-Geri), kt (PKV|Selbstzahler|Beihilfe|GKV + Komfort|GKV), diagnose, dringlichkeit (hoch|mittel|niedrig), sterne (1-5 als Zahl; 5=PKV+konkret+dringend), sterneGrund, hinweis (1 Satz Bearbeitungshinweis)}. Keine erfundenen Fakten — fehlt etwas, lass das Feld leer."},
+   {role:"user",content:"Kanal: "+m.kanal+"\nBetreff: "+(m.tit||"")+"\nText: "+(m.txt||"")+(m.originalTxt?"\nOriginal:\n"+m.originalTxt:"")}
+  ],{json:true});
+  return out.data;
+ },KI_FALLBACK.analyse,(d,off)=>{
+  m.kiVorschlag=d;
+  return "<div class='ki-fields'>"
+   +"<b>Achse</b><span>"+escapeHtml(d.achse||"—")+"</span>"
+   +"<b>Gruppe</b><span>"+escapeHtml(d.gruppe||"—")+"</span>"
+   +"<b>Kostenträger</b><span>"+escapeHtml(d.kt||"—")+"</span>"
+   +"<b>Diagnose</b><span>"+escapeHtml(d.diagnose||"—")+"</span>"
+   +"<b>Dringlichkeit</b><span>"+escapeHtml(d.dringlichkeit||"—")+"</span>"
+   +"<b>Einstufung</b><span>"+sterneHtml(parseInt(d.sterne||3,10))+" — "+escapeHtml(d.sterneGrund||"")+"</span>"
+   +"</div><div class='ki-cta'>"
+   +"<button class='btn-brass btn-sm' onclick='kiAnalyseUebernehmen("+m.id+")'>Übernehmen</button>"
+   +"<button class='btn-ghost btn-sm' onclick='document.getElementById(\"kiPanelEg\").innerHTML=\"\"'>Verwerfen</button>"
+   +"</div><div class='ki-note'>KI schlägt vor — Übernahme füllt Sterne, Gruppe und Hinweis; freigeben tust weiterhin du.</div>";
+ });
+}
+function kiAnalyseUebernehmen(id){
+ const m=eingang.find(x=>x.id===id),d=m&&m.kiVorschlag;if(!d)return;
+ if(d.achse)m.achse=d.achse;                                   /* bestehende Felder, neue Werte */
+ if(d.sterne)m.sterne=parseInt(d.sterne,10);                   /* numerisches Override-Feld (egtSterneHtml) */
+ if(d.gruppe&&GRUPPEN.includes(d.gruppe))egGruppe=d.gruppe;    /* Gruppen-Button vorwählen */
+ if(d.hinweis&&!m.hinweis)m.hinweis=d.hinweis+(d.sterneGrund?" ("+d.sterneGrund+")":"");
+ rpToast("KI-Vorschlag übernommen — "+(m.sterne||"?")+"★, Gruppe "+(egGruppe||"?"));
+ openEgDetail(id); /* Re-Render zeigt Sterne-Widget, vorgewählte Gruppe + Hinweis */
 }
 </script>
 </body>
