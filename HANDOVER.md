@@ -391,6 +391,17 @@ Erstbesuch-Overlay mit 4 Testaufgaben + Feedback-mailto; Wieder-Öffnen via ?-Bu
 bzw. `.beta-mob-fab` (<1024px, links unten — Spiegel deines `.ki-fab`). `simulateInbound`-
 Autostart hat einen Dedup-Guard gegen Duplikate nach Restore (manueller Demo-Button unverändert).
 
+**Leitfall-Simulation (Fall id:1 Anna Muster):** `LEITFALL_EVENTS`/`simTrigger()`/`simFire()`
+— auf Tester-Aktionen antwortet die Gegenseite zeitversetzt (setTimeout, feste Delays ×
+`LEITFALL_TEMPO`): Rückruf erledigt → Tochter ruft zurück · Unterlagen angefordert → RHÖN-Fax
+(docs[0..1]) + Versicherungsdaten-Mail (docs[2]) · Kostenzusage angefragt → **PKV-Rückfrage**
+(Formular V-201, `f.sim.pkvOffen`) · Tester antwortet (sendReply ODER kzNotizAdd) → **Zusage**
+(Az., `kosten="Zusage liegt vor"`, docs[3], neue Aufgabe „Angebot Zimmer senden") · Antwort →
+Tochter bestätigt Zimmer/Anreise · Einladungspaket → Danke. Fortschritt in `f.sim=
+{done,pending,pkvOffen}` (wird via demoSave mitpersistiert; Re-Arm-IIFE im Start-Bereich
+liefert pending-Events 3s nach Reload nach). Hooks = je 1 Guard-Zeile in advanceFallStatus/
+dArbeitUnterlagenAnfordern/kzAnfragen/kzNotizAdd/sendReply/paketErstellen (`f.id===LEITFALL_ID`).
+
 ---
 
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"

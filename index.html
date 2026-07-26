@@ -4340,7 +4340,7 @@ summary.rk::-webkit-details-marker{display:none}
       <div class="kicker">Bitte einmal durchspielen</div>
       <ol class="beta-steps">
         <li><b>Anfrage sichten:</b> Fälle → Anfragen → eine offene Anfrage öffnen, Gruppe zuweisen &amp; freigeben. Probieren Sie dort auch „✦ KI: Anfrage analysieren".</li>
-        <li><b>Fall bearbeiten:</b> Oben links auf <b>Koordination</b> wechseln → Fall aus dem Pool übernehmen → Aufgaben Schritt für Schritt bis „Aufgenommen" durcharbeiten.</li>
+        <li><b>Leitfall durchspielen:</b> Oben links auf <b>Koordination</b> wechseln → Fall <b>Anna Muster</b> öffnen und Schritt für Schritt bis zur Aufnahme durcharbeiten. Angehörige, Sozialdienst und Krankenkasse <b>antworten wirklich</b> (kurz warten lohnt sich) — inklusive einer Rückfrage der PKV, die Sie beantworten müssen.</li>
         <li><b>Beziehungen pflegen:</b> Netzwerk → bei einem Anlass auf „Bearbeiten ›" — Kontaktdaten und Nachricht sind vorbereitet.</li>
         <li><b>Überblick:</b> Heute &amp; Auswertung ansehen — versteht man die Zahlen ohne Erklärung?</li>
       </ol>
@@ -5196,6 +5196,7 @@ function sendReply(){
   const r=document.getElementById("dReply"); const txt=(r?r.value:"").trim(); if(!txt){alert("Bitte eine Antwort verfassen.");return;}
   const kanal=document.getElementById("dReplyKanal").value;
   f.log.push([dstr(0),"↦ Antwort per "+kanal+" an "+f.name+": "+txt]);
+  if(f.id===LEITFALL_ID)simTrigger("antwort");
   pruefeUpsell(f,txt);
   if(r)r.value="";
   document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
@@ -6944,6 +6945,7 @@ function dArbeitKostenUpload(){
  inbToast("done","<b>Kostenzusage-Dokument hochgeladen</b> (Demo)","",null);
 }
 function dArbeitUnterlagenAnfordern(){
+ const f=aktuellerFall; if(f&&f.id===LEITFALL_ID&&typeof simTrigger==="function")simTrigger("unterlagen");
  inbToast("done","<b>Fehlende Unterlagen angefordert</b> (Demo)","",null);
 }
 /* Vor-Aufnahme-Checkliste (anreise-Werkzeug) — 3 gespiegelte, read-only Punkte (Stammdaten/
@@ -6967,6 +6969,7 @@ function aufnahmeToggle(key){
 function paketErstellen(kanal){
  const f=aktuellerFall;if(!f)return;
  f.log.push([dstr(0),"↦ Einladungspaket (Checkliste, Anfahrt, Hausprospekt) per "+kanal+" an "+f.name]);
+ if(f.id===LEITFALL_ID)simTrigger("paket");
  inbToast("done","<b>Einladungspaket erstellt</b> (Demo)","per "+escapeHtml(kanal)+" an "+escapeHtml(f.name),null);
  renderAll();renderFallakte();
 }
@@ -7027,6 +7030,7 @@ function kzAnfragen(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="angefragt";
  f.log.push([dstr(0),"Kostenzusage angefragt"]);
+ if(f.id===LEITFALL_ID)simTrigger("kosten");
  renderAll();renderFallakte();
 }
 function kzZusage(){
@@ -7052,6 +7056,7 @@ function kzNotizAdd(){
  const el=document.getElementById("dNotizSofort");
  const txt=(el?el.value:"").trim();if(!txt)return;
  f.log.push([dstr(0),txt]);
+ if(f.id===LEITFALL_ID)simTrigger("antwort");
  pruefeUpsell(f,txt);
  if(el)el.value="";
  document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
@@ -7078,6 +7083,7 @@ function advanceFallStatus(f){
  f.status=ns;
  f.aufgabe=STATUS_AUFGABE[ns]||"";
  f.frist=STATUS_AUFGABE[ns]?dstr(2):"";
+ if(f.id===LEITFALL_ID&&typeof simTrigger==="function")simTrigger("status:"+ns);
  return true;
 }
 function advanceFall(){ const f=aktuellerFall;if(!f)return;
@@ -7778,6 +7784,68 @@ window.addEventListener("popstate",function(){
 });
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&_detailOpen()) dismissDetail(); });
 
+/* Leitfall-Simulation: Fall id:1 (Anna Muster) reagiert gescriptet auf Tester-Aktionen.
+   Fortschritt in f.sim={done:{},pending:[]} — wird via demoSave mitpersistiert; pending
+   wird beim Start nachgeliefert (Reload während des Zeitversatzes verliert nichts). */
+const LEITFALL_ID=1;
+let LEITFALL_TEMPO=1; // QA kann <1 setzen; Demo immer 1
+const LEITFALL_EVENTS={
+ "tochter-rueckruf":{delay:9000,von:"Tochter Muster (Angehörige)",
+  text:"Rückruf Tochter Muster: bestätigt Diagnose Schlaganfall, Mutter aktuell Station Neurologie RHÖN. Wunschtermin: Aufnahme möglichst kommende Woche. Keine Isolationspflicht. Erreichbar täglich ab 14 Uhr unter 0170 4471190.",
+  after:function(f){}},
+ "fax-unterlagen":{delay:11000,von:"Sozialdienst RHÖN (Fax)",
+  text:"Fax Sozialdienst RHÖN Bad Neustadt: Entlassbrief und aktuelle Befunde für Anna Muster übermittelt (Az. N-1187/26).",
+  after:function(f){f.docs[0]=true;f.docs[1]=true;}},
+ "mail-versicherung":{delay:18000,von:"Tochter Muster (E-Mail)",
+  text:"E-Mail Tochter Muster: Versichertennummer und PKV-Tarifdaten der Mutter anbei — falls noch etwas fehlt, bitte kurze Nachricht.",
+  after:function(f){f.docs[2]=true;}},
+ "pkv-rueckfrage":{delay:12000,von:"PKV (Sachbearbeitung)",
+  text:"PKV, Fr. Berger: Für die Kostenzusage wird noch die ärztliche Begründung der Reha-Fähigkeit benötigt (Formular V-201). Bitte nachreichen, dann kann direkt entschieden werden. Rückfax 0961 0000-441.",
+  after:function(f){f.sim.pkvOffen=true;}},
+ "pkv-zusage":{delay:10000,von:"PKV (Sachbearbeitung)",
+  text:"PKV, Fr. Berger: Vielen Dank für die Unterlagen — Kostenzusage für 21 Tage neurologische AHB erteilt (Az. PKV-2026-8841). Schriftliche Bestätigung folgt per Post.",
+  after:function(f){f.sim.pkvOffen=false;f.kosten="Zusage liegt vor";f.docs[3]=true;
+   f.aufgabe="Angebot Zimmer senden";f.frist=dstr(1);}},
+ "tochter-zimmer":{delay:9000,von:"Tochter Muster (E-Mail)",
+  text:"E-Mail Tochter Muster: Vielen Dank für das Angebot! Einzelzimmer passt, Anreise am Montag klappt — Transport organisiert der Sozialdienst. Wir freuen uns.",
+  after:function(f){}},
+ "tochter-danke":{delay:8000,von:"Tochter Muster",
+  text:"Tochter Muster: Einladungspaket ist angekommen, alle Unterlagen verständlich. Bis Montag!",
+  after:function(f){}}
+};
+function simFall(){return faelle.find(x=>x.id===LEITFALL_ID);}
+function simFire(key){
+ const f=simFall(),ev=LEITFALL_EVENTS[key];
+ if(!f||!ev)return;
+ f.sim=f.sim||{done:{},pending:[]};
+ f.sim.pending=(f.sim.pending||[]).filter(p=>p!==key);
+ if(f.sim.done[key])return;
+ f.sim.done[key]=true;
+ f.log.push([dstr(0),ev.text]);
+ ev.after(f);
+ inbToast("done","<b>Neue Nachricht · "+escapeHtml(ev.von)+"</b>","Fall Anna Muster",null);
+ renderAll();
+ if(typeof _fallakteId!=="undefined"&&_fallakteId===LEITFALL_ID&&typeof renderFallakte==="function")renderFallakte();
+}
+function simSchedule(key){
+ const f=simFall(),ev=LEITFALL_EVENTS[key];
+ if(!f||!ev)return;
+ f.sim=f.sim||{done:{},pending:[]};
+ if(f.sim.done[key]||f.sim.pending.indexOf(key)>=0)return;
+ f.sim.pending.push(key);
+ if(typeof demoSave==="function")demoSave();
+ setTimeout(function(){simFire(key);},ev.delay*LEITFALL_TEMPO);
+}
+function simTrigger(art){
+ const f=simFall(); if(!f)return;
+ if(art==="status:Kontaktiert") simSchedule("tochter-rueckruf");
+ if(art==="unterlagen"){ simSchedule("fax-unterlagen"); simSchedule("mail-versicherung"); }
+ if(art==="kosten") simSchedule("pkv-rueckfrage");
+ if(art==="antwort"&&f.sim&&f.sim.pkvOffen) simSchedule("pkv-zusage");
+ if(art==="antwort"&&f.sim&&f.sim.done["pkv-zusage"]&&!f.sim.done["tochter-zimmer"]) simSchedule("tochter-zimmer");
+ if(art==="paket") simSchedule("tochter-danke");
+}
+
 /* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
    strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
 const DEMO_SCHEMA=1;
@@ -7827,6 +7895,7 @@ function betaClose(merken){
 document.getElementById("fFrist").value=dstr(1);
 demoRestore();
 renderAll();
+(function(){const f=typeof simFall==="function"?simFall():null; if(f&&f.sim&&Array.isArray(f.sim.pending)) f.sim.pending.slice().forEach(function(k){setTimeout(function(){simFire(k);},3000);});})();
 applyHash();
 try{ if(!localStorage.getItem(BETA_SEEN_KEY)) setTimeout(betaOpen,900); }catch(e){}
 setTimeout(function(){ if(!eingang.some(function(m){return m.tit===INBOUND_POOL[_inbN%INBOUND_POOL.length].tit;})) simulateInbound(); },3200);
