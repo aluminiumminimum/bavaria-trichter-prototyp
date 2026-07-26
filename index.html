@@ -3249,6 +3249,23 @@ summary.rk::-webkit-details-marker{display:none}
 .kist.locked{color:var(--brass-deep);border-color:var(--gold-soft);background:var(--brass-soft)}
 .kist.locked .kd{background:var(--brass)}
 @keyframes kiPulse{0%{box-shadow:0 0 0 0 rgba(18,59,51,.45)}70%{box-shadow:0 0 0 7px rgba(18,59,51,0)}100%{box-shadow:0 0 0 0 rgba(18,59,51,0)}}
+/* ===== BETA-ONBOARDING (Tester-Infrastruktur) ===== */
+.beta-modal{max-width:560px}
+.beta-body{padding:4px 20px 8px;font-size:13.5px;line-height:1.55;color:var(--ink)}
+.beta-intro{margin:0 0 12px}
+.beta-steps{margin:6px 0 12px;padding-left:20px}
+.beta-steps li{margin:7px 0}
+.beta-note{font-size:12px;color:var(--muted);font-style:italic}
+.beta-foot{display:flex;gap:10px;justify-content:space-between;align-items:center}
+/* dt-actions (↺/?) sind Teil der Desktop-Topbar (.dtopbar, erst ab 1024px sichtbar) —
+   auf schmalen Viewports fehlt sonst jeder Weg zurück zu den Testhinweisen; eigener,
+   von .ki-fab unabhängiger Mini-FAB nur unterhalb der Desktop-Schwelle. */
+.beta-mob-fab{display:none}
+@media(max-width:1023.98px){
+  .beta-mob-fab{display:flex;position:fixed;left:18px;bottom:84px;z-index:60;width:40px;height:40px;
+    border-radius:50%;align-items:center;justify-content:center;background:var(--paper);color:var(--brass-deep);
+    border:1px solid var(--gold-soft);box-shadow:var(--shadow-soft);font:700 15px/1 Inter;cursor:pointer}
+}
 </style>
 </head>
 <body>
@@ -3276,7 +3293,7 @@ summary.rk::-webkit-details-marker{display:none}
 </aside>
 <header class="dtopbar">
   <div class="dt-titles"><h2 id="dtopTitle" class="serif">Heute</h2><span id="dtopSub"></span></div>
-  <div class="dt-actions"><span id="kiStatus" class="kist" role="button" tabindex="0" title="KI-Copilot" onclick="kiStatusClick()"><span class="kd"></span><span id="kiStatusTxt">KI …</span></span><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button></div>
+  <div class="dt-actions"><button class="btn-ghost btn-sm" type="button" onclick="demoReset()" title="Demo zurücksetzen">↺</button><button class="btn-ghost btn-sm" type="button" onclick="betaOpen()" title="Testhinweise &amp; Feedback">?</button><span id="kiStatus" class="kist" role="button" tabindex="0" title="KI-Copilot" onclick="kiStatusClick()"><span class="kd"></span><span id="kiStatusTxt">KI …</span></span><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button></div>
 </header>
 <div class="app">
 <main class="content">
@@ -4314,6 +4331,29 @@ summary.rk::-webkit-details-marker{display:none}
   </div>
 </div>
 
+<!-- ============ BETA-ONBOARDING ============ -->
+<div class="overlay" id="betaHilfe" role="dialog" aria-modal="true" aria-label="Testhinweise" onclick="if(event.target===this)betaClose()">
+  <div class="modal beta-modal">
+    <div class="mhead"><div class="ava">β</div><div><h2>Willkommen zur Testversion</h2><div class="msub2">Klinik Bavaria · Concierge OS</div></div></div>
+    <div class="beta-body">
+      <p class="beta-intro">Dies ist ein klickbarer Prototyp mit <b>rein erfundenen Demo-Daten</b> — Sie können nichts kaputt machen. Ihre Eingaben bleiben in diesem Browser gespeichert; der ↺-Knopf oben setzt alles zurück.</p>
+      <div class="kicker">Bitte einmal durchspielen</div>
+      <ol class="beta-steps">
+        <li><b>Anfrage sichten:</b> Fälle → Anfragen → eine offene Anfrage öffnen, Gruppe zuweisen &amp; freigeben. Probieren Sie dort auch „✦ KI: Anfrage analysieren".</li>
+        <li><b>Fall bearbeiten:</b> Oben links auf <b>Koordination</b> wechseln → Fall aus dem Pool übernehmen → Aufgaben Schritt für Schritt bis „Aufgenommen" durcharbeiten.</li>
+        <li><b>Beziehungen pflegen:</b> Netzwerk → bei einem Anlass auf „Bearbeiten ›" — Kontaktdaten und Nachricht sind vorbereitet.</li>
+        <li><b>Überblick:</b> Heute &amp; Auswertung ansehen — versteht man die Zahlen ohne Erklärung?</li>
+      </ol>
+      <p class="beta-note">Die KI antwortet ohne Zugangscode mit vorbereiteten Beispiel-Ergebnissen — das ist beabsichtigt.</p>
+    </div>
+    <div class="mfoot beta-foot">
+      <a class="btn-ghost" id="betaFeedback" href="#">✉ Feedback senden</a>
+      <button class="btn-ghost btn-sm" type="button" onclick="demoReset()" title="Alle Test-Eingaben verwerfen">↺ Zurücksetzen</button>
+      <button class="btn-brass" type="button" onclick="betaClose(true)">Los geht's</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="kiChat" role="dialog" aria-modal="true" aria-label="KI-Copilot" onclick="if(event.target===this)dismissDetail()">
   <div class="modal">
     <div class="mhead"><div class="ava" style="background:var(--espresso-grad);color:var(--ivory-tx)">✦</div><div><h2>KI-Copilot</h2><div class="msub2" id="kiChatSub">Fragen zu Fällen, Zuweisern, Belegung</div></div></div>
@@ -4323,6 +4363,7 @@ summary.rk::-webkit-details-marker{display:none}
   </div>
 </div>
 <button class="ki-fab" onclick="kiChatOpen()" aria-label="KI-Copilot öffnen">✦</button>
+<button class="beta-mob-fab" type="button" onclick="betaOpen()" title="Testhinweise &amp; Feedback" aria-label="Testhinweise &amp; Feedback">?</button>
 
 <!-- ============ DATENBANK-INSPECTOR (Desktop) ============ -->
 <div class="overlay dbrail" id="dbDetail" role="dialog" aria-modal="false" aria-label="Datenbank-Detail">
@@ -6746,7 +6787,7 @@ function renderInReha(){
    </button>`;
  }).join("")||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
 }
-function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();}
+function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();if(typeof demoSave==="function")demoSave();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ---------- */
 function celebratePlanned(){
@@ -7737,11 +7778,58 @@ window.addEventListener("popstate",function(){
 });
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&_detailOpen()) dismissDetail(); });
 
+/* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
+   strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
+const DEMO_SCHEMA=1;
+const DEMO_KEY="kbDemoState";
+let _demoSaveT=null;
+function demoSave(){
+ clearTimeout(_demoSaveT);
+ _demoSaveT=setTimeout(function(){
+  try{
+   localStorage.setItem(DEMO_KEY,JSON.stringify({v:DEMO_SCHEMA,saved:dstr(0),
+    faelle:faelle,eingang:eingang,personen:personen,inReha:inReha,
+    zuweiser:zuweiser,zuweiserEvents:zuweiserEvents,bestand:bestand,radar:radar}));
+  }catch(e){/* Quota/Privacy-Mode: Persistenz still deaktiviert */}
+ },400);
+}
+function demoRestore(){
+ try{
+  const raw=localStorage.getItem(DEMO_KEY); if(!raw)return false;
+  const s=JSON.parse(raw); if(!s||s.v!==DEMO_SCHEMA)return false;
+  [["faelle",faelle],["eingang",eingang],["personen",personen],["inReha",inReha],
+   ["zuweiser",zuweiser],["zuweiserEvents",zuweiserEvents],["bestand",bestand],["radar",radar]].forEach(function(p){
+   if(Array.isArray(s[p[0]])){p[1].length=0;Array.prototype.push.apply(p[1],s[p[0]]);}
+  });
+  return true;
+ }catch(e){return false;}
+}
+function demoReset(){
+ if(!confirm("Demo auf den Ausgangszustand zurücksetzen? Alle Test-Eingaben gehen verloren."))return;
+ try{localStorage.removeItem(DEMO_KEY);}catch(e){}
+ location.reload();
+}
+const BETA_SEEN_KEY="kbBetaSeen";
+function betaOpen(){
+ const a=document.getElementById("betaFeedback");
+ if(a)a.href="mailto:mostauli.a@klinik-bavaria.com?subject="+encodeURIComponent("Feedback Concierge-Demo")
+   +"&body="+encodeURIComponent("Ansicht: "+(location.hash||"#heute")+"\nGerät/Browser: \n\nWas ist mir aufgefallen:\n");
+ document.getElementById("betaHilfe").classList.add("open");
+ document.body.classList.add("detail-open");
+}
+function betaClose(merken){
+ if(merken){try{localStorage.setItem(BETA_SEEN_KEY,"1");}catch(e){}}
+ document.getElementById("betaHilfe").classList.remove("open");
+ document.body.classList.remove("detail-open");
+}
+
 /* ---------- Start ---------- */
 document.getElementById("fFrist").value=dstr(1);
+demoRestore();
 renderAll();
 applyHash();
-setTimeout(simulateInbound,3200);
+try{ if(!localStorage.getItem(BETA_SEEN_KEY)) setTimeout(betaOpen,900); }catch(e){}
+setTimeout(function(){ if(!eingang.some(function(m){return m.tit===INBOUND_POOL[_inbN%INBOUND_POOL.length].tit;})) simulateInbound(); },3200);
 (function(){const el=document.getElementById("dtopDate");if(el)el.textContent=heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});})();
 
 /* ===== LICHTUNG · TILT =====
