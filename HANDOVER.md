@@ -379,6 +379,20 @@ geblocktem Statuswechsel (Gate) bleibt die Aufgabe offen statt fälschlich abzus
 
 ---
 
+## 4h. Beta-Test-Infrastruktur (24.07., `d0503d5`, live)
+
+Für Betatester: **localStorage-Persistenz** — `demoSave()` (debounced, Hook am Ende von
+`renderAll()`) speichert `faelle/eingang/personen/inReha/zuweiser/zuweiserEvents/bestand/radar`
+unter `kbDemoState`; `demoRestore()` läuft beim Start vor dem ersten Render. **WICHTIG: Wer die
+STRUKTUR der Seed-Daten ändert (Felder umbenennt/entfernt), muss `DEMO_SCHEMA` (+1) erhöhen** —
+sonst laden Tester alte, inkompatible Stände. Additive Felder brauchen keinen Bump.
+`demoReset()` = ↺ in Topbar + im Beta-Overlay. **Onboarding** `#betaHilfe` (`.beta-*`):
+Erstbesuch-Overlay mit 4 Testaufgaben + Feedback-mailto; Wieder-Öffnen via ?-Button (Topbar)
+bzw. `.beta-mob-fab` (<1024px, links unten — Spiegel deines `.ki-fab`). `simulateInbound`-
+Autostart hat einen Dedup-Guard gegen Duplikate nach Restore (manueller Demo-Button unverändert).
+
+---
+
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"
 - Server: `.claude/launch.json` → **`bavaria-proto`** (homebrew python3 `http.server`, Port 8765, `--directory` = Repo). Start via preview-Tool mit `{name:"bavaria-proto"}`.
 - Desktop braucht **≥1024px** (sonst sind `dbDetail` etc. gated). Preset „desktop" liefert teils <1024 → **eigene Größe 1440×900** setzen. Mobile-Preset 375/390 für die Mobil-QA.
