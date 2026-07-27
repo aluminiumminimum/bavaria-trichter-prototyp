@@ -434,6 +434,31 @@ reißen Leitfall-Storylines ab. Wer neue Feld-Abschluss-Aktionen baut: `kfSyncSt
 `renderAll()` aufrufen. Zusätzlich: „Fehlende anfordern" loggt jetzt in den Verlauf, und
 Composer-Nachrichten mit Unterlagen/Befund/Einwilligung-Bezug lösen `simTrigger("unterlagen")` aus.
 
+## 4j. Runde 8.2 — Lagebild, Kommunikations-Puls, Verwaltung (27.07., `cbdead1`)
+
+Beta-Feedback (mehrere Mitarbeiter je Fall): Aufgabe/Status müssen sofort erfassbar sein,
+Kommunikation nicht im Verlauf vergraben, „Steuerung" war unverständlich. Umbau:
+- **Lagebild** (`lagebildHtml/kfAufgabe/lbOeffneFeld` statt `aufgabenHeroHtml` — gelöscht, samt
+  `aufgabeIcon`/`AUFGABE_ICON`): Status-Chip + „X von 5 Feldern geklärt" + konkreter
+  Jetzt-zu-tun-Satz (Klick öffnet das Klärungsfeld). KEIN „Weiter"-Button mehr; `advanceFall()`
+  existiert weiter und hängt am „✓ Aufnahme bestätigen"-Button, der nur bei 5/5 erscheint.
+- **Puls** (`lbPulsHtml`): letzte echte Nachricht (via `lgTyp()`) mit Zuständen eingetroffen/
+  empfangen/wartet; `_lbFrischId` hält die Hervorhebung bis zur ersten eigenen Aktion.
+- **Ungelesen**: `simFire` setzt `f.ungelesen`, wenn die Akte nicht sichtbar ist (`fallImBlick`);
+  Gold-Chip `.karte-msg` auf Board-/Mein-Tag-Karte; `renderFallakte` quittiert NUR wenn
+  `fallImBlick(f)` — simFire rendert die Akte auch unsichtbar neu, sonst erlischt der Chip ungesehen.
+- **Verlauf-Reiter** `.lg-tabs` Nachrichten|Alles (`_lgTab`, Default Nachrichten); `kzNotizAdd`
+  prefixt „✎ " → eigene Zeilenart `lg-note` (nur in „Alles").
+- **Verwaltung statt Steuerung**: `dSpeichern`/`dStatus`/`dKosten`/`dConsent`/`dNotiz`/
+  `toggleVerlust` KOMPLETT entfernt. Kostenträger (`fvwKtSet`, geloggt), SalutoCare
+  (`fvwSalutoSet`), „Fall verloren melden…" (`fvwVerlustBestaetigen`, Pflichtgrund). Einwilligung
+  lebt als Select im Kontakt-Feld (`kfConsentSet`, geloggt). `dOwner`/`dFrist` speichern direkt
+  (Owner-Wechsel geloggt „Verantwortlich: X → Y"). `LG_SYS_RE` um die neuen Präfixe erweitert.
+- **ACHTUNG Bug-Klasse (2× getroffen, 1× vorbestehend gefixt):** `*/` in Kommentar-PROSA
+  (z. B. „.lb-*/.fvw-*") beendet CSS-Kommentare vorzeitig und frisst die NÄCHSTE Regel.
+  Nie Namespace-Globs mit Stern-Slash in CSS-Kommentare schreiben. Der AURORA-PORTAL-Kommentar
+  hatte dadurch monatelang die `.rp-bel`-Hover-Regel gefressen (jetzt repariert).
+
 ---
 
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"
