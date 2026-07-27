@@ -5277,6 +5277,15 @@ function renderEingang(){
 }
 function uebernehmen(id,owner){
   const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
+  /* Dubletten-Schutz: der Demo-Pool liefert dieselbe Anfrage mehrfach — eine bereits
+     übernommene Anfrage (identischer Text) wird nie ein zweites Mal zum Fall. */
+  const schonFall=m.txt?faelle.find(x=>x.originalTxt===m.txt):null;
+  if(schonFall){
+    m.done=true;m.fallId=schonFall.id;
+    if(typeof inbToast==="function")inbToast("done","<b>Bereits als Fall vorhanden</b>",escapeHtml(schonFall.name)+" — Akte geöffnet",null);
+    renderAll();openDetail(schonFall.id);
+    return;
+  }
   owner=owner||TEAM[0];
   m.done=true;
   const fid=Math.max(...faelle.map(x=>x.id))+1;
@@ -5297,7 +5306,7 @@ function uebernehmen(id,owner){
     docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
     log:_log});
   const _neu=faelle[faelle.length-1];
-  if(/Hoffmann/i.test((m.txt||"")+(m.wer||"")))_neu.simKey="hoffmann";
+  if(/Hoffmann/i.test((m.txt||"")+(m.wer||""))&&!faelle.some(x=>x.simKey==="hoffmann"&&x!==_neu))_neu.simKey="hoffmann";
   m.fallId=fid;
   renderAll();openDetail(fid);
 }
@@ -8487,9 +8496,35 @@ function demoSave(){
   try{
    localStorage.setItem(DEMO_KEY,JSON.stringify({v:DEMO_SCHEMA,saved:dstr(0),
     faelle:faelle,eingang:eingang,personen:personen,inReha:inReha,
-    zuweiser:zuweiser,zuweiserEvents:zuweiserEvents,bestand:bestand,radar:radar}));
+    zuweiser:zuweiser,zuweiserEvents:zuweiserEvents,bestand:bestand,radar:radar,inbN:_inbN,inbId:_inbId}));
   }catch(e){/* Quota/Privacy-Mode: Persistenz still deaktiviert */}
  },400);
+}
+/* Reparatur bereits gespeicherter Test-Stände (einmalig bei Restore): Anfragen, die vor dem
+   Dubletten-Schutz mehrfach übernommen wurden, stehen als identische Fälle im Board. Behalten
+   wird je Anfrage-Text der Fall mit dem längsten Verlauf (Gleichstand: kleinste id); Eingangs-
+   Verweise werden auf den verbleibenden Fall umgehängt. Zusätzlich: doppelte Eingangs-IDs
+   entfernen (Reload-Kollisionen alter Stände) — das ältere Item behält Vorrang. */
+function demoRepair(){
+ const idsGesehen={};const doppelt=[];
+ eingang.forEach(function(m,i){ if(idsGesehen[m.id]!==undefined)doppelt.push(i); else idsGesehen[m.id]=i; });
+ for(let i=doppelt.length-1;i>=0;i--)eingang.splice(doppelt[i],1);
+ const nachTxt={};
+ faelle.forEach(function(f){ if(!f.originalTxt)return;
+  (nachTxt[f.originalTxt]=nachTxt[f.originalTxt]||[]).push(f); });
+ Object.keys(nachTxt).forEach(function(t){
+  const grp=nachTxt[t]; if(grp.length<2)return;
+  let keep=grp[0];
+  grp.forEach(function(f){
+   const a=(f.log||[]).length,b=(keep.log||[]).length;
+   if(a>b||(a===b&&f.id<keep.id))keep=f;
+  });
+  grp.forEach(function(f){
+   if(f===keep)return;
+   eingang.forEach(function(m){if(m.fallId===f.id)m.fallId=keep.id;});
+   const i=faelle.indexOf(f); if(i>=0)faelle.splice(i,1);
+  });
+ });
 }
 function demoRestore(){
  try{
@@ -8499,6 +8534,12 @@ function demoRestore(){
    ["zuweiser",zuweiser],["zuweiserEvents",zuweiserEvents],["bestand",bestand],["radar",radar]].forEach(function(p){
    if(Array.isArray(s[p[0]])){p[1].length=0;Array.prototype.push.apply(p[1],s[p[0]]);}
   });
+  /* Sim-Zähler wiederherstellen — sonst beginnt der Anfragen-Pool nach jedem Reload wieder
+     vorn und vergibt bereits benutzte Eingangs-IDs erneut. */
+  if(typeof s.inbN==="number")_inbN=s.inbN;
+  if(typeof s.inbId==="number")_inbId=s.inbId;
+  eingang.forEach(function(m){if(typeof m.id==="number"&&m.id>=_inbId)_inbId=m.id+1;});
+  demoRepair();
   return true;
  }catch(e){return false;}
 }

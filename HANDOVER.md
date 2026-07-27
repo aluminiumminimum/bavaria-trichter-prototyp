@@ -492,6 +492,27 @@ kzZusage/kzAblehnung/kzSelbstzahler/dArbeitKostenUpload/mtAbschliessen — NIE w
 `f.kosten=` direkt setzen!); f.aufgabe wird bei kzAnfragen/kzAblehnung/UnterlagenAnfordern
 mitgepflegt; egFreigeben ohne Gruppe → Toast statt stillem No-op.
 
+## 4l. Runde 8.5 — Fall-Dubletten (27.07., Beta-Befund „Anna/Patient 74 mehrfach auf dem Board")
+
+Drei Ursachen, ein Fix-Paket: (1) `simulateInbound()`-Zähler `_inbN`/`_inbId` waren nicht
+persistiert → Pool startete nach jedem Reload wieder bei der Hoffmann-Anfrage und vergab
+Eingangs-IDs doppelt; jetzt in `demoSave`/`demoRestore` (`inbN`/`inbId`, mit Ableitungs-
+Fallback `max(eingang.id)+1` für Alt-Stände). (2) `uebernehmen()` hatte keinen
+Dubletten-Schutz → identische Anfrage (gleicher `m.txt` vs. `f.originalTxt`) wurde beliebig
+oft zum Fall; jetzt Guard: markiert `done`, verweist auf bestehenden Fall, öffnet dessen
+Akte + Toast. (3) `simKey="hoffmann"` wird nur noch vergeben, wenn kein Fall ihn trägt
+(Sim-Resolver nimmt sonst immer den ersten). Dazu **`demoRepair()`** (läuft in
+`demoRestore`, idempotent): entfernt Fall-Dubletten mit identischem `originalTxt` (behalten
+wird der längste Verlauf, Gleichstand kleinste id; `eingang.fallId` wird umgehängt) und
+doppelte Eingangs-IDs (erstes Item gewinnt) — bereinigt verseuchte Beta-Stände OHNE
+`DEMO_SCHEMA`-Bump (Schema bleibt 3, Tester-Stände überleben). Wichtig fürs Verständnis:
+Beta-Tester arbeiten auf der **GitHub-Pages-Origin** — ihr localStorage-Spielstand hängt
+dort, Fixes wirken für sie erst nach Push+Pages-Build beim nächsten Laden. QA-Lehren:
+`navigate` auf identische URL erzeugt nicht zwingend einen frischen Seiten-Realm →
+Reload-Tests immer mit Cache-Buster-Query (`?frisch=N`) + `location.search`-Assert; die
+awk-Script-Extraktion bricht bei einzeiligen `<script>…</script>`-Tags (Font-Loader Z. 9/13)
+— Haupt-Script-Block stattdessen über letztes `<script>`/`</script>`-Paar per sed schneiden.
+
 ---
 
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"
