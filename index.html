@@ -3271,6 +3271,38 @@ summary.rk::-webkit-details-marker{display:none}
     border-radius:50%;align-items:center;justify-content:center;background:var(--paper);color:var(--brass-deep);
     border:1px solid var(--gold-soft);box-shadow:var(--shadow-soft);font:700 15px/1 Inter;cursor:pointer}
 }
+/* ===== EINLADUNGSPAKET-VORSCHAU (.epk-*) ===== */
+.epk-modal{max-width:640px}
+.epk-body{padding:4px 20px 12px;max-height:60vh;overflow:auto}
+.epk-doc{background:var(--paper,#FBF8EF);border:1px solid var(--jade-line,#d8d2bf);border-radius:4px;padding:14px 16px;margin:10px 0}
+.epk-doc h4{font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;margin:0 0 8px;color:var(--sage-deep,#123B33)}
+.epk-doc ul{margin:0;padding-left:18px;font-size:13px;line-height:1.6}
+.epk-doc p{font-size:13px;line-height:1.55;margin:0}
+.epk-foot{display:flex;justify-content:space-between}
+/* ===== KLÄRUNGSFELDER-AKKORDEON (Fallakte-Umbau, .kf-*) ===== */
+details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;margin:8px 0}
+.kf summary{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;list-style:none;font-weight:600;font-size:13.5px}
+.kf summary::-webkit-details-marker{display:none}
+.kf-ic{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex:0 0 auto;border:1px solid var(--jade-line)}
+.kf-ic.ok{background:var(--sage-deep);color:#fff;border-color:var(--sage-deep)}
+.kf-ic.cur{background:var(--brass);color:#fff;border-color:var(--brass)}
+.kf-sub{margin-left:auto;font:500 11px "Fragment Mono",monospace;color:var(--muted);letter-spacing:.03em}
+.kf-body{padding:4px 14px 14px;border-top:1px solid var(--hair)}
+.kf-vorschlag{background:var(--sage-soft);border-left:2px solid var(--sage-deep);border-radius:4px;padding:10px 12px;margin-bottom:10px;font-size:13px}
+.kf-form{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}
+.kf-tel{font-weight:700}
+@media(max-width:700px){.kf-form{grid-template-columns:1fr}}
+/* ===== VERLAUF-RESTRUKTURIERUNG (.lg-*) ===== */
+.lg-date{font:600 10.5px "Fragment Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px;padding-bottom:3px;border-bottom:1px solid var(--hair)}
+.lg-sys{font-size:11px;color:var(--faint);padding:2px 0 2px 10px;border-left:2px solid var(--hair);margin:4px 0}
+.lg-who{font:600 10.5px "Fragment Mono",monospace;letter-spacing:.06em;color:var(--brass-deep);display:block;margin-bottom:2px}
+.lg-zeit{float:right;font:500 10.5px "Fragment Mono",monospace;color:var(--faint)}
+.timeline .lg-date::before,.timeline .lg-sys::before{content:none}
+/* ===== WARTESCHLEIFEN-TELEFONAGENT (.kta-*) ===== */
+.kta{background:var(--paper);border:1px dashed var(--jade-line);border-radius:4px;padding:10px 12px;margin-top:10px}
+.kta-pilot{font:600 9.5px "Fragment Mono",monospace;letter-spacing:.1em;text-transform:uppercase;background:var(--brass-soft,#f0e6d2);color:var(--brass-deep);border-radius:3px;padding:2px 6px;margin-left:6px}
+.kta-txt{font-size:12px;color:var(--muted);margin:6px 0}
+.kta-step{font:500 12px "Fragment Mono",monospace;color:var(--sage-deep);margin:8px 0}
 </style>
 </head>
 <body>
@@ -4215,7 +4247,7 @@ summary.rk::-webkit-details-marker{display:none}
             <div><label for="dOwner">Verantwortlich</label><span class="fh-owner-chip"><span class="ava" id="dOwnerAva"></span><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></span></div>
           </div>
           <div class="fh-actions">
-            <button id="dAdvance" class="btn-brass btn-sm" style="width:100%" onclick="advanceFall()">Aktuelle Aufgabe erledigt → nächster Schritt ›</button>
+            <button id="dAdvance" class="btn-brass btn-sm" style="width:100%" onclick="advanceFall()">Weiter → nächstes offenes Feld</button>
           </div>
         </div>
         <div id="dArbeit"></div>
@@ -4344,7 +4376,7 @@ summary.rk::-webkit-details-marker{display:none}
       <p class="beta-intro">Dies ist ein klickbarer Prototyp mit <b>rein erfundenen Demo-Daten</b> — Sie können nichts kaputt machen. Ihre Eingaben bleiben in diesem Browser gespeichert; der ↺-Knopf oben setzt alles zurück.</p>
       <div class="kicker">Bitte einmal durchspielen</div>
       <ol class="beta-steps">
-        <li><b>Anfrage sichten:</b> Fälle → Anfragen → eine offene Anfrage öffnen, Gruppe zuweisen &amp; freigeben. Probieren Sie dort auch „✦ KI: Anfrage analysieren". Die freigegebene Anfrage liegt danach im <b>Board</b> (Spalte „Neu") und wartet auf Übernahme — „Übernehmen ›" macht daraus einen Fall.</li>
+        <li><b>Anfrage sichten:</b> Fälle → Anfragen → eine offene Anfrage öffnen, Gruppe zuweisen &amp; freigeben. Probieren Sie dort auch „✦ KI: Anfrage analysieren". Die freigegebene Anfrage liegt danach im <b>Board</b> (Spalte „Neu") und wartet auf Übernahme — „Übernehmen ›" macht daraus einen Fall. Übernehmen Sie die Anfrage der <b>Familie Hoffmann</b> selbst — auch sie antwortet wirklich (medizinischer Vorschlag zum Übernehmen, Fax der bisherigen Klinik, Kostenzusage).</li>
         <li><b>Leitfälle durchspielen:</b> Oben links auf <b>Koordination</b> wechseln — drei Fälle antworten wirklich (kurz warten lohnt sich): <b>Anna Muster</b> (PKV, bis zur Aufnahme — inkl. Rückfrage der Kasse), <b>Maria Probst</b> (Selbstzahlerin — Preisgespräch führen) und <b>Werner Aumann</b> (die PKV lehnt ab — beraten Sie ihn und dokumentieren Sie den Verlust über Status „Verloren").</li>
         <li><b>Beziehungen pflegen:</b> Netzwerk → bei einem Anlass auf „Bearbeiten ›" — Kontaktdaten und Nachricht sind vorbereitet.</li>
         <li><b>Überblick:</b> Heute &amp; Auswertung ansehen — versteht man die Zahlen ohne Erklärung?</li>
@@ -4356,6 +4388,14 @@ summary.rk::-webkit-details-marker{display:none}
       <button class="btn-ghost btn-sm" type="button" onclick="demoReset()" title="Alle Test-Eingaben verwerfen">↺ Zurücksetzen</button>
       <button class="btn-brass" type="button" onclick="betaClose(true)">Los geht's</button>
     </div>
+  </div>
+</div>
+
+<div class="overlay" id="epkVorschau" role="dialog" aria-modal="true" aria-label="Einladungspaket" onclick="if(event.target===this)epkClose()">
+  <div class="modal epk-modal">
+    <div class="mhead"><div class="ava">✉</div><div><h2>Einladungspaket</h2><div class="msub2" id="epkSub"></div></div></div>
+    <div class="epk-body" id="epkBody"></div>
+    <div class="mfoot epk-foot"><button class="btn-ghost" type="button" onclick="epkClose()">‹ Zurück</button><button class="btn-brass" type="button" id="epkSenden">Senden</button></div>
   </div>
 </div>
 
@@ -4876,7 +4916,7 @@ function qualifyIfNeeded(f,ns){
   if(ns==="Verloren"||f.personId||!istEinzelperson(f.name))return;
   if(STATUS.indexOf(ns)<STATUS.indexOf("Qualifizierung"))return;
   f.personId=pNew(f.name,{kt:f.kt==="Privat"?"PKV":f.kt});
-  f.log.push([dstr(0),"In Datenbank aufgenommen"]);
+  f.log.push([dstr(0),"In Datenbank aufgenommen",logZeit()]);
   pHist(f.personId,"fall","In Datenbank aufgenommen");
 }
 (function paAssert(){
@@ -4950,6 +4990,35 @@ function fristText(f){if(!f)return"";const h=dstr(0);if(f<h)return"überfällig 
 function statusFortschritt(s){return Math.max(12,((STATUS.indexOf(s)+1)/STATUS.length*100));}
 function zaehle(arr,key){const m={};arr.forEach(x=>{const k=key(x);if(!k)return;m[k]=(m[k]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
 function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));}
+/* Zentrale Verlauf-Render-Funktion (Fallakte-Umbau Phase 2, Block 1): ersetzt die 3 vormals
+   identischen map-Muster in renderFallakte/sendReply/kzNotizAdd. Datums-Trenner per String-Parsing
+   des ISO-Datums (kein new Date()); Zeilentyp aus Text-Präfix; Zeit optional (Eintrag[2]). */
+const LG_MONATE=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+function lgDatumHtml(iso){
+ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||""));
+ if(!m)return escapeHtml(iso||"");
+ return (+m[3])+". "+(LG_MONATE[+m[2]-1]||"");
+}
+const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Status:)/;
+function logHtml(f){
+ if(!f||!Array.isArray(f.log))return "";
+ let letztesDatum=null,html="";
+ f.log.forEach(function(l){
+  const iso=l[0],txt=String(l[1]||""),zeit=l[2];
+  if(iso!==letztesDatum){ html+="<div class='lg-date'>"+lgDatumHtml(iso)+"</div>"; letztesDatum=iso; }
+  const zeitHtml=zeit?"<span class='lg-zeit'>"+escapeHtml(zeit)+"</span>":"";
+  if(LG_SYS_RE.test(txt)){
+   html+="<div class='lg-sys'>"+zeitHtml+escapeHtml(txt)+"</div>";
+  }else if(/^↦/.test(txt)){
+   html+="<div class='log-out'>"+zeitHtml+"<span class='lg-who'>Klinik Bavaria</span>"+escapeHtml(txt)+"</div>";
+  }else{
+   const ci=txt.indexOf(":");
+   const wer=(ci>0&&ci<40)?txt.slice(0,ci):"Eingang";
+   html+="<div class='log-in'>"+zeitHtml+"<span class='lg-who'>"+escapeHtml(wer)+"</span>"+escapeHtml(txt)+"</div>";
+  }
+ });
+ return html;
+}
 function bar(el,daten,warm){const max=Math.max(1,...daten.map(d=>d[1]));
   el.innerHTML=daten.map(d=>"<div class='bar"+(warm?" warm":"")+"'><span class='blbl'>"+escapeHtml(d[0])+"</span><span class='track'><span class='fill' style='width:"+(d[1]/max*100)+"%'></span></span><span class='bnum num'>"+d[1]+"</span></div>").join("")||"<p class='empty'>noch keine Daten</p>";}
 function zoneOf(s){if(s==="Neu"||s==="Kontaktiert")return 0;if(s==="Qualifizierung"||s==="Unterlagen")return 1;if(s==="Aufnahme geplant")return 2;return -1;}
@@ -5175,8 +5244,9 @@ function uebernehmen(id,owner){
   owner=owner||TEAM[0];
   m.done=true;
   const fid=Math.max(...faelle.map(x=>x.id))+1;
-  const _log=[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit+" — zugewiesen an "+owner]];
-  if(m.hinweis)_log.push([dstr(0),"[Hinweis bei Zuordnung] "+m.hinweis]);
+  /* [Hinweis]-Logzeile entfällt ersatzlos: f.zuordnungsHinweis (unten) wird im Fallakte-Kopf
+     (faHinweis) und in der Mein-Tag-Mini-Fallakte immer angezeigt — doppelte Information vermeiden. */
+  const _log=[[dstr(0),"Aus Eingang übernommen ("+m.kanal+"): "+m.tit+" — zugewiesen an "+owner,logZeit()]];
   const _fk=fallFakten(m);
   const _alterC=_fk.find(c=>c.typ==="alter"), _diagC=_fk.find(c=>c.typ==="diagnose");
   const _name=(m.patient&&m.patient.name)
@@ -5190,6 +5260,8 @@ function uebernehmen(id,owner){
     originalTxt:m.txt,originalKanal:m.kanal,originalZeit:m.zeit,
     docs:[false,false,false,false],kosten:"offen",consent:"offen",verlust:"",reaktion:null,
     log:_log});
+  const _neu=faelle[faelle.length-1];
+  if(/Hoffmann/i.test((m.txt||"")+(m.wer||"")))_neu.simKey="hoffmann";
   m.fallId=fid;
   renderAll();openDetail(fid);
 }
@@ -5202,11 +5274,11 @@ function sendReply(){
   const f=aktuellerFall; if(!f)return;
   const r=document.getElementById("dReply"); const txt=(r?r.value:"").trim(); if(!txt){alert("Bitte eine Antwort verfassen.");return;}
   const kanal=document.getElementById("dReplyKanal").value;
-  f.log.push([dstr(0),"↦ Antwort per "+kanal+" an "+f.name+": "+txt]);
+  f.log.push([dstr(0),"↦ Antwort per "+kanal+" an "+f.name+": "+txt,logZeit()]);
   if(typeof simTrigger==="function")simTrigger("antwort",f);
   pruefeUpsell(f,txt);
   if(r)r.value="";
-  document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
+  document.getElementById("dLog").innerHTML=logHtml(f);
   if(typeof inbToast==="function") inbToast("done","<b>Antwort gesendet</b> (Demo)","per "+kanal+" an "+escapeHtml(f.name),null);
 }
 function inDatenbank(id){
@@ -6863,15 +6935,19 @@ function sopChecklisteHtml(f,typ){
   const sop=items.map(function(label,i){
     const done=!!(f.sopDone&&f.sopDone[typ+":"+f.status+":"+i]);
     return "<label class='egt-check-item'><input type='checkbox' "+(done?"checked":"")
-      +" onchange='sopToggle("+i+")'> "+escapeHtml(label)+"</label>";
+      +" onchange=\"sopToggle('"+typ+"',"+i+")\"> "+escapeHtml(label)+"</label>";
   }).join("");
   if(!extra&&!sop) return "";
   return "<div class='fkw-check'>"+extra+sop+"</div>";
 }
-function sopToggle(i){
+/* sopToggle(typ,i) nimmt typ jetzt EXPLIZIT vom Aufrufer entgegen (statt drawerAufgabenTyp(f) zu
+   erraten): seit dem Klärungsfelder-Umbau ist z. B. das Kontakt-Feld immer mit typ "rueckruf"
+   gerendert, unabhängig vom aktuellen f.status/f.aufgabe — der Toggle-Key muss exakt zum Key
+   passen, mit dem sopChecklisteHtml() den "done"-Zustand gelesen hat. */
+function sopToggle(typ,i){
   const f=aktuellerFall;if(!f)return;
   if(!f.sopDone)f.sopDone={};
-  const key=drawerAufgabenTyp(f)+":"+f.status+":"+i;
+  const key=typ+":"+f.status+":"+i;
   f.sopDone[key]=!f.sopDone[key];
   renderFallakte();
 }
@@ -6903,60 +6979,192 @@ function fkwStammBestaetigen(){
  const nameEl=document.getElementById("fkwName"),alterEl=document.getElementById("fkwAlter");
  const name=(nameEl?nameEl.value:"").trim(); if(!name)return;
  f.name=name; f.alter=alterEl&&alterEl.value?+alterEl.value:f.alter; f.stammOk=true;
- f.log.push([dstr(0),"Stammdaten im Erstkontakt bestätigt"]);
+ f.log.push([dstr(0),"Stammdaten im Erstkontakt bestätigt",logZeit()]);
  renderAll();renderFallakte();
 }
-function dArbeitHtml(f){
- const typ=drawerAufgabenTyp(f);
- const fakten=fkwFaktenHtml(f);
- if(typ==="kosten"){
-   const istSelbstzahler=(f.kt==="Selbstzahler");
-   return fakten+"<div id='dKZ' class='kz-block'><div class='kicker'>"+(istSelbstzahler?"Selbstzahlung":"Kostenzusage")+"</div>"+kzChain(f)+kzActions(f)
-    +(istSelbstzahler?"":"<div class='ki-scan'><label class='btn-ghost btn-sm' style='display:inline-block;cursor:pointer'>✦ KI: Dokument scannen<input type='file' accept='image/*' style='display:none' onchange='kiScan(event,"+f.id+")'></label><div id='kiPanelScan'></div></div>")
-    +"</div>"
-    +sopChecklisteHtml(f,"kosten")
-    +(istSelbstzahler?"":"<div class='full' style='margin-top:12px'><label>Kostenzusage-Dokument</label>"
-    +"<button class='btn-ghost btn-sm' type='button' onclick='dArbeitKostenUpload()'>⇪ Dokument hochladen (Demo)</button></div>");
+/* Klärungsfelder (Fallakte-Umbau, Nutzer-approved "Klärungsfelder statt Schritt-Gefängnis"):
+   kfFelder() leitet für jedes der 5 Felder ok/offen + Kurztext ab. status = jene STATUS-Stufe, in
+   der an diesem Feld GEARBEITET wird — Mapping ist bewusst 1:1 mit STATUS[0..4] (Neu…Aufnahme
+   geplant); advanceFallStatus() nutzt exakt dasselbe Mapping für seine Skip-Logik. */
+function kfFelder(f){
+ return [
+  {key:"kontakt",label:"Kontakt & Erstgespräch",ok:!!f.stammOk,status:"Neu",
+   sub:f.stammOk?"Stammdaten bestätigt":"Stammdaten unbestätigt"},
+  {key:"bedarf",label:"Medizinischer Bedarf",ok:!!(f.med&&f.med.diagnose),status:"Kontaktiert",
+   sub:(f.med&&f.med.diagnose)?f.med.diagnose:"Diagnose/Indikation offen"},
+  {key:"unterlagen",label:"Unterlagen",ok:!!(f.docs[0]&&f.docs[1]&&f.docs[2]),status:"Qualifizierung",
+   sub:[f.docs[0],f.docs[1],f.docs[2]].filter(Boolean).length+" / 3"},
+  {key:"kosten",label:f.kt==="Selbstzahler"?"Kosten · Selbstzahlung":"Kostenzusage",
+   ok:(f.kosten==="Zusage liegt vor"||f.kosten==="Selbstzahler bestätigt"),status:"Unterlagen",
+   sub:f.kosten},
+  {key:"aufnahme",label:"Anreise & Aufnahme",ok:aufnahmeCheckliste(f).every(c=>c.ok),status:"Aufnahme geplant",
+   sub:aufnahmeCheckliste(f).filter(c=>c.ok).length+" / 6"}
+ ];
+}
+function kfIconHtml(ok,isCur){
+ if(ok)return "<span class='kf-ic ok'>✓</span>";
+ if(isCur)return "<span class='kf-ic cur'>●</span>";
+ return "<span class='kf-ic'>○</span>";
+}
+/* Kontaktblock (Feld 1): Telefon/E-Mail zuerst aus originalTxt gezogen (Erstkontext oft konkreter
+   als die Stammdaten-Akte), sonst Fallback auf person(f.personId).kontakt. */
+function kfKontaktHtml(f){
+ const txt=String(f.originalTxt||"");
+ const telM=/(?:0|\+49)[\d \-\/]{6,}/.exec(txt);
+ const mailM=/[\w.+-]+@[\w-]+\.[\w.-]+/.exec(txt);
+ const p=f.personId?person(f.personId):null;
+ const tel=telM?telM[0].trim():((p&&p.kontakt&&p.kontakt.tel)||"");
+ const mail=mailM?mailM[0]:((p&&p.kontakt&&p.kontakt.mail)||"");
+ const wer=fallAbsenderTyp(f)+(f.wer?" · "+f.wer:"");
+ return "<div class='pa-meta' style='margin-bottom:12px'>"
+  +"<div class='pa-row'><span class='pa-k'>Ansprechpartner</span><span class='pa-v'>"+escapeHtml(wer)+"</span></div>"
+  +"<div class='pa-row'><span class='pa-k'>Telefon</span><span class='pa-v kf-tel'>"+(tel?escapeHtml(tel):"—")+"</span></div>"
+  +"<div class='pa-row'><span class='pa-k'>E-Mail</span><span class='pa-v'>"+(mail?escapeHtml(mail):"—")+"</span></div>"
+  +"</div>";
+}
+function kfNachrichtHtml(f){
+ return "<div class='komm-block' style='margin-top:12px'><label>Antwort senden</label>"
+  +"<div class='tb-row'>"
+  +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('beihilfe')\">Beihilfe 30/70</button>"
+  +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('pkv')\">PKV-Vollversicherung</button>"
+  +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('selbst')\">Selbstzahler</button>"
+  +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('unterlagen')\">Unterlagen anfordern</button>"
+  +"</div>"
+  +"<div class='komm-row'><select id='dReplyKanal'><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select>"
+  +"<button class='btn-brass btn-sm' type='button' onclick='sendReply()'><svg viewBox='0 0 24 24' width='14' height='14' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>Antwort senden</button></div>"
+  +"<textarea id='dReply' rows='2' placeholder='Antwort an die anfragende Person verfassen … (Demo)'></textarea></div>";
+}
+function kfKontaktBody(f){
+ const sop=sopChecklisteHtml(f,"rueckruf");
+ return kfKontaktHtml(f)+fkwStammHtml(f)+fkwOriginalHtml(f)
+  +(sop?("<div class='kicker' style='margin-top:12px'>Gesprächsleitfaden</div>"+sop):"")
+  +"<div class='full' style='margin-top:12px'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL.rueckruf)+"</label>"
+  +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
+  +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>"
+  +kfNachrichtHtml(f);
+}
+/* Medizinischer Bedarf (Feld 2, NEU): f.med additiv, Guards überall (f.med&&f.med.x). Diagnose
+   vorbefüllt aus fallFakten()-Chip, falls noch nichts eingetragen. f.medVorschlag ist ein Guard für
+   die spätere Sim-Phase 2 (KI-/Antwortvorschlag) — kfMedVorschlag() füllt nur die Inputs, gespeichert
+   wird weiterhin nur explizit über "Bedarf übernehmen" (Human-in-the-loop). */
+function kfBedarfHtml(f){
+ const _diagChip=fallFakten(f).find(c=>c.typ==="diagnose");
+ const diagVal=(f.med&&f.med.diagnose)||(_diagChip?_diagChip.text:"");
+ const nebenVal=(f.med&&f.med.neben)||"";
+ const isoVal=(f.med&&f.med.isolation)||"—";
+ const schwereVal=(f.med&&f.med.schwere)||"—";
+ let html="";
+ if(f.medVorschlag){
+  const v=f.medVorschlag;
+  html+="<div class='kf-vorschlag'>✦ Aus der Antwort der Familie/Klinik: "
+   +escapeHtml([v.diagnose,v.neben,v.isolation,v.schwere].filter(Boolean).join(" · "))
+   +"<div style='margin-top:6px'><button class='btn-ghost btn-sm' type='button' onclick='kfMedVorschlag()'>Vorschlag übernehmen</button></div></div>";
  }
- if(typ==="unterlagen")
-   return fakten+"<div class='full'><label>Unterlagen <span id='docCnt' style='color:var(--brass-deep)'></span></label>"
-    +"<div class='docs'>"
-    +"<label><input type='checkbox' id='u1' "+(f.docs[0]?"checked":"")+" onchange='updateDocCnt()'> Entlassbrief</label>"
-    +"<label><input type='checkbox' id='u2' "+(f.docs[1]?"checked":"")+" onchange='updateDocCnt()'> Befunde</label>"
-    +"<label><input type='checkbox' id='u3' "+(f.docs[2]?"checked":"")+" onchange='updateDocCnt()'> Versicherungsdaten</label>"
-    +"<label><input type='checkbox' id='u4' "+(f.docs[3]?"checked":"")+" onchange='updateDocCnt()'> Kostenzusage</label>"
-    +"</div></div><button class='btn-ghost btn-sm' type='button' onclick='dArbeitUnterlagenAnfordern()'>Fehlende anfordern</button>";
- if(typ==="angebot")
-   return fakten+sopChecklisteHtml(f,"angebot")+"<div class='komm-block'><label>Antwort senden</label>"
-    +"<div class='tb-row'>"
-    +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('beihilfe')\">Beihilfe 30/70</button>"
-    +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('pkv')\">PKV-Vollversicherung</button>"
-    +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('selbst')\">Selbstzahler</button>"
-    +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('unterlagen')\">Unterlagen anfordern</button>"
-    +"</div>"
-    +"<div class='komm-row'><select id='dReplyKanal'><option>E-Mail</option><option>Telefon (Notiz)</option><option>SMS</option><option>WhatsApp</option></select>"
-    +"<button class='btn-brass btn-sm' type='button' onclick='sendReply()'><svg viewBox='0 0 24 24' width='14' height='14' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>Antwort senden</button></div>"
-    +"<textarea id='dReply' rows='2' placeholder='Antwort an die anfragende Person verfassen … (Demo)'></textarea></div>";
- if(typ==="anreise")
-   return fakten+"<div class='kicker'>Vor-Aufnahme-Checkliste</div>"
-    +aufnahmeCheckliste(f).map(function(c){
-      return "<label class='egt-check-item'><input type='checkbox' "+(c.ok?"checked":"")
-        +(c.manuell?" onchange=\"aufnahmeToggle('"+c.key+"')\"":" disabled")+"> "+escapeHtml(c.label)+"</label>";
-    }).join("")
-    +(f.stammOk?"":"<div class='full' style='margin-top:10px'><label>Stammdaten bestätigen</label>"+fkwStammHtml(f)+"</div>")
-    +"<div class='full' style='margin-top:12px'><label>Einladungspaket (Checkliste, Anfahrt, Hausprospekt)</label>"
-    +"<div class='kz-actions'>"
-    +"<button class='btn-ghost btn-sm' type='button' onclick=\"paketErstellen('E-Mail')\">Digital senden</button>"
-    +"<button class='btn-ghost btn-sm' type='button' onclick=\"paketErstellen('Post')\">Per Post senden</button>"
-    +"</div></div>";
- if(typ==="rueckruf")
-   return fakten+fkwStammHtml(f)+fkwOriginalHtml(f)+sopChecklisteHtml(f,"rueckruf")
-    +"<div class='full' style='margin-top:12px'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL.rueckruf)+"</label>"
-    +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
-    +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>";
- return fakten+"<div class='full'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL[typ]||MT_NOTIZ_LABEL.allgemein)+"</label>"
-   +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
-   +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>";
+ html+="<div class='kf-form'>"
+  +"<div><label for='kfDiag'>Diagnose/Indikation</label><input id='kfDiag' value=\""+escapeHtml(diagVal)+"\"></div>"
+  +"<div><label for='kfNeben'>Nebendiagnosen</label><input id='kfNeben' value=\""+escapeHtml(nebenVal)+"\"></div>"
+  +"<div><label for='kfIso'>Isolationspflicht</label><select id='kfIso'>"
+  +["—","Nein","Ja"].map(o=>"<option"+(o===isoVal?" selected":"")+">"+o+"</option>").join("")
+  +"</select></div>"
+  +"<div><label for='kfSchwere'>Schweregrad</label><select id='kfSchwere'>"
+  +["—","leicht","mittel","hoch"].map(o=>"<option"+(o===schwereVal?" selected":"")+">"+o+"</option>").join("")
+  +"</select></div>"
+  +"</div>"
+  +"<button class='btn-ghost btn-sm' type='button' style='margin-top:8px' onclick='kfMedSave()'>Bedarf übernehmen</button>";
+ return html;
+}
+function kfMedSave(){
+ const f=aktuellerFall;if(!f)return;
+ const diag=(document.getElementById("kfDiag").value||"").trim();
+ const neben=(document.getElementById("kfNeben").value||"").trim();
+ const isolation=document.getElementById("kfIso").value;
+ const schwere=document.getElementById("kfSchwere").value;
+ f.med={diagnose:diag,neben:neben,isolation:isolation,schwere:schwere};
+ f.log.push([dstr(0),"Bedarf qualifiziert: "+diag+(isolation==="Ja"?", isolationspflichtig":""),logZeit()]);
+ renderAll();renderFallakte();
+}
+function kfMedVorschlag(){
+ const f=aktuellerFall;if(!f||!f.medVorschlag)return;
+ const v=f.medVorschlag;
+ const _diag=document.getElementById("kfDiag"),_neben=document.getElementById("kfNeben"),
+  _iso=document.getElementById("kfIso"),_schwere=document.getElementById("kfSchwere");
+ if(_diag)_diag.value=v.diagnose||"";
+ if(_neben)_neben.value=v.neben||"";
+ if(_iso)_iso.value=v.isolation||"—";
+ if(_schwere)_schwere.value=v.schwere||"—";
+}
+function kfUnterlagenHtml(f){
+ return "<div class='docs'>"
+  +"<label><input type='checkbox' "+(f.docs[0]?"checked":"")+" onchange='aufnDocToggle(0)'> Entlassbrief</label>"
+  +"<label><input type='checkbox' "+(f.docs[1]?"checked":"")+" onchange='aufnDocToggle(1)'> Befunde</label>"
+  +"<label><input type='checkbox' "+(f.docs[2]?"checked":"")+" onchange='aufnDocToggle(2)'> Versicherungsdaten</label>"
+  +"<label><input type='checkbox' "+(f.docs[3]?"checked":"")+" onchange='aufnDocToggle(3)'> Kostenzusage</label>"
+  +"</div>"
+  +"<button class='btn-ghost btn-sm' type='button' style='margin-top:8px' onclick='dArbeitUnterlagenAnfordern()'>Fehlende anfordern</button>"
+  +"<p class='kz-hint' style='margin-top:6px'>Kostenzusage-Dokument kommt aus dem Feld Kostenzusage.</p>";
+}
+/* Warteschleifen-Telefonagent (Pilot, Block 2): nur solange keine Kostenzusage vorliegt und der Fall
+   nicht Selbstzahler ist — Agent übernimmt Warteschleife bei der Kasse, Übernahme bleibt Human-in-the-loop. */
+function ktaPanelHtml(){
+ // Laufender Anruf übersteht Re-Renders (sim-Antworten bauen dArbeit neu): Zustand aus _ktaStepHtml wiederherstellen
+ const aktiv=(typeof _ktaAktiv!=="undefined"&&aktuellerFall&&_ktaAktiv===aktuellerFall.id);
+ return "<div class='kta'><div class='kicker'>☎ Warteschleifen-Agent <span class='kta-pilot'>Pilot</span></div>"
+  +"<p class='kta-txt'>Der Agent ruft die Kasse an, navigiert das Sprachmenü und wartet in der Warteschleife — Sie arbeiten weiter und übernehmen erst, wenn ein Mensch dran ist.</p>"
+  +"<div id='ktaStatus'>"+(aktiv?_ktaStepHtml:"")+"</div>"
+  +"<button class='btn-ghost btn-sm' type='button' id='ktaBtn' onclick='ktaStart()'"+(aktiv?" style='display:none'":"")+">Agent für mich warten lassen</button></div>";
+}
+function kfKostenHtml(f){
+ const istSelbstzahler=(f.kt==="Selbstzahler");
+ const _ktaZeig=!istSelbstzahler&&(f.kosten==="offen"||f.kosten==="angefragt");
+ return "<div id='dKZ' class='kz-block'><div class='kicker'>"+(istSelbstzahler?"Selbstzahlung":"Kostenzusage")+"</div>"+kzChain(f)+kzActions(f)
+  +(_ktaZeig?ktaPanelHtml():"")
+  +(istSelbstzahler?"":"<div class='ki-scan'><label class='btn-ghost btn-sm' style='display:inline-block;cursor:pointer'>✦ KI: Dokument scannen<input type='file' accept='image/*' style='display:none' onchange='kiScan(event,"+f.id+")'></label><div id='kiPanelScan'></div></div>")
+  +"</div>"
+  +sopChecklisteHtml(f,"kosten")
+  +(istSelbstzahler?"":"<div class='full' style='margin-top:12px'><label>Kostenzusage-Dokument</label>"
+  +"<button class='btn-ghost btn-sm' type='button' onclick='dArbeitKostenUpload()'>⇪ Dokument hochladen (Demo)</button></div>");
+}
+function kfAufnahmeHtml(f){
+ return "<div class='kicker'>Vor-Aufnahme-Checkliste</div>"
+  +aufnahmeCheckliste(f).map(function(c){
+    return "<label class='egt-check-item'><input type='checkbox' "+(c.ok?"checked":"")
+     +(c.manuell?" onchange=\"aufnahmeToggle('"+c.key+"')\"":" disabled")+"> "+escapeHtml(c.label)+"</label>";
+  }).join("")
+  +"<div class='full' style='margin-top:12px'><label>Einladungspaket (Checkliste, Anfahrt, Hausprospekt)</label>"
+  +"<div class='kz-actions'>"
+  +"<button class='btn-ghost btn-sm' type='button' onclick=\"paketErstellen('E-Mail')\">Digital senden</button>"
+  +"<button class='btn-ghost btn-sm' type='button' onclick=\"paketErstellen('Post')\">Per Post senden</button>"
+  +"</div></div>";
+}
+function kfBodyHtml(f,key){
+ if(key==="kontakt")return kfKontaktBody(f);
+ if(key==="bedarf")return kfBedarfHtml(f);
+ if(key==="unterlagen")return kfUnterlagenHtml(f);
+ if(key==="kosten")return kfKostenHtml(f);
+ if(key==="aufnahme")return kfAufnahmeHtml(f);
+ return "";
+}
+/* dArbeitHtml(f) — Klärungsfelder-Akkordeon statt Ein-Werkzeug-pro-Status: alle 5 Felder sind
+   jederzeit sichtbar/bearbeitbar. Offen ist standardmäßig das erste noch nicht erledigte Feld
+   (alle erledigt -> letztes Feld offen). Für abgeschlossene Fälle (Aufgenommen/Verloren) nur eine
+   read-only Zusammenfassung, kein editierbares Werkzeug mehr. */
+function dArbeitHtml(f){
+ const fakten=fkwFaktenHtml(f);
+ const felder=kfFelder(f);
+ if(f.status==="Aufgenommen"||f.status==="Verloren"){
+  return fakten+"<div class='pa-meta'>"+felder.map(function(k){
+    return "<div class='pa-row'><span class='pa-k'>"+escapeHtml(k.label)+"</span><span class='pa-v'>"
+     +(k.ok?"✓ ":"– ")+escapeHtml(k.sub)+"</span></div>";
+  }).join("")+"</div>";
+ }
+ let openIdx=felder.findIndex(k=>!k.ok);
+ if(openIdx<0)openIdx=felder.length-1;
+ return fakten+felder.map(function(k,i){
+  const isCur=(i===openIdx&&!k.ok);
+  return "<details class='kf' data-kf='"+k.key+"'"+(i===openIdx?" open":"")+"><summary>"+kfIconHtml(k.ok,isCur)
+   +"<span>"+escapeHtml(k.label)+"</span><span class='kf-sub'>"+escapeHtml(k.sub)+"</span></summary>"
+   +"<div class='kf-body'>"+kfBodyHtml(f,k.key)+"</div></details>";
+ }).join("");
 }
 function egRueckfrageToggle(i){ const f=aktuellerFall;if(!f||!f.rueckfragen)return; f.rueckfragen[i].done=!f.rueckfragen[i].done; renderFallakte(); }
 function dArbeitKostenUpload(){
@@ -6986,12 +7194,48 @@ function aufnahmeToggle(key){
  f.aufnahmeCheck[key]=!f.aufnahmeCheck[key];
  renderFallakte();
 }
+function aufnDocToggle(i){const f=aktuellerFall;if(!f)return;f.docs[i]=!f.docs[i];renderAll();renderFallakte();}
+let _epkKanal="";
 function paketErstellen(kanal){
  const f=aktuellerFall;if(!f)return;
- f.log.push([dstr(0),"↦ Einladungspaket (Checkliste, Anfahrt, Hausprospekt) per "+kanal+" an "+f.name]);
+ _epkKanal=kanal;
+ document.getElementById("epkSub").textContent="per "+kanal+" an "+f.name;
+ document.getElementById("epkBody").innerHTML=epkBodyHtml(f);
+ document.getElementById("epkSenden").onclick=function(){epkSendenBestaetigen();};
+ document.getElementById("epkVorschau").classList.add("open");
+ document.body.classList.add("detail-open");
+}
+function epkBodyHtml(f){
+ return "<p class='epk-doc' style='padding:10px 16px'>Für "+escapeHtml(f.name)+" · zusammengestellt am "+dstr(0)+"</p>"
+  +"<div class='epk-doc'><h4>Checkliste zu Ihrem Aufenthalt</h4><ul>"
+  +"<li>Versichertenkarte &amp; Ausweis</li>"
+  +"<li>Medikamentenplan</li>"
+  +"<li>Vorbefunde &amp; Arztbriefe</li>"
+  +"<li>Bequeme Kleidung &amp; festes Schuhwerk</li>"
+  +"<li>Persönliche Hilfsmittel (Brille, Hörgerät, Gehhilfe)</li>"
+  +"</ul></div>"
+  +"<div class='epk-doc'><h4>Ihre Anreise</h4><ul>"
+  +"<li>Klinik Bavaria, Von-der-Tann-Str. 18–22, 97688 Bad Kissingen</li>"
+  +"<li>Anreisetag laut Planung</li>"
+  +"<li>Aufnahme ab 10 Uhr, Empfang Haupthaus</li>"
+  +"<li>Parkplätze am Haus, Bahnhof-Shuttle auf Anfrage</li>"
+  +"</ul></div>"
+  +"<div class='epk-doc'><h4>Klinik Bavaria kennenlernen</h4>"
+  +"<p>Unsere Reha verbindet moderne Therapie mit ruhiger Erholung mitten im Grünen der Rhön — persönliche Betreuung und Komfort stehen bei uns im Mittelpunkt.</p>"
+  +"<p style='margin-top:8px'>Hausprospekt liegt bei.</p></div>";
+}
+function epkSendenBestaetigen(){
+ const f=aktuellerFall;if(!f)return;
+ const kanal=_epkKanal;
+ f.log.push([dstr(0),"↦ Einladungspaket (Checkliste, Anfahrt, Hausprospekt) per "+kanal+" an "+f.name,logZeit()]);
  if(typeof simTrigger==="function")simTrigger("paket",f);
  inbToast("done","<b>Einladungspaket erstellt</b> (Demo)","per "+escapeHtml(kanal)+" an "+escapeHtml(f.name),null);
+ epkClose();
  renderAll();renderFallakte();
+}
+function epkClose(){
+ document.getElementById("epkVorschau").classList.remove("open");
+ document.body.classList.remove("detail-open");
 }
 /* Standard-Textbausteine (angebot-Werkzeug) — parametrisiert mit Kostenträger/Name, schreiben
    direkt in #dReply.value (kein escapeHtml nötig, .value statt innerHTML). */
@@ -7035,13 +7279,8 @@ function kzActions(f){
      return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzSelbstzahler()'>Selbstzahlung bestätigen</button></div>";
    return "";
  }
- if(f.kosten==="offen"){
-   const aufgabeHatKosten=/kosten/i.test(f.aufgabe||"");
-   if(aufgabeHatKosten)
-     return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzAnfragen()'>Kostenzusage anfragen</button></div>";
-   else
-     return "<div class='kz-hint'>Kostenzusage offen — wird fällig, sobald die Kostenklärung ansteht.</div>";
- }
+ if(f.kosten==="offen")
+   return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzAnfragen()'>Kostenzusage anfragen</button></div>";
  if(f.kosten==="angefragt")
    return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzZusage()'>Zusage erfassen</button><button class='btn-ghost btn-sm' type='button' onclick='kzAblehnung()'>Ablehnung erfassen</button></div>";
  return "";
@@ -7049,37 +7288,37 @@ function kzActions(f){
 function kzAnfragen(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="angefragt";
- f.log.push([dstr(0),"Kostenzusage angefragt"]);
+ f.log.push([dstr(0),"Kostenzusage angefragt",logZeit()]);
  if(typeof simTrigger==="function")simTrigger("kosten",f);
  renderAll();renderFallakte();
 }
 function kzZusage(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="Zusage liegt vor";
- f.log.push([dstr(0),"Kostenzusage liegt vor"]);
+ f.log.push([dstr(0),"Kostenzusage liegt vor",logZeit()]);
  renderAll();renderFallakte();
 }
 function kzAblehnung(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="abgelehnt";
- f.log.push([dstr(0),"Kostenzusage abgelehnt"]);
+ f.log.push([dstr(0),"Kostenzusage abgelehnt",logZeit()]);
  renderAll();renderFallakte();
 }
 function kzSelbstzahler(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="Selbstzahler bestätigt";
- f.log.push([dstr(0),"Selbstzahlung bestätigt — keine Kostenzusage nötig"]);
+ f.log.push([dstr(0),"Selbstzahlung bestätigt — keine Kostenzusage nötig",logZeit()]);
  renderAll();renderFallakte();
 }
 function kzNotizAdd(){
  const f=aktuellerFall;if(!f)return;
  const el=document.getElementById("dNotizSofort");
  const txt=(el?el.value:"").trim();if(!txt)return;
- f.log.push([dstr(0),txt]);
+ f.log.push([dstr(0),txt,logZeit()]);
  if(typeof simTrigger==="function")simTrigger("antwort",f);
  pruefeUpsell(f,txt);
  if(el)el.value="";
- document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
+ document.getElementById("dLog").innerHTML=logHtml(f);
 }
 function advanceFallStatus(f){
  const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return false;
@@ -7094,9 +7333,26 @@ function advanceFallStatus(f){
  const _items=SOP_CHECKLISTE[_typ];
  if(_items){
    const _erledigt=_items.filter((label,i)=>f.sopDone&&f.sopDone[_typ+":"+f.status+":"+i]);
-   if(_erledigt.length) f.log.push([dstr(0),"Erledigt: "+_erledigt.join(" · ")]);
+   if(_erledigt.length) f.log.push([dstr(0),"Erledigt: "+_erledigt.join(" · "),logZeit()]);
  }
- const ns=STATUS[cur+1]; f.log.push([dstr(0),"Aufgabe erledigt · Status: "+f.status+" → "+ns]);
+ /* Skip-Logik (Klärungsfelder sind jederzeit bearbeitbar): Ziel ist der erste noch offene
+    Meilenstein in der Kette; das kfFelder()-Mapping ist 1:1 mit STATUS[0..4], daher genügt ein
+    Blick auf felder[i].status===STATUS[i]. Sind alle Felder bis inkl. Kosten erledigt, geht es
+    direkt auf "Aufnahme geplant" (Gate für "Aufgenommen" oben unverändert per aufnahmeCheckliste). */
+ let ns;
+ if(cur===4){
+   ns="Aufgenommen";
+ }else{
+   const felder=kfFelder(f);
+   let ziel=null;
+   for(let i=cur+1;i<=4;i++){
+     const feldEntry=felder.find(k=>k.status===STATUS[i]);
+     if(feldEntry&&!feldEntry.ok){ ziel=STATUS[i]; break; }
+   }
+   ns=ziel||"Aufnahme geplant";
+ }
+ const _uebersprungen=STATUS.indexOf(ns)-cur>1;
+ f.log.push([dstr(0),"Aufgabe erledigt · Status: "+f.status+" → "+ns+(_uebersprungen?" (Zwischenschritte übersprungen)":""),logZeit()]);
  if(f.personId)pHist(f.personId,ns==="Aufgenommen"?"aufnahme":"fall","Status: "+f.status+" → "+ns);
  qualifyIfNeeded(f,ns);
  if(f.schritte&&f.schritte[cur]) f.schritte[cur].done=true;
@@ -7129,7 +7385,7 @@ document.getElementById("dSpeichern").onclick=()=>{
   const alt=f.status;
   const ns=document.getElementById("dStatus").value;
   if(ns==="Verloren"&&!document.getElementById("dVerlust").value){alert("Bitte Verlustgrund angeben. Genau dafür ist das System da.");return;}
-  if(ns!==f.status)f.log.push([dstr(0),"Status: "+f.status+" zu "+ns]);
+  if(ns!==f.status)f.log.push([dstr(0),"Status: "+f.status+" zu "+ns,logZeit()]);
   qualifyIfNeeded(f,ns);
   f.status=ns;
   f.owner=document.getElementById("dOwner").value;
@@ -7142,7 +7398,7 @@ document.getElementById("dSpeichern").onclick=()=>{
   f.saluto=document.getElementById("dSaluto").checked;
   f.verlust=document.getElementById("dVerlust").value;
   const n=document.getElementById("dNotiz").value.trim();
-  if(n){f.log.push([dstr(0),n]);pruefeUpsell(f,n);}
+  if(n){f.log.push([dstr(0),n,logZeit()]);pruefeUpsell(f,n);}
   renderAll();
   renderFallakte();
   if(ns==="Aufnahme geplant"&&alt!=="Aufnahme geplant")celebratePlanned();
@@ -7168,7 +7424,7 @@ document.getElementById("formNeu").addEventListener("submit",e=>{
     docs:[false,false,false,false],kosten:"offen",
     consent:document.getElementById("fConsent").value,
     verlust:"",reaktion:null,
-    log:[[dstr(0),"Anfrage erfasst über "+document.getElementById("fKanal").value+(document.getElementById("fNotiz").value?": "+document.getElementById("fNotiz").value:"")]]
+    log:[[dstr(0),"Anfrage erfasst über "+document.getElementById("fKanal").value+(document.getElementById("fNotiz").value?": "+document.getElementById("fNotiz").value:""),logZeit()]]
   });
   e.target.reset();
   document.getElementById("fFrist").value=dstr(1);
@@ -7575,7 +7831,7 @@ function mtAbschliessen(key){
   const statusEl=document.getElementById("mtKostenStatus");
   const kstat=statusEl?statusEl.value:"";
   const statusTxt=kstat==="zusage"?"Kostenzusage erhalten":kstat==="ablehnung"?"Kostenzusage abgelehnt":"Kostenklärung bearbeitet";
-  item.ref.log.push([dstr(0),statusTxt+(notiz?" — "+notiz:"")]);
+  item.ref.log.push([dstr(0),statusTxt+(notiz?" — "+notiz:""),logZeit()]);
   if(kstat==="zusage")item.ref.kosten="Zusage liegt vor";
   else if(kstat==="ablehnung")item.ref.kosten="abgelehnt";
   else item.ref.kosten="angefragt";
@@ -7587,7 +7843,7 @@ function mtAbschliessen(key){
    renderAll();renderMeinTag();mtSheetRender();
    return;
   }
-  f.log.push([dstr(0),desc+": "+notiz]);
+  f.log.push([dstr(0),desc+": "+notiz,logZeit()]);
   const naechstes=mtFallAufgabeItem(f);
   if(naechstes)_mtSheetKey=naechstes.key;
  }
@@ -7745,9 +8001,9 @@ function renderFallakte(){
   document.getElementById("dOwnerAva").textContent=initialen(f.owner);
   document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
   document.getElementById("dArbeit").innerHTML=dArbeitHtml(f);
-  const _zeigeOriginalInKontext=f.originalTxt&&drawerAufgabenTyp(f)!=="rueckruf";
-  document.getElementById("faOriginalChap").style.display=_zeigeOriginalInKontext?"":"none";
-  if(_zeigeOriginalInKontext) document.getElementById("faOriginal").innerHTML=fkwOriginalHtml(f);
+  /* Original ist jetzt immer Teil des Kontakt-Klärungsfelds (K1) — Kontext-Kapitel ausblenden,
+     um dieselbe Information nicht doppelt zu zeigen. */
+  document.getElementById("faOriginalChap").style.display="none";
   updateDocCnt();
   document.getElementById("dStatus").innerHTML=STATUS.map(s=>"<option"+(s===f.status?" selected":"")+">"+s+"</option>").join("");
   document.getElementById("dKosten").value=f.kosten;
@@ -7761,7 +8017,7 @@ function renderFallakte(){
     +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(f.consent)+"</span></div>"
     +(f.saluto?"<div class='pa-row'><span class='pa-k'>SalutoCare</span><span class='pa-v'>★ Premium-Option geeignet</span></div>":"")
     +"</div>"+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId,{verlauf:false})+"</details>";
-  document.getElementById("faWerdegang").innerHTML="<div class='timeline' id='dLog'>"+f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("")+"</div>";
+  document.getElementById("faWerdegang").innerHTML="<div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
   const med=inReha.find(p=>p.personId===f.personId);
   document.getElementById("faMedizin").innerHTML=med?("<div class='pa-meta'>"
     +"<div class='pa-row'><span class='pa-k'>Reha-Ziel</span><span class='pa-v'>"+escapeHtml(med.rehaZiel||"—")+"</span></div>"
@@ -7809,6 +8065,10 @@ document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&_detailOpe
    demoSave mitpersistiert; pending wird beim Start nachgeliefert (Reload während des
    Zeitversatzes verliert nichts). Jedes Event trägt fid (Fall-id), über die simFire/
    simSchedule den auslösenden Fall auflösen. */
+/* Deterministische Demo-Uhr für Log-Zeiten: startet 08:45, +11/+17/+7 Min. im Zyklus.
+   Kein new Date() — Reihenfolge bleibt bei jedem Durchlauf identisch. */
+let _lgMin=8*60+45; const _lgStep=[11,17,7]; let _lgN=0;
+function logZeit(){ _lgMin+=_lgStep[_lgN++%3]; if(_lgMin>=19*60)_lgMin=8*60+45; const h=Math.floor(_lgMin/60),m=_lgMin%60; return (h<10?"0":"")+h+":"+(m<10?"0":"")+m; }
 let LEITFALL_TEMPO=1; // QA kann <1 setzen; Demo immer 1
 const LEITFALL_EVENTS={
  "tochter-rueckruf":{fid:1,delay:9000,von:"Tochter Muster (Angehörige)",
@@ -7850,23 +8110,38 @@ const LEITFALL_EVENTS={
   after:function(f){f.kosten="abgelehnt";f.aufgabe="Ablehnung mit Patient besprechen";f.frist=dstr(1);f.sim.ablehnungOffen=true;}},
  "werner-absage":{fid:13,delay:10000,von:"Werner Aumann (Telefon)",
   text:"Anruf Werner Aumann: dankt für die Beratung, möchte aber keinen Widerspruch einlegen — er hat sich für die ambulante Reha in Wohnortnähe entschieden. Bittet um Bestätigung, dass keine Kosten entstehen.",
-  after:function(f){f.sim.ablehnungOffen=false;f.aufgabe="Verlust dokumentieren (Status + Grund)";f.frist=dstr(0);}}
+  after:function(f){f.sim.ablehnungOffen=false;f.aufgabe="Verlust dokumentieren (Status + Grund)";f.frist=dstr(0);}},
+ "hoffmann-info":{simKey:"hoffmann",delay:9000,von:"Familie Hoffmann (E-Mail)",
+  text:"E-Mail Familie Hoffmann: Vielen Dank für den Rückruf! Die Ärzte sagen: Zustand nach Schlaganfall mit halbseitiger Schwäche rechts, dazu Bluthochdruck. Unser Vater ist aktuell in der Reha-Klinik Sonnenhof, eine Verlegung wäre ab kommender Woche möglich. Er ist privat versichert. Keine Isolationspflicht.",
+  after:function(f){f.kt="PKV";f.medVorschlag={diagnose:"Z. n. Schlaganfall, Hemiparese rechts",neben:"Arterielle Hypertonie",isolation:"Nein",schwere:"mittel"};}},
+ "hoffmann-bericht":{simKey:"hoffmann",delay:11000,von:"Reha-Klinik Sonnenhof (Fax)",
+  text:"Fax Reha-Klinik Sonnenhof: Verlegungsbericht und aktuelle Befunde für Herrn Hoffmann übermittelt. Die Familie hat zusätzlich die Versicherungsdaten per E-Mail gesendet.",
+  after:function(f){f.docs[0]=true;f.docs[1]=true;f.docs[2]=true;}},
+ "hoffmann-zusage":{simKey:"hoffmann",delay:12000,von:"PKV (Sachbearbeitung)",
+  text:"PKV, Fr. Berger: Kostenzusage für die Verlegung in die neurologische Reha erteilt (Az. PKV-2026-9105) — bei Wechsel aus laufender Reha unkompliziert. Bestätigung folgt schriftlich.",
+  after:function(f){f.kosten="Zusage liegt vor";f.docs[3]=true;}},
+ "hoffmann-danke":{simKey:"hoffmann",delay:8000,von:"Familie Hoffmann (E-Mail)",
+  text:"E-Mail Familie Hoffmann: Das Einladungspaket ist angekommen — wir sind sehr erleichtert, dass es so schnell ging. Bis Montag!",
+  after:function(f){}}
 };
+/* simKey-Resolver (Block 3, Hoffmann als 4. Leitfall): Fälle mit dynamischer id (aus uebernehmen())
+   werden über f.simKey statt fid aufgelöst — in BEIDEN Funktionen identisch. */
+function simFallResolver(ev){ return ev.fid?faelle.find(x=>x.id===ev.fid):faelle.find(x=>x.simKey===ev.simKey); }
 function simFire(key){
- const ev=LEITFALL_EVENTS[key],f=ev&&faelle.find(x=>x.id===ev.fid);
+ const ev=LEITFALL_EVENTS[key],f=ev&&simFallResolver(ev);
  if(!f||!ev)return;
  f.sim=f.sim||{done:{},pending:[]};
  f.sim.pending=(f.sim.pending||[]).filter(p=>p!==key);
  if(f.sim.done[key])return;
  f.sim.done[key]=true;
- f.log.push([dstr(0),ev.text]);
+ f.log.push([dstr(0),ev.text,logZeit()]);
  ev.after(f);
  inbToast("done","<b>Neue Nachricht · "+escapeHtml(ev.von)+"</b>","Fall "+escapeHtml(f.name),null);
  renderAll();
  if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&typeof renderFallakte==="function")renderFallakte();
 }
 function simSchedule(key){
- const ev=LEITFALL_EVENTS[key],f=ev&&faelle.find(x=>x.id===ev.fid);
+ const ev=LEITFALL_EVENTS[key],f=ev&&simFallResolver(ev);
  if(!f||!ev)return;
  f.sim=f.sim||{done:{},pending:[]};
  if(f.sim.done[key]||f.sim.pending.indexOf(key)>=0)return;
@@ -7893,12 +8168,52 @@ function simTrigger(art,f){
  } else if(f.id===13){
    if(art==="kosten") simSchedule("pkv-ablehnung");
    if(art==="antwort"&&f.sim&&f.sim.ablehnungOffen) simSchedule("werner-absage");
+ } else if(f.simKey==="hoffmann"){
+   if(art==="status:Kontaktiert") simSchedule("hoffmann-info");
+   if(art==="unterlagen") simSchedule("hoffmann-bericht");
+   if(art==="kosten") simSchedule("hoffmann-zusage");
+   if(art==="paket") simSchedule("hoffmann-danke");
  }
+}
+
+/* Warteschleifen-Telefonagent (Pilot, Block 2): _ktaAktiv trägt die Fall-id des laufenden Anrufs
+   (Guard gegen Doppelstart je Fall); renderFallakte()-Neuaufbau erzeugt das Panel ohnehin neu,
+   laufende Timer schreiben bestenfalls in ein bereits ersetztes #ktaStatus (kein Cleanup nötig). */
+let _ktaTimer=[]; let _ktaAktiv=null; let _ktaStepHtml="";
+function ktaStart(){
+ const f=aktuellerFall;if(!f)return;
+ if(_ktaAktiv===f.id)return;
+ _ktaAktiv=f.id;
+ const btn=document.getElementById("ktaBtn");
+ if(btn){btn.disabled=true;btn.style.display="none";}
+ function zeig(html){_ktaStepHtml=html;const st=document.getElementById("ktaStatus");if(st)st.innerHTML=html;}
+ _ktaTimer.push(setTimeout(function(){
+  zeig("<div class='kta-step'>Wählt 0800 000 4411 (PKV-Service) …</div>");
+  _ktaTimer.push(setTimeout(function(){
+   zeig("<div class='kta-step'>Sprachmenü: ‚2 – Kostenzusagen' gewählt</div>");
+   _ktaTimer.push(setTimeout(function(){
+    zeig("<div class='kta-step'>In der Warteschleife · Position 7 — Sie können weiterarbeiten</div>");
+    _ktaTimer.push(setTimeout(function(){
+     zeig("<div class='kta-step'>✓ Mitarbeiter in der Leitung!</div><button class='btn-ghost btn-sm' type='button' onclick='ktaUebernehmen()'>Gespräch übernehmen</button>");
+     if(typeof inbToast==="function")inbToast("done","<b>☎ Mensch in der Leitung</b>","Warteschleifen-Agent: jetzt übernehmen",null);
+    },2600*LEITFALL_TEMPO));
+   },2600*LEITFALL_TEMPO));
+  },1800*LEITFALL_TEMPO));
+ },1200*LEITFALL_TEMPO));
+}
+function ktaUebernehmen(){
+ const f=aktuellerFall;if(!f)return;
+ f.log.push([dstr(0),"↦ Telefonat mit Kostenträger (via Warteschleifen-Agent übernommen): Kostenzusage-Anliegen besprochen, Unterlagen angekündigt",logZeit()]);
+ if(f.kosten==="offen")f.kosten="angefragt";
+ if(typeof simTrigger==="function")simTrigger("kosten",f);
+ if(typeof inbToast==="function")inbToast("done","<b>Gespräch übernommen</b>","Agent hat 14 Min. Warteschleife übernommen (Demo)",null);
+ _ktaAktiv=null;
+ renderAll();renderFallakte();
 }
 
 /* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
    strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
-const DEMO_SCHEMA=2;
+const DEMO_SCHEMA=3;
 const DEMO_KEY="kbDemoState";
 let _demoSaveT=null;
 function demoSave(){
