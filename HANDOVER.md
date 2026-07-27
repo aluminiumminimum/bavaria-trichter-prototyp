@@ -468,6 +468,30 @@ Lagebild/Einladungspaket zeigen den Termin. `kzZusage()` setzt `docs[3]` mit; be
 Auto-Punkte der Vor-Aufnahme-Checkliste tragen `feld:`-Mapping und rendern „öffnen ›"
 (`lbOeffneFeld`) statt toter Disabled-Häkchen.
 
+## 4k. Runde 8.4 — Erstgespräch-Abschluss + agentischer UX-Walkthrough (27.07.)
+
+**Neuer Standard-Prozess (Nutzer-Auftrag „nicht jeden Punkt vordiktieren"):** Nach jeder
+Bau-Runde spielt ein Sonnet-Agent (Read-only) die App als naive Case-Managerin durch — jeder
+Klick gegen den Code verfolgt, Prüfraster: verfrühte Erledigungen, Sim-Timing, tote Elemente,
+Lagebild↔Board-Konsistenz, Sackgassen, ma-mode, Verlaufs-Dubletten. Befunde als P1–P3 mit
+Klickfolge+Codebeleg; Fixes in der Implementer-Lane; Fable orchestriert nur.
+
+**R8.4a:** „Kontakt & Erstgespräch" gilt erst mit explizitem **„✓ Erstgespräch abschließen"**
+als erledigt (`f.kontaktOk`, `kfKontaktOk()` mit Seed-Fallback stammOk&&status≠Neu) —
+Stammdaten bestätigen ist Voraussetzung, kein Abschluss. Erste Sim-Antwort (Anna/Hoffmann)
+hängt am Abschluss ODER an einer echten ausgehenden Nachricht. Akkordeon-Gedächtnis
+`_kfOffen`/`kfMerkeOffen` (ontoggle) — Re-Renders klappen offene Felder nicht mehr zu.
+
+**R8.4b (6 Audit-Befunde gefixt):** Einladungspaket-Gate (Checkliste vollständig, sonst
+disabled + Guard in `paketErstellen`); Ablehnungs-Ausweg (`kzActions`-abgelehnt-Zweig:
+Selbstzahlung wechseln / `fvwVerlustOeffnen`; Lagebild-Override „Patient hat abgesagt" via
+`kfAufgabe`, feld:"verlust" → `lbOeffneFeld` öffnet die Verlust-Box; „Widerspruch"-Text
+entfernt); `kzNotizAdd` triggert KEINE Sim mehr (interne Notiz ≠ ausgehende Nachricht);
+**`kostenSetzen(f,wert,logText)`** = einzige Stelle für f.kosten+docs[3]+Sync (nutzen:
+kzZusage/kzAblehnung/kzSelbstzahler/dArbeitKostenUpload/mtAbschliessen — NIE wieder
+`f.kosten=` direkt setzen!); f.aufgabe wird bei kzAnfragen/kzAblehnung/UnterlagenAnfordern
+mitgepflegt; egFreigeben ohne Gruppe → Toast statt stillem No-op.
+
 ---
 
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"

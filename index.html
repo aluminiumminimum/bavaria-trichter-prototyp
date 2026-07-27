@@ -4721,7 +4721,9 @@ function egGruppeWaehlen(id,g){ egGruppe=g; openEgDetail(id); }
 function egToggleSaluto(id){ const m=eingang.find(x=>x.id===id); if(!m)return; m.saluto=!m.saluto; openEgDetail(id); }
 function egHinweisSetzen(id,val){ const m=eingang.find(x=>x.id===id); if(m) m.hinweis=val; }
 function egFreigeben(id){
-  const m=eingang.find(x=>x.id===id); if(!m||!egGruppe) return;
+  const m=eingang.find(x=>x.id===id);
+  if(!m)return;
+  if(!egGruppe){inbToast("done","<b>Bitte zuerst eine Gruppe wählen</b>","Orthopädie oder Neuro-Geriatrie oben antippen",null);return;}
   m.gruppe=egGruppe; m.autoVerteilt=false;
   renderEingang(); openEgDetail(id);
   if(typeof inbToast==="function")inbToast("done","<b>Im Pool von "+escapeHtml(m.gruppe)+"</b>","Liegt jetzt im Board (Neu) — Übernehmen macht daraus einen Fall",null);
@@ -7078,6 +7080,10 @@ function kfSyncStatus(f){
 function kfAufgabe(f){
  if(f.status==="Aufgenommen")return {feld:null,text:"Fall abgeschlossen — Patient "+(f.aufnahmeTermin?"wird zum "+paDate(f.aufnahmeTermin)+" aufgenommen":"ist aufgenommen")+"."};
  if(f.status==="Verloren")return {feld:null,text:"Fall verloren"+(f.verlust?" · Grund: "+f.verlust:"")+"."};
+ /* Absage des Patienten schlägt jede Feld-Reihenfolge: Verlust dokumentieren ist dann der
+    dringendste Schritt, egal welches Klärungsfeld noch offen ist. */
+ if(f.kosten==="abgelehnt"&&/verlust/i.test(f.aufgabe||""))
+  return {feld:"verlust",text:"Patient hat abgesagt — Verlust dokumentieren (Verlustgrund erfassen)."};
  const felder=kfFelder(f);
  const erste=felder.find(k=>!k.ok);
  if(!erste)return {feld:null,text:"Alles geklärt — Aufnahme"+(f.aufnahmeTermin?" zum "+paDate(f.aufnahmeTermin):"")+" kann bestätigt werden.",fertig:true};
@@ -7097,7 +7103,8 @@ function kfAufgabe(f){
    const e=(f.log||[]).find(l=>/^Kostenzusage angefragt/.test(String(l[1]||"")));
    return {feld:"kosten",text:"Kostenzusage angefragt — wartet auf Antwort der Kasse"+(e?" seit "+lgDatumHtml(e[0])+".":".")};
   }
-  if(f.kosten==="abgelehnt")return {feld:"kosten",text:"Ablehnung erhalten — Alternativen klären: Selbstzahlung oder Widerspruch."};
+  if(f.kosten==="abgelehnt")
+   return {feld:"kosten",text:"Ablehnung erhalten — Alternativen klären: auf Selbstzahlung wechseln oder Fall verloren melden."};
   return {feld:"kosten",text:"Kostenzusage bei der Kasse anfragen."};
  }
  const offen=aufnahmeCheckliste(f).filter(c=>!c.ok).map(c=>c.label);
@@ -7105,6 +7112,7 @@ function kfAufgabe(f){
 }
 function lbOeffneFeld(key){
  if(!key)return;
+ if(key==="verlust"){fvwVerlustOeffnen();return;}
  const el=document.querySelector("#dArbeit details.kf[data-kf='"+key+"']");
  if(!el)return;
  el.open=true;
@@ -7166,6 +7174,12 @@ function fvwSalutoSet(chk){
 function fvwVerlustToggle(){
  const box=document.getElementById("fvwVerlustBox");
  if(box)box.hidden=!box.hidden;
+}
+function fvwVerlustOeffnen(){
+ const box=document.getElementById("fvwVerlustBox");
+ if(!box)return;
+ box.hidden=false;
+ box.scrollIntoView({behavior:"smooth",block:"center"});
 }
 function fvwVerlustBestaetigen(){
  const f=aktuellerFall;if(!f)return;
@@ -7321,6 +7335,7 @@ function kfKostenHtml(f){
   +"<button class='btn-ghost btn-sm' type='button' onclick='dArbeitKostenUpload()'>⇪ Dokument hochladen (Demo)</button></div>");
 }
 function kfAufnahmeHtml(f){
+ const _bereit=aufnahmeCheckliste(f).every(c=>c.ok);
  return "<div class='full' style='margin-bottom:12px'><label for='aufnTermin'>Aufnahmetermin</label>"
   +"<input id='aufnTermin' type='date' value=\""+escapeHtml(f.aufnahmeTermin||"")+"\" onchange='aufnTerminSet(this.value)'></div>"
   +"<div class='kicker'>Vor-Aufnahme-Checkliste</div>"
@@ -7333,9 +7348,11 @@ function kfAufnahmeHtml(f){
   }).join("")
   +"<div class='full' style='margin-top:12px'><label>Einladungspaket (Checkliste, Anfahrt, Hausprospekt)</label>"
   +"<div class='kz-actions'>"
-  +"<button class='btn-ghost btn-sm' type='button' onclick=\"paketErstellen('E-Mail')\">Digital senden</button>"
-  +"<button class='btn-ghost btn-sm' type='button' onclick=\"paketErstellen('Post')\">Per Post senden</button>"
-  +"</div></div>";
+  +"<button class='btn-ghost btn-sm' type='button'"+(_bereit?"":" disabled")+" onclick=\"paketErstellen('E-Mail')\">Digital senden</button>"
+  +"<button class='btn-ghost btn-sm' type='button'"+(_bereit?"":" disabled")+" onclick=\"paketErstellen('Post')\">Per Post senden</button>"
+  +"</div>"
+  +(_bereit?"":"<p class='kz-hint'>Versand möglich, sobald die Checkliste oben vollständig ist.</p>")
+  +"</div>";
 }
 function kfBodyHtml(f,key){
  if(key==="kontakt")return kfKontaktBody(f);
@@ -7379,8 +7396,7 @@ function dArbeitHtml(f){
 function egRueckfrageToggle(i){ const f=aktuellerFall;if(!f||!f.rueckfragen)return; f.rueckfragen[i].done=!f.rueckfragen[i].done; renderFallakte(); }
 function dArbeitKostenUpload(){
  const f=aktuellerFall;if(!f)return;
- f.docs[3]=true;
- kfSyncStatus(f);
+ kostenSetzen(f,"Zusage liegt vor","Kostenzusage-Dokument hochgeladen — Zusage liegt vor");
  inbToast("done","<b>Kostenzusage-Dokument hochgeladen</b> (Demo)","",null);
  renderAll();renderFallakte();
 }
@@ -7388,6 +7404,7 @@ function dArbeitUnterlagenAnfordern(){
  const f=aktuellerFall;if(!f)return;
  const fehlt=["Entlassbrief","Befunde","Versicherungsdaten"].filter((n,i)=>!f.docs[i]);
  f.log.push([dstr(0),"↦ Unterlagen angefordert bei "+f.name+": "+(fehlt.length?fehlt.join(", "):"Restunterlagen")+" · inkl. Datenschutz-Einwilligung zur Unterschrift",logZeit()]);
+ f.aufgabe="Wartet auf angeforderte Unterlagen";
  if(typeof simTrigger==="function")simTrigger("unterlagen",f);
  inbToast("done","<b>Fehlende Unterlagen angefordert</b> (Demo)","",null);
  renderAll();renderFallakte();
@@ -7427,6 +7444,7 @@ function aufnDocToggle(i){const f=aktuellerFall;if(!f)return;f.docs[i]=!f.docs[i
 let _epkKanal="";
 function paketErstellen(kanal){
  const f=aktuellerFall;if(!f)return;
+ if(!aufnahmeCheckliste(f).every(c=>c.ok)){inbToast("done","<b>Checkliste noch nicht vollständig</b>","Einladungspaket erst nach Klärung aller Punkte",null);return;}
  _epkKanal=kanal;
  document.getElementById("epkSub").textContent="per "+kanal+" an "+f.name;
  document.getElementById("epkBody").innerHTML=epkBodyHtml(f);
@@ -7512,34 +7530,42 @@ function kzActions(f){
    return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzAnfragen()'>Kostenzusage anfragen</button></div>";
  if(f.kosten==="angefragt")
    return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick='kzZusage()'>Zusage erfassen</button><button class='btn-ghost btn-sm' type='button' onclick='kzAblehnung()'>Ablehnung erfassen</button></div>";
+ if(f.kosten==="abgelehnt")
+   return "<div class='kz-actions'><button class='btn-ghost btn-sm' type='button' onclick=\"fvwKtSet('Selbstzahler')\">Auf Selbstzahlung wechseln</button>"
+    +"<button class='btn-ghost btn-sm fvw-verlust-btn' type='button' onclick='fvwVerlustOeffnen()'>✕ Fall verloren melden…</button></div>";
  return "";
+}
+/* Zentrale Kosten-Setzung (R8.4b): hält f.kosten und das Kostenzusage-Dokument (docs[3])
+   synchron, loggt und rückt den Status nach — Akte-Buttons, Dokument-Upload und Mein Tag
+   pflegten vorher eigene, auseinanderlaufende Teilmengen davon. */
+function kostenSetzen(f,wert,logText){
+ f.kosten=wert;
+ if(wert==="Zusage liegt vor")f.docs[3]=true;
+ if(logText)f.log.push([dstr(0),logText,logZeit()]);
+ if(typeof kfSyncStatus==="function")kfSyncStatus(f);
 }
 function kzAnfragen(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="angefragt";
+ f.aufgabe="Wartet auf Kostenzusage der Kasse";
  f.log.push([dstr(0),"Kostenzusage angefragt",logZeit()]);
  if(typeof simTrigger==="function")simTrigger("kosten",f);
  renderAll();renderFallakte();
 }
 function kzZusage(){
  const f=aktuellerFall;if(!f)return;
- f.kosten="Zusage liegt vor";
- f.docs[3]=true; /* Zusage erfasst = Kostenzusage-Dokument liegt vor (sonst blieb "Unterlagen vollständig" unerfüllbar) */
- f.log.push([dstr(0),"Kostenzusage liegt vor",logZeit()]);
- kfSyncStatus(f);
+ kostenSetzen(f,"Zusage liegt vor","Kostenzusage liegt vor");
  renderAll();renderFallakte();
 }
 function kzAblehnung(){
  const f=aktuellerFall;if(!f)return;
- f.kosten="abgelehnt";
- f.log.push([dstr(0),"Kostenzusage abgelehnt",logZeit()]);
+ kostenSetzen(f,"abgelehnt","Kostenzusage abgelehnt");
+ f.aufgabe="Ablehnung erhalten — Alternativen klären";
  renderAll();renderFallakte();
 }
 function kzSelbstzahler(){
  const f=aktuellerFall;if(!f)return;
- f.kosten="Selbstzahler bestätigt";
- f.log.push([dstr(0),"Selbstzahlung bestätigt — keine Kostenzusage nötig",logZeit()]);
- kfSyncStatus(f);
+ kostenSetzen(f,"Selbstzahler bestätigt","Selbstzahlung bestätigt — keine Kostenzusage nötig");
  renderAll();renderFallakte();
 }
 function kzNotizAdd(){
@@ -7547,7 +7573,6 @@ function kzNotizAdd(){
  const el=document.getElementById("dNotizSofort");
  const txt=(el?el.value:"").trim();if(!txt)return;
  f.log.push([dstr(0),"✎ "+txt,logZeit()]);
- if(typeof simTrigger==="function")simTrigger("antwort",f);
  pruefeUpsell(f,txt);
  if(el)el.value="";
  document.getElementById("dLog").innerHTML=logHtml(f);
@@ -8052,9 +8077,9 @@ function mtAbschliessen(key){
   const kstat=statusEl?statusEl.value:"";
   const statusTxt=kstat==="zusage"?"Kostenzusage erhalten":kstat==="ablehnung"?"Kostenzusage abgelehnt":"Kostenklärung bearbeitet";
   item.ref.log.push([dstr(0),statusTxt+(notiz?" — "+notiz:""),logZeit()]);
-  if(kstat==="zusage")item.ref.kosten="Zusage liegt vor";
-  else if(kstat==="ablehnung")item.ref.kosten="abgelehnt";
-  else item.ref.kosten="angefragt";
+  if(kstat==="zusage")kostenSetzen(item.ref,"Zusage liegt vor",null);
+  else if(kstat==="ablehnung")kostenSetzen(item.ref,"abgelehnt",null);
+  else kostenSetzen(item.ref,"angefragt",null);
  }else{
   const f=item.ref;
   const desc=f.aufgabe||MT_TYP_LABEL[item.typ];
