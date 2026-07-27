@@ -3336,6 +3336,9 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
 .kf-check-lbl{flex:1;min-width:0}
 .kf-jump{flex-shrink:0;padding:2px 10px;font-size:11px}
 .kf-doc-na{opacity:.6}
+/* R8.4: expliziter Erstgespräch-Abschluss */
+.kf-abschluss{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed var(--jade-line)}
+.kf-abschluss .kz-hint{flex:1;min-width:180px;margin:0}
 </style>
 </head>
 <body>
@@ -5008,7 +5011,7 @@ function lgDatumHtml(iso){
  if(!m)return escapeHtml(iso||"");
  return (+m[3])+". "+(LG_MONATE[+m[2]-1]||"");
 }
-const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Kostenträger geändert|Verantwortlich:|Einwilligung Kontaktaufnahme:|Aufnahmetermin bestätigt|Status:)/;
+const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Kostenträger geändert|Verantwortlich:|Einwilligung Kontaktaufnahme:|Aufnahmetermin bestätigt|Erstgespräch geführt|Status:)/;
 /* Zeilentyp eines Verlaufseintrags — eine Quelle für logHtml() UND das Lagebild (Etappe 2):
    sys=Systemzeile, note=manuelle Notiz (✎-Präfix aus kzNotizAdd), out=ausgehend (↦), in=eingehend. */
 function lgTyp(txt){
@@ -7014,14 +7017,27 @@ function fkwStammBestaetigen(){
  kfSyncStatus(f);
  renderAll();renderFallakte();
 }
+function kfKontaktAbschliessen(){
+ const f=aktuellerFall;if(!f)return;
+ if(!f.stammOk){inbToast("done","<b>Bitte zuerst Stammdaten bestätigen</b>","Name/Alter oben im Feld prüfen",null);return;}
+ f.kontaktOk=true;
+ f.log.push([dstr(0),"Erstgespräch geführt und dokumentiert",logZeit()]);
+ kfSyncStatus(f);
+ renderAll();renderFallakte();
+}
 /* Klärungsfelder (Fallakte-Umbau, Nutzer-approved "Klärungsfelder statt Schritt-Gefängnis"):
    kfFelder() leitet für jedes der 5 Felder ok/offen + Kurztext ab. status = jene STATUS-Stufe, in
    der an diesem Feld GEARBEITET wird — Mapping ist bewusst 1:1 mit STATUS[0..4] (Neu…Aufnahme
    geplant); advanceFallStatus() nutzt exakt dasselbe Mapping für seine Skip-Logik. */
+/* Kontakt & Erstgespräch gilt erst mit EXPLIZITEM Abschluss als erledigt (f.kontaktOk) —
+   Stammdaten bestätigen ist Voraussetzung, nicht das Gespräch (R8.4, Beta-Feedback).
+   Fallback für Seeds/Altstände ohne kontaktOk: wer mit bestätigten Stammdaten bereits
+   über "Neu" hinaus ist, hat das Erstgespräch offensichtlich geführt. */
+function kfKontaktOk(f){ return !!f.kontaktOk || (!!f.stammOk && f.status!=="Neu"); }
 function kfFelder(f){
  return [
-  {key:"kontakt",label:"Kontakt & Erstgespräch",ok:!!f.stammOk,status:"Neu",
-   sub:f.stammOk?"Stammdaten bestätigt":"Stammdaten unbestätigt"},
+  {key:"kontakt",label:"Kontakt & Erstgespräch",ok:kfKontaktOk(f),status:"Neu",
+   sub:kfKontaktOk(f)?"Erstgespräch geführt":(f.stammOk?"Stammdaten bestätigt · Gespräch offen":"Stammdaten unbestätigt")},
   {key:"bedarf",label:"Medizinischer Bedarf",ok:!!(f.med&&f.med.diagnose),status:"Kontaktiert",
    sub:(f.med&&f.med.diagnose)?f.med.diagnose:"Diagnose/Indikation offen"},
   {key:"unterlagen",label:"Unterlagen",ok:!!(f.docs[0]&&f.docs[1]&&f.docs[2]),status:"Qualifizierung",
@@ -7215,7 +7231,9 @@ function kfKontaktBody(f){
   +"<div class='full' style='margin-top:12px'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL.rueckruf)+"</label>"
   +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
   +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>"
-  +kfNachrichtHtml(f);
+  +kfNachrichtHtml(f)
+  +(kfKontaktOk(f)?"":"<div class='kf-abschluss'><span class='kz-hint'>Leitfaden durchgehen, Notiz erfassen, ggf. Nachricht senden — dann:</span>"
+   +"<button type='button' class='btn-brass btn-sm' onclick='kfKontaktAbschliessen()'>✓ Erstgespräch abschließen</button></div>");
 }
 /* Medizinischer Bedarf (Feld 2, NEU): f.med additiv, Guards überall (f.med&&f.med.x). Diagnose
    vorbefüllt aus fallFakten()-Chip, falls noch nichts eingetragen. f.medVorschlag ist ein Guard für
@@ -7327,6 +7345,13 @@ function kfBodyHtml(f,key){
  if(key==="aufnahme")return kfAufnahmeHtml(f);
  return "";
 }
+/* Akkordeon-Gedächtnis (Session, nicht persistiert): Re-Renders (Auto-Status, Sim-Antworten)
+   dürfen dem Nutzer nicht die Felder zuklappen, in denen er gerade arbeitet. */
+let _kfOffen={};
+function kfMerkeOffen(fid,key,open){
+ const s=_kfOffen[fid]||(_kfOffen[fid]=new Set());
+ if(open)s.add(key);else s.delete(key);
+}
 /* dArbeitHtml(f) — Klärungsfelder-Akkordeon statt Ein-Werkzeug-pro-Status: alle 5 Felder sind
    jederzeit sichtbar/bearbeitbar. Offen ist standardmäßig das erste noch nicht erledigte Feld
    (alle erledigt -> letztes Feld offen). Für abgeschlossene Fälle (Aufgenommen/Verloren) nur eine
@@ -7342,9 +7367,11 @@ function dArbeitHtml(f){
  }
  let openIdx=felder.findIndex(k=>!k.ok);
  if(openIdx<0)openIdx=felder.length-1;
+ const _offen=_kfOffen[f.id]||new Set();
  return fakten+felder.map(function(k,i){
   const isCur=(i===openIdx&&!k.ok);
-  return "<details class='kf' data-kf='"+k.key+"'"+(i===openIdx?" open":"")+"><summary>"+kfIconHtml(k.ok,isCur)
+  const istOffen=(i===openIdx)||_offen.has(k.key);
+  return "<details class='kf' data-kf='"+k.key+"'"+(istOffen?" open":"")+" ontoggle=\"kfMerkeOffen("+f.id+",'"+k.key+"',this.open)\"><summary>"+kfIconHtml(k.ok,isCur)
    +"<span>"+escapeHtml(k.label)+"</span><span class='kf-sub'>"+escapeHtml(k.sub)+"</span></summary>"
    +"<div class='kf-body'>"+kfBodyHtml(f,k.key)+"</div></details>";
  }).join("");
@@ -8363,6 +8390,7 @@ function simSchedule(key){
 function simTrigger(art,f){
  if(!f)return;
  if(f.id===1){
+   if(art==="antwort"&&!(f.sim&&f.sim.done["tochter-rueckruf"])) simSchedule("tochter-rueckruf");
    if(art==="status:Kontaktiert") simSchedule("tochter-rueckruf");
    if(art==="unterlagen"){ simSchedule("fax-unterlagen"); simSchedule("mail-versicherung"); }
    if(art==="kosten") simSchedule("pkv-rueckfrage");
@@ -8380,6 +8408,7 @@ function simTrigger(art,f){
    if(art==="kosten") simSchedule("pkv-ablehnung");
    if(art==="antwort"&&f.sim&&f.sim.ablehnungOffen) simSchedule("werner-absage");
  } else if(f.simKey==="hoffmann"){
+   if(art==="antwort"&&!(f.sim&&f.sim.done["hoffmann-info"])) simSchedule("hoffmann-info");
    if(art==="status:Kontaktiert") simSchedule("hoffmann-info");
    if(art==="unterlagen") simSchedule("hoffmann-bericht");
    if(art==="kosten") simSchedule("hoffmann-zusage");
