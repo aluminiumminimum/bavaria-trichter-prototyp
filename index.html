@@ -565,7 +565,6 @@
   .mhead h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;font-weight:700;margin:0;line-height:1.1}
   .msub2{font-size:13px;color:var(--ivory-mut);margin-top:3px;line-height:1.4}
   .mbody{padding:18px 20px;overflow:auto;-webkit-overflow-scrolling:touch}
-  .mgrid{display:grid;grid-template-columns:1fr;gap:13px}
   .docs{display:grid;grid-template-columns:1fr;gap:4px;background:var(--paper2);border:1px solid var(--hair2);border-radius:12px;padding:10px 14px}
   .docs label{font-weight:500;font-size:14.5px;color:var(--ink);display:flex;gap:10px;align-items:center;margin:0;
     text-transform:none;letter-spacing:0;min-height:44px}
@@ -573,8 +572,6 @@
   .saluto-toggle{display:flex;align-items:center;gap:10px;background:var(--brass-soft);border:1px solid var(--brass-line);
     border-radius:12px;padding:12px 14px;font-size:14.5px;font-weight:500;min-height:48px}
   .saluto-toggle input{width:18px;height:18px;min-height:0;accent-color:var(--brass)}
-  .verlustrow{display:none}
-  .verlustrow.show{display:block}
   .timeline{border-left:2px solid var(--brass-line);margin-left:6px;padding-left:16px;max-height:150px;overflow:auto;font-size:13.5px}
   .timeline div{position:relative;margin:8px 0;color:var(--ink-soft);line-height:1.45}
   .timeline div::before{content:"";position:absolute;left:-21px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--brass)}
@@ -1723,7 +1720,7 @@ body.ma-mode:has(#view-fallakte.active) #view-meintag{display:none}
 .empty{color:var(--faint);font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:16px;letter-spacing:.01em}
 
 /* ===== AURORA · PORTAL =====
-   Zuweiserportal (.rp-*/.ref-*) ist jetzt durchgängig dunkel; echtes Papier
+   Zuweiserportal (rp- und ref-Namespaces) ist jetzt durchgängig dunkel; echtes Papier
    (.rpd-paper, QR-Kacheln) bleibt hell. Nur Overrides, die kein reiner
    In-Place-Token-Swap sind. */
 /* Belegungs-Kacheln: klickbar → Hover-Rand Champagner (ohne Layout-Shift) */
@@ -2881,15 +2878,8 @@ body{accent-color:var(--brass)}
   padding:16px 18px;margin-bottom:18px;
   box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--gold-faint),var(--shadow-soft)}
 .fh-meta{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px}
-.fh-actions{margin-top:15px}
-/* Task 1.3 (Punkt 2): Aufgaben-Hero (.ah-*) — reine Präsentation aus aufgabenHeroHtml(f),
-   auch in Task 3.1 (Fallakte) wiederverwendet. dOwner/dFrist bleiben echte, editierbare
-   native Elemente, nur chip-/pill-artig statt nackt umgestylt (.fh-owner-chip/#dFristWrap). */
-.ah-typ{display:flex;align-items:center;gap:9px;font-size:16px;color:var(--ink)}
-.ah-typ svg{width:20px;height:20px;flex-shrink:0;color:var(--brass-deep)}
-.ah-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
-.ah-owner{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink-soft)}
-.ah-owner .ava{width:22px;height:22px;font-size:10px}
+/* dOwner/dFrist bleiben echte, editierbare native Elemente, nur chip-/pill-artig statt nackt
+   umgestylt (.fh-owner-chip/#dFristWrap). */
 .fh-owner-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;background:var(--brass-soft);
   border:1px solid var(--brass-line);border-radius:99px;padding:3px 10px 3px 3px}
 .fh-owner-chip .ava{width:22px;height:22px;font-size:10px;flex-shrink:0}
@@ -2996,7 +2986,7 @@ summary.rk::-webkit-details-marker{display:none}
 .pa-fold>summary::after{content:"›";display:inline-block;margin-left:6px;font-size:15px;line-height:1;color:var(--faint);transition:transform .2s}
 .pa-fold[open]>summary::after{transform:rotate(90deg)}
 /* Task A (Runde 5 Sprint 3, §3): .fk-stageband — horizontales Prozessband im Fallakte-Kopf +
-   .fk-hinweis — goldene Zuordnungs-Hinweis-Zeile, nur hier, nicht mehr zusätzlich in aufgabenHeroHtml(). */
+   .fk-hinweis — goldene Zuordnungs-Hinweis-Zeile, nur hier, nicht mehr zusätzlich im Lagebild (lagebildHtml()). */
 .fk-stageband{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin:10px 0 2px}
 .fk-stage{display:inline-flex;align-items:center;gap:6px;font:600 11px/1 Inter;letter-spacing:.01em;color:var(--muted);white-space:nowrap}
 .fk-stage-dot{width:9px;height:9px;border-radius:50%;border:2px solid var(--brass);background:transparent;flex-shrink:0}
@@ -3303,6 +3293,45 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
 .kta-pilot{font:600 9.5px "Fragment Mono",monospace;letter-spacing:.1em;text-transform:uppercase;background:var(--brass-soft,#f0e6d2);color:var(--brass-deep);border-radius:3px;padding:2px 6px;margin-left:6px}
 .kta-txt{font-size:12px;color:var(--muted);margin:6px 0}
 .kta-step{font:500 12px "Fragment Mono",monospace;color:var(--sage-deep);margin:8px 0}
+/* ===== R8.2 Etappe 1 · Verlauf-Reiter + Ungelesen (lg-tabs, lgm, karte-msg) — kein Stern-Slash in Prosa! ===== */
+.lg-tabs{display:flex;gap:6px;margin:0 0 10px}
+.lg-tab{appearance:none;border:1px solid var(--jade-line);background:transparent;color:var(--ink-soft,#6b6455);
+  font:inherit;font-size:12px;padding:4px 12px;border-radius:999px;cursor:pointer}
+.lg-tab.active{background:var(--sage-deep);border-color:var(--sage-deep);color:#f6f2e6}
+.lgm{border-radius:4px;padding:8px 10px}
+.lgm-in{background:var(--paper);border:1px solid var(--jade-line);margin-right:14%}
+.lgm-out{background:rgba(18,59,51,.06);border:1px solid rgba(18,59,51,.16);margin-left:14%}
+.lg-note{opacity:.75}
+.karte-msg{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:11px;font-weight:600;
+  color:var(--brass-deep);background:var(--brass-soft,rgba(185,145,73,.14));border:1px solid rgba(185,145,73,.45);
+  border-radius:999px;padding:2px 8px}
+/* ===== R8.2 Etappe 2 · Lagebild + Verwaltung (lb, fvw, kf-consent) — kein Stern-Slash in Prosa! ===== */
+.lb-status-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.lb-status{display:inline-block;color:#f6f2e6;font-size:13px;font-weight:600;letter-spacing:.02em;
+  padding:4px 14px;border-radius:999px}
+.lb-feld{font-size:12px;color:var(--ink-soft,#6b6455)}
+.lb-todo{display:flex;align-items:baseline;gap:10px;background:var(--cream);border:1px solid var(--jade-line);
+  border-radius:4px;padding:10px 12px}
+.lb-todo.lb-klick{cursor:pointer}
+.lb-todo.lb-klick:hover{border-color:var(--brass)}
+.lb-todo-k{flex-shrink:0;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-deep)}
+.lb-todo-txt{flex:1;font-size:13.5px;line-height:1.45}
+.lb-todo-pfeil{flex-shrink:0;color:var(--brass-deep);font-weight:700}
+.lb-puls{display:flex;gap:8px;align-items:baseline;margin-top:10px;padding:8px 10px;border-radius:4px;
+  background:transparent;border:1px dashed var(--jade-line);cursor:pointer;font-size:12.5px;line-height:1.45}
+.lb-puls:hover{border-color:var(--brass)}
+.lb-puls-neu{color:var(--brass);font-size:15px;flex-shrink:0}
+.lb-puls-ic{flex-shrink:0;opacity:.7}
+.lb-puls-txt{flex:1;min-width:0}
+.fvw{display:grid;gap:12px}
+.fvw-row{display:grid;grid-template-columns:1fr auto;gap:13px;align-items:end}
+.fvw-saluto{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer}
+.fvw-verlust-btn{color:var(--sig,#A8341F);border-color:rgba(168,52,31,.4);justify-self:start}
+.fvw-verlust-box{border:1px solid rgba(168,52,31,.35);border-radius:4px;padding:12px;display:grid;gap:10px}
+.fvw-verlust-actions{display:flex;gap:8px;justify-content:flex-end}
+.kf-consent{margin-top:12px}
+.kf-consent label{display:block;margin-bottom:4px}
+@media(max-width:520px){.fvw-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -4239,36 +4268,30 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
     <div class="fk-cols">
       <div class="fk-col-arbeit">
         <div class="fh-hero" id="faNaechste">
-          <div class="kicker">Nächste Aufgabe</div>
+          <div class="kicker">Lagebild</div>
           <div id="faAufgabeView"></div>
-          <input id="dAufgabe" type="hidden">
           <div class="fh-meta">
             <div><label for="dFrist">Frist</label><span class="due" id="dFristWrap"><input id="dFrist" type="date"></span></div>
             <div><label for="dOwner">Verantwortlich</label><span class="fh-owner-chip"><span class="ava" id="dOwnerAva"></span><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></span></div>
           </div>
-          <div class="fh-actions">
-            <button id="dAdvance" class="btn-brass btn-sm" style="width:100%" onclick="advanceFall()">Weiter → nächstes offenes Feld</button>
-          </div>
         </div>
         <div id="dArbeit"></div>
         <div class="chap">
-          <h2 class="chap-h2">Steuerung</h2>
-          <div class="mgrid">
-            <details class="d-acc full">
-              <summary>Details &amp; Status</summary>
-              <div class="d-acc-body">
-                <div><label for="dStatus">Status</label><select id="dStatus"></select></div>
-                <div><label for="dKosten">Kostenstatus</label><select id="dKosten"><option>offen</option><option>angefragt</option><option>Zusage liegt vor</option><option>Selbstzahler bestätigt</option><option>abgelehnt</option></select></div>
-                <div><label for="dKT">Kostenträger</label><select id="dKT"><option>PKV</option><option>Selbstzahler</option><option>GKV + Komfort</option><option>Beihilfe</option><option>GKV</option></select></div>
-                <div><label for="dConsent">Einwilligung</label><select id="dConsent"><option>offen</option><option>mündlich erteilt</option><option>schriftlich liegt vor</option></select></div>
-                <div class="full"><div class="saluto-toggle"><input type="checkbox" id="dSaluto"><span>★ Für <b>SalutoCare</b> geeignet · Premium-Option aktiv anbieten</span></div></div>
-                <div class="full verlustrow" id="rowVerlust"><label for="dVerlust">Verlustgrund (Pflicht bei „Verloren&#8220;)</label>
-                  <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
-                </div>
+          <h2 class="chap-h2">Verwaltung</h2>
+          <div class="fvw">
+            <div class="fvw-row">
+              <div><label for="dKT">Kostenträger</label><select id="dKT" onchange="fvwKtSet(this.value)"><option>PKV</option><option>Selbstzahler</option><option>GKV + Komfort</option><option>Beihilfe</option><option>GKV</option><option>Unklar</option></select></div>
+              <label class="saluto-toggle fvw-saluto"><input type="checkbox" id="dSaluto" onchange="fvwSalutoSet(this.checked)"><span>★ Für <b>SalutoCare</b> geeignet</span></label>
+            </div>
+            <button type="button" class="btn-ghost btn-sm fvw-verlust-btn" onclick="fvwVerlustToggle()">✕ Fall verloren melden…</button>
+            <div id="fvwVerlustBox" class="fvw-verlust-box" hidden>
+              <label for="dVerlust">Verlustgrund (Pflicht)</label>
+              <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
+              <div class="fvw-verlust-actions">
+                <button type="button" class="btn-ghost btn-sm" onclick="fvwVerlustToggle()">Abbrechen</button>
+                <button type="button" class="btn-brass btn-sm" onclick="fvwVerlustBestaetigen()">Verlust bestätigen</button>
               </div>
-            </details>
-            <div class="full"><label for="dNotiz">Neue Notiz</label><input id="dNotiz" placeholder="z. B. Rückruf erledigt, Unterlagen angefordert"></div>
-            <div class="full"><button class="btn-brass" id="dSpeichern" style="width:100%">Speichern</button></div>
+            </div>
           </div>
         </div>
       </div>
@@ -4435,24 +4458,6 @@ const STATUS_AUFGABE={
   "Unterlagen":"Kostenzusage anfragen",
   "Aufnahme geplant":"Anreise & Zimmer organisieren"
 };
-/* Aufgaben-Hero (Task 1.3, Punkt 2) — kleine Inline-Linienicons im Stil von CHAN_ICON/Tabbar,
-   Keys = STATUS_AUFGABE-Werte. */
-const AUFGABE_ICON={
- "Rückruf/Erstkontakt":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2'/></svg>",
- "Bedarf qualifizieren":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><circle cx='10.5' cy='10.5' r='6.5'/><path d='m20 20-4.35-4.35'/></svg>",
- "Unterlagen anfordern":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M4 21V5a2 2 0 0 1 2-2h8l6 6v12'/><path d='M14 3v6h6'/><path d='M8 13h6M8 16h6'/></svg>",
- "Kostenzusage anfragen":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><circle cx='12' cy='12' r='9'/><path d='M15 9a4 4 0 0 0-6 3 4 4 0 0 0 6 3M8 11h5M8 13h5'/></svg>",
- "Anreise & Zimmer organisieren":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M3 11.2 12 4l9 7.2'/><path d='M5.6 9.6V20h12.8V9.6'/><path d='M10 20v-5h4v5'/></svg>"
-};
-function aufgabeIcon(a){
- if(AUFGABE_ICON[a])return AUFGABE_ICON[a];
- if(/rückruf|erstkontakt|anruf/i.test(a))return AUFGABE_ICON["Rückruf/Erstkontakt"];
- if(/qualifizier|bedarf/i.test(a))return AUFGABE_ICON["Bedarf qualifizieren"];
- if(/unterlagen|dokument|befund/i.test(a))return AUFGABE_ICON["Unterlagen anfordern"];
- if(/kosten/i.test(a))return AUFGABE_ICON["Kostenzusage anfragen"];
- if(/anreise|zimmer|aufnahme/i.test(a))return AUFGABE_ICON["Anreise & Zimmer organisieren"];
- return "";
-}
 const STATUS_COL={"Neu":"#7A7265","Kontaktiert":"#5E7B8C","Qualifizierung":"#B99149","Unterlagen":"#7E6230","Aufnahme geplant":"#2E5C4F","Aufgenommen":"#123B33","Verloren":"#A8341F"}; /* J7: Welt-Token-Hexes (slate/azzurro/gold/brass-deep/jade/lack-jade/zinnober) */
 const ACHSE_COL={"Orthopädie":"var(--ortho)","Neurologie":"var(--neuro)","Geriatrie":"var(--geri)","Innere":"var(--innere)","SalutoCare":"var(--saluto)","Unklar":"var(--unklar)"};
 const heute=new Date();
@@ -4999,25 +5004,47 @@ function lgDatumHtml(iso){
  if(!m)return escapeHtml(iso||"");
  return (+m[3])+". "+(LG_MONATE[+m[2]-1]||"");
 }
-const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Status:)/;
+const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Kostenträger geändert|Verantwortlich:|Einwilligung Kontaktaufnahme:|Status:)/;
+/* Zeilentyp eines Verlaufseintrags — eine Quelle für logHtml() UND das Lagebild (Etappe 2):
+   sys=Systemzeile, note=manuelle Notiz (✎-Präfix aus kzNotizAdd), out=ausgehend (↦), in=eingehend. */
+function lgTyp(txt){
+ const t=String(txt||"");
+ if(/^✎/.test(t))return "note";
+ if(LG_SYS_RE.test(t))return "sys";
+ if(/^↦/.test(t))return "out";
+ return "in";
+}
+let _lgTab="nachrichten"; /* Verlauf-Reiter: "nachrichten" (nur Kommunikation) | "alles" */
 function logHtml(f){
  if(!f||!Array.isArray(f.log))return "";
- let letztesDatum=null,html="";
+ let letztesDatum=null,html="",n=0;
  f.log.forEach(function(l){
   const iso=l[0],txt=String(l[1]||""),zeit=l[2];
+  const typ=lgTyp(txt);
+  if(_lgTab==="nachrichten"&&typ!=="in"&&typ!=="out")return;
+  n++;
   if(iso!==letztesDatum){ html+="<div class='lg-date'>"+lgDatumHtml(iso)+"</div>"; letztesDatum=iso; }
   const zeitHtml=zeit?"<span class='lg-zeit'>"+escapeHtml(zeit)+"</span>":"";
-  if(LG_SYS_RE.test(txt)){
+  if(typ==="sys"){
    html+="<div class='lg-sys'>"+zeitHtml+escapeHtml(txt)+"</div>";
-  }else if(/^↦/.test(txt)){
-   html+="<div class='log-out'>"+zeitHtml+"<span class='lg-who'>Klinik Bavaria</span>"+escapeHtml(txt)+"</div>";
+  }else if(typ==="note"){
+   html+="<div class='lg-sys lg-note'>"+zeitHtml+escapeHtml(txt)+"</div>";
+  }else if(typ==="out"){
+   html+="<div class='log-out lgm lgm-out'>"+zeitHtml+"<span class='lg-who'>Klinik Bavaria</span>"+escapeHtml(txt)+"</div>";
   }else{
    const ci=txt.indexOf(":");
    const wer=(ci>0&&ci<40)?txt.slice(0,ci):"Eingang";
-   html+="<div class='log-in'>"+zeitHtml+"<span class='lg-who'>"+escapeHtml(wer)+"</span>"+escapeHtml(txt)+"</div>";
+   html+="<div class='log-in lgm lgm-in'>"+zeitHtml+"<span class='lg-who'>"+escapeHtml(wer)+"</span>"+escapeHtml(txt)+"</div>";
   }
  });
+ if(_lgTab==="nachrichten"&&n===0)html="<p class='empty'>Noch keine Nachrichten — Kommunikation erscheint hier.</p>";
  return html;
+}
+function lgTabSet(which){
+ _lgTab=which;
+ document.querySelectorAll(".lg-tab").forEach(b=>b.classList.toggle("active",b.dataset.lg===which));
+ const el=document.getElementById("dLog");
+ if(el&&typeof aktuellerFall!=="undefined"&&aktuellerFall)el.innerHTML=logHtml(aktuellerFall);
 }
 function bar(el,daten,warm){const max=Math.max(1,...daten.map(d=>d[1]));
   el.innerHTML=daten.map(d=>"<div class='bar"+(warm?" warm":"")+"'><span class='blbl'>"+escapeHtml(d[0])+"</span><span class='track'><span class='fill' style='width:"+(d[1]/max*100)+"%'></span></span><span class='bnum num'>"+d[1]+"</span></div>").join("")||"<p class='empty'>noch keine Daten</p>";}
@@ -5346,6 +5373,7 @@ function makeBoardCol(st){
     const fk=fristKlasse(x.frist);
     k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter&&!/\(\d+\)/.test(x.name)?"("+x.alter+")":"")+"</span></span></div>"
       +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+escapeHtml(x.achse)+"</span><span class='pill-kt'>"+escapeHtml(x.kt)+"</span></div>"
+      +(x.ungelesen?"<div class='karte-msg'>✉ Antwort eingetroffen</div>":"")
       +"<div class='kmeta'>"+escapeHtml(x.quelle)+"<br>"+escapeHtml(x.owner)+(x.aufgabe?" · "+escapeHtml(x.aufgabe):"")+"</div>"
       +"<div class='stagebar' title='Statusfortschritt'><span style='width:"+statusFortschritt(x.status)+"%'></span></div>"
       +(x.frist?"<span class='due "+fk+"'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(x.frist)+"</span>":"")
@@ -6901,14 +6929,8 @@ function deriveSchritte(f){
  const cur=STATUS.indexOf(f.status);
  return STATUS.slice(0,6).map((s,i)=>({label:s,who:i<=cur?(f.owner||""):"",ts:"",dauerMin:null,done:i<cur,current:i===cur}));
 }
-/* Aufgaben-Hero (Task 1.3, Punkt 2) — reine Präsentations-Funktion (HTML-String, kein DOM-Zugriff),
-   im Fall-Detail-Drawer zusätzlich zu den funktionalen dOwner/dAufgabe/dFrist-IDs aufgerufen,
-   in Task 3.1 (Fallakte) als alleinige Darstellung wiederverwendet. */
-function aufgabenHeroHtml(f){
- return "<div class='ah-typ'>"+aufgabeIcon(f.aufgabe)+"<b>"+escapeHtml(f.aufgabe||"Keine offene Aufgabe")+"</b></div>";
-}
 /* Task 1.1 (Punkt 2): #dArbeit — aufgabentyp-abhängiger Arbeitsbereich im Fall-Drawer.
-   drawerAufgabenTyp() klassifiziert f.aufgabe per Regex (Stil analog aufgabeIcon()/mtTyp()),
+   drawerAufgabenTyp() klassifiziert f.aufgabe per Regex (Stil analog mtTyp()),
    dArbeitHtml() rendert das passende Werkzeug; kzChain/kzActions/kzNotizAdd werden hier
    verschoben (nicht neu gebaut), ihre bisherigen IDs (#dKZ, #dNotizSofort) bleiben identisch. */
 function drawerAufgabenTyp(f){
@@ -7025,8 +7047,123 @@ function kfSyncStatus(f){
  f.status=ns;
  f.aufgabe=STATUS_AUFGABE[ns]||"";
  f.frist=STATUS_AUFGABE[ns]?dstr(2):"";
+ if(ns==="Aufnahme geplant"&&typeof celebratePlanned==="function")celebratePlanned();
  if(typeof simTrigger==="function")for(let i=cur+1;i<=zi;i++)simTrigger("status:"+STATUS[i],f);
  return true;
+}
+/* Lagebild (R8.2): beantwortet oben in der Akte „Wo steht der Fall? Was ist zu tun? Was kam zuletzt?"
+   kfAufgabe() leitet den konkreten Handlungssatz aus dem ersten offenen Klärungsfeld ab (nicht aus
+   f.aufgabe — der generische Text bleibt für Board/Mein Tag). lbPulsHtml() zieht die letzte echte
+   Nachricht über lgTyp() aus f.log. */
+function kfAufgabe(f){
+ if(f.status==="Aufgenommen")return {feld:null,text:"Fall abgeschlossen — Patient ist aufgenommen."};
+ if(f.status==="Verloren")return {feld:null,text:"Fall verloren"+(f.verlust?" · Grund: "+f.verlust:"")+"."};
+ const felder=kfFelder(f);
+ const erste=felder.find(k=>!k.ok);
+ if(!erste)return {feld:null,text:"Alles geklärt — Aufnahme kann bestätigt werden.",fertig:true};
+ if(erste.key==="kontakt"){
+  const txt=String(f.originalTxt||"");
+  const telM=/(?:0|\+49)[\d \-\/]{6,}/.exec(txt);
+  return {feld:"kontakt",text:"Erstgespräch führen und Stammdaten bestätigen"+(telM?" · ☎ "+telM[0].trim():"")+"."};
+ }
+ if(erste.key==="bedarf")return {feld:"bedarf",text:"Medizinischen Bedarf erfassen: Diagnose/Indikation eintragen oder aus der Antwort übernehmen."};
+ if(erste.key==="unterlagen"){
+  const fehlt=["Entlassbrief","Befunde","Versicherungsdaten"].filter((n,i)=>!f.docs[i]);
+  return {feld:"unterlagen",text:"Es "+(fehlt.length===1?"fehlt":"fehlen")+": "+fehlt.join(", ")+" — anfordern oder abhaken."};
+ }
+ if(erste.key==="kosten"){
+  if(f.kt==="Selbstzahler")return {feld:"kosten",text:"Selbstzahlung besprechen und bestätigen (Angebot/Preis)."};
+  if(f.kosten==="angefragt"){
+   const e=(f.log||[]).find(l=>/^Kostenzusage angefragt/.test(String(l[1]||"")));
+   return {feld:"kosten",text:"Kostenzusage angefragt — wartet auf Antwort der Kasse"+(e?" seit "+lgDatumHtml(e[0])+".":".")};
+  }
+  if(f.kosten==="abgelehnt")return {feld:"kosten",text:"Ablehnung erhalten — Alternativen klären: Selbstzahlung oder Widerspruch."};
+  return {feld:"kosten",text:"Kostenzusage bei der Kasse anfragen."};
+ }
+ const offen=aufnahmeCheckliste(f).filter(c=>!c.ok).map(c=>c.label);
+ return {feld:"aufnahme",text:"Noch offen: "+offen.slice(0,3).join(", ")+(offen.length>3?" …":"")+" — dann Einladungspaket senden."};
+}
+function lbOeffneFeld(key){
+ if(!key)return;
+ const el=document.querySelector("#dArbeit details.kf[data-kf='"+key+"']");
+ if(!el)return;
+ el.open=true;
+ el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+let _lbFrischId=null; /* Fall-id, deren quittierte Antwort der Puls noch als „unbearbeitet" zeigt */
+function lbPulsHtml(f){
+ let letzte=null;
+ (f.log||[]).forEach(function(l){const t=lgTyp(l[1]);if(t==="in"||t==="out")letzte={l:l,t:t};});
+ let inner;
+ if(!letzte){
+  inner="<span class='lb-puls-txt'>Noch keine Kommunikation — Erstkontakt steht aus.</span>";
+ }else{
+  const txt=String(letzte.l[1]||"").replace(/^↦\s*/,"");
+  const kurz=txt.length>110?txt.slice(0,110)+"…":txt;
+  const wann=lgDatumHtml(letzte.l[0])+(letzte.l[2]?" · "+letzte.l[2]:"");
+  if(letzte.t==="in"&&(f.ungelesen||_lbFrischId===f.id)){
+   inner="<span class='lb-puls-neu'>●</span><span class='lb-puls-txt'><b>Antwort eingetroffen — unbearbeitet</b> ("+escapeHtml(wann)+"): „"+escapeHtml(kurz)+"“</span>";
+  }else if(letzte.t==="in"){
+   inner="<span class='lb-puls-ic'>✉</span><span class='lb-puls-txt'><b>Zuletzt empfangen</b> ("+escapeHtml(wann)+"): „"+escapeHtml(kurz)+"“</span>";
+  }else{
+   inner="<span class='lb-puls-ic'>⏳</span><span class='lb-puls-txt'><b>Wartet auf Antwort</b> — zuletzt gesendet "+escapeHtml(wann)+": „"+escapeHtml(kurz)+"“</span>";
+  }
+ }
+ return "<div class='lb-puls' onclick='lbZumVerlauf()' title='Zum Nachrichten-Verlauf'>"+inner+"</div>";
+}
+function lbZumVerlauf(){
+ if(typeof lgTabSet==="function")lgTabSet("nachrichten");
+ const el=document.getElementById("faWerdegang");
+ if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function lagebildHtml(f){
+ const felder=kfFelder(f);
+ const ok=felder.filter(k=>k.ok).length;
+ const auf=kfAufgabe(f);
+ let html="<div class='lb-status-row'><span class='lb-status' style='background:"+(STATUS_COL[f.status]||"#7A7265")+"'>"+escapeHtml(f.status)+"</span>";
+ if(f.status!=="Aufgenommen"&&f.status!=="Verloren")html+="<span class='lb-feld num'>"+ok+" von 5 Feldern geklärt</span>";
+ html+="</div>";
+ html+="<div class='lb-todo"+(auf.feld?" lb-klick":"")+"'"+(auf.feld?" onclick=\"lbOeffneFeld('"+auf.feld+"')\"":"")+">"
+  +"<span class='lb-todo-k'>Jetzt zu tun</span><span class='lb-todo-txt'>"+escapeHtml(auf.text)+"</span>"
+  +(auf.feld?"<span class='lb-todo-pfeil'>›</span>":"")+"</div>";
+ if(auf.fertig)html+="<button type='button' class='btn-brass btn-sm' style='width:100%;margin-top:10px' onclick='advanceFall()'>✓ Aufnahme bestätigen</button>";
+ if(f.status!=="Aufgenommen"&&f.status!=="Verloren")html+=lbPulsHtml(f);
+ return html;
+}
+/* Verwaltung (R8.2): ersetzt das alte Steuerung-Formular — Änderungen wirken sofort, kein Speichern-Knopf. */
+function fvwKtSet(v){
+ const f=aktuellerFall;if(!f||f.kt===v)return;
+ f.log.push([dstr(0),"Kostenträger geändert: "+f.kt+" → "+v,logZeit()]);
+ f.kt=v;
+ kfSyncStatus(f);
+ renderAll();renderFallakte();
+}
+function fvwSalutoSet(chk){
+ const f=aktuellerFall;if(!f)return;
+ f.saluto=!!chk;
+ renderAll();renderFallakte();
+}
+function fvwVerlustToggle(){
+ const box=document.getElementById("fvwVerlustBox");
+ if(box)box.hidden=!box.hidden;
+}
+function fvwVerlustBestaetigen(){
+ const f=aktuellerFall;if(!f)return;
+ const grund=document.getElementById("dVerlust").value;
+ if(!grund){alert("Bitte Verlustgrund angeben. Genau dafür ist das System da.");return;}
+ f.log.push([dstr(0),"Status: "+f.status+" → Verloren · Grund: "+grund,logZeit()]);
+ if(f.personId)pHist(f.personId,"fall","Fall verloren: "+grund);
+ f.verlust=grund;
+ f.status="Verloren";
+ f.aufgabe="";f.frist="";
+ renderAll();renderFallakte();
+}
+/* Einwilligung lebt im Klärungsfeld Kontakt (R8.2) — Audit-Zeile bei jeder Änderung. */
+function kfConsentSet(v){
+ const f=aktuellerFall;if(!f||f.consent===v)return;
+ f.consent=v;
+ f.log.push([dstr(0),"Einwilligung Kontaktaufnahme: "+v,logZeit()]);
+ renderAll();renderFallakte();
 }
 function kfIconHtml(ok,isCur){
  if(ok)return "<span class='kf-ic ok'>✓</span>";
@@ -7061,9 +7198,15 @@ function kfNachrichtHtml(f){
   +"<button class='btn-brass btn-sm' type='button' onclick='sendReply()'><svg viewBox='0 0 24 24' width='14' height='14' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>Antwort senden</button></div>"
   +"<textarea id='dReply' rows='2' placeholder='Antwort an die anfragende Person verfassen … (Demo)'></textarea></div>";
 }
+function kfConsentHtml(f){
+ return "<div class='kf-consent'><label for='kfConsent'>Einwilligung Kontaktaufnahme</label>"
+  +"<select id='kfConsent' onchange='kfConsentSet(this.value)'>"
+  +["offen","mündlich erteilt","schriftlich liegt vor"].map(o=>"<option"+(o===f.consent?" selected":"")+">"+o+"</option>").join("")
+  +"</select></div>";
+}
 function kfKontaktBody(f){
  const sop=sopChecklisteHtml(f,"rueckruf");
- return kfKontaktHtml(f)+fkwStammHtml(f)+fkwOriginalHtml(f)
+ return kfKontaktHtml(f)+fkwStammHtml(f)+kfConsentHtml(f)+fkwOriginalHtml(f)
   +(sop?("<div class='kicker' style='margin-top:12px'>Gesprächsleitfaden</div>"+sop):"")
   +"<div class='full' style='margin-top:12px'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL.rueckruf)+"</label>"
   +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
@@ -7351,7 +7494,7 @@ function kzNotizAdd(){
  const f=aktuellerFall;if(!f)return;
  const el=document.getElementById("dNotizSofort");
  const txt=(el?el.value:"").trim();if(!txt)return;
- f.log.push([dstr(0),txt,logZeit()]);
+ f.log.push([dstr(0),"✎ "+txt,logZeit()]);
  if(typeof simTrigger==="function")simTrigger("antwort",f);
  pruefeUpsell(f,txt);
  if(el)el.value="";
@@ -7414,33 +7557,20 @@ function updateDocCnt(){
   const n=["u1","u2","u3","u4"].filter(u=>document.getElementById(u).checked).length;
   document.getElementById("docCnt").textContent="("+n+" / 4)";
 }
-function toggleVerlust(){document.getElementById("rowVerlust").classList.toggle("show",document.getElementById("dStatus").value==="Verloren");}
-document.getElementById("dStatus").addEventListener("change",toggleVerlust);
-document.getElementById("dOwner").addEventListener("change",function(){document.getElementById("dOwnerAva").textContent=initialen(this.value);});
-document.getElementById("dFrist").addEventListener("change",function(){document.getElementById("dFristWrap").className="due "+(this.value?fristKlasse(this.value):"");});
-document.getElementById("dSpeichern").onclick=()=>{
-  const f=aktuellerFall;if(!f)return;
-  const alt=f.status;
-  const ns=document.getElementById("dStatus").value;
-  if(ns==="Verloren"&&!document.getElementById("dVerlust").value){alert("Bitte Verlustgrund angeben. Genau dafür ist das System da.");return;}
-  if(ns!==f.status)f.log.push([dstr(0),"Status: "+f.status+" zu "+ns,logZeit()]);
-  qualifyIfNeeded(f,ns);
-  f.status=ns;
-  f.owner=document.getElementById("dOwner").value;
-  f.aufgabe=document.getElementById("dAufgabe").value;
-  f.frist=document.getElementById("dFrist").value;
-  f.kosten=document.getElementById("dKosten").value;
-  const _kt=document.getElementById("dKT").value; if(_kt)f.kt=_kt;
-  f.consent=document.getElementById("dConsent").value;
-  if(document.getElementById("u1"))f.docs=["u1","u2","u3","u4"].map(u=>document.getElementById(u).checked);
-  f.saluto=document.getElementById("dSaluto").checked;
-  f.verlust=document.getElementById("dVerlust").value;
-  const n=document.getElementById("dNotiz").value.trim();
-  if(n){f.log.push([dstr(0),n,logZeit()]);pruefeUpsell(f,n);}
-  renderAll();
-  renderFallakte();
-  if(ns==="Aufnahme geplant"&&alt!=="Aufnahme geplant")celebratePlanned();
-};
+document.getElementById("dOwner").addEventListener("change",function(){
+  document.getElementById("dOwnerAva").textContent=initialen(this.value);
+  const f=aktuellerFall;
+  if(f&&f.owner!==this.value){
+    f.log.push([dstr(0),"Verantwortlich: "+f.owner+" → "+this.value,logZeit()]);
+    f.owner=this.value;
+    renderAll();
+  }
+});
+document.getElementById("dFrist").addEventListener("change",function(){
+  document.getElementById("dFristWrap").className="due "+(this.value?fristKlasse(this.value):"");
+  const f=aktuellerFall;
+  if(f){f.frist=this.value;renderAll();}
+});
 
 /* ---------- Neue Anfrage (Sheet + Formular) ---------- */
 function openSheetNeu(){document.getElementById("sheetNeu").classList.add("open");document.body.classList.add("locked");}
@@ -7653,7 +7783,7 @@ function mtCard(item){
       :"<button class='btn-ghost btn-sm' onclick='mtOpen(\""+item.key.replace(/"/g,"&quot;")+"\")'>Jetzt erledigen ›</button>");
  const rkLabel=item.typ==="intern"?"Aufgabe":"Fall";
  return "<div class='radar-card"+(done?" mt-done":"")+"'>"
-  +"<div class='patient-top'><span class='ava'>"+(item.ava||initialen(item.name.replace(/[()\[\]]/g,"")))+"</span>"+duePill+"</div>"
+  +"<div class='patient-top'><span class='ava'>"+(item.ava||initialen(item.name.replace(/[()\[\]]/g,"")))+"</span>"+duePill+(item.kind==="fall"&&item.ref&&item.ref.ungelesen?"<span class='karte-msg'>✉ Antwort</span>":"")+"</div>"
   +"<h3>"+escapeHtml(item.name)+"</h3>"
   +"<div class='patient-meta'>"+escapeHtml(MT_TYP_LABEL[item.typ]||"Aufgabe")+"</div>"
   +"<div class='radar-prog'><span class='rk'>"+rkLabel+"</span>"+escapeHtml(item.kontext)+"</div>"
@@ -8021,6 +8151,14 @@ function renderFallakte(){
   const f=faelle.find(x=>x.id===_fallakteId);
   if(!f){go('faelle','board');return;}
   aktuellerFall=f;
+  /* Öffnen quittiert neue Antworten (Board-Chip erlischt); _lbFrischId lässt den Lagebild-Puls die
+     eingetroffene Antwort genau bis zur ersten eigenen Aktion als „unbearbeitet" hervorheben.
+     Gate fallImBlick(): simFire() rendert die Akte auch unsichtbar neu (solange _fallakteId auf dem
+     Fall steht) — dabei darf NICHT quittiert werden, sonst erlischt der Board-Chip ungesehen. */
+  if(fallImBlick(f)){
+    _lbFrischId=f.ungelesen?f.id:null;
+    if(f.ungelesen){f.ungelesen=0;renderAll();}
+  }
   document.getElementById("faBackBtn").textContent=document.body.classList.contains("ma-mode")?"‹ Zurück zu Mein Tag":"‹ Zurück zum Board";
   document.getElementById("faName").textContent=f.name+(f.alter&&!/\(\d+\)/.test(f.name)?" ("+f.alter+")":"");
   document.getElementById("faSub").textContent=f.quelle+" · Kanal: "+f.kanal;
@@ -8031,31 +8169,26 @@ function renderFallakte(){
     +(f.saluto?"<span class='star'>★ SalutoCare</span>":"");
   document.getElementById("faStage").innerHTML=stageBandHtml(f);
   document.getElementById("faHinweis").innerHTML=f.zuordnungsHinweis?("<div class='fk-hinweis'><span class='kicker'>Hinweis</span> "+escapeHtml(f.zuordnungsHinweis)+"</div>"):"";
-  document.getElementById("faAufgabeView").innerHTML=aufgabenHeroHtml(f);
-  document.getElementById("dAufgabe").value=f.aufgabe||"";
+  document.getElementById("faAufgabeView").innerHTML=lagebildHtml(f);
   document.getElementById("dFrist").value=f.frist||"";
   document.getElementById("dFristWrap").className="due "+(f.frist?fristKlasse(f.frist):"");
   document.getElementById("dOwner").value=f.owner;
   document.getElementById("dOwnerAva").textContent=initialen(f.owner);
-  document.getElementById("dAdvance").style.display=["Aufgenommen","Verloren"].includes(f.status)?"none":"";
   document.getElementById("dArbeit").innerHTML=dArbeitHtml(f);
   /* Original ist jetzt immer Teil des Kontakt-Klärungsfelds (K1) — Kontext-Kapitel ausblenden,
      um dieselbe Information nicht doppelt zu zeigen. */
   document.getElementById("faOriginalChap").style.display="none";
   updateDocCnt();
-  document.getElementById("dStatus").innerHTML=STATUS.map(s=>"<option"+(s===f.status?" selected":"")+">"+s+"</option>").join("");
-  document.getElementById("dKosten").value=f.kosten;
   document.getElementById("dKT").value=f.kt;
-  document.getElementById("dConsent").value=f.consent;
   document.getElementById("dSaluto").checked=f.saluto;
   document.getElementById("dVerlust").value=f.verlust||"";
-  toggleVerlust();
-  document.getElementById("dNotiz").value="";
-  document.getElementById("faUebersicht").innerHTML="<div class='pa-meta'>"
-    +"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(f.consent)+"</span></div>"
-    +(f.saluto?"<div class='pa-row'><span class='pa-k'>SalutoCare</span><span class='pa-v'>★ Premium-Option geeignet</span></div>":"")
-    +"</div>"+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId,{verlauf:false})+"</details>";
-  document.getElementById("faWerdegang").innerHTML="<div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
+  document.getElementById("fvwVerlustBox").hidden=true;
+  document.getElementById("faUebersicht").innerHTML="<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId,{verlauf:false})+"</details>";
+  document.getElementById("faWerdegang").innerHTML=
+    "<div class='lg-tabs'>"
+    +"<button type='button' class='lg-tab"+(_lgTab==="nachrichten"?" active":"")+"' data-lg='nachrichten' onclick=\"lgTabSet('nachrichten')\">Nachrichten</button>"
+    +"<button type='button' class='lg-tab"+(_lgTab==="alles"?" active":"")+"' data-lg='alles' onclick=\"lgTabSet('alles')\">Alles</button>"
+    +"</div><div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
   const med=inReha.find(p=>p.personId===f.personId);
   document.getElementById("faMedizin").innerHTML=med?("<div class='pa-meta'>"
     +"<div class='pa-row'><span class='pa-k'>Reha-Ziel</span><span class='pa-v'>"+escapeHtml(med.rehaZiel||"—")+"</span></div>"
@@ -8165,6 +8298,11 @@ const LEITFALL_EVENTS={
 /* simKey-Resolver (Block 3, Hoffmann als 4. Leitfall): Fälle mit dynamischer id (aus uebernehmen())
    werden über f.simKey statt fid aufgelöst — in BEIDEN Funktionen identisch. */
 function simFallResolver(ev){ return ev.fid?faelle.find(x=>x.id===ev.fid):faelle.find(x=>x.simKey===ev.simKey); }
+/* Ungelesen-Logik: Antworten, die eintreffen, während die Akte NICHT offen ist, markieren den Fall. */
+function fallImBlick(f){
+ const v=document.getElementById("view-fallakte");
+ return typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&!!v&&v.classList.contains("active");
+}
 function simFire(key){
  const ev=LEITFALL_EVENTS[key],f=ev&&simFallResolver(ev);
  if(!f||!ev)return;
@@ -8175,6 +8313,7 @@ function simFire(key){
  f.log.push([dstr(0),ev.text,logZeit()]);
  ev.after(f);
  if(typeof kfSyncStatus==="function")kfSyncStatus(f); /* Sim-Antworten (Zusage/Unterlagen) rücken den Status mit */
+ if(!fallImBlick(f))f.ungelesen=(f.ungelesen||0)+1;
  inbToast("done","<b>Neue Nachricht · "+escapeHtml(ev.von)+"</b>","Fall "+escapeHtml(f.name),null);
  renderAll();
  if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&typeof renderFallakte==="function")renderFallakte();
