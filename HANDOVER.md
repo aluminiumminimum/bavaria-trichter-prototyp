@@ -423,6 +423,17 @@ Einladungspaket mit Dokumenten-Vorschau `#epkVorschau` (`.epk-*`). `faOriginalCh
 dauerhaft ausgeblendet (Original lebt in K1). ACHTUNG: `sopToggle(typ,i)` hat jetzt 2
 Parameter. `DEMO_SCHEMA=3`.
 
+**R8.1 — Auto-Status (27.07., Beta-Bugfix):** Der Fall-Status leitet sich jetzt automatisch
+aus dem Arbeitsstand ab: **`kfSyncStatus(f)`** rückt nach jeder feldabschließenden Aktion auf
+den Meilenstein des ersten noch offenen Klärungsfelds vor (nie rückwärts, max „Aufnahme
+geplant" — das Aufgenommen-Gate in `advanceFallStatus` bleibt). Aufrufstellen:
+`fkwStammBestaetigen`, `kfMedSave`, `aufnDocToggle`, `dArbeitKostenUpload`, `kzZusage`,
+`kzSelbstzahler`, `aufnahmeToggle` und `simFire` (Sim-Antworten rücken mit). Übersprungene
+Stufen feuern ihre `simTrigger("status:…")` trotzdem (auch in `advanceFallStatus`) — sonst
+reißen Leitfall-Storylines ab. Wer neue Feld-Abschluss-Aktionen baut: `kfSyncStatus(f)` vor
+`renderAll()` aufrufen. Zusätzlich: „Fehlende anfordern" loggt jetzt in den Verlauf, und
+Composer-Nachrichten mit Unterlagen/Befund/Einwilligung-Bezug lösen `simTrigger("unterlagen")` aus.
+
 ---
 
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"

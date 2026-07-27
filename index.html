@@ -5275,7 +5275,12 @@ function sendReply(){
   const r=document.getElementById("dReply"); const txt=(r?r.value:"").trim(); if(!txt){alert("Bitte eine Antwort verfassen.");return;}
   const kanal=document.getElementById("dReplyKanal").value;
   f.log.push([dstr(0),"↦ Antwort per "+kanal+" an "+f.name+": "+txt,logZeit()]);
-  if(typeof simTrigger==="function")simTrigger("antwort",f);
+  if(typeof simTrigger==="function"){
+    simTrigger("antwort",f);
+    /* Wer die Unterlagen-Anforderung als Nachricht formuliert (Baustein "Unterlagen anfordern",
+       Bitte um Befunde/Einwilligung), löst dieselbe Simulation aus wie der Button im Unterlagen-Feld. */
+    if(/unterlagen|entlassbrief|befund|einwilligung|datenschutz/i.test(txt))simTrigger("unterlagen",f);
+  }
   pruefeUpsell(f,txt);
   if(r)r.value="";
   document.getElementById("dLog").innerHTML=logHtml(f);
@@ -6980,6 +6985,7 @@ function fkwStammBestaetigen(){
  const name=(nameEl?nameEl.value:"").trim(); if(!name)return;
  f.name=name; f.alter=alterEl&&alterEl.value?+alterEl.value:f.alter; f.stammOk=true;
  f.log.push([dstr(0),"Stammdaten im Erstkontakt bestätigt",logZeit()]);
+ kfSyncStatus(f);
  renderAll();renderFallakte();
 }
 /* Klärungsfelder (Fallakte-Umbau, Nutzer-approved "Klärungsfelder statt Schritt-Gefängnis"):
@@ -7000,6 +7006,27 @@ function kfFelder(f){
   {key:"aufnahme",label:"Anreise & Aufnahme",ok:aufnahmeCheckliste(f).every(c=>c.ok),status:"Aufnahme geplant",
    sub:aufnahmeCheckliste(f).filter(c=>c.ok).length+" / 6"}
  ];
+}
+/* Auto-Status (Bugfix R8.1): Der Status leitet sich aus dem Arbeitsstand ab — nach jeder feld-
+   abschließenden Aktion rückt er auf den Meilenstein des ersten noch offenen Klärungsfelds vor
+   (nie rückwärts, maximal "Aufnahme geplant"; "Aufgenommen" bleibt hinter dem expliziten Gate in
+   advanceFallStatus). Übersprungene Stufen feuern ihre simTrigger trotzdem, damit Leitfall-
+   Storylines (z. B. status:Kontaktiert → Familie antwortet) nicht abreißen. */
+function kfSyncStatus(f){
+ if(!f||f.status==="Aufgenommen"||f.status==="Verloren")return false;
+ const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return false;
+ const erste=kfFelder(f).find(k=>!k.ok);
+ const ns=erste?erste.status:"Aufnahme geplant";
+ const zi=STATUS.indexOf(ns);
+ if(zi<=cur)return false;
+ f.log.push([dstr(0),"Status: "+f.status+" → "+ns+" (automatisch — Meilenstein erledigt)",logZeit()]);
+ if(f.personId)pHist(f.personId,"fall","Status: "+f.status+" → "+ns);
+ qualifyIfNeeded(f,ns);
+ f.status=ns;
+ f.aufgabe=STATUS_AUFGABE[ns]||"";
+ f.frist=STATUS_AUFGABE[ns]?dstr(2):"";
+ if(typeof simTrigger==="function")for(let i=cur+1;i<=zi;i++)simTrigger("status:"+STATUS[i],f);
+ return true;
 }
 function kfIconHtml(ok,isCur){
  if(ok)return "<span class='kf-ic ok'>✓</span>";
@@ -7081,6 +7108,7 @@ function kfMedSave(){
  const schwere=document.getElementById("kfSchwere").value;
  f.med={diagnose:diag,neben:neben,isolation:isolation,schwere:schwere};
  f.log.push([dstr(0),"Bedarf qualifiziert: "+diag+(isolation==="Ja"?", isolationspflichtig":""),logZeit()]);
+ kfSyncStatus(f);
  renderAll();renderFallakte();
 }
 function kfMedVorschlag(){
@@ -7170,11 +7198,17 @@ function egRueckfrageToggle(i){ const f=aktuellerFall;if(!f||!f.rueckfragen)retu
 function dArbeitKostenUpload(){
  const f=aktuellerFall;if(!f)return;
  f.docs[3]=true;
+ kfSyncStatus(f);
  inbToast("done","<b>Kostenzusage-Dokument hochgeladen</b> (Demo)","",null);
+ renderAll();renderFallakte();
 }
 function dArbeitUnterlagenAnfordern(){
- const f=aktuellerFall; if(f&&typeof simTrigger==="function")simTrigger("unterlagen",f);
+ const f=aktuellerFall;if(!f)return;
+ const fehlt=["Entlassbrief","Befunde","Versicherungsdaten"].filter((n,i)=>!f.docs[i]);
+ f.log.push([dstr(0),"↦ Unterlagen angefordert bei "+f.name+": "+(fehlt.length?fehlt.join(", "):"Restunterlagen")+" · inkl. Datenschutz-Einwilligung zur Unterschrift",logZeit()]);
+ if(typeof simTrigger==="function")simTrigger("unterlagen",f);
  inbToast("done","<b>Fehlende Unterlagen angefordert</b> (Demo)","",null);
+ renderAll();renderFallakte();
 }
 /* Vor-Aufnahme-Checkliste (anreise-Werkzeug) — 3 gespiegelte, read-only Punkte (Stammdaten/
    Kosten/Unterlagen) + 3 manuelle Punkte (f.aufnahmeCheck), Gate für advanceFallStatus(). */
@@ -7192,9 +7226,10 @@ function aufnahmeToggle(key){
  const f=aktuellerFall;if(!f)return;
  if(!f.aufnahmeCheck)f.aufnahmeCheck={};
  f.aufnahmeCheck[key]=!f.aufnahmeCheck[key];
- renderFallakte();
+ kfSyncStatus(f);
+ renderAll();renderFallakte();
 }
-function aufnDocToggle(i){const f=aktuellerFall;if(!f)return;f.docs[i]=!f.docs[i];renderAll();renderFallakte();}
+function aufnDocToggle(i){const f=aktuellerFall;if(!f)return;f.docs[i]=!f.docs[i];kfSyncStatus(f);renderAll();renderFallakte();}
 let _epkKanal="";
 function paketErstellen(kanal){
  const f=aktuellerFall;if(!f)return;
@@ -7296,6 +7331,7 @@ function kzZusage(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="Zusage liegt vor";
  f.log.push([dstr(0),"Kostenzusage liegt vor",logZeit()]);
+ kfSyncStatus(f);
  renderAll();renderFallakte();
 }
 function kzAblehnung(){
@@ -7308,6 +7344,7 @@ function kzSelbstzahler(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="Selbstzahler bestätigt";
  f.log.push([dstr(0),"Selbstzahlung bestätigt — keine Kostenzusage nötig",logZeit()]);
+ kfSyncStatus(f);
  renderAll();renderFallakte();
 }
 function kzNotizAdd(){
@@ -7359,7 +7396,8 @@ function advanceFallStatus(f){
  f.status=ns;
  f.aufgabe=STATUS_AUFGABE[ns]||"";
  f.frist=STATUS_AUFGABE[ns]?dstr(2):"";
- if(typeof simTrigger==="function")simTrigger("status:"+ns,f);
+ /* Auch übersprungene Stufen feuern (Leitfall-Storylines hängen z. B. an status:Kontaktiert) */
+ if(typeof simTrigger==="function")for(let i=cur+1;i<=STATUS.indexOf(ns);i++)simTrigger("status:"+STATUS[i],f);
  return true;
 }
 function advanceFall(){ const f=aktuellerFall;if(!f)return;
@@ -8136,6 +8174,7 @@ function simFire(key){
  f.sim.done[key]=true;
  f.log.push([dstr(0),ev.text,logZeit()]);
  ev.after(f);
+ if(typeof kfSyncStatus==="function")kfSyncStatus(f); /* Sim-Antworten (Zusage/Unterlagen) rücken den Status mit */
  inbToast("done","<b>Neue Nachricht · "+escapeHtml(ev.von)+"</b>","Fall "+escapeHtml(f.name),null);
  renderAll();
  if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&typeof renderFallakte==="function")renderFallakte();
