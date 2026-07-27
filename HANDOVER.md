@@ -404,6 +404,27 @@ dArbeitUnterlagenAnfordern/kzAnfragen/kzNotizAdd/sendReply/paketErstellen (`f.id
 
 ---
 
+## 4i. Runde 8 — Klärungsfelder-Modell (24.07., `a886f59`, live)
+
+Beta-Feedback am Hoffmann-Fall → Fallakte-Arbeitsfläche komplett umgebaut: **5 Klärungsfelder
+statt Status-Werkzeug-Kette** (`kfFelder(f)`, `.kf-*`-Akkordeon in `dArbeitHtml`, jederzeit
+bearbeitbar, erstes offenes aufgeklappt): Kontakt & Erstgespräch (Tel/Mail aus Originaltext-
+Regex bzw. `personen[]`, Stammdaten, Original, Gesprächsleitfaden, Notiz, Nachricht-Composer) ·
+Medizinischer Bedarf (**NEU `f.med`** {diagnose,neben,isolation,schwere}, `kfMedSave`,
+Vorschlags-Panel aus `f.medVorschlag`) · Unterlagen · Kostenzusage (kz-Tools + dein KI-Scan,
+unverändert eingebettet) · Anreise & Aufnahme. `advanceFallStatus` überspringt erledigte
+Felder (Status=Meilenstein, Mapping kontakt→Neu … aufnahme→Aufnahme geplant); `kzActions`
+ohne Aufgaben-Gate. **Verlauf**: zentrale `logHtml()` (Datums-Trenner, Absender-Labels,
+Systemzeilen `LG_SYS_RE`, deterministische Sitzungs-Uhr `logZeit()` — Laufzeit-Logs sind
+jetzt 3-elementig `[datum,text,zeit]`, Seeds bleiben 2-elementig). **Warteschleifen-
+Telefonagent (Pilot)** im Kosten-Feld (`.kta-*`, `ktaStart/ktaUebernehmen`, re-render-fest).
+**Hoffmann = 4. Leitfall** über `f.simKey`-Resolver (dynamische Fall-Ids aus `uebernehmen`).
+Einladungspaket mit Dokumenten-Vorschau `#epkVorschau` (`.epk-*`). `faOriginalChap`
+dauerhaft ausgeblendet (Original lebt in K1). ACHTUNG: `sopToggle(typ,i)` hat jetzt 2
+Parameter. `DEMO_SCHEMA=3`.
+
+---
+
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"
 - Server: `.claude/launch.json` → **`bavaria-proto`** (homebrew python3 `http.server`, Port 8765, `--directory` = Repo). Start via preview-Tool mit `{name:"bavaria-proto"}`.
 - Desktop braucht **≥1024px** (sonst sind `dbDetail` etc. gated). Preset „desktop" liefert teils <1024 → **eigene Größe 1440×900** setzen. Mobile-Preset 375/390 für die Mobil-QA.
