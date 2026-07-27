@@ -521,6 +521,58 @@ ohne Namen → Toast+Focus; Log „Stammdaten im Erstkontakt bestätigt: Name (A
 (LG_SYS_RE-Präfix unverändert); Umbenennung → Toast „Fall umbenannt". Echte Namen bleiben
 vorbefüllt.
 
+## 4m. Runde 9 — systematischer Beta-Usability-Test (27.07.)
+
+Auf Nutzer-Auftrag („systematisch auf intuitive Bedienung testen") erstmals **drei parallele
+Sonnet-Testläufe mit Personas** statt eines Audits: A = Case-Managerin erster Tag (Anna-Pfad),
+B = Verwaltungsleiter (Startseite/Navigation/Eingang/Board/Team), C = Frust-Pfade + Handy
+(Werner-Absage, Maria-Preisgespräch, Hoffmann-Übernahme, Reset, 390 px). Prüfraster war
+**Intuition** (Weiß ich, was zu tun ist? Verstehe ich die Wörter? Bekomme ich Rückmeldung?
+Verirre ich mich?), nicht Logik. Parallel eigener Browser-Rundgang des Orchestrators; **jeder
+Befund vor dem Fix im Browser gegen den Code verifiziert** (drei Agenten-Befunde hielten der
+Prüfung nur teilweise stand, einer war schwerer als gemeldet).
+
+**Die vier schweren Befunde:** (1) `kfKontaktOk()` verlangte `stammOk` UND Status — die Seeds
+setzen `stammOk` nie, also behauptete das Lagebild bei **allen** laufenden Fällen „Erstgespräch
+führen · 0 von 5 Feldern", auch bei Ruth Winkler in „Aufnahme geplant"; Fallback jetzt Status
+allein (ein Fall kommt nur über „Neu" hinaus, wenn der Erstkontakt lief). (2) `body.ma-mode`
+blendete `#inbToast` mit der Leitungs-Chrome aus → **in der Arbeitsrolle quittierte kein
+einziger Klick**, auch eingehende Kassen-Antworten blieben unbemerkt; additive Regel
+`body.ma-mode #inbToast{display:flex}`. (3) `#fvwVerlustBox` trug `hidden`, aber
+`.fvw-verlust-box{display:grid}` schlug das UA-Default → das Verlustgrund-Formular stand in
+JEDEM Fall offen (neue Bug-Variante der bekannten CSS-Klasse: **Klassenregel überstimmt
+`[hidden]`** — bei jedem `hidden`-Element mit eigener display-Regel prüfen). (4) `kpiCountUp()`
+animierte via `rpCount`/rAF; lädt die Seite im Hintergrund-Tab, feuert rAF nie und
+`window._kpiCounted` verhindert jede Reparatur → „Vorlauf 0 Tage / Ø Erstreaktion 0 Std. /
+Conversion 0 %" dauerhaft neben „2 aufgenommen · 1 verloren". Fix: bei `document.hidden`
+Endwerte direkt setzen (ohne Flag), Endwert-Timer als Sicherung, `visibilitychange`-Nachzieher.
+
+**Weitere Fixes:** Verlust bestätigen mit `confirm()` + neuer `fvwFallReaktivieren()`
+(Knopf-Umschaltung per Render-Logik in `renderFallakte`, IDs `fvwVerlustBtn`/
+`fvwReaktivierenBtn`/`fvwVerlustHinweis`) — vorher war „Verloren" endgültig und nur per
+Komplett-Reset umkehrbar, was dem Versprechen „Sie können nichts kaputt machen" widersprach;
+Telefonnotizen erscheinen jetzt im Reiter „Gespräche & Nachrichten" (vorher gefiltert → Notiz
+wirkte verschwunden); „✓ Erstgespräch abschließen" ist gesperrt mit Klartext-Begründung statt
+unsichtbarem Toast; Lagebild-Kontakttext reagiert auf `stammOk`; Selbstzahler-Baustein mit
+echten Demo-Preisen; Eingangs-Restliste bekommt Überschrift „Kein Handlungsbedarf" + Erklärung
+von „passiv"; „Conversion" → „Aufnahmequote"; „Verloren · gelernt" → „Verloren";
+Forecast nennt „Komfort-Kontingent innerhalb der 40 Privatbetten" (40 vs. 7 war unerklärt);
+Touch-Ziele am Handy (`.tb-chip`, Checkboxen) ≥ 40 px, `#betaHilfe .mfoot` sticky (der Knopf
+„Los geht's" lag 2 px unter der Falz).
+
+**Seed-Nachzug (bei der Abnahme aufgefallen):** Kein `faelle[]`-Seed hatte je `med` gesetzt — nach
+dem kfKontaktOk-Fix schickte das Lagebild deshalb auch Ruth Winkler („Aufnahme geplant", alle Docs,
+Kostenzusage) zurück zu „Medizinischen Bedarf erfassen". Die sechs Fälle ab „Qualifizierung"
+(6/8/9/10/11/13) tragen jetzt `med` mit der Diagnose aus ihrer eigenen Original-Anfrage; Anna (Neu)
+und Maria (Kontaktiert) bleiben bewusst ohne — dort SOLL der Tester den Bedarf selbst erfassen.
+Kein `DEMO_SCHEMA`-Bump (nur zusätzliche Felder, Alt-Stände bleiben gültig).
+
+**Prozess-Lehren:** Persona-Testläufe finden anderes als Logik-Audits (Wortwahl, fehlende
+Rückmeldung, Reihenfolge-Frust) — beides braucht es. Spec-Code an Lanes immer selbst
+`node --check`-fähig schreiben: ein gerades `"` in einem doppelt gequoteten String hat die Lane
+gekostet (sie hat es korrekt gemeldet und escaped). QA-Falle: `offsetParent` ist bei
+`position:fixed` immer `null` → Sichtbarkeit über `getComputedStyle` + `getBoundingClientRect`.
+
 ---
 
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"

@@ -3339,6 +3339,23 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
 /* R8.4: expliziter Erstgespräch-Abschluss */
 .kf-abschluss{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed var(--jade-line)}
 .kf-abschluss .kz-hint{flex:1;min-width:180px;margin:0}
+/* Beta-Runde 9 (R9) — Usability-Fixes aus dem systematischen Beta-Test.
+   Die Verlust-Box trug hidden, aber die Klassenregel display:grid schlug das
+   UA-Default und die Box stand in jedem Fall offen. */
+.fvw-verlust-box[hidden]{display:none}
+/* Touch-Ziele: Textbaustein-Chips und Leitfaden-Kaestchen waren am Handy
+   deutlich unter der empfohlenen Fingergroesse (gemessen 29px bzw. 18px). */
+@media(max-width:640px){
+ .tb-chip{min-height:40px;padding:8px 12px}
+ #view-fallakte input[type=checkbox]{width:24px;height:24px}
+ #betaHilfe .mfoot{position:sticky;bottom:0;background:var(--paper);padding-top:10px;box-shadow:0 -8px 16px -8px rgba(34,30,21,.18)}
+}
+/* Rückmeldungen gehören NICHT zur Leitungs-Chrome: die ma-mode-Ausblendregel hatte den
+   Meldungsbalken miterfasst — im Mitarbeiter-Modus quittierte dadurch kein einziger Klick.
+   Der Balken wird über die Klasse show ein- und ausgeblendet (display), deshalb muss show
+   Teil des Selektors sein: eine Regel ohne show hätte per ID-Spezifität auch das Ausblenden
+   überstimmt und den Balken nach dem ersten Toast dauerhaft stehen lassen. */
+body.ma-mode #inbToast.show{display:flex}
 </style>
 </head>
 <body>
@@ -3640,7 +3657,7 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
             <text class="fn-lab" x="948" y="194">Privatauslastung</text>
             <text class="fn-num" x="1156" y="200" text-anchor="end" font-size="31">78 %</text>
             <line class="fn-hair" x1="948" y1="214" x2="1156" y2="214"/>
-            <text class="fn-lab" x="948" y="286">Verloren · gelernt</text>
+            <text class="fn-lab" x="948" y="286">Verloren</text>
             <text class="fn-num" x="1156" y="292" text-anchor="end" font-size="31" id="r3"></text>
             <line class="fn-hair" x1="948" y1="306" x2="1156" y2="306"/>
             <text class="fn-chev" x="1164" y="104">›</text>
@@ -3895,7 +3912,7 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
         </div>
         <div class="ns-m">
           <div class="ns-mtext">
-            <span class="ns-l">Conversion</span>
+            <span class="ns-l">Aufnahmequote</span>
             <span class="ns-v num" id="nsConv"></span>
             <span class="ns-t" id="nsConvSub"></span>
           </div>
@@ -4290,7 +4307,9 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
               <div><label for="dKT">Kostenträger</label><select id="dKT" onchange="fvwKtSet(this.value)"><option>PKV</option><option>Selbstzahler</option><option>GKV + Komfort</option><option>Beihilfe</option><option>GKV</option><option>Unklar</option></select></div>
               <label class="saluto-toggle fvw-saluto"><input type="checkbox" id="dSaluto" onchange="fvwSalutoSet(this.checked)"><span>★ Für <b>SalutoCare</b> geeignet</span></label>
             </div>
-            <button type="button" class="btn-ghost btn-sm fvw-verlust-btn" onclick="fvwVerlustToggle()">✕ Fall verloren melden…</button>
+            <button type="button" class="btn-ghost btn-sm fvw-verlust-btn" id="fvwVerlustBtn" onclick="fvwVerlustToggle()">✕ Fall verloren melden…</button>
+            <button type="button" class="btn-ghost btn-sm" id="fvwReaktivierenBtn" onclick="fvwFallReaktivieren()" hidden>↺ Fall wieder öffnen</button>
+            <div id="fvwVerlustHinweis"></div>
             <div id="fvwVerlustBox" class="fvw-verlust-box" hidden>
               <label for="dVerlust">Verlustgrund (Pflicht)</label>
               <select id="dVerlust"><option></option><option>Kosten nicht geklärt</option><option>Zu lange Wartezeit</option><option>Anderes Haus gewählt</option><option>Medizinisch nicht passend</option><option>Keine Rückmeldung mehr</option><option>Kapazität fehlte</option><option>Sonstiges</option></select>
@@ -4475,14 +4494,14 @@ function initialen(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpp
 let faelle=[
  {id:1,personId:"P01",name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]],originalTxt:"Kurzanmeldung Sozialdienst RHÖN Campus Bad Neustadt, Station Neurologie, Az. N-1187/26. Patientin Anna Muster, 67 Jahre, Diagnose Schlaganfall, Kostenträger PKV. Aufnahme zur AHB möglichst schnell gewünscht, Tochter organisiert und bittet um Rückruf. Unterlagen folgen per Fax.",originalKanal:"Zuweiser direkt"},
  {id:3,personId:"P02",name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"]],originalTxt:"Hallo, ich hatte vor Kurzem eine Hüft-TEP und suche jetzt eine Reha-Klinik für die Anschlussbehandlung. Ich bin Selbstzahlerin, 58 Jahre alt, und hätte gerne ein Komfortzimmer, wenn das geht am liebsten mit Blick ins Grüne. Einen Termin bräuchte ich möglichst schnell, weil ich zuhause gerade nicht gut zurechtkomme. Viele Grüße, Maria Probst, 0170 4471182",originalKanal:"Website-Formular"},
- {id:6,personId:"P03",name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(-2),saluto:true,docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss: Thoraxzentrum fragt, ob Beatmungspatient (69, PKV) übernommen werden kann — Entwöhnung läuft, Entlassung geplant"],[dstr(-4),"↦ Rückfrage an Oberarzt Dr. Castelli: aktuelle Beatmungsparameter + Entwöhnungsstand erbeten"],[dstr(-3),"Antwort Thoraxzentrum: Parameter übermittelt, Spontanatmung bereits 8 Std./Tag"]],originalTxt:"Kurzanmeldung Thoraxzentrum Münnerstadt, Station Weaning, Az. TZ-0512/26. Oberarzt Dr. Castelli meldet Patient Heinz Vogel (69) zur Übernahme nach Langzeitbeatmung an, Kostenträger PKV. Frage: Ist eine Aufnahme als Beatmungspatient zur weiteren Entwöhnung bei Ihnen möglich? Um Rückruf wird gebeten unter 0971 0000-271, castelli@demo-thorax.local.",originalKanal:"Zuweiser direkt"},
- {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage: Entlassmanagement Klinikum Fulda meldet Patient (63, GKV) mit Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich"],[dstr(-4),"Entlassbrief liegt vor — von Entlassmanagement per Recare nachgereicht"],[dstr(-2),"↦ Rückfrage an Entlassmanagement: Komfort-Upgrade und Zusatzkosten angeboten, Rückmeldung ausstehend"]],originalTxt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · Patient Peter Hofmann (63), GKV, Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich. · Bitte um Rückmeldung zur Kapazität und zu den Komfort-Optionen.",originalKanal:"Recare"},
- {id:9,personId:"P05",name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]],originalTxt:"Anruf Tochter Winkler, 11:40 · ruft für ihre Mutter Ruth (77) an, liegt Station 2 Nord UKW Würzburg · Diagnose Schlaganfall, PKV-versichert · möchte möglichst schnell einen Platz in der Neuro-Reha, am liebsten Privatzimmer · Rückrufnummer hinterlegt",originalKanal:"Telefon"},
+ {id:6,personId:"P03",name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(-2),saluto:true,med:{diagnose:"Z. n. Langzeitbeatmung, Weaning laufend",neben:"Respiratorische Insuffizienz",isolation:"Nein",schwere:"hoch"},docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss: Thoraxzentrum fragt, ob Beatmungspatient (69, PKV) übernommen werden kann — Entwöhnung läuft, Entlassung geplant"],[dstr(-4),"↦ Rückfrage an Oberarzt Dr. Castelli: aktuelle Beatmungsparameter + Entwöhnungsstand erbeten"],[dstr(-3),"Antwort Thoraxzentrum: Parameter übermittelt, Spontanatmung bereits 8 Std./Tag"]],originalTxt:"Kurzanmeldung Thoraxzentrum Münnerstadt, Station Weaning, Az. TZ-0512/26. Oberarzt Dr. Castelli meldet Patient Heinz Vogel (69) zur Übernahme nach Langzeitbeatmung an, Kostenträger PKV. Frage: Ist eine Aufnahme als Beatmungspatient zur weiteren Entwöhnung bei Ihnen möglich? Um Rückruf wird gebeten unter 0971 0000-271, castelli@demo-thorax.local.",originalKanal:"Zuweiser direkt"},
+ {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage: Entlassmanagement Klinikum Fulda meldet Patient (63, GKV) mit Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich"],[dstr(-4),"Entlassbrief liegt vor — von Entlassmanagement per Recare nachgereicht"],[dstr(-2),"↦ Rückfrage an Entlassmanagement: Komfort-Upgrade und Zusatzkosten angeboten, Rückmeldung ausstehend"]],originalTxt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · Patient Peter Hofmann (63), GKV, Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich. · Bitte um Rückmeldung zur Kapazität und zu den Komfort-Optionen.",originalKanal:"Recare"},
+ {id:9,personId:"P05",name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"Arterielle Hypertonie",isolation:"Nein",schwere:"mittel"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]],originalTxt:"Anruf Tochter Winkler, 11:40 · ruft für ihre Mutter Ruth (77) an, liegt Station 2 Nord UKW Würzburg · Diagnose Schlaganfall, PKV-versichert · möchte möglichst schnell einen Platz in der Neuro-Reha, am liebsten Privatzimmer · Rückrufnummer hinterlegt",originalKanal:"Telefon"},
  {id:12,personId:"P06",name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage: Sohn ruft für Hrn. Keller (70) an, Empfehlung, Beihilfe, sucht schnellen Termin"],[dstr(-11),"↦ Rückruf erst nach 26 Std. — Verzögerung durch hohes Anfrageaufkommen"],[dstr(-8),"Familie hat anderes Haus gewählt — zu lange Wartezeit"]],originalTxt:"Anruf Sohn Keller, 14:20 · ruft für seinen Vater Hans (70) an · sucht Reha-Platz nach Empfehlung, orthopädische Diagnose, Kostenträger Beihilfe · möchte schnellstmöglich einen Termin, Rückrufnummer hinterlegt",originalKanal:"Telefon"},
- {id:10,personId:"P07",name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-12),"Anfrage nach Hüft-TEP: Sozialdienst Leopoldina meldet Patienten (71, PKV) zur AHB an, Az. O-0847/26"],[dstr(-9),"Kostenzusage PKV eingegangen — vom Sozialdienst übermittelt"],[dstr(-2),"Aufgenommen — Privatzimmer, Sozialdienst per Telefon informiert"]],originalTxt:"Kurzanmeldung Sozialdienst Leopoldina-Krankenhaus Schweinfurt, Station Orthopädie, Az. O-0847/26. Patient Ludwig Bauer, 71 Jahre, Diagnose Hüft-TEP links, Kostenträger PKV. Aufnahme zur Anschlussheilbehandlung gewünscht, Unterlagen folgen. Rückmeldung zur Aufnahmefähigkeit erbeten.",originalKanal:"Zuweiser direkt"},
- {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:8,log:[[dstr(-15),"Website-Anfrage Neuro-Reha: Patientin fragt selbst nach Platz nach Schlaganfall, PKV"],[dstr(-10),"Beratung geführt, Zusage erhalten — Rückruf, Fragen zur Station beantwortet"],[dstr(-3),"Aufgenommen"]],originalTxt:"Guten Tag, ich hatte vor einigen Wochen einen Schlaganfall und bin jetzt auf der Suche nach einer Reha-Klinik mit Schwerpunkt Neurologie. Ich bin 66 Jahre alt und privat versichert. Können Sie mir sagen, ob und wann bei Ihnen ein Platz frei wäre? Über eine Rückmeldung würde ich mich sehr freuen. Viele Grüße, Elisabeth Cramer, 0171 5583421",originalKanal:"Website-Formular"},
+ {id:10,personId:"P07",name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,med:{diagnose:"Z. n. Hüft-TEP links",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-12),"Anfrage nach Hüft-TEP: Sozialdienst Leopoldina meldet Patienten (71, PKV) zur AHB an, Az. O-0847/26"],[dstr(-9),"Kostenzusage PKV eingegangen — vom Sozialdienst übermittelt"],[dstr(-2),"Aufgenommen — Privatzimmer, Sozialdienst per Telefon informiert"]],originalTxt:"Kurzanmeldung Sozialdienst Leopoldina-Krankenhaus Schweinfurt, Station Orthopädie, Az. O-0847/26. Patient Ludwig Bauer, 71 Jahre, Diagnose Hüft-TEP links, Kostenträger PKV. Aufnahme zur Anschlussheilbehandlung gewünscht, Unterlagen folgen. Rückmeldung zur Aufnahmefähigkeit erbeten.",originalKanal:"Zuweiser direkt"},
+ {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"leicht"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:8,log:[[dstr(-15),"Website-Anfrage Neuro-Reha: Patientin fragt selbst nach Platz nach Schlaganfall, PKV"],[dstr(-10),"Beratung geführt, Zusage erhalten — Rückruf, Fragen zur Station beantwortet"],[dstr(-3),"Aufgenommen"]],originalTxt:"Guten Tag, ich hatte vor einigen Wochen einen Schlaganfall und bin jetzt auf der Suche nach einer Reha-Klinik mit Schwerpunkt Neurologie. Ich bin 66 Jahre alt und privat versichert. Können Sie mir sagen, ob und wann bei Ihnen ein Platz frei wäre? Über eine Rückmeldung würde ich mich sehr freuen. Viele Grüße, Elisabeth Cramer, 0171 5583421",originalKanal:"Website-Formular"},
  /* Seed-Ergänzung Mein Tag (Baustein Mitarbeiter-Dashboard): Kostenklärung ohne eigene Frist, additiv am Muster der Nachbarn */
- {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"S. Koordination",aufgabe:"Kostenzusage anfragen",frist:dstr(0),saluto:false,docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:5,log:[[dstr(-4),"Anfrage über Empfehlung: Anruf Hr. Aumann, 10:05, Knie-TEP, AHB gesucht, PKV"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend — telefonisch nachgefragt"],[dstr(0),"↦ Erinnerung an fehlende Kostenzusage verschickt"]],originalTxt:"Anruf Hr. Aumann, 10:05 · ruft selbst an, wurde von Bekannten empfohlen · sucht AHB nach Knie-TEP, 72 Jahre, privat versichert · bittet um Information zu Ablauf und Kosten, Rückrufnummer hinterlegt",originalKanal:"Telefon"}
+ {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"S. Koordination",aufgabe:"Kostenzusage anfragen",frist:dstr(0),saluto:false,med:{diagnose:"Z. n. Knie-TEP rechts",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:5,log:[[dstr(-4),"Anfrage über Empfehlung: Anruf Hr. Aumann, 10:05, Knie-TEP, AHB gesucht, PKV"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend — telefonisch nachgefragt"],[dstr(0),"↦ Erinnerung an fehlende Kostenzusage verschickt"]],originalTxt:"Anruf Hr. Aumann, 10:05 · ruft selbst an, wurde von Bekannten empfohlen · sucht AHB nach Knie-TEP, 72 Jahre, privat versichert · bittet um Information zu Ablauf und Kosten, Rückrufnummer hinterlegt",originalKanal:"Telefon"}
 ];
 
 /* Werdegang-Beispielschritte (nur für Demo-Fälle gesetzt; Rest wird generisch abgeleitet) */
@@ -5030,7 +5049,9 @@ function logHtml(f){
  f.log.forEach(function(l){
   const iso=l[0],txt=String(l[1]||""),zeit=l[2];
   const typ=lgTyp(txt);
-  if(_lgTab==="nachrichten"&&typ!=="in"&&typ!=="out")return;
+  /* Telefonnotizen dokumentieren ein geführtes Gespräch und gehören deshalb in den
+     Kommunikations-Reiter — sonst wirkt eine gerade gespeicherte Notiz verschwunden. */
+  if(_lgTab==="nachrichten"&&typ!=="in"&&typ!=="out"&&typ!=="note")return;
   n++;
   if(iso!==letztesDatum){ html+="<div class='lg-date'>"+lgDatumHtml(iso)+"</div>"; letztesDatum=iso; }
   const zeitHtml=zeit?"<span class='lg-zeit'>"+escapeHtml(zeit)+"</span>":"";
@@ -5046,7 +5067,7 @@ function logHtml(f){
    html+="<div class='log-in lgm lgm-in'>"+zeitHtml+"<span class='lg-who'>"+escapeHtml(wer)+"</span>"+escapeHtml(txt)+"</div>";
   }
  });
- if(_lgTab==="nachrichten"&&n===0)html="<p class='empty'>Noch keine Nachrichten — Kommunikation erscheint hier.</p>";
+ if(_lgTab==="nachrichten"&&n===0)html="<p class='empty'>Noch keine Gespräche oder Nachrichten — hier erscheint die Kommunikation mit Patient und Angehörigen.</p>";
  return html;
 }
 function lgTabSet(which){
@@ -5272,7 +5293,15 @@ function renderEingang(){
     +"<details><summary class='rk'>Einzelne Anfragen ("+autoV.length+")</summary>"
     +autoV.map(function(m){return "<div class='egt-protokoll-row'>"+escapeHtml(m.wer||m.tit)+" · <b>"+escapeHtml(m.gruppe)+"</b> · "+escapeHtml(m.zeit)+"</div>";}).join("")
     +"</details></div>";
-  html+=rest.map(mailRow).join("");
+  /* Restliste hatte keine Überschrift: Leser konnten erledigte und passive Anfragen nicht
+     einordnen — und „passiv" war nirgends erklärt. */
+  if(rest.length){
+    const passivN=rest.filter(m=>m.typ==="passiv").length;
+    html+="<div class='egt-rest'><div class='kicker' style='margin-top:18px'>Kein Handlungsbedarf ("+rest.length+")</div>"
+      +"<p class='kz-hint' style='margin:2px 0 8px'>Bereits bearbeitete Anfragen"
+      +(passivN?" sowie "+passivN+" passive Kontakte — Interessenten ohne konkrete Anfrage (Broschüren-Download, allgemeine Frage), die nur in der Datenbank landen":"")
+      +".</p>"+rest.map(mailRow).join("")+"</div>";
+  }
   document.getElementById("inbox").innerHTML=html;
 }
 function uebernehmen(id,owner){
@@ -5821,8 +5850,8 @@ function renderBelegung(){
  const prog=voll
    ? "Prognose KW"+last.kw+" — Vollbelegung erstmals erreicht."
    : (faellt
-      ? "Prognose KW"+last.kw+" — "+frei+" Komfortbetten werden frei."
-      : "Prognose KW"+last.kw+" — "+last.summe+" von "+FC_BETTEN+" Komfortbetten.");
+      ? "Prognose KW"+last.kw+" — "+frei+" Komfortbetten werden frei (Komfort-Kontingent innerhalb der 40 Privatbetten)."
+      : "Prognose KW"+last.kw+" — "+last.summe+" von "+FC_BETTEN+" Komfortbetten (Komfort-Kontingent innerhalb der 40 Privatbetten).");
  // Ziel-Durchbruch: erste Woche, die die Ziel-Linie erreicht/übersteigt
  const cross=wochen.find(w=>w.summe>=FC_ZIEL);
  const zielSatz=faellt
@@ -6365,15 +6394,24 @@ function renderHeute(){
   kpiCountUp();
 }
 /* Aurora · Heute-KPI-Band: Count-up EINMAL, RM-safe via rpCount, Session-Flag gegen Re-Trigger bei jedem renderAll */
+/* Aurora · Heute-KPI-Band: Count-up EINMAL, RM-safe via rpCount, Session-Flag gegen Re-Trigger.
+   Robustheit (R9): Läuft die Seite beim Laden im Hintergrund, feuert requestAnimationFrame nie —
+   die Animation bliebe für immer bei 0 stehen (Flag verhindert jede Reparatur). Deshalb: im
+   Hintergrund direkt Endwerte setzen (ohne Flag, damit später animiert werden kann) und die
+   Animation zusätzlich mit einem Endwert-Timer absichern. */
 function kpiCountUp(){
   if(window._kpiCounted)return;
   const hv=document.getElementById("view-heute");
   if(!hv||!hv.classList.contains("active"))return;
-  window._kpiCounted=true;
   const k=kennzahlen();
-  rpCount(document.getElementById("nsVorlauf"),horizont,900);
-  rpCount(document.querySelector("#nsRz b"),k.rzAvg,1000);
-  rpCount(document.querySelector("#nsConv b"),k.conv,1100);
+  const ziele=[[document.getElementById("nsVorlauf"),horizont],
+               [document.querySelector("#nsRz b"),k.rzAvg],
+               [document.querySelector("#nsConv b"),k.conv]];
+  const endwerte=function(){ziele.forEach(function(p){if(p[0])p[0].textContent=p[1];});};
+  if(document.hidden){endwerte();return;}
+  window._kpiCounted=true;
+  ziele.forEach(function(p,i){if(p[0])rpCount(p[0],p[1],900+i*100);});
+  setTimeout(endwerte,1600);
 }
 
 // Runde 6 Punkt 3 — reiner Demo-Seed für die 4 KPI-Trendlinien. Die App führt keine Tages-Historie,
@@ -7041,7 +7079,10 @@ function fkwStammBestaetigen(){
  f.log.push([dstr(0),"Stammdaten im Erstkontakt bestätigt: "+name+(f.alter?" ("+f.alter+")":""),logZeit()]);
  kfSyncStatus(f);
  renderAll();renderFallakte();
- if(vorher!==name&&typeof inbToast==="function")inbToast("done","<b>Fall umbenannt</b>",escapeHtml(vorher)+" → "+escapeHtml(name),null);
+ if(typeof inbToast==="function"){
+  if(vorher!==name)inbToast("done","<b>Fall umbenannt</b>",escapeHtml(vorher)+" → "+escapeHtml(name),null);
+  else inbToast("done","<b>Stammdaten bestätigt</b>","Nächster Schritt: Gespräch führen und abschließen",null);
+ }
 }
 function kfKontaktAbschliessen(){
  const f=aktuellerFall;if(!f)return;
@@ -7057,9 +7098,11 @@ function kfKontaktAbschliessen(){
    geplant); advanceFallStatus() nutzt exakt dasselbe Mapping für seine Skip-Logik. */
 /* Kontakt & Erstgespräch gilt erst mit EXPLIZITEM Abschluss als erledigt (f.kontaktOk) —
    Stammdaten bestätigen ist Voraussetzung, nicht das Gespräch (R8.4, Beta-Feedback).
-   Fallback für Seeds/Altstände ohne kontaktOk: wer mit bestätigten Stammdaten bereits
-   über "Neu" hinaus ist, hat das Erstgespräch offensichtlich geführt. */
-function kfKontaktOk(f){ return !!f.kontaktOk || (!!f.stammOk && f.status!=="Neu"); }
+   Fallback für Seeds/Altstände: Ein Fall kommt nur über „Neu" hinaus, wenn der Erstkontakt
+   stattgefunden hat (kfSyncStatus rückt sonst nicht vor) — der Status allein ist deshalb der
+   verlässliche Beleg. Vorher wurde zusätzlich f.stammOk verlangt, das die Seeds nie setzen:
+   dadurch behauptete das Lagebild bei jedem laufenden Fall „Erstgespräch führen". */
+function kfKontaktOk(f){ return !!f.kontaktOk || f.status!=="Neu"; }
 function kfFelder(f){
  return [
   {key:"kontakt",label:"Kontakt & Erstgespräch",ok:kfKontaktOk(f),status:"Neu",
@@ -7114,6 +7157,8 @@ function kfAufgabe(f){
  if(erste.key==="kontakt"){
   const txt=String(f.originalTxt||"");
   const telM=/(?:0|\+49)[\d \-\/]{6,}/.exec(txt);
+  if(f.stammOk)
+   return {feld:"kontakt",text:"Stammdaten sind bestätigt — Gespräch führen und mit „✓ Erstgespräch abschließen\" beenden."};
   return {feld:"kontakt",text:"Erstgespräch führen und Stammdaten bestätigen"+(telM?" · ☎ "+telM[0].trim():"")+"."};
  }
  if(erste.key==="bedarf")return {feld:"bedarf",text:"Medizinischen Bedarf erfassen: Diagnose/Indikation eintragen oder aus der Antwort übernehmen."};
@@ -7209,11 +7254,25 @@ function fvwVerlustBestaetigen(){
  const f=aktuellerFall;if(!f)return;
  const grund=document.getElementById("dVerlust").value;
  if(!grund){alert("Bitte Verlustgrund angeben. Genau dafür ist das System da.");return;}
+ if(!confirm("Fall „"+f.name+"“ wirklich als verloren dokumentieren?\n\nGrund: "+grund+"\n\nDer Fall wird geschlossen. Du kannst ihn in der Verwaltung wieder öffnen."))return;
  f.log.push([dstr(0),"Status: "+f.status+" → Verloren · Grund: "+grund,logZeit()]);
  if(f.personId)pHist(f.personId,"fall","Fall verloren: "+grund);
  f.verlust=grund;
  f.status="Verloren";
  f.aufgabe="";f.frist="";
+ renderAll();renderFallakte();
+}
+/* Rückweg aus „Verloren": Ein Fehlklick oder ein Patient, der es sich anders überlegt, darf nicht
+   den kompletten Demo-Reset erfordern. Der Fall kehrt in die Klärung zurück, kfSyncStatus setzt
+   den passenden Meilenstein aus dem tatsächlichen Arbeitsstand neu. */
+function fvwFallReaktivieren(){
+ const f=aktuellerFall;if(!f||f.status!=="Verloren")return;
+ const grund=f.verlust;
+ f.status="Kontaktiert";f.verlust="";
+ f.log.push([dstr(0),"Status: Verloren → wieder in Klärung"+(grund?" (vorheriger Verlustgrund: "+grund+")":""),logZeit()]);
+ if(f.kosten==="abgelehnt"&&typeof kostenSetzen==="function")kostenSetzen(f,"offen","Kostenstatus zurückgesetzt: Fall wurde wieder geöffnet");
+ if(typeof kfSyncStatus==="function")kfSyncStatus(f);
+ if(typeof inbToast==="function")inbToast("done","<b>Fall wieder geöffnet</b>",escapeHtml(f.name)+" ist zurück in der Klärung",null);
  renderAll();renderFallakte();
 }
 /* Einwilligung lebt im Klärungsfeld Kontakt (R8.2) — Audit-Zeile bei jeder Änderung. */
@@ -7270,8 +7329,11 @@ function kfKontaktBody(f){
   +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
   +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>"
   +kfNachrichtHtml(f)
-  +(kfKontaktOk(f)?"":"<div class='kf-abschluss'><span class='kz-hint'>Leitfaden durchgehen, Notiz erfassen, ggf. Nachricht senden — dann:</span>"
-   +"<button type='button' class='btn-brass btn-sm' onclick='kfKontaktAbschliessen()'>✓ Erstgespräch abschließen</button></div>");
+  +(kfKontaktOk(f)?"":"<div class='kf-abschluss'><span class='kz-hint'>"
+   +(f.stammOk?"Leitfaden durchgehen, Notiz erfassen, ggf. Nachricht senden — dann:"
+             :"Bitte zuerst oben die Stammdaten bestätigen — danach lässt sich das Gespräch abschließen.")+"</span>"
+   +"<button type='button' class='btn-brass btn-sm'"+(f.stammOk?"":" disabled")
+   +" onclick='kfKontaktAbschliessen()'>✓ Erstgespräch abschließen</button></div>");
 }
 /* Medizinischer Bedarf (Feld 2, NEU): f.med additiv, Guards überall (f.med&&f.med.x). Diagnose
    vorbefüllt aus fallFakten()-Chip, falls noch nichts eingetragen. f.medVorschlag ist ein Guard für
@@ -7519,7 +7581,7 @@ function bausteinEinfuegen(key){
  const TEXTE={
    beihilfe:"Guten Tag "+name+",\n\nSie haben die Konstellation, dass Ihre private Krankenversicherung ("+kt+") 30% der Kosten übernimmt, während die Beihilfe 70% übernimmt. Das bedeutet ...\n\nFür Sie bedeuten die nächsten Schritte ...\n\nMit freundlichen Grüßen\nKlinik Bavaria",
    pkv:"Guten Tag "+name+",\n\nIhre private Krankenversicherung ("+kt+") übernimmt die Kosten Ihrer Reha gemäß Ihrem Tarif. Das bedeutet ...\n\nFür Sie bedeuten die nächsten Schritte ...\n\nMit freundlichen Grüßen\nKlinik Bavaria",
-   selbst:"Guten Tag "+name+",\n\nals Selbstzahler tragen Sie die Kosten Ihres Aufenthalts selbst. Der Tagessatz beträgt ... €. Das bedeutet ...\n\nFür Sie bedeuten die nächsten Schritte ...\n\nMit freundlichen Grüßen\nKlinik Bavaria",
+   selbst:"Guten Tag "+name+",\n\nals Selbstzahlerin bzw. Selbstzahler tragen Sie die Kosten Ihres Aufenthalts selbst — dafür entfällt jede Genehmigung durch einen Kostenträger, und wir können den Aufnahmetermin sofort verbindlich planen.\n\nKomfortzimmer: 285 € pro Tag (1.995 € pro Woche), inklusive Vollpension und aller ärztlich verordneten Therapien.\nPanorama-Suite: 340 € pro Tag (2.380 € pro Woche).\nBei einer Buchung von drei Wochen am Stück reduziert sich der Tagessatz um 10 % (Komfortzimmer: 5.386 € statt 5.985 €).\n\nDie Rechnung stellen wir wöchentlich; eine Anzahlung ist nicht erforderlich.\n\nMit freundlichen Grüßen\nKlinik Bavaria",
    unterlagen:"Guten Tag "+name+",\n\nfür Ihre Aufnahme benötigen wir noch folgende Unterlagen:\n- Entlassbrief\n- Aktuelle Befunde\n- Versicherungsdaten\n- Kostenzusage\n\nBitte senden Sie uns diese ...\n\nMit freundlichen Grüßen\nKlinik Bavaria"
  };
  const el=document.getElementById("dReply");
@@ -8284,6 +8346,14 @@ function renderFallakte(){
   document.getElementById("dSaluto").checked=f.saluto;
   document.getElementById("dVerlust").value=f.verlust||"";
   document.getElementById("fvwVerlustBox").hidden=true;
+  /* F4c: Verlust-Knopf und Reaktivieren-Knopf sind gegenseitig exklusiv — nur einer der beiden
+     ist für den jeweiligen Status sichtbar; im Verlust-Fall zeigt der Hinweis den Grund. */
+  const _verloren=f.status==="Verloren";
+  document.getElementById("fvwVerlustBtn").hidden=_verloren;
+  document.getElementById("fvwReaktivierenBtn").hidden=!_verloren;
+  document.getElementById("fvwVerlustHinweis").innerHTML=_verloren
+    ?"<p style='margin:2px 0 0;font-size:11px;color:var(--brass-deep)'>Fall geschlossen · Grund: "+escapeHtml(f.verlust||"—")+"</p>"
+    :"";
   /* R8.3: Aufnahme-Zeile — sobald ein Termin steht bzw. der Fall Aufnahme-reif/aufgenommen ist,
      beantwortet die Übersicht "wann kommt der Patient?" ohne Klick ins Arbeitsfeld. */
   const _aufnZeile=(f.aufnahmeTermin||f.status==="Aufnahme geplant"||f.status==="Aufgenommen")
@@ -8295,7 +8365,7 @@ function renderFallakte(){
   document.getElementById("faUebersicht").innerHTML=_aufnZeile+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId,{verlauf:false})+"</details>";
   document.getElementById("faWerdegang").innerHTML=
     "<div class='lg-tabs'>"
-    +"<button type='button' class='lg-tab"+(_lgTab==="nachrichten"?" active":"")+"' data-lg='nachrichten' onclick=\"lgTabSet('nachrichten')\">Nachrichten</button>"
+    +"<button type='button' class='lg-tab"+(_lgTab==="nachrichten"?" active":"")+"' data-lg='nachrichten' onclick=\"lgTabSet('nachrichten')\">Gespräche</button>"
     +"<button type='button' class='lg-tab"+(_lgTab==="alles"?" active":"")+"' data-lg='alles' onclick=\"lgTabSet('alles')\">Alles</button>"
     +"</div><div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
   const med=inReha.find(p=>p.personId===f.personId);
@@ -8583,6 +8653,7 @@ demoRestore();
 renderAll();
 (function(){faelle.forEach(function(f){ if(f&&f.sim&&Array.isArray(f.sim.pending)) f.sim.pending.slice().forEach(function(k){setTimeout(function(){simFire(k);},3000);}); });})();
 applyHash();
+document.addEventListener("visibilitychange",function(){ if(!document.hidden&&typeof kpiCountUp==="function")kpiCountUp(); });
 try{ if(!localStorage.getItem(BETA_SEEN_KEY)) setTimeout(betaOpen,900); }catch(e){}
 setTimeout(function(){ if(!eingang.some(function(m){return m.tit===INBOUND_POOL[_inbN%INBOUND_POOL.length].tit;})) simulateInbound(); },3200);
 (function(){const el=document.getElementById("dtopDate");if(el)el.textContent=heute.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});})();
