@@ -4340,7 +4340,7 @@ summary.rk::-webkit-details-marker{display:none}
       <div class="kicker">Bitte einmal durchspielen</div>
       <ol class="beta-steps">
         <li><b>Anfrage sichten:</b> Fälle → Anfragen → eine offene Anfrage öffnen, Gruppe zuweisen &amp; freigeben. Probieren Sie dort auch „✦ KI: Anfrage analysieren".</li>
-        <li><b>Leitfall durchspielen:</b> Oben links auf <b>Koordination</b> wechseln → Fall <b>Anna Muster</b> öffnen und Schritt für Schritt bis zur Aufnahme durcharbeiten. Angehörige, Sozialdienst und Krankenkasse <b>antworten wirklich</b> (kurz warten lohnt sich) — inklusive einer Rückfrage der PKV, die Sie beantworten müssen.</li>
+        <li><b>Leitfälle durchspielen:</b> Oben links auf <b>Koordination</b> wechseln — drei Fälle antworten wirklich (kurz warten lohnt sich): <b>Anna Muster</b> (PKV, bis zur Aufnahme — inkl. Rückfrage der Kasse), <b>Maria Probst</b> (Selbstzahlerin — Preisgespräch führen) und <b>Werner Aumann</b> (die PKV lehnt ab — beraten Sie ihn und dokumentieren Sie den Verlust über Status „Verloren").</li>
         <li><b>Beziehungen pflegen:</b> Netzwerk → bei einem Anlass auf „Bearbeiten ›" — Kontaktdaten und Nachricht sind vorbereitet.</li>
         <li><b>Überblick:</b> Heute &amp; Auswertung ansehen — versteht man die Zahlen ohne Erklärung?</li>
       </ol>
@@ -4425,7 +4425,7 @@ let faelle=[
  {id:10,personId:"P07",name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-12),"Anfrage nach Hüft-TEP: Sozialdienst Leopoldina meldet Patienten (71, PKV) zur AHB an, Az. O-0847/26"],[dstr(-9),"Kostenzusage PKV eingegangen — vom Sozialdienst übermittelt"],[dstr(-2),"Aufgenommen — Privatzimmer, Sozialdienst per Telefon informiert"]],originalTxt:"Kurzanmeldung Sozialdienst Leopoldina-Krankenhaus Schweinfurt, Station Orthopädie, Az. O-0847/26. Patient Ludwig Bauer, 71 Jahre, Diagnose Hüft-TEP links, Kostenträger PKV. Aufnahme zur Anschlussheilbehandlung gewünscht, Unterlagen folgen. Rückmeldung zur Aufnahmefähigkeit erbeten.",originalKanal:"Zuweiser direkt"},
  {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:8,log:[[dstr(-15),"Website-Anfrage Neuro-Reha: Patientin fragt selbst nach Platz nach Schlaganfall, PKV"],[dstr(-10),"Beratung geführt, Zusage erhalten — Rückruf, Fragen zur Station beantwortet"],[dstr(-3),"Aufgenommen"]],originalTxt:"Guten Tag, ich hatte vor einigen Wochen einen Schlaganfall und bin jetzt auf der Suche nach einer Reha-Klinik mit Schwerpunkt Neurologie. Ich bin 66 Jahre alt und privat versichert. Können Sie mir sagen, ob und wann bei Ihnen ein Platz frei wäre? Über eine Rückmeldung würde ich mich sehr freuen. Viele Grüße, Elisabeth Cramer, 0171 5583421",originalKanal:"Website-Formular"},
  /* Seed-Ergänzung Mein Tag (Baustein Mitarbeiter-Dashboard): Kostenklärung ohne eigene Frist, additiv am Muster der Nachbarn */
- {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:5,log:[[dstr(-4),"Anfrage über Empfehlung: Anruf Hr. Aumann, 10:05, Knie-TEP, AHB gesucht, PKV"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend — telefonisch nachgefragt"],[dstr(0),"↦ Erinnerung an fehlende Kostenzusage verschickt"]],originalTxt:"Anruf Hr. Aumann, 10:05 · ruft selbst an, wurde von Bekannten empfohlen · sucht AHB nach Knie-TEP, 72 Jahre, privat versichert · bittet um Information zu Ablauf und Kosten, Rückrufnummer hinterlegt",originalKanal:"Telefon"}
+ {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"S. Koordination",aufgabe:"Kostenzusage anfragen",frist:dstr(0),saluto:false,docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:5,log:[[dstr(-4),"Anfrage über Empfehlung: Anruf Hr. Aumann, 10:05, Knie-TEP, AHB gesucht, PKV"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend — telefonisch nachgefragt"],[dstr(0),"↦ Erinnerung an fehlende Kostenzusage verschickt"]],originalTxt:"Anruf Hr. Aumann, 10:05 · ruft selbst an, wurde von Bekannten empfohlen · sucht AHB nach Knie-TEP, 72 Jahre, privat versichert · bittet um Information zu Ablauf und Kosten, Rückrufnummer hinterlegt",originalKanal:"Telefon"}
 ];
 
 /* Werdegang-Beispielschritte (nur für Demo-Fälle gesetzt; Rest wird generisch abgeleitet) */
@@ -5196,7 +5196,7 @@ function sendReply(){
   const r=document.getElementById("dReply"); const txt=(r?r.value:"").trim(); if(!txt){alert("Bitte eine Antwort verfassen.");return;}
   const kanal=document.getElementById("dReplyKanal").value;
   f.log.push([dstr(0),"↦ Antwort per "+kanal+" an "+f.name+": "+txt]);
-  if(f.id===LEITFALL_ID)simTrigger("antwort");
+  if(typeof simTrigger==="function")simTrigger("antwort",f);
   pruefeUpsell(f,txt);
   if(r)r.value="";
   document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
@@ -6945,7 +6945,7 @@ function dArbeitKostenUpload(){
  inbToast("done","<b>Kostenzusage-Dokument hochgeladen</b> (Demo)","",null);
 }
 function dArbeitUnterlagenAnfordern(){
- const f=aktuellerFall; if(f&&f.id===LEITFALL_ID&&typeof simTrigger==="function")simTrigger("unterlagen");
+ const f=aktuellerFall; if(f&&typeof simTrigger==="function")simTrigger("unterlagen",f);
  inbToast("done","<b>Fehlende Unterlagen angefordert</b> (Demo)","",null);
 }
 /* Vor-Aufnahme-Checkliste (anreise-Werkzeug) — 3 gespiegelte, read-only Punkte (Stammdaten/
@@ -6969,7 +6969,7 @@ function aufnahmeToggle(key){
 function paketErstellen(kanal){
  const f=aktuellerFall;if(!f)return;
  f.log.push([dstr(0),"↦ Einladungspaket (Checkliste, Anfahrt, Hausprospekt) per "+kanal+" an "+f.name]);
- if(f.id===LEITFALL_ID)simTrigger("paket");
+ if(typeof simTrigger==="function")simTrigger("paket",f);
  inbToast("done","<b>Einladungspaket erstellt</b> (Demo)","per "+escapeHtml(kanal)+" an "+escapeHtml(f.name),null);
  renderAll();renderFallakte();
 }
@@ -7030,7 +7030,7 @@ function kzAnfragen(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="angefragt";
  f.log.push([dstr(0),"Kostenzusage angefragt"]);
- if(f.id===LEITFALL_ID)simTrigger("kosten");
+ if(typeof simTrigger==="function")simTrigger("kosten",f);
  renderAll();renderFallakte();
 }
 function kzZusage(){
@@ -7056,7 +7056,7 @@ function kzNotizAdd(){
  const el=document.getElementById("dNotizSofort");
  const txt=(el?el.value:"").trim();if(!txt)return;
  f.log.push([dstr(0),txt]);
- if(f.id===LEITFALL_ID)simTrigger("antwort");
+ if(typeof simTrigger==="function")simTrigger("antwort",f);
  pruefeUpsell(f,txt);
  if(el)el.value="";
  document.getElementById("dLog").innerHTML=f.log.map(function(l){var out=/^↦/.test(l[1]);return "<div class='"+(out?"log-out":"log-in")+"'><b>"+escapeHtml(l[0])+"</b><br>"+escapeHtml(l[1])+"</div>";}).join("");
@@ -7083,7 +7083,7 @@ function advanceFallStatus(f){
  f.status=ns;
  f.aufgabe=STATUS_AUFGABE[ns]||"";
  f.frist=STATUS_AUFGABE[ns]?dstr(2):"";
- if(f.id===LEITFALL_ID&&typeof simTrigger==="function")simTrigger("status:"+ns);
+ if(typeof simTrigger==="function")simTrigger("status:"+ns,f);
  return true;
 }
 function advanceFall(){ const f=aktuellerFall;if(!f)return;
@@ -7784,38 +7784,56 @@ window.addEventListener("popstate",function(){
 });
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&_detailOpen()) dismissDetail(); });
 
-/* Leitfall-Simulation: Fall id:1 (Anna Muster) reagiert gescriptet auf Tester-Aktionen.
-   Fortschritt in f.sim={done:{},pending:[]} — wird via demoSave mitpersistiert; pending
-   wird beim Start nachgeliefert (Reload während des Zeitversatzes verliert nichts). */
-const LEITFALL_ID=1;
+/* Leitfall-Simulation: mehrere Fälle (Anna Muster/Maria Probst/Werner Aumann) reagieren
+   gescriptet auf Tester-Aktionen. Fortschritt in f.sim={done:{},pending:[]} — wird via
+   demoSave mitpersistiert; pending wird beim Start nachgeliefert (Reload während des
+   Zeitversatzes verliert nichts). Jedes Event trägt fid (Fall-id), über die simFire/
+   simSchedule den auslösenden Fall auflösen. */
 let LEITFALL_TEMPO=1; // QA kann <1 setzen; Demo immer 1
 const LEITFALL_EVENTS={
- "tochter-rueckruf":{delay:9000,von:"Tochter Muster (Angehörige)",
+ "tochter-rueckruf":{fid:1,delay:9000,von:"Tochter Muster (Angehörige)",
   text:"Rückruf Tochter Muster: bestätigt Diagnose Schlaganfall, Mutter aktuell Station Neurologie RHÖN. Wunschtermin: Aufnahme möglichst kommende Woche. Keine Isolationspflicht. Erreichbar täglich ab 14 Uhr unter 0170 4471190.",
   after:function(f){}},
- "fax-unterlagen":{delay:11000,von:"Sozialdienst RHÖN (Fax)",
+ "fax-unterlagen":{fid:1,delay:11000,von:"Sozialdienst RHÖN (Fax)",
   text:"Fax Sozialdienst RHÖN Bad Neustadt: Entlassbrief und aktuelle Befunde für Anna Muster übermittelt (Az. N-1187/26).",
   after:function(f){f.docs[0]=true;f.docs[1]=true;}},
- "mail-versicherung":{delay:18000,von:"Tochter Muster (E-Mail)",
+ "mail-versicherung":{fid:1,delay:18000,von:"Tochter Muster (E-Mail)",
   text:"E-Mail Tochter Muster: Versichertennummer und PKV-Tarifdaten der Mutter anbei — falls noch etwas fehlt, bitte kurze Nachricht.",
   after:function(f){f.docs[2]=true;}},
- "pkv-rueckfrage":{delay:12000,von:"PKV (Sachbearbeitung)",
+ "pkv-rueckfrage":{fid:1,delay:12000,von:"PKV (Sachbearbeitung)",
   text:"PKV, Fr. Berger: Für die Kostenzusage wird noch die ärztliche Begründung der Reha-Fähigkeit benötigt (Formular V-201). Bitte nachreichen, dann kann direkt entschieden werden. Rückfax 0961 0000-441.",
   after:function(f){f.sim.pkvOffen=true;}},
- "pkv-zusage":{delay:10000,von:"PKV (Sachbearbeitung)",
+ "pkv-zusage":{fid:1,delay:10000,von:"PKV (Sachbearbeitung)",
   text:"PKV, Fr. Berger: Vielen Dank für die Unterlagen — Kostenzusage für 21 Tage neurologische AHB erteilt (Az. PKV-2026-8841). Schriftliche Bestätigung folgt per Post.",
   after:function(f){f.sim.pkvOffen=false;f.kosten="Zusage liegt vor";f.docs[3]=true;
    f.aufgabe="Angebot Zimmer senden";f.frist=dstr(1);}},
- "tochter-zimmer":{delay:9000,von:"Tochter Muster (E-Mail)",
+ "tochter-zimmer":{fid:1,delay:9000,von:"Tochter Muster (E-Mail)",
   text:"E-Mail Tochter Muster: Vielen Dank für das Angebot! Einzelzimmer passt, Anreise am Montag klappt — Transport organisiert der Sozialdienst. Wir freuen uns.",
   after:function(f){}},
- "tochter-danke":{delay:8000,von:"Tochter Muster",
+ "tochter-danke":{fid:1,delay:8000,von:"Tochter Muster",
   text:"Tochter Muster: Einladungspaket ist angekommen, alle Unterlagen verständlich. Bis Montag!",
-  after:function(f){}}
+  after:function(f){}},
+ "maria-preisfrage":{fid:3,delay:9000,von:"Maria Probst (E-Mail)",
+  text:"E-Mail Maria Probst: Vielen Dank für das Angebot! Bevor ich zusage: Was kostet das Komfortzimmer pro Woche genau, und ist die Therapie im Preis enthalten? Gibt es ein Paket, wenn ich gleich drei Wochen buche?",
+  after:function(f){f.sim.preisOffen=true;}},
+ "maria-zusage":{fid:3,delay:8000,von:"Maria Probst (E-Mail)",
+  text:"E-Mail Maria Probst: Das klingt fair — ich buche das Komfort-Paket für drei Wochen. Termin gern ab nächster Woche; die Zahlung richte ich wie besprochen ein.",
+  after:function(f){f.sim.preisOffen=false;f.aufgabe="Kostenklärung: Selbstzahlung bestätigen";f.frist=dstr(1);}},
+ "maria-unterlagen":{fid:3,delay:10000,von:"Maria Probst (E-Mail)",
+  text:"E-Mail Maria Probst: Arztbrief und OP-Bericht anbei — mehr habe ich aktuell nicht. Sagen Sie mir bitte, falls noch etwas fehlt.",
+  after:function(f){f.docs[0]=true;f.docs[1]=true;}},
+ "maria-danke":{fid:3,delay:8000,von:"Maria Probst (E-Mail)",
+  text:"E-Mail Maria Probst: Unterlagen erhalten, vielen Dank! Ich freue mich auf nächste Woche — und auf das Zimmer mit Blick ins Grüne.",
+  after:function(f){}},
+ "pkv-ablehnung":{fid:13,delay:12000,von:"PKV (Sachbearbeitung)",
+  text:"PKV, Hr. Steiner: Nach Prüfung der eingereichten Unterlagen wird die stationäre AHB nicht übernommen — aus gutachterlicher Sicht ist eine ambulante Rehabilitation ausreichend (Az. PKV-2026-7702). Ein Widerspruch ist innerhalb von vier Wochen möglich.",
+  after:function(f){f.kosten="abgelehnt";f.aufgabe="Ablehnung mit Patient besprechen";f.frist=dstr(1);f.sim.ablehnungOffen=true;}},
+ "werner-absage":{fid:13,delay:10000,von:"Werner Aumann (Telefon)",
+  text:"Anruf Werner Aumann: dankt für die Beratung, möchte aber keinen Widerspruch einlegen — er hat sich für die ambulante Reha in Wohnortnähe entschieden. Bittet um Bestätigung, dass keine Kosten entstehen.",
+  after:function(f){f.sim.ablehnungOffen=false;f.aufgabe="Verlust dokumentieren (Status + Grund)";f.frist=dstr(0);}}
 };
-function simFall(){return faelle.find(x=>x.id===LEITFALL_ID);}
 function simFire(key){
- const f=simFall(),ev=LEITFALL_EVENTS[key];
+ const ev=LEITFALL_EVENTS[key],f=ev&&faelle.find(x=>x.id===ev.fid);
  if(!f||!ev)return;
  f.sim=f.sim||{done:{},pending:[]};
  f.sim.pending=(f.sim.pending||[]).filter(p=>p!==key);
@@ -7823,12 +7841,12 @@ function simFire(key){
  f.sim.done[key]=true;
  f.log.push([dstr(0),ev.text]);
  ev.after(f);
- inbToast("done","<b>Neue Nachricht · "+escapeHtml(ev.von)+"</b>","Fall Anna Muster",null);
+ inbToast("done","<b>Neue Nachricht · "+escapeHtml(ev.von)+"</b>","Fall "+escapeHtml(f.name),null);
  renderAll();
- if(typeof _fallakteId!=="undefined"&&_fallakteId===LEITFALL_ID&&typeof renderFallakte==="function")renderFallakte();
+ if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&typeof renderFallakte==="function")renderFallakte();
 }
 function simSchedule(key){
- const f=simFall(),ev=LEITFALL_EVENTS[key];
+ const ev=LEITFALL_EVENTS[key],f=ev&&faelle.find(x=>x.id===ev.fid);
  if(!f||!ev)return;
  f.sim=f.sim||{done:{},pending:[]};
  if(f.sim.done[key]||f.sim.pending.indexOf(key)>=0)return;
@@ -7836,19 +7854,31 @@ function simSchedule(key){
  if(typeof demoSave==="function")demoSave();
  setTimeout(function(){simFire(key);},ev.delay*LEITFALL_TEMPO);
 }
-function simTrigger(art){
- const f=simFall(); if(!f)return;
- if(art==="status:Kontaktiert") simSchedule("tochter-rueckruf");
- if(art==="unterlagen"){ simSchedule("fax-unterlagen"); simSchedule("mail-versicherung"); }
- if(art==="kosten") simSchedule("pkv-rueckfrage");
- if(art==="antwort"&&f.sim&&f.sim.pkvOffen) simSchedule("pkv-zusage");
- if(art==="antwort"&&f.sim&&f.sim.done["pkv-zusage"]&&!f.sim.done["tochter-zimmer"]) simSchedule("tochter-zimmer");
- if(art==="paket") simSchedule("tochter-danke");
+function simTrigger(art,f){
+ if(!f)return;
+ if(f.id===1){
+   if(art==="status:Kontaktiert") simSchedule("tochter-rueckruf");
+   if(art==="unterlagen"){ simSchedule("fax-unterlagen"); simSchedule("mail-versicherung"); }
+   if(art==="kosten") simSchedule("pkv-rueckfrage");
+   if(art==="antwort"&&f.sim&&f.sim.pkvOffen) simSchedule("pkv-zusage");
+   if(art==="antwort"&&f.sim&&f.sim.done["pkv-zusage"]&&!f.sim.done["tochter-zimmer"]) simSchedule("tochter-zimmer");
+   if(art==="paket") simSchedule("tochter-danke");
+ } else if(f.id===3){
+   if(art==="antwort"){
+     if(!(f.sim&&f.sim.done["maria-preisfrage"])) simSchedule("maria-preisfrage");
+     else if(f.sim&&f.sim.preisOffen&&!f.sim.done["maria-zusage"]) simSchedule("maria-zusage");
+   }
+   if(art==="unterlagen") simSchedule("maria-unterlagen");
+   if(art==="paket") simSchedule("maria-danke");
+ } else if(f.id===13){
+   if(art==="kosten") simSchedule("pkv-ablehnung");
+   if(art==="antwort"&&f.sim&&f.sim.ablehnungOffen) simSchedule("werner-absage");
+ }
 }
 
 /* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
    strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
-const DEMO_SCHEMA=1;
+const DEMO_SCHEMA=2;
 const DEMO_KEY="kbDemoState";
 let _demoSaveT=null;
 function demoSave(){
@@ -7895,7 +7925,7 @@ function betaClose(merken){
 document.getElementById("fFrist").value=dstr(1);
 demoRestore();
 renderAll();
-(function(){const f=typeof simFall==="function"?simFall():null; if(f&&f.sim&&Array.isArray(f.sim.pending)) f.sim.pending.slice().forEach(function(k){setTimeout(function(){simFire(k);},3000);});})();
+(function(){faelle.forEach(function(f){ if(f&&f.sim&&Array.isArray(f.sim.pending)) f.sim.pending.slice().forEach(function(k){setTimeout(function(){simFire(k);},3000);}); });})();
 applyHash();
 try{ if(!localStorage.getItem(BETA_SEEN_KEY)) setTimeout(betaOpen,900); }catch(e){}
 setTimeout(function(){ if(!eingang.some(function(m){return m.tit===INBOUND_POOL[_inbN%INBOUND_POOL.length].tit;})) simulateInbound(); },3200);
