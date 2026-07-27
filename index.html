@@ -3257,6 +3257,11 @@ summary.rk::-webkit-details-marker{display:none}
 .beta-steps li{margin:7px 0}
 .beta-note{font-size:12px;color:var(--muted);font-style:italic}
 .beta-foot{display:flex;gap:10px;justify-content:space-between;align-items:center}
+/* Pool-Karten im Board (Zone Neu): freigegebene Anfragen vor der Übernahme — gestrichelt/ruhig. */
+.karte.kpool{border-style:dashed;background:var(--cream,#F6F2E6);cursor:pointer}
+.karte.kpool .kmeta{font-style:italic;color:var(--muted)}
+.kpool-btn{margin-top:8px;width:100%}
+.kpool-cnt{opacity:.65;margin-left:4px}
 /* dt-actions (↺/?) sind Teil der Desktop-Topbar (.dtopbar, erst ab 1024px sichtbar) —
    auf schmalen Viewports fehlt sonst jeder Weg zurück zu den Testhinweisen; eigener,
    von .ki-fab unabhängiger Mini-FAB nur unterhalb der Desktop-Schwelle. */
@@ -4339,7 +4344,7 @@ summary.rk::-webkit-details-marker{display:none}
       <p class="beta-intro">Dies ist ein klickbarer Prototyp mit <b>rein erfundenen Demo-Daten</b> — Sie können nichts kaputt machen. Ihre Eingaben bleiben in diesem Browser gespeichert; der ↺-Knopf oben setzt alles zurück.</p>
       <div class="kicker">Bitte einmal durchspielen</div>
       <ol class="beta-steps">
-        <li><b>Anfrage sichten:</b> Fälle → Anfragen → eine offene Anfrage öffnen, Gruppe zuweisen &amp; freigeben. Probieren Sie dort auch „✦ KI: Anfrage analysieren".</li>
+        <li><b>Anfrage sichten:</b> Fälle → Anfragen → eine offene Anfrage öffnen, Gruppe zuweisen &amp; freigeben. Probieren Sie dort auch „✦ KI: Anfrage analysieren". Die freigegebene Anfrage liegt danach im <b>Board</b> (Spalte „Neu") und wartet auf Übernahme — „Übernehmen ›" macht daraus einen Fall.</li>
         <li><b>Leitfälle durchspielen:</b> Oben links auf <b>Koordination</b> wechseln — drei Fälle antworten wirklich (kurz warten lohnt sich): <b>Anna Muster</b> (PKV, bis zur Aufnahme — inkl. Rückfrage der Kasse), <b>Maria Probst</b> (Selbstzahlerin — Preisgespräch führen) und <b>Werner Aumann</b> (die PKV lehnt ab — beraten Sie ihn und dokumentieren Sie den Verlust über Status „Verloren").</li>
         <li><b>Beziehungen pflegen:</b> Netzwerk → bei einem Anlass auf „Bearbeiten ›" — Kontaktdaten und Nachricht sind vorbereitet.</li>
         <li><b>Überblick:</b> Heute &amp; Auswertung ansehen — versteht man die Zahlen ohne Erklärung?</li>
@@ -4667,6 +4672,8 @@ function egFreigeben(id){
   const m=eingang.find(x=>x.id===id); if(!m||!egGruppe) return;
   m.gruppe=egGruppe; m.autoVerteilt=false;
   renderEingang(); openEgDetail(id);
+  if(typeof inbToast==="function")inbToast("done","<b>Im Pool von "+escapeHtml(m.gruppe)+"</b>","Liegt jetzt im Board (Neu) — Übernehmen macht daraus einen Fall",null);
+  if(typeof renderBoard==="function")renderBoard();
 }
 
 /* ----- Zuweiser-Premium-Suite: Demo-Daten (synthetisch) ----- */
@@ -5243,7 +5250,20 @@ function makeBoardCol(st){
   const f=faelle.filter(x=>x.status===st);
   f.sort((a,b)=>sterneVon({personId:b.personId})-sterneVon({personId:a.personId}));
   const col=document.createElement("div");col.className="col";
-  col.innerHTML="<h3><span class='cdot' style='background:"+STATUS_COL[st]+"'></span>"+st+"<span class='cnt num'>"+f.length+"</span></h3>";
+  /* Freigegebene, noch nicht übernommene Anfragen (Gruppen-Pool) sichtbar in der Neu-Spalte —
+     sonst wirkt "Gruppe zuweisen & freigeben" wie ein schwarzes Loch (Beta-Feedback). */
+  const pool=st==="Neu"?eingang.filter(m=>!m.done&&m.gruppe):[];
+  col.innerHTML="<h3><span class='cdot' style='background:"+STATUS_COL[st]+"'></span>"+st+"<span class='cnt num'>"+f.length+"</span>"+(pool.length?"<span class='cnt num kpool-cnt' title='im Pool, wartet auf Übernahme'>+"+pool.length+"</span>":"")+"</h3>";
+  pool.forEach(m=>{
+    const k=document.createElement("div");k.className="karte kpool";
+    k.innerHTML="<div class='krow'><span class='ava'>"+initialen(m.wer||m.tit)+"</span><span class='name'>"+escapeHtml(m.wer||m.tit)+"</span></div>"
+      +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[m.achse]||"var(--unklar)")+"'>"+escapeHtml(m.achse)+"</span><span class='pill-kt'>"+escapeHtml(m.gruppe)+"</span></div>"
+      +"<div class='kmeta'>Im Pool · wartet auf Übernahme</div>"
+      +"<button class='btn-brass btn-sm kpool-btn' type='button'>Übernehmen ›</button>";
+    k.onclick=()=>openEgDetail(m.id);
+    k.querySelector(".kpool-btn").onclick=(e)=>{e.stopPropagation();egUebernehmenAusPool(m.id);};
+    col.appendChild(k);
+  });
   f.forEach(x=>{
     const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"");
     const fk=fristKlasse(x.frist);
