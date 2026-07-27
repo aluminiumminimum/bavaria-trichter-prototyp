@@ -513,6 +513,14 @@ Reload-Tests immer mit Cache-Buster-Query (`?frisch=N`) + `location.search`-Asse
 awk-Script-Extraktion bricht bei einzeiligen `<script>…</script>`-Tags (Font-Loader Z. 9/13)
 — Haupt-Script-Block stattdessen über letztes `<script>`/`</script>`-Paar per sed schneiden.
 
+**R8.6 (Nachschlag):** Topbar-Reset beschriftet („↺ Zurücksetzen" statt nacktem Icon — Tester
+fanden ihn nicht; Reload setzt bewusst NICHT zurück, Beta-Persistenz bleibt). Platzhalter-Namen
+(`fkwNameIstPlatzhalter()`: „Patient/Patientin (…", „Neuer Fall (…") werden im Stammdaten-Feld
+nicht mehr vorbefüllt → leeres Feld + Placeholder + Hinweis auf Originalnachricht; Bestätigen
+ohne Namen → Toast+Focus; Log „Stammdaten im Erstkontakt bestätigt: Name (Alter)"
+(LG_SYS_RE-Präfix unverändert); Umbenennung → Toast „Fall umbenannt". Echte Namen bleiben
+vorbefüllt.
+
 ---
 
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"

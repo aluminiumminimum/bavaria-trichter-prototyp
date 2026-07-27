@@ -3366,7 +3366,7 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
 </aside>
 <header class="dtopbar">
   <div class="dt-titles"><h2 id="dtopTitle" class="serif">Heute</h2><span id="dtopSub"></span></div>
-  <div class="dt-actions"><button class="btn-ghost btn-sm" type="button" onclick="demoReset()" title="Demo zurücksetzen">↺</button><button class="btn-ghost btn-sm" type="button" onclick="betaOpen()" title="Testhinweise &amp; Feedback">?</button><span id="kiStatus" class="kist" role="button" tabindex="0" title="KI-Copilot" onclick="kiStatusClick()"><span class="kd"></span><span id="kiStatusTxt">KI …</span></span><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button></div>
+  <div class="dt-actions"><button class="btn-ghost btn-sm" type="button" onclick="demoReset()" title="Demo auf den Ausgangszustand zurücksetzen — alle Leitfälle wieder spielbar">↺ Zurücksetzen</button><button class="btn-ghost btn-sm" type="button" onclick="betaOpen()" title="Testhinweise &amp; Feedback">?</button><span id="kiStatus" class="kist" role="button" tabindex="0" title="KI-Copilot" onclick="kiStatusClick()"><span class="kd"></span><span id="kiStatusTxt">KI …</span></span><span id="dtopDate" class="dt-date num"></span><button class="btn-ghost btn-sm" onclick="openSheetNeu()">＋ Neue Anfrage</button></div>
 </header>
 <div class="app">
 <main class="content">
@@ -7011,22 +7011,37 @@ function fkwOriginalHtml(f){
     +(f.originalKanal?" · "+escapeHtml(f.originalKanal):"")+"</summary>"
     +"<div class='eg-original'><div class='mtxt'>"+escapeHtml(f.originalTxt)+"</div></div></details>";
 }
+/* Automatisch vergebene Namen („Patient/Patientin (74) · …", „Neuer Fall (aus Eingang)") sind
+   Platzhalter aus der Eingangs-Übernahme — beim Erfassen der Stammdaten muss der echte Name
+   eingetragen werden, deshalb wird der Platzhalter hier bewusst NICHT vorbefüllt. */
+function fkwNameIstPlatzhalter(f){
+  return /^Patient\/Patientin \(/.test(f.name||"")||/^Neuer Fall \(/.test(f.name||"");
+}
 function fkwStammHtml(f){
   if(f.stammOk) return "";
+  const ph=fkwNameIstPlatzhalter(f);
   return "<div class='fkw-stamm'>"
-   +"<div><label for='fkwName'>Name</label><input id='fkwName' value=\""+escapeHtml(f.name||"")+"\"></div>"
+   +"<div><label for='fkwName'>Name</label><input id='fkwName' value=\""+(ph?"":escapeHtml(f.name||""))+"\""+(ph?" placeholder='Name des Patienten eintragen'":"")+"></div>"
    +"<div><label for='fkwAlter'>Alter</label><input id='fkwAlter' type='number' min='18' max='105' value=\""+(f.alter||"")+"\" style='width:70px'></div>"
    +"<button class='btn-ghost btn-sm' type='button' onclick='fkwStammBestaetigen()'>Bestätigen</button>"
+   +(ph?"<p style='flex-basis:100%;margin:2px 0 0;font-size:11px;color:var(--brass-deep)'>Der Fall trägt noch einen automatischen Platzhalter-Namen — der echte Name steht meist in der Originalnachricht (unten).</p>":"")
    +"</div>";
 }
 function fkwStammBestaetigen(){
  const f=aktuellerFall;if(!f)return;
  const nameEl=document.getElementById("fkwName"),alterEl=document.getElementById("fkwAlter");
- const name=(nameEl?nameEl.value:"").trim(); if(!name)return;
+ const name=(nameEl?nameEl.value:"").trim();
+ if(!name){
+  if(typeof inbToast==="function")inbToast("done","<b>Name fehlt</b>","Bitte den Namen des Patienten eintragen — er steht meist in der Originalnachricht.",null);
+  if(nameEl)nameEl.focus();
+  return;
+ }
+ const vorher=f.name;
  f.name=name; f.alter=alterEl&&alterEl.value?+alterEl.value:f.alter; f.stammOk=true;
- f.log.push([dstr(0),"Stammdaten im Erstkontakt bestätigt",logZeit()]);
+ f.log.push([dstr(0),"Stammdaten im Erstkontakt bestätigt: "+name+(f.alter?" ("+f.alter+")":""),logZeit()]);
  kfSyncStatus(f);
  renderAll();renderFallakte();
+ if(vorher!==name&&typeof inbToast==="function")inbToast("done","<b>Fall umbenannt</b>",escapeHtml(vorher)+" → "+escapeHtml(name),null);
 }
 function kfKontaktAbschliessen(){
  const f=aktuellerFall;if(!f)return;
