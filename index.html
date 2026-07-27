@@ -3332,6 +3332,10 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
 .kf-consent{margin-top:12px}
 .kf-consent label{display:block;margin-bottom:4px}
 @media(max-width:520px){.fvw-row{grid-template-columns:1fr}}
+/* R8.3: Checklisten-Sprung zum Klärungsfeld + entfallende Selbstzahler-Kostenzusage */
+.kf-check-lbl{flex:1;min-width:0}
+.kf-jump{flex-shrink:0;padding:2px 10px;font-size:11px}
+.kf-doc-na{opacity:.6}
 </style>
 </head>
 <body>
@@ -5004,7 +5008,7 @@ function lgDatumHtml(iso){
  if(!m)return escapeHtml(iso||"");
  return (+m[3])+". "+(LG_MONATE[+m[2]-1]||"");
 }
-const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Kostenträger geändert|Verantwortlich:|Einwilligung Kontaktaufnahme:|Status:)/;
+const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Kostenträger geändert|Verantwortlich:|Einwilligung Kontaktaufnahme:|Aufnahmetermin bestätigt|Status:)/;
 /* Zeilentyp eines Verlaufseintrags — eine Quelle für logHtml() UND das Lagebild (Etappe 2):
    sys=Systemzeile, note=manuelle Notiz (✎-Präfix aus kzNotizAdd), out=ausgehend (↦), in=eingehend. */
 function lgTyp(txt){
@@ -6915,13 +6919,13 @@ function renderInReha(){
 }
 function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();if(typeof demoSave==="function")demoSave();}
 
-/* ---------- Geplante Aufnahme: +1 Tag Vorlauf ---------- */
+/* ---------- Geplante Aufnahme: +1 Tag Vorlauf ----------
+   R8.3: navigiert NICHT mehr (go("heute") riss den Mitarbeiter mitten aus der Akte, sobald der
+   Auto-Status auf "Aufnahme geplant" sprang — Beta-Feedback). Effekt bleibt (horizont++), die
+   Rückmeldung kommt als Toast; das Heute-Board rendert der Aufrufer ohnehin via renderAll(). */
 function celebratePlanned(){
   horizont++;
-  go("heute");
-  renderHeute();
-  const tag=document.getElementById("plusTagH");
-  if(tag){tag.textContent="+1 Tag Vorlauf";tag.classList.add("show");setTimeout(()=>tag.classList.remove("show"),2400);}
+  if(typeof inbToast==="function")inbToast("done","<b>Aufnahme geplant</b> · +1 Tag Belegungs-Vorlauf","sichtbar im Heute-Board",null);
 }
 
 /* ---------- Fall-Detail ---------- */
@@ -7056,11 +7060,11 @@ function kfSyncStatus(f){
    f.aufgabe — der generische Text bleibt für Board/Mein Tag). lbPulsHtml() zieht die letzte echte
    Nachricht über lgTyp() aus f.log. */
 function kfAufgabe(f){
- if(f.status==="Aufgenommen")return {feld:null,text:"Fall abgeschlossen — Patient ist aufgenommen."};
+ if(f.status==="Aufgenommen")return {feld:null,text:"Fall abgeschlossen — Patient "+(f.aufnahmeTermin?"wird zum "+paDate(f.aufnahmeTermin)+" aufgenommen":"ist aufgenommen")+"."};
  if(f.status==="Verloren")return {feld:null,text:"Fall verloren"+(f.verlust?" · Grund: "+f.verlust:"")+"."};
  const felder=kfFelder(f);
  const erste=felder.find(k=>!k.ok);
- if(!erste)return {feld:null,text:"Alles geklärt — Aufnahme kann bestätigt werden.",fertig:true};
+ if(!erste)return {feld:null,text:"Alles geklärt — Aufnahme"+(f.aufnahmeTermin?" zum "+paDate(f.aufnahmeTermin):"")+" kann bestätigt werden.",fertig:true};
  if(erste.key==="kontakt"){
   const txt=String(f.originalTxt||"");
   const telM=/(?:0|\+49)[\d \-\/]{6,}/.exec(txt);
@@ -7265,14 +7269,17 @@ function kfMedVorschlag(){
  if(_schwere)_schwere.value=v.schwere||"—";
 }
 function kfUnterlagenHtml(f){
+ const istSelbstzahler=(f.kt==="Selbstzahler");
  return "<div class='docs'>"
   +"<label><input type='checkbox' "+(f.docs[0]?"checked":"")+" onchange='aufnDocToggle(0)'> Entlassbrief</label>"
   +"<label><input type='checkbox' "+(f.docs[1]?"checked":"")+" onchange='aufnDocToggle(1)'> Befunde</label>"
   +"<label><input type='checkbox' "+(f.docs[2]?"checked":"")+" onchange='aufnDocToggle(2)'> Versicherungsdaten</label>"
-  +"<label><input type='checkbox' "+(f.docs[3]?"checked":"")+" onchange='aufnDocToggle(3)'> Kostenzusage</label>"
+  +(istSelbstzahler
+    ?"<label class='kf-doc-na'><input type='checkbox' disabled> Kostenzusage — entfällt (Selbstzahler)</label>"
+    :"<label><input type='checkbox' "+(f.docs[3]?"checked":"")+" onchange='aufnDocToggle(3)'> Kostenzusage</label>")
   +"</div>"
   +"<button class='btn-ghost btn-sm' type='button' style='margin-top:8px' onclick='dArbeitUnterlagenAnfordern()'>Fehlende anfordern</button>"
-  +"<p class='kz-hint' style='margin-top:6px'>Kostenzusage-Dokument kommt aus dem Feld Kostenzusage.</p>";
+  +(istSelbstzahler?"":"<p class='kz-hint' style='margin-top:6px'>Kostenzusage-Dokument kommt aus dem Feld Kostenzusage.</p>");
 }
 /* Warteschleifen-Telefonagent (Pilot, Block 2): nur solange keine Kostenzusage vorliegt und der Fall
    nicht Selbstzahler ist — Agent übernimmt Warteschleife bei der Kasse, Übernahme bleibt Human-in-the-loop. */
@@ -7296,10 +7303,15 @@ function kfKostenHtml(f){
   +"<button class='btn-ghost btn-sm' type='button' onclick='dArbeitKostenUpload()'>⇪ Dokument hochladen (Demo)</button></div>");
 }
 function kfAufnahmeHtml(f){
- return "<div class='kicker'>Vor-Aufnahme-Checkliste</div>"
+ return "<div class='full' style='margin-bottom:12px'><label for='aufnTermin'>Aufnahmetermin</label>"
+  +"<input id='aufnTermin' type='date' value=\""+escapeHtml(f.aufnahmeTermin||"")+"\" onchange='aufnTerminSet(this.value)'></div>"
+  +"<div class='kicker'>Vor-Aufnahme-Checkliste</div>"
   +aufnahmeCheckliste(f).map(function(c){
+    /* Auto-Punkte sind hier nicht abhakbar — der "öffnen ›"-Sprung führt zum Klärungsfeld, das sie erfüllt */
+    const sprung=(!c.ok&&!c.manuell&&c.feld&&c.feld!=="aufnahme")
+      ?"<button type='button' class='btn-ghost btn-sm kf-jump' onclick=\"lbOeffneFeld('"+c.feld+"')\">öffnen ›</button>":"";
     return "<label class='egt-check-item'><input type='checkbox' "+(c.ok?"checked":"")
-     +(c.manuell?" onchange=\"aufnahmeToggle('"+c.key+"')\"":" disabled")+"> "+escapeHtml(c.label)+"</label>";
+     +(c.manuell?" onchange=\"aufnahmeToggle('"+c.key+"')\"":" disabled")+"> <span class='kf-check-lbl'>"+escapeHtml(c.label)+"</span>"+sprung+"</label>";
   }).join("")
   +"<div class='full' style='margin-top:12px'><label>Einladungspaket (Checkliste, Anfahrt, Hausprospekt)</label>"
   +"<div class='kz-actions'>"
@@ -7356,14 +7368,26 @@ function dArbeitUnterlagenAnfordern(){
 /* Vor-Aufnahme-Checkliste (anreise-Werkzeug) — 3 gespiegelte, read-only Punkte (Stammdaten/
    Kosten/Unterlagen) + 3 manuelle Punkte (f.aufnahmeCheck), Gate für advanceFallStatus(). */
 function aufnahmeCheckliste(f){
+ /* R8.3: unterlagen — bei Selbstzahlern entfällt das Kostenzusage-Dokument (docs[3]);
+    tag — leitet sich aus dem echten Aufnahmetermin (f.aufnahmeTermin, Datum) ab statt aus
+    einem blanken Häkchen. Auto-Punkte (manuell:false) sind im Aufnahme-Feld ansteuerbar
+    (kfAufnahmeHtml rendert "öffnen ›" zum zuständigen Klärungsfeld). */
+ const _docsOk=Array.isArray(f.docs)&&f.docs[0]&&f.docs[1]&&f.docs[2]&&(f.kt==="Selbstzahler"||!!f.docs[3]);
  return [
-   {key:"stamm", label:"Stammdaten bestätigt", ok:!!f.stammOk, manuell:false},
-   {key:"kosten", label:"Kostenzusage bzw. Selbstzahlung geklärt", ok:(f.kosten==="Zusage liegt vor"||f.kosten==="Selbstzahler bestätigt"), manuell:false},
-   {key:"unterlagen", label:"Unterlagen vollständig", ok:Array.isArray(f.docs)&&f.docs.every(Boolean), manuell:false},
+   {key:"stamm", label:"Stammdaten bestätigt", ok:!!f.stammOk, manuell:false, feld:"kontakt"},
+   {key:"kosten", label:"Kostenzusage bzw. Selbstzahlung geklärt", ok:(f.kosten==="Zusage liegt vor"||f.kosten==="Selbstzahler bestätigt"), manuell:false, feld:"kosten"},
+   {key:"unterlagen", label:"Unterlagen vollständig"+(f.kt==="Selbstzahler"?" (ohne Kostenzusage)":""), ok:_docsOk, manuell:false, feld:"unterlagen"},
    {key:"zimmer", label:"Zimmer reserviert", ok:!!(f.aufnahmeCheck&&f.aufnahmeCheck.zimmer), manuell:true},
    {key:"transport", label:"Transport geklärt", ok:!!(f.aufnahmeCheck&&f.aufnahmeCheck.transport), manuell:true},
-   {key:"tag", label:"Aufnahmetag bestätigt", ok:!!(f.aufnahmeCheck&&f.aufnahmeCheck.tag), manuell:true}
+   {key:"tag", label:"Aufnahmetag bestätigt"+(f.aufnahmeTermin?" · "+paDate(f.aufnahmeTermin):""), ok:!!f.aufnahmeTermin, manuell:false, feld:"aufnahme"}
  ];
+}
+function aufnTerminSet(v){
+ const f=aktuellerFall;if(!f)return;
+ f.aufnahmeTermin=v||"";
+ if(v)f.log.push([dstr(0),"Aufnahmetermin bestätigt: "+paDate(v),logZeit()]);
+ kfSyncStatus(f);
+ renderAll();renderFallakte();
 }
 function aufnahmeToggle(key){
  const f=aktuellerFall;if(!f)return;
@@ -7394,7 +7418,7 @@ function epkBodyHtml(f){
   +"</ul></div>"
   +"<div class='epk-doc'><h4>Ihre Anreise</h4><ul>"
   +"<li>Klinik Bavaria, Von-der-Tann-Str. 18–22, 97688 Bad Kissingen</li>"
-  +"<li>Anreisetag laut Planung</li>"
+  +"<li>"+(f.aufnahmeTermin?"Ihr Aufnahmetermin: "+escapeHtml(paDate(f.aufnahmeTermin)):"Anreisetag laut Planung")+"</li>"
   +"<li>Aufnahme ab 10 Uhr, Empfang Haupthaus</li>"
   +"<li>Parkplätze am Haus, Bahnhof-Shuttle auf Anfrage</li>"
   +"</ul></div>"
@@ -7473,6 +7497,7 @@ function kzAnfragen(){
 function kzZusage(){
  const f=aktuellerFall;if(!f)return;
  f.kosten="Zusage liegt vor";
+ f.docs[3]=true; /* Zusage erfasst = Kostenzusage-Dokument liegt vor (sonst blieb "Unterlagen vollständig" unerfüllbar) */
  f.log.push([dstr(0),"Kostenzusage liegt vor",logZeit()]);
  kfSyncStatus(f);
  renderAll();renderFallakte();
@@ -8183,7 +8208,15 @@ function renderFallakte(){
   document.getElementById("dSaluto").checked=f.saluto;
   document.getElementById("dVerlust").value=f.verlust||"";
   document.getElementById("fvwVerlustBox").hidden=true;
-  document.getElementById("faUebersicht").innerHTML="<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId,{verlauf:false})+"</details>";
+  /* R8.3: Aufnahme-Zeile — sobald ein Termin steht bzw. der Fall Aufnahme-reif/aufgenommen ist,
+     beantwortet die Übersicht "wann kommt der Patient?" ohne Klick ins Arbeitsfeld. */
+  const _aufnZeile=(f.aufnahmeTermin||f.status==="Aufnahme geplant"||f.status==="Aufgenommen")
+    ?"<div class='pa-meta' style='margin-bottom:10px'><div class='pa-row'><span class='pa-k'>Aufnahme</span><span class='pa-v'>"
+      +escapeHtml(f.status==="Aufgenommen"
+        ?(f.aufnahmeTermin?"Patient wird zum "+paDate(f.aufnahmeTermin)+" aufgenommen":"Patient ist aufgenommen")
+        :(f.aufnahmeTermin?"geplant zum "+paDate(f.aufnahmeTermin):"geplant — Termin noch offen"))
+      +"</span></div></div>":"";
+  document.getElementById("faUebersicht").innerHTML=_aufnZeile+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId,{verlauf:false})+"</details>";
   document.getElementById("faWerdegang").innerHTML=
     "<div class='lg-tabs'>"
     +"<button type='button' class='lg-tab"+(_lgTab==="nachrichten"?" active":"")+"' data-lg='nachrichten' onclick=\"lgTabSet('nachrichten')\">Nachrichten</button>"

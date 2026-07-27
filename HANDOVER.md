@@ -459,6 +459,15 @@ Kommunikation nicht im Verlauf vergraben, „Steuerung" war unverständlich. Umb
   Nie Namespace-Globs mit Stern-Slash in CSS-Kommentare schreiben. Der AURORA-PORTAL-Kommentar
   hatte dadurch monatelang die `.rp-bel`-Hover-Regel gefressen (jetzt repariert).
 
+**R8.3 (27.07., Beta-Nachfixes):** `celebratePlanned()` navigiert NICHT mehr (`go("heute")` riss
+den Nutzer aus der Akte, seit der Auto-Status es auslöst) — Effekt bleibt, Toast statt Sprung.
+**`f.aufnahmeTermin`** (Laufzeit-Datum): Eingabe im Aufnahme-Feld (`aufnTerminSet`), Checklisten-
+punkt „Aufnahmetag bestätigt" leitet sich daraus ab (`aufnahmeCheck.tag` ist tot), Übersicht/
+Lagebild/Einladungspaket zeigen den Termin. `kzZusage()` setzt `docs[3]` mit; bei
+`kt==="Selbstzahler"` entfällt das Kostenzusage-Dokument in Checkliste + Unterlagen-Feld.
+Auto-Punkte der Vor-Aufnahme-Checkliste tragen `feld:`-Mapping und rendern „öffnen ›"
+(`lbOeffneFeld`) statt toter Disabled-Häkchen.
+
 ---
 
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"
