@@ -3456,6 +3456,12 @@ details.fa-orig>div{padding:0 12px 12px}
  #view-auswertung.view.active{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
  #view-auswertung>.vhead,#view-auswertung>.chap{grid-column:1 / -1}
 }
+/* R15 · In-Reha-Phase: Hinweis, solange das Aufnahme-Assessment noch aussteht, plus die
+   Dokumentations-Aktionen im Reha-Detail. */
+.reha-assess-hint{border:1px dashed var(--brass-line);border-radius:8px;background:var(--brass-soft);
+ padding:12px 14px;margin:0 0 14px;font-size:13px;color:var(--brass-deep);line-height:1.45}
+.reha-doc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.fa-med-src{margin:0 0 8px;font-size:11px;color:var(--faint);line-height:1.4}
 </style>
 </head>
 <body>
@@ -5145,7 +5151,7 @@ function lgDatumHtml(iso){
  if(!m)return escapeHtml(iso||"");
  return (+m[3])+". "+(LG_MONATE[+m[2]-1]||"");
 }
-const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Stammdaten-Akte angelegt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Kostenträger geändert|Verantwortlich:|Einwilligung Kontaktaufnahme:|Ansprechpartner:|Aufnahmetermin bestätigt|Erstgespräch geführt|Status:)/;
+const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Stammdaten-Akte angelegt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Kostenträger geändert|Zimmerkategorie festgelegt|Aufnahme vollzogen|Aufnahme-Assessment|Entlassung dokumentiert|Verantwortlich:|Einwilligung Kontaktaufnahme:|Ansprechpartner:|Aufnahmetermin bestätigt|Erstgespräch geführt|Status:)/;
 /* Zeilentyp eines Verlaufseintrags — eine Quelle für logHtml() UND das Lagebild (Etappe 2):
    sys=Systemzeile, note=manuelle Notiz (✎-Präfix aus kzNotizAdd), out=ausgehend (↦), in=eingehend. */
 function lgTyp(txt){
@@ -5953,6 +5959,7 @@ function fcBelegte(){
  const inRehaIds=new Set(inReha.map(p=>p.personId));
  const list=[];
  inReha.forEach(p=>{
+  if(p.entlassen)return;
   const per=p.personId?person(p.personId):null;
   const von=fcParseISO(p.aufnahme);if(!von)return;
   const bis=new Date(von);bis.setDate(bis.getDate()+p.verweildauer.plan);
@@ -6959,8 +6966,8 @@ function openRsDetail(i){
  ["ovDetail","dbDetail"].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove("open");});
  document.getElementById("rsAva").textContent=initialen(p.name);
  document.getElementById("rsName").textContent=p.name+" ("+p.alter+")";
- document.getElementById("rsSub").textContent=p.achse+" · "+p.icd+" · "+p.owner;
- const bill=RS_BILLING[p.name]||{tagessatz:0,empf:[]};
+ document.getElementById("rsSub").textContent=p.achse+" · "+(p.icd||"ICD noch nicht kodiert")+" · "+p.owner;
+ const bill=rehaBill(p);
  const dB=p.barthel.akt-p.barthel.auf,dF=p.fim.akt-p.fim.auf;
  const rest=Math.max(0,p.verweildauer.plan-p.verweildauer.ist);
  const stayPct=Math.min(100,Math.round(p.verweildauer.ist/p.verweildauer.plan*100));
@@ -6968,11 +6975,16 @@ function openRsDetail(i){
  const erlos=ts*p.verweildauer.plan,dbTot=(ts-kt)*p.verweildauer.plan,dbTag=ts-kt;
  const marge=erlos?Math.round(dbTot/erlos*100):0;
  const kz=bill.kostenzusage||"—",kzCls=kz==="offen"?"warn":"ok";
+ /* Vor dem Aufnahme-Assessment gibt es keine Messwerte — Ringe und Kurve würden mit null brechen
+    und Nullwerte wären eine Lüge (R15). */
+ const _mess=rehaAssessOffen(p)
+  ?"<div class='reha-assess-hint'>Aufnahme-Assessment steht aus — Barthel/FIM und Reha-Ziel werden aus der Kliniksoftware übernommen.</div>"
+  :"<div class='rs-rings'>"+kpiRing(p.barthel.akt,100,"Barthel","▲ "+dB)+kpiRing(p.fim.akt,126,"FIM","▲ "+dF)+kpiRing(p.ziel,100,"Reha-Ziel",p.ziel+" %")+"</div>"
+   +"<div class='rs-dev'>"+devBar("Barthel-Index (0–100)",p.barthel.auf,p.barthel.akt,100)+devBar("FIM (18–126)",p.fim.auf,p.fim.akt,126)+"</div>"
+   +rsChart(p);
  document.getElementById("rsErfolg").innerHTML=
    "<div class='rs-ctitle'>Erfolge & Verlauf</div>"
-  +"<div class='rs-rings'>"+kpiRing(p.barthel.akt,100,"Barthel","▲ "+dB)+kpiRing(p.fim.akt,126,"FIM","▲ "+dF)+kpiRing(p.ziel,100,"Reha-Ziel",p.ziel+" %")+"</div>"
-  +"<div class='rs-dev'>"+devBar("Barthel-Index (0–100)",p.barthel.auf,p.barthel.akt,100)+devBar("FIM (18–126)",p.fim.auf,p.fim.akt,126)+"</div>"
-  +rsChart(p)
+  +_mess
   +"<div class='rs-report'><span class='rk'>Aktueller Kurzbericht</span>"+escapeHtml(p.kurzbericht)+"</div>"
   +(p.verlaufPlan?"<div class='rs-report'><span class='rk'>Weiterer Verlauf</span>"+escapeHtml(p.verlaufPlan)+"</div>":"")
   +(p.labor?"<div class='rs-labor'>"+p.labor.map(l=>"<span class='rs-lab'><b>"+escapeHtml(l.k)+"</b>"+escapeHtml(l.v)+"</span>").join("")+"</div>":"")
@@ -6996,11 +7008,19 @@ function openRsDetail(i){
   +((bill.zusatz&&bill.zusatz.length)?"<div class='rs-empf'><span class='rk'>Zusatzerlöse / Wahlleistungen</span><ul>"+bill.zusatz.map(z=>"<li>"+escapeHtml(z.label)+" · +"+z.eur+" €/Tag</li>").join("")+"</ul></div>":"")+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkte(p.personId,{verlauf:false})+"</details>";
  /* §6+7: Kurzbericht-Eingabe wandert exklusiv nach Mein Tag (mtSheetRender/rsSaveZwischenstand) —
     hier nur Lese-Hinweis, wann/von wem zuletzt aktualisiert wurde. */
+ const _stelle=rehaZuweiserStelle(p);
  document.getElementById("rsZwischenstand").innerHTML=
    "<div class='rs-ctitle'>Dokumentation</div>"
   +"<div class='rs-row'><span class='rs-k'>Kurzbericht zuletzt aktualisiert</span><span>"
     +(p.zwischenstand&&p.zwischenstand.datum?escapeHtml(p.zwischenstand.datum)+(p.zwischenstand.autor?" · "+escapeHtml(p.zwischenstand.autor):""):"noch nicht erfasst")
-  +"</span></div>";
+  +"</span></div>"
+  +(_stelle?"<div class='rs-row'><span class='rs-k'>Zwischenstand an Zuweiser</span><span>"
+    +(p.zwischenstandGesendet?"gesendet am "+escapeHtml(p.zwischenstandGesendet):"noch nicht gesendet")+"</span></div>":"")
+  +(p.entlassen?"<div class='rs-row'><span class='rs-k'>Entlassung</span><span>"+escapeHtml(p.entlassen)+"</span></div>":"")
+  +"<div class='reha-doc-actions'>"
+   +(_stelle&&!p.entlassen?"<button type='button' class='btn-ghost btn-sm' onclick='rehaZwischenstandSenden("+i+")'>✉ Zwischenstand an "+escapeHtml(_stelle.length>26?_stelle.slice(0,25)+"…":_stelle)+" senden</button>":"")
+   +(p.entlassen?"":"<button type='button' class='btn-brass btn-sm' onclick='rehaEntlassung("+i+")'>✓ Entlassung dokumentieren</button>")
+  +"</div>";
  document.getElementById("rsDetail").classList.add("open");
  document.body.classList.add("detail-open");
  pushDetailState();
@@ -7023,13 +7043,55 @@ function rsSaveZwischenstand(i){
  renderMeinTag();
  renderMtProtokolle();
 }
+/* Der Zwischenstand ist die Zuweiserbindung als Nebenprodukt der Behandlung: er geht an die
+   Stelle, die den Patienten angemeldet hat, und wird im Fall protokolliert. Der Kurzbericht ist
+   dabei die bereits vorhandene gemeinsame Quelle — es wird nichts dupliziert (R15). */
+function rehaZuweiserStelle(p){
+ const f=p.fallId?faelle.find(x=>x.id===p.fallId):null;
+ const st=(f&&typeof anmeldStelle==="function")?anmeldStelle(f):null;
+ if(st)return st;
+ const per=p.personId?person(p.personId):null;
+ return (per&&per.zuweiserRef)||null;
+}
+function rehaZwischenstandSenden(i){
+ const p=inReha[i];if(!p)return;
+ const stelle=rehaZuweiserStelle(p);
+ if(!stelle){inbToast("done","<b>Kein Zuweiser hinterlegt</b>","Dieser Patient kam nicht über eine Einrichtung",null);return;}
+ if(!p.kurzbericht){inbToast("done","<b>Noch kein Kurzbericht</b>","Zwischenstand zuerst im Protokoll erfassen",null);return;}
+ const kurz=p.kurzbericht.length>90?p.kurzbericht.slice(0,90)+"…":p.kurzbericht;
+ const f=p.fallId?faelle.find(x=>x.id===p.fallId):null;
+ if(f)f.log.push([dstr(0),"↦ Zwischenstand an "+stelle+" gesendet: "+kurz,logZeit()]);
+ if(p.personId&&typeof pHist==="function")pHist(p.personId,"kontakt","Zwischenstand an "+stelle+" gesendet");
+ p.zwischenstandGesendet=dstr(0);
+ inbToast("done","<b>Zwischenstand gesendet</b> (Demo)","an "+escapeHtml(stelle),null);
+ renderAll();
+ if(typeof openRsDetail==="function")openRsDetail(i);
+}
+/* Entlassung: kein neuer Status in STATUS[] (das würde durch Board, Trichter und Kennzahlen
+   rippeln), sondern p.entlassen auf dem Reha-Datensatz. Der Datensatz bleibt erhalten, damit die
+   Fallakte weiter medizinische Kurzfelder zeigt; die laufenden Listen filtern ihn heraus.
+   Der Historien-Eintrag "entlassung" ist die Grundlage für Nachsorge-Anlass (42-56 Tage) und
+   Entlass-Jubiläum — beide rechnen bereits darauf. */
+function rehaEntlassung(i){
+ const p=inReha[i];if(!p||p.entlassen)return;
+ p.entlassen=dstr(0);
+ p.verweildauer.ist=Math.max(1,rehaTage(p.aufnahme,dstr(0))+1);
+ const f=p.fallId?faelle.find(x=>x.id===p.fallId):null;
+ if(f)f.log.push([dstr(0),"Entlassung dokumentiert — Reha abgeschlossen (Tag "+p.verweildauer.ist+" von "+p.verweildauer.plan+")",logZeit()]);
+ if(p.personId&&typeof pHist==="function")pHist(p.personId,"entlassung","Reha abgeschlossen · "+p.achse);
+ const stelle=rehaZuweiserStelle(p);
+ inbToast("done","<b>Entlassung dokumentiert</b>","Nachsorge-Kontakt für die 6. Woche vorgemerkt"+(stelle?" · Rückmeldung an "+escapeHtml(stelle)+" offen":""),null);
+ if(typeof dismissDetail==="function")dismissDetail();
+ renderAll();
+}
 function rsCockpit(){
  let erlos=0,db=0,offen=0;
- inReha.forEach(p=>{const b=RS_BILLING[p.name]||{};const ts=b.tagessatz||0,kt=b.kostenTag||0;
+ inReha.forEach(p=>{if(p.entlassen)return;const b=rehaBill(p);const ts=b.tagessatz||0,kt=b.kostenTag||0;
    erlos+=ts*p.verweildauer.plan;db+=(ts-kt)*p.verweildauer.plan;if(b.kostenzusage==="offen")offen++;});
  const marge=erlos?Math.round(db/erlos*100):0;
  return "<div class='db-cockpit rs-cockpit'>"
-   +"<div class='dbc-stat'><div class='dbc-num num'>"+inReha.length+"</div><div class='dbc-lbl'>in Behandlung</div></div>"
+   /* Entlassene sind nicht mehr "in Behandlung" — sonst zählt das Cockpit sie weiter mit (R15). */
+   +"<div class='dbc-stat'><div class='dbc-num num'>"+inReha.filter(p=>!p.entlassen).length+"</div><div class='dbc-lbl'>in Behandlung</div></div>"
    +"<div class='dbc-div'></div>"
    +"<div class='dbc-stat'><div class='dbc-num num'>"+Math.round(erlos/1000)+"k €</div><div class='dbc-lbl'>kalk. Erlös</div></div>"
    +"<div class='dbc-div'></div>"
@@ -7084,6 +7146,125 @@ function rsChart(p){
 /* Runde 6 Punkt 4 (§4.2/§4.3): irbAmpel()/irbMeilenstein() für die neue BWL-Karte.
    Additiv — noch von keinem Aufrufer genutzt (altes renderInReha() bleibt bis Task 3 unverändert
    aktiv); Verdrahtung + Markup-Umbau folgt atomar in Task 3. */
+/* ---------- R15: Aufnahme ist eine Übergabe, kein Abschluss ----------
+   inReha[] war ein reines Seed-Array — ein durchgespielter Fall verschwand nach "Aufnahme
+   bestätigen" ins Nichts (kein Reha-Datensatz, keine medizinischen Kurzfelder, Belegung mit
+   21-Tage-Pauschale). rehaAufnahme() legt den Datensatz aus dem Fall an. */
+const REHA_PLAN_TAGE={"Orthopädie":21,"Neurologie":25,"Geriatrie":24,"Innere":21,"SalutoCare":28};
+const REHA_TAGESSATZ={"PKV":980,"Selbstzahler":1250,"GKV + Komfort":780,"Beihilfe":950,"GKV":620,"Unklar":700};
+const REHA_ZIMMER=["Einzelzimmer","Komfort-Suite","Doppelzimmer","SalutoCare-Suite"];
+const REHA_ZIMMER_EUR={"Einzelzimmer":65,"Komfort-Suite":180,"Doppelzimmer":0,"SalutoCare-Suite":420};
+function rehaZimmerDefault(f){
+ if(f.saluto||f.achse==="SalutoCare")return "SalutoCare-Suite";
+ if(f.kt==="PKV"||f.kt==="Selbstzahler")return "Komfort-Suite";
+ if(f.kt==="GKV + Komfort"||f.kt==="Beihilfe")return "Einzelzimmer";
+ return "Doppelzimmer";
+}
+/* Abrechnungsdaten liegen bei neu aufgenommenen Patienten AUF dem Datensatz (p.bill) — RS_BILLING
+   ist statische Konfiguration und würde einen Reload nicht überleben; inReha wird persistiert. */
+function rehaBill(p){ return (p&&p.bill)||RS_BILLING[p.name]||{}; }
+/* Tage zwischen zwei ISO-Daten (positiv, wenn bis nach von liegt). */
+function rehaTage(vonIso,bisIso){
+ const a=new Date(vonIso),b=new Date(bisIso);
+ if(isNaN(a)||isNaN(b))return 0;
+ return Math.round((b-a)/86400000);
+}
+function rehaDatumPlus(iso,tage){
+ const d=new Date(iso);
+ if(isNaN(d))return dstr(tage);
+ d.setDate(d.getDate()+tage);
+ const m=d.getMonth()+1,t=d.getDate();
+ return d.getFullYear()+"-"+(m<10?"0":"")+m+"-"+(t<10?"0":"")+t;
+}
+function rehaEintrag(f){ return f.personId?inReha.find(p=>p.personId===f.personId):null; }
+/* Legt den Reha-Datensatz aus dem Fall an. Idempotent: existiert schon einer für die Person,
+   passiert nichts (Doppel-Aufnahme durch mehrfaches Bestätigen). */
+function rehaAufnahme(f){
+ if(!f||!f.personId)return null;
+ if(rehaEintrag(f))return rehaEintrag(f);
+ const aufn=(f.aufnahmeTermin&&f.aufnahmeTermin<=dstr(0))?f.aufnahmeTermin:dstr(0);
+ const plan=REHA_PLAN_TAGE[f.achse]||21;
+ const ist=Math.max(1,rehaTage(aufn,dstr(0))+1);
+ const zimmer=f.zimmer||rehaZimmerDefault(f);
+ const ts=REHA_TAGESSATZ[f.kt]||700;
+ const zuschlag=REHA_ZIMMER_EUR[zimmer]||0;
+ const p={
+  personId:f.personId,fallId:f.id,name:f.name,alter:f.alter||null,achse:f.achse,owner:f.owner,
+  icd:"",aufnahme:aufn,verweildauer:{ist:ist,plan:plan},
+  barthel:{auf:null,akt:null},fim:{auf:null,akt:null},ziel:null,
+  kurzbericht:"",labor:null,
+  eintraege:[{d:aufn,txt:"Aufnahme erfolgt · "+zimmer+" — Aufnahme-Assessment bei der Kliniksoftware angefordert."}],
+  zwischenstand:{datum:null,text:null,autor:null},
+  rehaZiel:"",arztberichtKurz:"",
+  drgStatus:(f.kt==="Selbstzahler")?"Selbstzahler":(f.kosten==="Zusage liegt vor"?"Zusage liegt vor":(f.kosten||"offen")),
+  entlassungGeplant:rehaDatumPlus(aufn,plan),
+  anschlussBedarf:"",auffaelligkeiten:"",
+  bill:{tagessatz:ts+zuschlag,kostenTag:Math.round((ts+zuschlag)*0.62/10)*10,
+    kostenzusage:(f.kt==="Selbstzahler")?"n.a. (Selbstzahler)":(f.kosten==="Zusage liegt vor"?"liegt vor":"offen"),
+    zimmer:zimmer,verlaengerung:false,
+    zusatz:zuschlag?[{label:zimmer+"-Zuschlag",eur:zuschlag}]:[]}
+ };
+ inReha.push(p);
+ f.log.push([dstr(0),"Aufnahme vollzogen · "+zimmer+" · geplante Verweildauer "+plan+" Tage",logZeit()]);
+ if(typeof pHist==="function")pHist(f.personId,"aufnahme","Aufnahme in die Reha · "+zimmer);
+ if(typeof rehaAssessSchedule==="function")rehaAssessSchedule(f);
+ return p;
+}
+/* Messwerte kennt das CRM bei der Aufnahme nicht — sie kommen aus der Kliniksoftware. Genau das
+   zeigt die Demo: kurz nach der Aufnahme trifft das Assessment ein (gleiche Mechanik wie die
+   Rückmeldungen des Sozialdienstes). Bis dahin steht ehrlich "Assessment steht aus" statt
+   erfundener Startwerte. Werte je Fachbereich fest hinterlegt, nichts zufällig. */
+const REHA_ASSESS={
+ "Orthopädie":{icd:"M17.1 — Gonarthrose",barthel:50,fim:80,ziel:55,
+  ziel_txt:"Vollbelastung und selbstständiges Gehen ohne Hilfsmittel",
+  arzt:"Postoperativ reizlos, Belastungsaufbau planmäßig begonnen."},
+ "Neurologie":{icd:"I63.9 — Hirninfarkt",barthel:35,fim:62,ziel:40,
+  ziel_txt:"Alltagsfähigkeit ohne fremde Hilfe, Gangsicherheit im Innenbereich",
+  arzt:"Neurologisches Assessment abgeschlossen, Therapieplan steht, Prognose günstig."},
+ "Geriatrie":{icd:"R26.8 — Gang- und Standunsicherheit",barthel:40,fim:70,ziel:45,
+  ziel_txt:"Sturzfreie Mobilität in der Wohnung, Selbstversorgung im Alltag",
+  arzt:"Multimorbider Verlauf, Kreislauf stabil, Mobilisation begonnen."},
+ "Innere":{icd:"I50.1 — Herzinsuffizienz",barthel:55,fim:85,ziel:60,
+  ziel_txt:"Belastbarkeit im Alltag steigern, Sekundärprävention etablieren",
+  arzt:"Kardiopulmonal kompensiert, Belastungsaufbau nach Schema."},
+ "SalutoCare":{icd:"Z99.1 — Z. n. Langzeitbeatmung",barthel:20,fim:50,ziel:30,
+  ziel_txt:"Weaning fortsetzen, Schluckfunktion und Sitzposition verbessern",
+  arzt:"Respiratorisch stabil, Entwöhnung läuft, engmaschige Überwachung."}
+};
+function rehaAssessOffen(p){ return !p||!p.barthel||p.barthel.auf==null; }
+function rehaAssessSchedule(f){
+ if(!f)return;
+ f.sim=f.sim||{done:{},pending:[]};
+ const key="reha:assessment";
+ if(f.sim.done[key]||f.sim.pending.indexOf(key)>=0)return;
+ f.sim.pending.push(key);
+ if(typeof demoSave==="function")demoSave();
+ const fid=f.id;
+ setTimeout(function(){rehaAssessFire(fid);},9000*(typeof LEITFALL_TEMPO!=="undefined"?LEITFALL_TEMPO:1));
+}
+function rehaAssessFire(fid){
+ const f=faelle.find(x=>x.id===fid);
+ if(!f)return;
+ f.sim=f.sim||{done:{},pending:[]};
+ f.sim.pending=(f.sim.pending||[]).filter(k=>k!=="reha:assessment");
+ const p=rehaEintrag(f);
+ if(!p||!rehaAssessOffen(p)){f.sim.done["reha:assessment"]=true;return;}
+ const a=REHA_ASSESS[p.achse]||REHA_ASSESS["Innere"];
+ const diag=(f.med&&f.med.diagnose)?f.med.diagnose:null;
+ p.icd=diag?(a.icd.split(" — ")[0]+" — "+diag):a.icd;
+ p.barthel={auf:a.barthel,akt:a.barthel};
+ p.fim={auf:a.fim,akt:a.fim};
+ p.ziel=a.ziel;
+ p.rehaZiel=a.ziel_txt;
+ p.arztberichtKurz=a.arzt;
+ p.kurzbericht=p.kurzbericht||a.arzt;
+ p.eintraege.unshift({d:dstr(0),txt:"Aufnahme-Assessment übernommen: Barthel "+a.barthel+", FIM "+a.fim+" · Reha-Ziel abgestimmt."});
+ f.sim.done["reha:assessment"]=true;
+ f.log.push([dstr(0),"Aufnahme-Assessment aus der Kliniksoftware übernommen: "+p.icd+" · Barthel "+a.barthel+" · FIM "+a.fim,logZeit()]);
+ if(typeof inbToast==="function")inbToast("done","<b>Aufnahme-Assessment eingetroffen</b>","Kliniksoftware · "+escapeHtml(p.name),null);
+ if(typeof renderAll==="function")renderAll();
+ if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&typeof renderFallakte==="function")renderFallakte();
+}
 function irbAmpel(bill,p){
  const kz=bill.kostenzusage||"—";
  if(kz==="liegt vor")return{cls:"ok",label:"liegt vor"};
@@ -7101,14 +7282,15 @@ function renderInReha(){
  const el=document.getElementById("inrehaGrid");if(!el)return;
  const _ck=document.getElementById("rsCockpit");if(_ck)_ck.innerHTML=rsCockpit();
  el.innerHTML=inReha.map((p,i)=>{
+  if(p.entlassen)return "";   /* entlassen: nicht mehr "in Behandlung", Datensatz bleibt aber */
   const col=ACHSE_COL[p.achse]||"var(--unklar)";
-  const bill=RS_BILLING[p.name]||{};
+  const bill=rehaBill(p);
   const stayPct=Math.min(100,Math.round(p.verweildauer.ist/p.verweildauer.plan*100));
   const ts=bill.tagessatz||0,kt=bill.kostenTag||0;
   const erlösPlan=ts*p.verweildauer.plan,marge=ts?Math.round((ts-kt)/ts*100):0;
   const zusatzTag=(bill.zusatz||[]).reduce((s,z)=>s+z.eur,0);
   const ampel=irbAmpel(bill,p);
-  const ms=irbMeilenstein(p);
+  const ms=rehaAssessOffen(p)?{label:"Aufnahme-Assessment",detail:"wird aus der Kliniksoftware übernommen"}:irbMeilenstein(p);
   const sterne=sterneVon(p),kt_=person(p.personId)?.kt||"—";
   return `<button class="ir-card${p.achse==="SalutoCare"?" hot":""}" style="--acol:${col}" onclick="openRsDetail(${i})">
     <div class="ir-head"><span class="ava">${initialen(p.name)}</span>
@@ -7127,7 +7309,7 @@ function renderInReha(){
     <div class="irb-ampel ${ampel.cls}"><span class="irb-dot"></span>Kostenzusage ${escapeHtml(ampel.label)} · ${escapeHtml(kt_)}</div>
     <div class="irb-foot"><span class="irb-ms-l">${escapeHtml(ms.label)}</span><span class="irb-ms-d">${escapeHtml(ms.detail)}</span></div>
    </button>`;
- }).join("")||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
+ }).join("").trim()||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
 }
 function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();if(typeof demoSave==="function")demoSave();}
 
@@ -7344,7 +7526,14 @@ function kfSyncStatus(f){
    f.aufgabe — der generische Text bleibt für Board/Mein Tag). lbPulsHtml() zieht die letzte echte
    Nachricht über lgTyp() aus f.log. */
 function kfAufgabe(f){
- if(f.status==="Aufgenommen")return {feld:null,text:"Fall abgeschlossen — Patient "+(f.aufnahmeTermin?"wird zum "+paDate(f.aufnahmeTermin)+" aufgenommen":"ist aufgenommen")+"."};
+ if(f.status==="Aufgenommen"){
+  /* "Fall abgeschlossen" war falsch: mit der Aufnahme beginnt die Behandlung (R15). */
+  const _p=(typeof rehaEintrag==="function")?rehaEintrag(f):null;
+  if(_p&&!_p.entlassen)return {feld:null,text:"Patient ist im Haus — Tag "+_p.verweildauer.ist+" von "+_p.verweildauer.plan
+    +(rehaAssessOffen(_p)?" · Aufnahme-Assessment läuft ein.":" · Behandlung läuft.")};
+  if(_p&&_p.entlassen)return {feld:null,text:"Reha abgeschlossen — entlassen am "+paDate(_p.entlassen)+"."};
+  return {feld:null,text:"Patient "+(f.aufnahmeTermin?"wird zum "+paDate(f.aufnahmeTermin)+" aufgenommen":"ist aufgenommen")+"."};
+ }
  if(f.status==="Verloren")return {feld:null,text:"Fall verloren"+(f.verlust?" · Grund: "+f.verlust:"")+"."};
  /* Absage des Patienten schlägt jede Feld-Reihenfolge: Verlust dokumentieren ist dann der
     dringendste Schritt, egal welches Klärungsfeld noch offen ist. */
@@ -7710,8 +7899,16 @@ function kfKostenHtml(f){
 }
 function kfAufnahmeHtml(f){
  const _bereit=aufnahmeCheckliste(f).every(c=>c.ok);
+ const _zim=f.zimmer||rehaZimmerDefault(f);
  return "<div class='full' style='margin-bottom:12px'><label for='aufnTermin'>Aufnahmetermin</label>"
   +"<input id='aufnTermin' type='date' value=\""+escapeHtml(f.aufnahmeTermin||"")+"\" onchange='aufnTerminSet(this.value)'></div>"
+  /* Zimmerkategorie entscheidet über Tagessatz und Zusatzerlöse — ohne sie stünde der Patient
+     nach der Aufnahme mit 0 € im Reha-Cockpit (R15). */
+  +"<div class='full' style='margin-bottom:12px'><label for='aufnZimmer'>Zimmerkategorie</label>"
+  +"<select id='aufnZimmer' onchange='aufnZimmerSet(this.value)'>"
+  +REHA_ZIMMER.map(function(z){return "<option"+(z===_zim?" selected":"")+">"+escapeHtml(z)+"</option>";}).join("")
+  +"</select>"
+  +"<p class='kz-hint' style='margin:4px 0 0'>Zuschlag: "+(REHA_ZIMMER_EUR[_zim]||0)+" € pro Tag</p></div>"
   +"<div class='kicker'>Vor-Aufnahme-Checkliste</div>"
   +aufnahmeCheckliste(f).map(function(c){
     /* Auto-Punkte sind hier nicht abhakbar — der "öffnen ›"-Sprung führt zum Klärungsfeld, das sie erfüllt */
@@ -7806,6 +8003,13 @@ function aufnTerminSet(v){
  if(v)f.log.push([dstr(0),"Aufnahmetermin bestätigt: "+paDate(v),logZeit()]);
  kfSyncStatus(f);
  renderAll();renderFallakte();
+}
+function aufnZimmerSet(v){
+ const f=aktuellerFall;if(!f||f.zimmer===v)return;
+ f.zimmer=v;
+ f.log.push([dstr(0),"Zimmerkategorie festgelegt: "+v,logZeit()]);
+ if(typeof renderAll==="function")renderAll();
+ if(typeof renderFallakte==="function")renderFallakte();
 }
 function aufnahmeToggle(key){
  const f=aktuellerFall;if(!f)return;
@@ -8024,6 +8228,8 @@ function advanceFallStatus(f){
  f.status=ns;
  f.aufgabe=STATUS_AUFGABE[ns]||"";
  f.frist=STATUS_AUFGABE[ns]?dstr(2):"";
+ /* Die Schwelle: mit "Aufgenommen" entsteht der Reha-Datensatz (R15). */
+ if(ns==="Aufgenommen"&&typeof rehaAufnahme==="function")rehaAufnahme(f);
  /* Auch übersprungene Stufen feuern (Leitfall-Storylines hängen z. B. an status:Kontaktiert) */
  if(typeof simTrigger==="function")for(let i=cur+1;i<=STATUS.indexOf(ns);i++)simTrigger("status:"+STATUS[i],f);
  return true;
@@ -8216,6 +8422,7 @@ function mtInternItem(x){
 /* §4.4/§4.5 Zwischenstand-Reminder — Reha-Zwischenstand nie erfasst oder älter als 10 Tage.
    Fallback auf p.aufnahme, solange p.zwischenstand.datum noch nie gesetzt wurde. */
 function zwischenstandFaellig(p){
+ if(rehaAssessOffen(p)||p.entlassen)return null;
  const basis=(p.zwischenstand&&p.zwischenstand.datum)?p.zwischenstand.datum:p.aufnahme;
  if(!basis)return false;
  const d=mtDayDiff(basis);
@@ -8665,6 +8872,13 @@ function faOriginalHtml(f){
   +(f.quelle?"<div class='pa-row'><span class='pa-k'>Absender</span><span class='pa-v'>"+escapeHtml(f.quelle)+"</span></div>":"")
   +"</div><div class='eg-original'><div class='mtxt'>"+escapeHtml(f.originalTxt)+"</div></div></div></details>";
 }
+/* Sprung aus der Fallakte in die Reha-Steuerung — ein Patient, zwei Sichten (R15). */
+function faZuReha(pid){
+ const i=inReha.findIndex(p=>p.personId===pid);
+ if(i<0)return;
+ go('inreha');
+ setTimeout(function(){if(typeof openRsDetail==="function")openRsDetail(i);},120);
+}
 function renderFallakte(){
   if(!_fallakteId){go('faelle','board');return;}
   const f=faelle.find(x=>x.id===_fallakteId);
@@ -8725,12 +8939,20 @@ function renderFallakte(){
     +"<div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
   lgZumEnde();
   const med=inReha.find(p=>p.personId===f.personId);
-  document.getElementById("faMedizin").innerHTML=med?("<div class='pa-meta'>"
-    +"<div class='pa-row'><span class='pa-k'>Reha-Ziel</span><span class='pa-v'>"+escapeHtml(med.rehaZiel||"—")+"</span></div>"
-    +"<div class='pa-row'><span class='pa-k'>Barthel aktuell</span><span class='pa-v'>"+(med.barthel?med.barthel.akt:"—")+"</span></div>"
-    +"<div class='pa-row'><span class='pa-k'>FIM aktuell</span><span class='pa-v'>"+(med.fim?med.fim.akt:"—")+"</span></div>"
+  const _medHerkunft=med
+   ?("<p class='fa-med-src'>"+(rehaAssessOffen(med)
+     ?"Aufnahme-Assessment steht aus — die Werte kommen aus der Kliniksoftware."
+     :"Werte aus der Kliniksoftware übernommen · Aufnahme "+escapeHtml(paDate(med.aufnahme)))
+    +"</p>"
+    +"<button type='button' class='btn-ghost btn-sm' style='margin-bottom:10px' onclick=\"faZuReha('"+med.personId+"')\">In Reha ansehen ›</button>")
+   :"";
+  document.getElementById("faMedizin").innerHTML=med?(_medHerkunft+"<div class='pa-meta'>"
+    +"<div class='pa-row'><span class='pa-k'>Diagnose / ICD</span><span class='pa-v'>"+escapeHtml(med.icd||"noch nicht kodiert")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Reha-Ziel</span><span class='pa-v'>"+escapeHtml(med.rehaZiel||"noch nicht festgelegt")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Barthel aktuell</span><span class='pa-v'>"+((med.barthel&&med.barthel.akt!=null)?med.barthel.akt:"—")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>FIM aktuell</span><span class='pa-v'>"+((med.fim&&med.fim.akt!=null)?med.fim.akt:"—")+"</span></div>"
     +"<div class='pa-row'><span class='pa-k'>Arztbericht</span><span class='pa-v'>"+escapeHtml(med.arztberichtKurz||"—")+"</span></div>"
-    +"<div class='pa-row'><span class='pa-k'>Entlassung geplant</span><span class='pa-v'>"+(med.entlassungGeplant?escapeHtml(med.entlassungGeplant):"offen")+"</span></div>"
+    +"<div class='pa-row'><span class='pa-k'>Entlassung"+(med.entlassen?"":" geplant")+"</span><span class='pa-v'>"+(med.entlassen?escapeHtml(paDate(med.entlassen)):(med.entlassungGeplant?escapeHtml(paDate(med.entlassungGeplant)):"offen"))+"</span></div>"
     +"<div class='pa-row'><span class='pa-k'>Anschluss-Bedarf</span><span class='pa-v'>"+escapeHtml(med.anschlussBedarf||"—")+"</span></div>"
     +"<div class='pa-row'><span class='pa-k'>Auffälligkeiten</span><span class='pa-v'>"+escapeHtml(med.auffaelligkeiten||"—")+"</span></div>"
     +"</div>"):"<p class='empty'>Noch nicht in Reha aufgenommen — keine medizinischen Kurzfelder vorhanden.</p>";
@@ -9036,7 +9258,7 @@ function ktaUebernehmen(){
 
 /* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
    strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
-const DEMO_SCHEMA=4;
+const DEMO_SCHEMA=5;
 const DEMO_KEY="kbDemoState";
 let _demoSaveT=null;
 function demoSave(){
@@ -9116,7 +9338,11 @@ document.getElementById("fFrist").value=dstr(1);
 demoRestore();
 renderAll();
 (function(){faelle.forEach(function(f){ if(f&&f.sim&&Array.isArray(f.sim.pending)) f.sim.pending.slice().forEach(function(k){
- setTimeout(function(){ if(/^gen:/.test(k))genFire(k.slice(4),f.id); else simFire(k); },3000); }); });})();
+ setTimeout(function(){
+  if(k==="reha:assessment")rehaAssessFire(f.id);
+  else if(/^gen:/.test(k))genFire(k.slice(4),f.id);
+  else simFire(k);
+ },3000); }); });})();
 applyHash();
 document.addEventListener("visibilitychange",function(){ if(!document.hidden&&typeof kpiCountUp==="function")kpiCountUp(); });
 try{ if(!localStorage.getItem(BETA_SEEN_KEY)) setTimeout(betaOpen,900); }catch(e){}
