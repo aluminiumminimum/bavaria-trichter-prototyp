@@ -3456,6 +3456,20 @@ details.fa-orig>div{padding:0 12px 12px}
  #view-auswertung.view.active{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
  #view-auswertung>.vhead,#view-auswertung>.chap{grid-column:1 / -1}
 }
+/* R15b · Board-Zone „Im Haus": eigene Spalte mit Aufenthaltsfortschritt statt grauer
+   Abgeschlossen-Leiste. Jade statt Gold in der Nummer, weil die Aufnahme erreicht ist. */
+.haus-rail{border-left:1px solid var(--jade-line);padding-left:16px}
+.haus-rail .zone-head{border-bottom-color:var(--sage)}
+.haus-rail .zone-head .zone-t{color:var(--sage-deep)}
+.zone-no-haus{background:var(--sage-deep)}
+.karte-haus{border-left:2px solid var(--sage)}
+.kh-stay{margin:8px 0 6px}
+.kh-lbl{display:flex;justify-content:space-between;gap:8px;font:500 10.5px "Fragment Mono",monospace;color:var(--muted);margin-bottom:4px}
+.kh-track{height:4px;border-radius:3px;background:var(--hair);overflow:hidden}
+.kh-track>span{display:block;height:100%;background:var(--sage-deep);border-radius:3px}
+.kh-out{font:500 10.5px "Fragment Mono",monospace;color:var(--sage-deep);margin-top:2px}
+.kh-hint{font-size:11px;color:var(--brass-deep);margin-top:2px}
+.kh-btn{width:100%;margin-top:9px}
 /* R15 · In-Reha-Phase: Hinweis, solange das Aufnahme-Assessment noch aussteht, plus die
    Dokumentations-Aktionen im Reha-Detail. */
 .reha-assess-hint{border:1px dashed var(--brass-line);border-radius:8px;background:var(--brass-soft);
@@ -4976,7 +4990,31 @@ let inReha=[
    drgStatus:"offen",
    entlassungGeplant:null,
    anschlussBedarf:"ambulante Ergotherapie + Bobath-Konzept",
-   auffaelligkeiten:"Patient motiviert, gute Compliance mit Therapieplan"}
+   auffaelligkeiten:"Patient motiviert, gute Compliance mit Therapieplan"},
+ /* R15b: Ludwig Bauer (Fall 10) und Elisabeth Cramer (Fall 11) stehen seit immer auf
+    "Aufgenommen", hatten aber keinen Reha-Datensatz — ihre Fallakte behauptete "noch nicht in Reha
+    aufgenommen" und in der neuen Board-Spalte "Im Haus" wären sie ohne Aufenthaltsdaten gelandet.
+    bill liegt hier wie bei neu aufgenommenen Patienten am Datensatz. */
+ {personId:"P07",fallId:10,name:"Ludwig Bauer",alter:71,achse:"Orthopädie",owner:"M. Belegung",icd:"Z96.64 — Z. n. Hüft-TEP links",aufnahme:dstr(-2),verweildauer:{ist:3,plan:21},barthel:{auf:45,akt:55},fim:{auf:78,akt:88},ziel:50,
+   kurzbericht:"Postoperativ reizlos, Teilbelastung nach Schema, Transfers selbstständig.",
+   eintraege:[{d:dstr(-1),txt:"Gangschule an Unterarmgehstützen begonnen, 20 m Gehstrecke."},{d:dstr(-2),txt:"Aufnahme abgeschlossen, Zielplan mit Patient abgestimmt."}],
+   zwischenstand:{datum:dstr(-1),text:"Mobilisation planmäßig, Schmerz gut kontrolliert.",autor:"M. Belegung"},
+   rehaZiel:"Vollbelastung erreichen, selbstständiges Treppensteigen",
+   arztberichtKurz:"Reizlose Wundverhältnisse, Belastungsaufbau nach Plan.",
+   drgStatus:"Zusage liegt vor",entlassungGeplant:dstr(19),
+   anschlussBedarf:"ambulante Physiotherapie 2×/Woche",
+   auffaelligkeiten:"Keine",
+   bill:{tagessatz:1045,kostenTag:650,kostenzusage:"liegt vor",zimmer:"Einzelzimmer",verlaengerung:false,zusatz:[{label:"Einzelzimmer-Zuschlag",eur:65}]}},
+ {personId:"P08",fallId:11,name:"Elisabeth Cramer",alter:66,achse:"Neurologie",owner:"S. Koordination",icd:"I63.9 — Z. n. Schlaganfall",aufnahme:dstr(-3),verweildauer:{ist:4,plan:25},barthel:{auf:55,akt:65},fim:{auf:85,akt:95},ziel:60,
+   kurzbericht:"Feinmotorik rechts verbessert, Gangbild sicher, kognitiv unauffällig.",
+   eintraege:[{d:dstr(-1),txt:"Ergotherapie Feinmotorik ausgebaut, Alltagstraining begonnen."},{d:dstr(-3),txt:"Aufnahme abgeschlossen, neurologisches Assessment erfolgt."}],
+   zwischenstand:{datum:dstr(-1),text:"Fortschritte in Motorik und Ausdauer, Ziele im Plan.",autor:"S. Koordination"},
+   rehaZiel:"Vollständige Alltagsselbstständigkeit, Rückkehr in den Beruf prüfen",
+   arztberichtKurz:"Leichtes Residualsyndrom, Prognose gut, Sekundärprävention eingeleitet.",
+   drgStatus:"Zusage liegt vor",entlassungGeplant:dstr(22),
+   anschlussBedarf:"ambulante Ergotherapie, Nachsorge-Check nach 6 Wochen",
+   auffaelligkeiten:"Keine",
+   bill:{tagessatz:1160,kostenTag:720,kostenzusage:"liegt vor",zimmer:"Komfort-Suite",verlaengerung:false,zusatz:[{label:"Komfort-Suite-Zuschlag",eur:180}]}}
 ];
 
 /* ---------- GEDÄCHTNIS (Baustein A): personen[]-Registry — Spec docs/superpowers-optimized/specs/2026-07-13-baustein-a-gedaechtnis-design.md ---------- */
@@ -5555,7 +5593,7 @@ function renderBoardFocus(){
   const offen=offeneFaelle().length;
   if(boardStageFilter===null){
     el.innerHTML="<div class='bf-line'><span class='bf-title'>Alle Fälle</span><span class='bf-count num'>"+offen+" offen</span></div>"
-      +"<div class='bf-note'>Drei Stufen vom ersten Kontakt bis zur Aufnahme — Stufenband antippen filtert, Abgeschlossenes rechts.</div>";
+      +"<div class='bf-note'>Drei Stufen vom ersten Kontakt bis zur Aufnahme — Stufenband antippen filtert. Rechts daneben: Patienten im Haus, dann Abgeschlossenes.</div>";
   }else{
     const m=stageMeta(boardStageFilter);
     const n=stageCases(boardStageFilter).length;
@@ -5596,6 +5634,67 @@ function makeBoardCol(st){
   });
   return col;
 }
+/* R15b: „Im Haus" ist eine eigene, verfolgbare Board-Spalte — vorher landete der Patient mit der
+   Aufnahme in der grauen Abgeschlossen-Leiste, obwohl die Behandlung da erst anfängt (Nutzer-
+   Befund). Die Karte zeigt, was den Aufenthalt verfolgbar macht: Zimmer, Tag X von Y, geplante
+   Entlassung. Klick öffnet die Fallakte, der Knopf springt direkt in die Reha-Akte. */
+function hausFaelle(){
+ return faelle.filter(function(f){
+  if(f.status!=="Aufgenommen")return false;
+  const p=rehaEintrag(f);
+  return !p||!p.entlassen;
+ });
+}
+function entlassenFaelle(){
+ return faelle.filter(function(f){
+  if(f.status!=="Aufgenommen")return false;
+  const p=rehaEintrag(f);
+  return !!(p&&p.entlassen);
+ });
+}
+function makeHausCol(){
+ const col=document.createElement("div");col.className="col";
+ const list=hausFaelle();
+ col.innerHTML="<h3><span class='cdot' style='background:"+STATUS_COL["Aufgenommen"]+"'></span>Patient im Haus<span class='cnt num'>"+list.length+"</span></h3>";
+ list.forEach(function(f){
+  const p=rehaEintrag(f);
+  const k=document.createElement("div");k.className="karte karte-haus"+(f.saluto?" saluto":"");
+  const pct=p?Math.min(100,Math.round(p.verweildauer.ist/p.verweildauer.plan*100)):0;
+  const bill=p?rehaBill(p):{};
+  k.innerHTML="<div class='krow'><span class='ava'>"+initialen(f.name)+"</span><span class='name'>"+escapeHtml(f.name)
+    +" <span class='alter'>"+(f.alter&&!/\(\d+\)/.test(f.name)?"("+f.alter+")":"")+"</span></span></div>"
+   +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[f.achse]||"var(--unklar)")+"'>"+escapeHtml(f.achse)+"</span><span class='pill-kt'>"+escapeHtml(f.kt)+"</span></div>"
+   +(p?("<div class='kh-stay'><div class='kh-lbl'><span>Tag "+p.verweildauer.ist+" von "+p.verweildauer.plan+"</span>"
+      +"<span>"+(p.entlassungGeplant?"Entlassung "+paDate(p.entlassungGeplant):"Entlassung offen")+"</span></div>"
+      +"<div class='kh-track'><span style='width:"+pct+"%'></span></div></div>"
+      +"<div class='kmeta'>"+escapeHtml(bill.zimmer||"Zimmer offen")+" · "+escapeHtml(f.owner)+"</div>"
+      +(rehaAssessOffen(p)?"<div class='kh-hint'>Aufnahme-Assessment läuft ein</div>"
+        :"<div class='kh-out'>Barthel "+p.barthel.auf+" → "+p.barthel.akt+" · FIM "+p.fim.auf+" → "+p.fim.akt+"</div>"))
+     :"<div class='kh-hint'>Aufenthaltsdaten nicht verknüpft</div>")
+   +"<button class='btn-ghost btn-sm kh-btn' type='button'>In Reha ansehen ›</button>";
+  k.onclick=function(){openDetail(f.id);};
+  const btn=k.querySelector(".kh-btn");
+  if(btn)btn.onclick=function(e){e.stopPropagation();if(p)faZuReha(p.personId);};
+  col.appendChild(k);
+ });
+ if(!list.length)col.innerHTML+="<p class='empty'>Aktuell niemand im Haus.</p>";
+ return col;
+}
+function makeEntlassenCol(){
+ const col=document.createElement("div");col.className="col";
+ const list=entlassenFaelle();
+ col.innerHTML="<h3><span class='cdot' style='background:var(--sage-deep)'></span>Entlassen<span class='cnt num'>"+list.length+"</span></h3>";
+ list.forEach(function(f){
+  const p=rehaEintrag(f);
+  const k=document.createElement("div");k.className="karte";
+  k.innerHTML="<div class='krow'><span class='ava'>"+initialen(f.name)+"</span><span class='name'>"+escapeHtml(f.name)+"</span></div>"
+   +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[f.achse]||"var(--unklar)")+"'>"+escapeHtml(f.achse)+"</span><span class='pill-kt'>"+escapeHtml(f.kt)+"</span></div>"
+   +"<div class='kmeta'>Entlassen am "+escapeHtml(paDate(p.entlassen))+"<br>Aufenthalt "+p.verweildauer.ist+" von "+p.verweildauer.plan+" Tagen</div>";
+  k.onclick=function(){openDetail(f.id);};
+  col.appendChild(k);
+ });
+ return col;
+}
 function boardZoneGroup(z){
   const m=stageMeta(z);
   const g=document.createElement("div");g.className="zone-group";
@@ -5610,13 +5709,20 @@ function renderBoard(){
   renderBoardFocus();
   if(boardStageFilter!==null){b.appendChild(boardZoneGroup(boardStageFilter));return;}
   [0,1,2].forEach(z=>b.appendChild(boardZoneGroup(z)));
-  // Abgeschlossen — Aufgenommen + Verloren, rechts, ruhig gesetzt
-  const done=["Aufgenommen","Verloren"];
-  const dn=done.reduce((s,st)=>s+faelle.filter(x=>x.status===st).length,0);
+  /* R15b: Eigene Zone "Im Haus" (Behandlung läuft, verfolgbar) — vorher steckten diese Patienten
+     in der grauen Abgeschlossen-Leiste. Abgeschlossen ist jetzt wirklich abgeschlossen:
+     entlassene und verlorene Fälle. */
+  const haus=document.createElement("div");haus.className="zone-group haus-rail";
+  haus.innerHTML="<div class='zone-head static'><span class='zone-no zone-no-haus'>4</span><span class='zone-t'>Im Haus</span><span class='zone-cnt num'>"+hausFaelle().length+"</span></div>";
+  const hcols=document.createElement("div");hcols.className="zone-cols";
+  hcols.appendChild(makeHausCol());
+  haus.appendChild(hcols);b.appendChild(haus);
+  const dn=entlassenFaelle().length+faelle.filter(x=>x.status==="Verloren").length;
   const g=document.createElement("div");g.className="zone-group done-rail";
   g.innerHTML="<div class='zone-head static'><span class='zone-t'>Abgeschlossen</span><span class='zone-cnt num'>"+dn+"</span></div>";
   const cols=document.createElement("div");cols.className="zone-cols";
-  done.forEach(st=>cols.appendChild(makeBoardCol(st)));
+  cols.appendChild(makeEntlassenCol());
+  cols.appendChild(makeBoardCol("Verloren"));
   g.appendChild(cols);b.appendChild(g);
 }
 
@@ -9258,7 +9364,7 @@ function ktaUebernehmen(){
 
 /* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
    strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
-const DEMO_SCHEMA=5;
+const DEMO_SCHEMA=6;
 const DEMO_KEY="kbDemoState";
 let _demoSaveT=null;
 function demoSave(){
