@@ -1,7 +1,7 @@
 # HANDOVER — Klinik Bavaria · Concierge OS
 
-**Für:** neuer Thread mit Fable-als-Orchestrator (delegiert an `claude-implementer` / `claude-implementer-pro`, konsultiert `fable-advisor`) — **oder den Cofounder**, der die nächste Aufgabe (§7) direkt übernimmt.
-**Stand:** `main` = `5dbb488`, live. Datum des Handovers: 2026-07-16 (ursprünglich 2026-07-09; seither: Jade-Apotheke-Overhaul 16.07. + IA-Restrukturierung „Prozess-Achse" 16.07. — §3/§7 aktualisiert; **22.07.: Workflow-Redesign Runden 2–4 — 73 Commits, §4c neu**).
+**Für:** neuer Thread mit Fable-als-Orchestrator (delegiert an `claude-implementer` / `claude-implementer-pro`, konsultiert `fable-advisor`) — **den Cofounder**, der die nächste Aufgabe (§7) direkt übernimmt — **oder Codex/ChatGPT** als zweiten, unabhängigen KI-Mitwirkenden (seit 28.07., siehe §6a und §7).
+**Stand:** `main` = `f818887`, live. Datum des Handovers: 2026-07-16 (ursprünglich 2026-07-09; seither: Jade-Apotheke-Overhaul 16.07. + IA-Restrukturierung „Prozess-Achse" 16.07. — §3/§7 aktualisiert; 22.07.: Workflow-Redesign Runden 2–4 — 73 Commits, §4c; **28.07.: Runden 13–15b (Beta-Feedback, §4p–§4u) — 6 Commits, DEMO_SCHEMA=6**).
 
 Lies zusätzlich die **`CLAUDE.md`** im Repo-Root — das ist die verbindliche Konventions-Quelle. Dieses Dokument ergänzt sie um Projektstand, Architektur-Landkarte und Orchestrator-Spielregeln.
 
@@ -728,6 +728,80 @@ Website/Telefon/E-Mail bekommen den Kanal, die drei Zuweiser-Anmeldungen ihre Ei
 **Lehre:** Eine Zeile, die den Zustand nur über EIN Feld rendert (hier `ansprech.name`), lügt,
 sobald der Nutzer ein anderes Feld pflegt — Fallbacks über die ganze Datenstruktur denken.
 
+## 4r. Breite & Auswertung 2-spaltig (28.07., `721bfb8`)
+
+Nutzer im Vollbild: „rechts ist ein Bereich, der gesperrt ist, wo ich nichts machen kann" —
+kein Bug, sondern `.content{max-width:1240px}` zentriert auf einem 1920er-Monitor. Fix: **1640px**
+(füllt breite Screens, lässt bei 1440 die bisherige Optik). Folgefund: die Zahlen-Charts unter
+„Auswertung" streckten sich dabei auf 1560px Breite; `#view-auswertung.view.active` bekommt ab
+**1500px** ein 2-spaltiges Grid (`grid-template-columns:1fr 1fr`).
+
+## 4s. Verlauf-Platzierung — zwei Korrekturrunden (28.07., `04a7cc3` → `184303f`)
+
+R14 (§4q) hatte „Kommunikation & Verlauf" zwar in die Arbeitsspalte verschoben, aber **nach** den
+Klärungsfeldern (die bei 1440px 1625px hoch sind) — der Verlauf begann faktisch bei y≈2285. Erste
+Reaktion des Nutzers: „du hast es nach ganz ganz unten geschoben???? ist das sinnvoll?" Erste
+Korrektur schob den Verlauf direkt unter das Lagebild, blieb aber in derselben Spalte — Ergebnis:
+Arbeitsspalte 3232px hoch, Kontextspalte 576px + 2600px Leerraum, alles gestapelt. Zweite,
+schärfere Reaktion: „warum hast du das jetzt alles untereinander, das ist extrem nervig und nicht
+mehr gut zu arbeiten????" Finale Korrektur: zurück zu **zwei Spalten**, Verlauf als **erstes
+Kapitel der Kontext-Spalte**, gleiche Breite wie die Arbeitsspalte (`.fk-cols` bleibt
+`184px minmax(0,1fr) minmax(0,1fr)`) — Lagebild/Klärungsfelder links, Verlauf direkt daneben rechts,
+beide gleichzeitig im Blick.
+
+**Lehre (wichtig für jede künftige „muss sofort sichtbar sein"-Anforderung):** Ich hatte
+„sofort sichtbar" als Positionsfrage **innerhalb einer Spalte** gelesen (wie weit oben steht es?).
+Die eigentliche Anforderung war **Parallelität** — den Verlauf lesen, während man in den Feldern
+arbeitet, nicht nacheinander scrollen. Bei einem als „Herzstück" bezeichneten Element zuerst
+prüfen, ob Nebeneinander statt Reihenfolge gemeint ist.
+
+## 4t. Runde 15 — Die In-Reha-Phase (28.07., `e9b42a8`, via `/brainstorming`)
+
+Nutzerfrage: „wie machen wir das mit medizinischen Daten, wenn der Patient tatsächlich in der
+Reha ist?" `inReha[]` war bis dahin ein reines Seed-Array — kein Code-Pfad schrieb hinein. Ein bis
+„Aufnahme bestätigen" durchgespielter Fall verschwand ins Nichts: kein Eintrag in „In Reha", die
+Fallakte behauptete dauerhaft „noch nicht aufgenommen", der Belegungs-Forecast rechnete pauschal
+mit 21 Tagen. Nutzerentscheidung zur medizinischen Tiefe (per AskUserQuestion): **„Steuerung +
+Outcome"** (nicht nur Verwaltung, aber auch keine vollständige Klinik-Software-Simulation).
+
+Drei-Teil-Umsetzung:
+- **Teil A — Die Schwelle:** `rehaAufnahme(f)` erzeugt an der Statusschwelle „Aufgenommen" den
+  Reha-Datensatz aus dem Fall (Diagnose, Achse, Kostenträger, Verantwortliche, Aufnahmedatum,
+  geplante Verweildauer aus `REHA_PLAN_TAGE` je Fachbereich). Neues Eingabefeld im
+  Aufnahme-Klärungsfeld: die Zimmerkategorie (`aufnZimmerSet`) — daran hängen Tagessatz und
+  Zusatzerlöse. **Abrechnungsdaten liegen auf dem Datensatz** (`p.bill`, Zugriff über `rehaBill(p)`
+  mit `RS_BILLING`-Fallback für Alt-Seeds) statt in der statischen `RS_BILLING`-Tabelle — sonst
+  überlebten sie keinen Reload. Fall und Reha-Akte bleiben über `personId`/`p.fallId` verbunden.
+- **Teil B — Messwerte kommen aus der Kliniksoftware:** kurz nach der Aufnahme trifft das
+  Aufnahme-Assessment ein (`REHA_ASSESS` je Fachbereich: ICD, Barthel/FIM-Aufnahmewerte, Reha-Ziel,
+  Arztbericht-Satz) über dieselbe Sim-Mechanik wie die Rückmeldungen des Sozialdienstes
+  (`reha:assessment`-Key, `rehaAssessSchedule`/`rehaAssessFire`), inkl. Nachliefern nach Reload.
+  Solange es fehlt, steht ehrlich „Aufnahme-Assessment steht aus" statt erfundener Startwerte —
+  mit Guards in Reha-Detail, Karte, Zwischenstand-Reminder und Fallakte.
+- **Teil C — Aufenthalt und Entlassung:** `rehaZwischenstandSenden` schickt den Kurzbericht an die
+  anmeldende Stelle; `rehaEntlassung` setzt `p.entlassen` (bewusst **kein neuer Status** in
+  `STATUS[]` — das hätte Board/Funnel/KPIs rippeln lassen), schreibt einen `pHist`-Eintrag
+  „entlassung" (Basis für Nachsorge-Anlass + Entlass-Jubiläum) und nimmt den Patienten aus den
+  laufenden Listen, ohne den Datensatz zu löschen.
+
+Eigene Abnahme-Funde: das Cockpit zählte Entlassene weiter als „in Behandlung"
+(`inReha.length` → `inReha.filter(p=>!p.entlassen).length`); ISO-Daten in `faMedizin` → `paDate()`.
+Verifiziert: Fall 9 und der RHÖN-Fax-Fall bis zur Aufnahme durchgespielt, Assessment trifft ein und
+füllt ICD/Barthel/FIM/Ziel, Zwischenstand protokolliert, Entlassung entfernt die Karte korrekt,
+Reload behält Zimmer/Werte. `DEMO_SCHEMA=5`.
+
+## 4u. Board-Zone „Im Haus" (28.07., `f818887`)
+
+Nutzerwunsch direkt im Anschluss an R15: „Patient im Haus/aufgenommen" als **eigene, verfolgbare
+Board-Spalte**. Neue fünfte Zone `haus-rail` (jadefarben) zwischen den drei Trichter-Bändern und
+„Abgeschlossen": `hausFaelle()` (Status „Aufgenommen" && nicht entlassen), `makeHausCol()`-Karten
+zeigen Tag X von Y + Fortschrittsbalken, Zimmer, geplante Entlassung, Barthel/FIM-Entwicklung
+(oder ehrlich „Aufnahme-Assessment läuft ein"), Sprung-Button „In Reha ansehen ›" (`faZuReha`) und
+Klick-zu-Fallakte. „Abgeschlossen" zeigt jetzt `makeEntlassenCol()` (Entlassdatum, tatsächlicher
+Aufenthalt) + „Verloren". Die zwei bereits „aufgenommenen" Alt-Fälle (Ludwig Bauer, Elisabeth
+Cramer) wurden mit `bill` auf dem Datensatz nachgeseedet, damit sie ohne Bruch erscheinen.
+`DEMO_SCHEMA=6`.
+
 ---
 
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"
@@ -758,25 +832,55 @@ sobald der Nutzer ein anderes Feld pflegt — Fallbacks über die ganze Datenstr
 
 **Immer in Specs mitgeben:** „Vor Push `git fetch` + FF-Check; kein `--force`; Commit-Message endet mit dem Co-Authored-By-Trailer des arbeitenden Modells (aktuell `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`)." Nur homebrew `/opt/homebrew/bin/python3`.
 
+## 6a. Codex/ChatGPT als zweiter KI-Mitwirkender (seit 28.07.)
+
+Der Nutzer bringt **Codex (ChatGPT)** zusätzlich zu Fable/Claude ins Projekt — als unabhängiger
+zweiter Kopf, nicht als Ersatz. Codex arbeitet vermutlich in einem eigenen Terminal/Editor auf
+derselben Arbeitskopie. Für Codex gilt exakt dasselbe wie für jeden Mitwirkenden:
+
+- **§1–§2 (CLAUDE.md + HARTE REGELN) sind bindend**, unabhängig davon, welches Modell schreibt:
+  Cofounder-Namespaces (`.rp-*`/`.rpd-*`/`.rsp-*`/`.mx-*`, `openReferrer`, `#refOverlay`) tabu,
+  `inReha[]`/`faelle[]`/`personen[]` nur additiv erweitern, 390px UND ≥1024px verifizieren,
+  0 Console-Errors, nur synthetische Demo-Daten, kein `Math.random()`/argloses `new Date()`.
+  **Kein Stern-Slash (`*/`) in CSS-Kommentar-Prosa** (§4j) — hat diese Codebase bereits zweimal
+  gebissen.
+- **Geteilte Datei, jetzt drei Autoren** (Cofounder, Fable/Claude-Lanes, Codex): vor jedem eigenen
+  Push `git pull`/`git fetch`+FF-Check, nie `--force`. Commit-Trailer entsprechend anpassen
+  (`Co-Authored-By: <Codex-Modellname> <...>`).
+- **Erste Rolle: unabhängige Debugging-/Audit-Durchläufe** (§7) — Codex sieht den Code frisch,
+  ohne die Vorgeschichte dieses Threads, das ist der Wert eines zweiten Kopfes. Ob Codex danach
+  auch Feature-Arbeit übernimmt, ist offen und wird nach dem ersten Durchlauf entschieden.
+- Codex hat vermutlich **keinen automatischen Zugriff auf dieses HANDOVER.md** wie Fable/Claude —
+  der erste Prompt an Codex muss explizit auf `HANDOVER.md` + `CLAUDE.md` verweisen und zum Lesen
+  auffordern, bevor irgendetwas am Code passiert.
+
 ---
 
 ## 7. NÄCHSTE AUFGABE
 
-**Keine beauftragt.** Die zuletzt designte Aufgabe (Mitarbeiter-Dashboard „Mein Tag",
-Spec `docs/superpowers-optimized/specs/2026-07-14-mitarbeiter-dashboard-design.md`) ist
-UMGESETZT und seit der IA-Restrukturierung über den sichtbaren Rollen-Schalter
-`.ds-role` (Sidebar „Leitung ⇄ Koordination" + mobiler Chip im Heute-Greet) erreichbar —
-der frühere Topbar-Avatar-Einstieg (`.dt-ava`/`#mtRollmenu`) existiert nicht mehr,
-Mobile-Einstieg gibt es inzwischen bewusst DOCH.
+**An Codex/ChatGPT delegiert (28.07.): systematischer Debugging-Durchlauf.** Ziel: unabhängig von
+Fable/Claude herausfinden, wo die App noch hakt oder nicht funktioniert — nach den vielen
+Iterationsrunden (R1–R15b, siehe §4) ist ein frischer, unvoreingenommener Blick wertvoll. Codex
+soll **zunächst nur berichten, nicht fixen** (Findings-Report mit Datei:Zeile, Reproduktion,
+Schweregrad) — Fixes laufen danach in einer eigenen Runde, damit der Nutzer vor Änderungen sehen
+kann, was gefunden wurde. Siehe der komplette Erst-Prompt weiter unten in der Übergabe an den
+Nutzer (nicht Teil dieser Datei, da er sich an Codex direkt richtet).
+
+Davor zuletzt abgeschlossen: Runden 13–15b (§4p–§4u) — Zuweiser-Anmeldungen mit echten Stammdaten,
+Kommunikation & Verlauf als Herzstück (inkl. zweier Korrekturrunden zur Platzierung), Breite/
+Auswertung 2-spaltig, die In-Reha-Phase (Aufnahme als Übergabe, nicht Abschluss) und die Board-Zone
+„Im Haus". Kein Nutzer-Feature-Request offen.
 
 Abgeschlossene Programme (je Spec + Plan in `docs/superpowers-optimized/`):
 Aurora (14.07.) → Lichtung (15.07.) → Jade-Apotheke (16.07., `2026-07-16-jade-apotheke-overhaul.md`)
-→ IA-Restrukturierung „Prozess-Achse" (16.07., Spec `2026-07-16-ia-restructure-design.md`,
-Plan `2026-07-16-ia-restructure.md` mit Commit-Map).
+→ IA-Restrukturierung „Prozess-Achse" (16.07.) → Workflow-Redesign Runden 2–9 (21.–27.07., §4c–§4m)
+→ Textbausteine/Zeitleiste/KI-Ehrlichkeit Runden 11–12 (§4o) → Zuweiser/Kommunikation Runden 13–14
+(§4p–§4q) → Breite/Verlauf/In-Reha/Board Runden 15/15b (§4r–§4u).
 
 Bekannte offene Kleinigkeiten: Radar-Segment trägt redaktionell doppelte Anlässe
 (Teaser-Grid + Feed — bewusst, Null-Verlust); echter Lighthouse-Pass offen;
-`#E06845` stockt-Ton auf Lack (3.67:1) beobachten.
+`#E06845` stockt-Ton auf Lack (3.67:1) beobachten; die drei Beta-Personas-Testläufe für
+R14/R15/R15b (Standardprozess seit R9, §4m) stehen noch aus.
 
 ### Danach denkbar (nichts zugesagt)
 - Weitere Personas als Varianten desselben Mein-Tag-Musters (Recovery Manager, M. Belegung).
