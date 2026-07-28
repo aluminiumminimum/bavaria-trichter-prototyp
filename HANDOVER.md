@@ -653,6 +653,83 @@ wanderte nie in die Person (Reihenfolge-Abhängigkeit, `kfAnsprechSet` syncte nu
 
 ---
 
+## 4p. Runde 13 — Zuweiser-Anmeldungen, Originalnachricht, Zeitleiste (28.07., `f792b5f`)
+
+Nutzer spielte „Patient/Patientin (68) Neurologie" (Fax RHÖN) durch. Drei Befunde, ausdrücklich
+**allgemein** zu lösen, nicht nur für diesen Fall:
+
+**(1) Sozialdienst-Anmeldungen ohne Stammdaten sind unrealistisch.** Die Eingangs-Seeds
+101/102/103/109/110 + der Dr.-Kessler-Pool-Eintrag tragen jetzt vollständige Kurzanmeldungen
+(Name, Geburtsdatum, Diagnose, Kostenträger, beigefügte Unterlagen, Rückrufnummer) und ein Feld
+`patient:{name,alter}`, aus dem `uebernehmen()` direkt den echten Fallnamen zieht. Anna (1), Maria (3),
+Hoffmann-Pool, PRIMO MEDICO und die passiven Einträge blieben bewusst unverändert (Leitfall-Dramaturgie).
+`fkwStammBestaetigen()` liest zusätzlich ein Geburtsdatum aus dem Text (`geb. TT.MM.JJJJ`).
+`DEMO_SCHEMA` auf **4** — Seed-Inhalte haben sich geändert, gespeicherte Tester-Stände einmal verwerfen.
+
+**(2) Kapitel „Originalanfrage" war toter Code.** `renderFallakte` blendete `#faOriginalChap` bei
+jedem Rendern aus und aktivierte es nie → die Originalnachricht war unauffindbar. Sichtbar gemacht
+(in R14 dann in den Verlauf verschoben, siehe unten), `white-space:pre-line` für Faxe/Formulare.
+
+**(3) Zeitleiste zu klein + Lagebild doppelte Aussage.** `.fk-col-zeit` 168→184 px, Label 13 px/
+weight 400, Punkte 9 px, aktueller Schritt weiter über `lxPulse`. `lbPulsHtml` liefert `""`, wenn
+`kfAufgabe(f).feld==="kontakt"` — sonst stand „Noch keine Kommunikation" direkt unter dem
+inhaltsgleichen „Jetzt zu tun".
+
+**Drei eigene Funde bei der Abnahme:** Telefon-Regex griff das Aktenzeichen („Az. N-0472/26" →
+„☎ 0472/26"), Mail-Regex nahm den Satzpunkt mit, und „Absender" war ein halber Anfragetitel.
+Daraus zentrale Helfer **`telAusText()`** (Label-Priorität, Az.-Ausschluss, ≥8 Ziffern) und
+**`mailAusText()`** — alle drei früheren Inline-Regex-Stellen nutzen sie jetzt.
+
+## 4q. Runde 14 — Kommunikation als Herzstück (28.07., `e6ac338`)
+
+Vier Beta-Befunde, alle vor dem Fix im Browser reproduziert:
+
+**(1) Originalnachricht abrufbar statt Dauer-Kapitel.** Nutzer: „gehört nicht aufgeklappt irgendwo
+rechts in der Akte, man muss sie einfach abrufen können". `#faOriginalChap` entfernt; neue
+`faOriginalHtml(f)` rendert sie als zugeklapptes `<details class="fa-orig">` **am Anfang des
+Nachrichtenverlaufs** (chronologisch korrekt). Innere id `faOriginal` erhalten, damit das
+`pre-line`-CSS weiter greift.
+
+**(2) „Kommunikation & Verlauf" ist Arbeitsmaterial.** Kapitel-Markup aus `.fk-col-kontext` in
+`.fk-col-arbeit` verschoben (Reihenfolge: Lagebild → `#dArbeit` → Verlauf → Verwaltung); die
+R10-Regel `#dLog{max-height:min(58vh,560px)}` durch `max-height:none;overflow:visible;font-size:14px`
+ersetzt, Bubbles 10/12 px Padding, in/out ±6 % Einzug, Arbeitsspalte **1.5fr** statt 1fr
+(519 px vs. 346 px @1440). Mobil: volle Breite für Eingehende, 13.5 px.
+
+**(3) Ansprechpartner landete nicht „oben in Kommunikation".** Reproduziert: Bezug auf
+„Patient selbst" gesetzt → `f.ansprech={name:"",…}` → Lagebild blieb auf „noch nicht festgehalten",
+weil nur der Name gerendert wurde. Jetzt (a) `kfAnsprechSet` übernimmt bei „Patient selbst"
+automatisch `f.name` (außer Platzhalter) und setzt `legit`, (b) Lagebild fällt auf den Bezug zurück
+(„weitere Angehörige — Name offen") und lässt `legit` weg, wenn es dasselbe sagt wie der Bezug,
+(c) neue Kopfzeile **`kommPartnerHtml(f)`** im Verlauf: Anmeldende Stelle / Ansprechpartner /
+Antworten gehen an (letzte Zeile nur, wenn sie etwas Neues sagt) + Hinweis bei ungeklärter
+Auskunftsberechtigung. (d) `kommEmpfaenger(f)` adressiert ausgehende Einträge (`sendReply`,
+`dArbeitUnterlagenAnfordern`, `epkSendenBestaetigen`) an den echten Adressaten statt immer an `f.name`.
+
+**(4) Keine Rückmeldungen bei selbst übernommenen Fällen.** `simTrigger` kannte nur die vier
+Leitfälle (id 1/3/13 + `simKey:"hoffmann"`) — jeder übernommene Fall blieb nach „Unterlagen
+anfordern" für immer still. Neu: **`GEN_EVENTS`** (antwort · unterlagen · versicherung · kosten ·
+paket) mit `genAbsender`/`genVon`/`genEvent`, `genSchedule`/`genFire`, `else`-Fallback in
+`simTrigger`. Antwortende Partei folgt der realen Arbeitsteilung: **`anmeldStelle(f)`** (Fax/Recare/
+Sozialdienst/Entlassmanagement) antwortet auf Unterlagen und Rückfragen, der Patient reicht
+Versicherungsdaten nach und bestätigt das Einladungspaket, der Kostenträger meldet die Zusage
+(über `kostenSetzen`, nicht `f.kosten=`). Dafür ist `simFire` in **`simFire`/`simApply`** geteilt —
+Leitfall- und generische Ereignisse nehmen denselben Weg (Log, `kfSyncStatus`, ungelesen, Toast,
+Rerender); die Nachliefer-Zeile am Dateiende unterscheidet `gen:`-Keys von Leitfall-Keys.
+Verifiziert: Fax-Fall Friedrich Sander → Sozialdienst (Fax) + Patient (E-Mail) + PKV antworten,
+`docs` und Kostenstatus rücken mit, Leitfälle behalten ihr Skript.
+
+**Eigener Fund bei der Abnahme:** die R13-Absender-Herleitung machte aus „Angehörige fragt für
+Vater (74) nach Wechsel-Reha" eine Einrichtung. Jetzt gilt der Titelteil nur als Absender, wenn er
+wie eine Einrichtung aussieht (Verbteil abgeschnitten, ≥2 Wörter, 6–34 Zeichen, kein Rollenwort,
+kein Fragezeichen) — sonst bleibt der Kanal die Quelle. Alle acht offenen Eingänge geprüft:
+Website/Telefon/E-Mail bekommen den Kanal, die drei Zuweiser-Anmeldungen ihre Einrichtung.
+
+**Lehre:** Eine Zeile, die den Zustand nur über EIN Feld rendert (hier `ansprech.name`), lügt,
+sobald der Nutzer ein anderes Feld pflegt — Fallbacks über die ganze Datenstruktur denken.
+
+---
+
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"
 - Server: `.claude/launch.json` → **`bavaria-proto`** (homebrew python3 `http.server`, Port 8765, `--directory` = Repo). Start via preview-Tool mit `{name:"bavaria-proto"}`.
 - Desktop braucht **≥1024px** (sonst sind `dbDetail` etc. gated). Preset „desktop" liefert teils <1024 → **eigene Größe 1440×900** setzen. Mobile-Preset 375/390 für die Mobil-QA.
