@@ -3368,10 +3368,19 @@ body.ma-mode #inbToast.show{display:flex}
 .lb-ap-k{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--brass-deep);flex:0 0 auto}
 .lb-ap-v{flex:1;min-width:0}
 @media(max-width:640px){.kf-ansprech-grid{grid-template-columns:1fr}}
-/* Der Kommunikationsverlauf ist in der Fallakte Arbeitsmaterial, kein Randvermerk:
-   150px Guckloch (globale timeline-Regel) reichen dort nicht. */
-#view-fallakte #dLog{max-height:min(58vh,560px)}
-@media(max-width:1023px){#view-fallakte #dLog{max-height:52vh}}
+/* R14: Der Verlauf ist das Herzstück der Fallakte (Nutzer-Befund) — er steht jetzt in der
+   Arbeitsspalte und darf mitwachsen, statt in einem 560px-Fensterchen zu scrollen. Nachrichten
+   werden groesser und greifbarer, ein-/ausgehend deutlicher gegeneinander gesetzt. */
+#view-fallakte #dLog{max-height:none;overflow:visible;font-size:14px;padding-left:18px}
+#view-fallakte #dLog .lgm{padding:10px 12px;line-height:1.5}
+#view-fallakte #dLog .lgm-in{margin-right:6%}
+#view-fallakte #dLog .lgm-out{margin-left:6%}
+#view-fallakte #dLog .lg-who{font-size:11px;margin-bottom:3px}
+#view-fallakte #dLog .lg-zeit{font-size:11px}
+#view-fallakte .fk-komm{margin-top:14px}
+@media(max-width:1023px){#view-fallakte #dLog{font-size:13.5px;padding-left:15px}
+ #view-fallakte #dLog .lgm-in{margin-right:0}
+ #view-fallakte #dLog .lgm-out{margin-left:8%}}
 /* Zugeklappte Kontext-Kapitel: summary trägt die chap-h2-Optik, Marker als dezenter Pfeil. */
 details.fk-fold>summary.chap-h2{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}
 details.fk-fold>summary.chap-h2::-webkit-details-marker{display:none}
@@ -3381,7 +3390,9 @@ details.fk-fold[open]>summary.chap-h2::after{transform:rotate(90deg)}
    dort unter. Jetzt eigene, mitlaufende Spalte links neben der Arbeitsfläche; am Handy bleibt sie
    als horizontales Band oben. */
 @media(min-width:1024px){
- #view-fallakte .fk-cols{grid-template-columns:184px minmax(0,1fr) minmax(0,1fr)}
+ /* R14: Die Arbeitsspalte trägt jetzt auch den Verlauf — sie bekommt mehr Breite als die
+    Kontextspalte, in der nur noch zugeklappte Kapitel stehen. */
+ #view-fallakte .fk-cols{grid-template-columns:184px minmax(0,1.5fr) minmax(0,1fr)}
  .fk-col-zeit{position:sticky;top:16px}
  .fk-col-zeit .fk-stageband{flex-direction:column;align-items:flex-start;gap:0;margin:0}
  .fk-col-zeit .fk-stage{width:100%;padding:2px 0}
@@ -3401,6 +3412,26 @@ details.fk-fold[open]>summary.chap-h2::after{transform:rotate(90deg)}
 .fk-col-zeit .fk-stage.current .fk-stage-dot::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:1.5px solid var(--brass);animation:lxPulse 2.2s ease-out infinite}
 /* Kurzanmeldungen sind zeilenweise aufgebaut — die Umbrüche müssen erhalten bleiben. */
 #faOriginal .mtxt,.eg-original .mtxt{white-space:pre-line}
+/* R14 · Originalnachricht als abrufbarer Klapp-Eintrag am Anfang des Verlaufs. */
+details.fa-orig{border:1px solid var(--jade-line);border-radius:6px;background:var(--paper);margin:0 0 12px}
+details.fa-orig>summary{cursor:pointer;list-style:none;padding:8px 12px;font:600 12px "Inter",sans-serif;
+ color:var(--brass-deep);display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+details.fa-orig>summary::-webkit-details-marker{display:none}
+details.fa-orig>summary::before{content:"✉";font-size:13px}
+details.fa-orig>summary::after{content:"aufklappen";margin-left:auto;font:500 10.5px "Fragment Mono",monospace;color:var(--faint)}
+details.fa-orig[open]>summary::after{content:"zuklappen"}
+details.fa-orig .fa-orig-q{font:500 10.5px "Fragment Mono",monospace;color:var(--faint);letter-spacing:.04em}
+details.fa-orig>div{padding:0 12px 12px}
+/* R14 · Kopfzeile "wer kommuniziert" im Verlauf: bei Anmeldung über einen Sozialdienst sind es
+   zwei Parteien — die anmeldende Stelle und der Patient bzw. seine Angehörigen. */
+.komm-partner{border:1px solid var(--jade-line);border-radius:6px;background:var(--ivory,#f6ecd9);padding:10px 12px;margin:0 0 12px}
+.komm-partner .kp-row{display:flex;gap:10px;align-items:baseline;padding:3px 0}
+.komm-partner .kp-k{flex:0 0 132px;font:500 10.5px "Fragment Mono",monospace;letter-spacing:.05em;color:var(--faint);text-transform:uppercase}
+.komm-partner .kp-v{flex:1;font-size:13px;color:var(--ink-soft)}
+.komm-partner .kp-warn{color:var(--brass-deep);font-weight:600}
+.komm-partner .kp-hint{margin:6px 0 0;font-size:11px;color:var(--brass-deep)}
+@media(max-width:1023px){.komm-partner .kp-row{flex-direction:column;gap:1px}
+ .komm-partner .kp-k{flex:none}}
 </style>
 </head>
 <body>
@@ -4345,6 +4376,10 @@ details.fk-fold[open]>summary.chap-h2::after{transform:rotate(90deg)}
           </div>
         </div>
         <div id="dArbeit"></div>
+        <div class="chap fk-komm">
+          <h2 class="chap-h2">Kommunikation &amp; Verlauf</h2>
+          <div id="faWerdegang"></div>
+        </div>
         <div class="chap">
           <h2 class="chap-h2">Verwaltung</h2>
           <div class="fvw">
@@ -4368,16 +4403,8 @@ details.fk-fold[open]>summary.chap-h2::after{transform:rotate(90deg)}
       </div>
       <div class="fk-col-kontext">
         <div class="chap">
-          <h2 class="chap-h2">Kommunikation &amp; Verlauf</h2>
-          <div id="faWerdegang"></div>
-        </div>
-        <div class="chap">
           <h2 class="chap-h2">Übersicht</h2>
           <div id="faUebersicht"></div>
-        </div>
-        <div class="chap" id="faOriginalChap" style="display:none">
-          <h2 class="chap-h2">Originalanfrage</h2>
-          <div id="faOriginal"></div>
         </div>
         <details class="chap fk-fold">
           <summary class="chap-h2">Medizinische Kurzfelder</summary>
@@ -5415,8 +5442,18 @@ function uebernehmen(id,owner){
   /* Absender ist die Einrichtung, nicht der ganze Betreff: aus „Fax: RHÖN Bad Neustadt, Anmeldung
      AHB nach Schlaganfall" wird „RHÖN Bad Neustadt" — sonst steht in der Akte unter Absender ein
      halber Anfragetitel. */
+  /* Nur wenn der Betreff wirklich mit einer Einrichtung beginnt. „Angehörige fragt für Vater (74)
+     nach Wechsel-Reha" ist ein Anliegen, keine Absenderin — dann bleibt der Kanal die Quelle (R14). */
   const _titRest=m.tit.split(":")[1]?m.tit.split(":")[1].trim():"";
-  const _quelle=_titRest?_titRest.split(",")[0].trim():m.kanal;
+  let _kand=_titRest?_titRest.split(",")[0].trim():"";
+  const _vb=/\b(fragt|sucht|bittet|lädt|braucht|möchte|will|meldet|empfiehlt|schickt)\b/i.exec(_kand);
+  if(_vb)_kand=_kand.slice(0,_vb.index).trim();
+  /* Einrichtung heißt: mindestens zwei Wörter und kein Rollenwort. „Angehörige", „Selbstzahlerin (55)"
+     oder „Interessentin" sind Anfragende, keine Absender-Einrichtungen — dann bleibt der Kanal die
+     Quelle, sonst stünde in der Akte unter Absender ein halbes Anliegen (R14). */
+  const _istEinrichtung=_kand.length>=6&&_kand.length<=34&&_kand.split(/\s+/).length>=2&&!/[?!]/.test(_kand)
+    &&!/^(angehörige|angehöriger|ehefrau|ehemann|tochter|sohn|patient|patientin|selbstzahler|selbstzahlerin|interessent|interessentin|familie|habt|haben|hallo|guten)\b/i.test(_kand);
+  const _quelle=_istEinrichtung?_kand:m.kanal;
   faelle.push({id:fid,name:_name,alter:(m.patient&&m.patient.alter!=null)?m.patient.alter:null,rolle:"offen",kanal:m.kanal,quelle:_quelle,
     achse:m.achse,kt:"Unklar",status:"Neu",owner:owner,aufgabe:STATUS_AUFGABE["Neu"],frist:dstr(0),
     saluto:m.saluto===true,zuordnungsHinweis:m.hinweis||"",
@@ -5439,7 +5476,7 @@ function sendReply(){
   const f=aktuellerFall; if(!f)return;
   const r=document.getElementById("dReply"); const txt=(r?r.value:"").trim(); if(!txt){alert("Bitte eine Antwort verfassen.");return;}
   const kanal=document.getElementById("dReplyKanal").value;
-  f.log.push([dstr(0),"↦ Antwort per "+kanal+" an "+f.name+": "+txt,logZeit()]);
+  f.log.push([dstr(0),"↦ Antwort per "+kanal+" an "+kommEmpfaenger(f)+": "+txt,logZeit()]);
   if(typeof simTrigger==="function"){
     simTrigger("antwort",f);
     /* Wer die Unterlagen-Anforderung als Nachricht formuliert (Baustein "Unterlagen anfordern",
@@ -5449,7 +5486,7 @@ function sendReply(){
   pruefeUpsell(f,txt);
   if(r)r.value="";
   document.getElementById("dLog").innerHTML=logHtml(f);
-  if(typeof inbToast==="function") inbToast("done","<b>Antwort gesendet</b> (Demo)","per "+kanal+" an "+escapeHtml(f.name),null);
+  if(typeof inbToast==="function") inbToast("done","<b>Antwort gesendet</b> (Demo)","per "+kanal+" an "+escapeHtml(kommEmpfaenger(f)),null);
 }
 function inDatenbank(id){
  const m=eingang.find(x=>x.id===id);if(!m||m.done)return;
@@ -7153,7 +7190,7 @@ function fkwStammHtml(f){
    +"<div><label for='fkwName'>Name</label><input id='fkwName' value=\""+(ph?"":escapeHtml(f.name||""))+"\""+(ph?" placeholder='Name des Patienten eintragen'":"")+"></div>"
    +"<div><label for='fkwAlter'>Alter</label><input id='fkwAlter' type='number' min='18' max='105' value=\""+(f.alter||"")+"\" style='width:70px'></div>"
    +"<button class='btn-ghost btn-sm' type='button' onclick='fkwStammBestaetigen()'>Bestätigen</button>"
-   +(ph?"<p style='flex-basis:100%;margin:2px 0 0;font-size:11px;color:var(--brass-deep)'>Der Fall trägt noch einen automatischen Platzhalter-Namen — der echte Name steht meist in der Originalnachricht (unten).</p>":"")
+   +(ph?"<p style='flex-basis:100%;margin:2px 0 0;font-size:11px;color:var(--brass-deep)'>Der Fall trägt noch einen automatischen Platzhalter-Namen — der echte Name steht meist in der Originalnachricht (im Verlauf aufklappbar).</p>":"")
    +"</div>";
 }
 function fkwStammBestaetigen(){
@@ -7361,8 +7398,9 @@ function lagebildHtml(f){
  const _apOffen=(_ap.legit==="ungeklärt")||!_ap.name;
  html+="<div class='lb-ap"+(_apOffen?" warn":"")+"' onclick=\"lbOeffneFeld('kontakt')\">"
   +"<span class='lb-ap-k'>Kommunikation mit</span>"
-  +"<span class='lb-ap-v'>"+(_ap.name?escapeHtml(_ap.name)+" ("+escapeHtml(_ap.bezug)+")":"noch nicht festgehalten")
-  +" · "+escapeHtml(_ap.legit)+"</span><span class='lb-todo-pfeil'>›</span></div>";
+  +"<span class='lb-ap-v'>"+(_ap.name?escapeHtml(_ap.name)+" ("+escapeHtml(_ap.bezug)+")"
+    :(_ap.bezug&&_ap.bezug!=="Sonstige"?escapeHtml(_ap.bezug)+" — Name offen":"noch nicht festgehalten"))
+  +(_ap.legit===_ap.bezug?"":" · "+escapeHtml(_ap.legit))+"</span><span class='lb-todo-pfeil'>›</span></div>";
  html+="<div class='lb-todo"+(auf.feld?" lb-klick":"")+"'"+(auf.feld?" onclick=\"lbOeffneFeld('"+auf.feld+"')\"":"")+">"
   +"<span class='lb-todo-k'>Jetzt zu tun</span><span class='lb-todo-txt'>"+escapeHtml(auf.text)+"</span>"
   +(auf.feld?"<span class='lb-todo-pfeil'>›</span>":"")+"</div>";
@@ -7441,6 +7479,10 @@ function kfAnsprech(f){
  if(/patient selbst/i.test(rolle))return {name:f.name||"",bezug:"Patient selbst",legit:"Patient selbst"};
  if(/zuweiser/i.test(rolle))return {name:f.quelle||"",bezug:"Sozialdienst / Klinik",legit:"ungeklärt"};
  if(/angehör/i.test(rolle))return {name:"",bezug:"weitere Angehörige",legit:"ungeklärt"};
+ /* Übernommene Fälle tragen rolle:"offen" — dann entscheidet der Eingangsweg: über Fax, Recare oder
+    einen Sozialdienst ist zuerst die anmeldende Stelle der Ansprechpartner (R14). */
+ const _st=anmeldStelle(f);
+ if(_st)return {name:_st,bezug:"Sozialdienst / Klinik",legit:"ungeklärt"};
  return {name:"",bezug:"Sonstige",legit:"ungeklärt"};
 }
 function kfAnsprechHtml(f){
@@ -7461,6 +7503,12 @@ function kfAnsprechSet(feld,wert){
  const a=Object.assign({},kfAnsprech(f));
  a[feld]=String(wert||"").trim()||a[feld];
  if(feld==="name")a.name=String(wert||"").trim();
+ /* „Patient selbst" heißt: der Patient IST der Ansprechpartner. Vorher blieb der Name leer und die
+    Lagebild-Zeile stand weiter auf „noch nicht festgehalten" (Nutzer-Befund R14). */
+ if(feld==="bezug"&&a.bezug==="Patient selbst"){
+  if((!a.name||a.name===f.quelle)&&!fkwNameIstPlatzhalter(f))a.name=f.name;
+  if(a.legit==="ungeklärt")a.legit="Patient selbst";
+ }
  f.ansprech=a;
  f.log.push([dstr(0),"Ansprechpartner: "+(a.name||"ohne Namen")+" ("+a.bezug+") · Auskunft: "+a.legit,logZeit()]);
  /* Der Ansprechpartner gehört auch in die Personen-Akte, sobald es eine gibt. */
@@ -7697,7 +7745,7 @@ function dArbeitKostenUpload(){
 function dArbeitUnterlagenAnfordern(){
  const f=aktuellerFall;if(!f)return;
  const fehlt=["Entlassbrief","Befunde","Versicherungsdaten"].filter((n,i)=>!f.docs[i]);
- f.log.push([dstr(0),"↦ Unterlagen angefordert bei "+f.name+": "+(fehlt.length?fehlt.join(", "):"Restunterlagen")+" · inkl. Datenschutz-Einwilligung zur Unterschrift",logZeit()]);
+ f.log.push([dstr(0),"↦ Unterlagen angefordert bei "+kommEmpfaenger(f)+": "+(fehlt.length?fehlt.join(", "):"Restunterlagen")+" · inkl. Datenschutz-Einwilligung zur Unterschrift",logZeit()]);
  f.aufgabe="Wartet auf angeforderte Unterlagen";
  if(typeof simTrigger==="function")simTrigger("unterlagen",f);
  inbToast("done","<b>Fehlende Unterlagen angefordert</b> (Demo)","",null);
@@ -7768,9 +7816,9 @@ function epkBodyHtml(f){
 function epkSendenBestaetigen(){
  const f=aktuellerFall;if(!f)return;
  const kanal=_epkKanal;
- f.log.push([dstr(0),"↦ Einladungspaket (Checkliste, Anfahrt, Hausprospekt) per "+kanal+" an "+f.name,logZeit()]);
+ f.log.push([dstr(0),"↦ Einladungspaket (Checkliste, Anfahrt, Hausprospekt) per "+kanal+" an "+kommEmpfaenger(f),logZeit()]);
  if(typeof simTrigger==="function")simTrigger("paket",f);
- inbToast("done","<b>Einladungspaket erstellt</b> (Demo)","per "+escapeHtml(kanal)+" an "+escapeHtml(f.name),null);
+ inbToast("done","<b>Einladungspaket erstellt</b> (Demo)","per "+escapeHtml(kanal)+" an "+escapeHtml(kommEmpfaenger(f)),null);
  epkClose();
  renderAll();renderFallakte();
 }
@@ -8550,6 +8598,40 @@ function stageBandHtml(f){
     +"<span class='fk-stage "+cls+"'><span class='fk-stage-dot'></span><span class='fk-stage-label'>"+escapeHtml(s.label)+"</span></span>";
  }).join("")+"</div>";
 }
+/* Mit wem läuft die Kommunikation? Bei Anmeldung über einen Sozialdienst sind es zwei Parteien:
+   die anmeldende Stelle und — sobald geklärt — der Patient bzw. seine Angehörigen. Diese Zeile
+   macht den im Erstgespräch erfassten Ansprechpartner dort sichtbar, wo kommuniziert wird (R14). */
+function kommPartnerHtml(f){
+ if(!f)return "";
+ const st=anmeldStelle(f),ap=kfAnsprech(f);
+ let html="<div class='komm-partner'>";
+ if(st)html+="<div class='kp-row'><span class='kp-k'>Anmeldende Stelle</span><span class='kp-v'>"
+  +escapeHtml(st)+" · "+escapeHtml(f.originalKanal||f.kanal||"")+"</span></div>";
+ const apTxt=ap.name?escapeHtml(ap.name)+" ("+escapeHtml(ap.bezug)+")"
+  :(ap.bezug&&ap.bezug!=="Sonstige"?escapeHtml(ap.bezug)+" — Name offen":"noch nicht festgehalten");
+ html+="<div class='kp-row'><span class='kp-k'>Ansprechpartner</span><span class='kp-v"+(ap.name?"":" kp-warn")+"'>"
+  +apTxt+"</span></div>";
+ /* Die Adressaten-Zeile nur, wenn sie etwas Neues sagt — sonst stünde dreimal derselbe Name da. */
+ const _empf=kommEmpfaenger(f);
+ if(_empf&&_empf!==ap.name)html+="<div class='kp-row'><span class='kp-k'>Antworten gehen an</span><span class='kp-v'>"
+  +escapeHtml(_empf)+"</span></div>";
+ if(ap.legit==="ungeklärt")html+="<p class='kp-hint'>Auskunftsberechtigung ungeklärt — keine Angaben zum Gesundheitszustand.</p>";
+ return html+"</div>";
+}
+/* Die Originalnachricht ist kein Dauer-Kapitel am Rand, sondern etwas, das man bei Bedarf abruft
+   (Nutzer-Befund R14). Sie sitzt jetzt am Anfang des Nachrichtenverlaufs — dort, wo sie
+   chronologisch hingehört — und bleibt zugeklappt, bis jemand sie lesen will. Die id faOriginal
+   bleibt erhalten, damit das bestehende pre-line-CSS weiter greift. */
+function faOriginalHtml(f){
+ if(!f||!f.originalTxt)return "";
+ const kanal=escapeHtml(f.originalKanal||f.kanal||"Eingang");
+ return "<details class='fa-orig'><summary>Originalnachricht ansehen"
+  +"<span class='fa-orig-q'>"+kanal+(f.quelle?" · "+escapeHtml(f.quelle):"")+"</span></summary>"
+  +"<div id='faOriginal'><div class='pa-meta' style='margin-bottom:8px'>"
+  +"<div class='pa-row'><span class='pa-k'>Eingang</span><span class='pa-v'>"+kanal+(f.originalZeit?" · "+escapeHtml(f.originalZeit):"")+"</span></div>"
+  +(f.quelle?"<div class='pa-row'><span class='pa-k'>Absender</span><span class='pa-v'>"+escapeHtml(f.quelle)+"</span></div>":"")
+  +"</div><div class='eg-original'><div class='mtxt'>"+escapeHtml(f.originalTxt)+"</div></div></div></details>";
+}
 function renderFallakte(){
   if(!_fallakteId){go('faelle','board');return;}
   const f=faelle.find(x=>x.id===_fallakteId);
@@ -8579,20 +8661,6 @@ function renderFallakte(){
   document.getElementById("dOwner").value=f.owner;
   document.getElementById("dOwnerAva").textContent=initialen(f.owner);
   document.getElementById("dArbeit").innerHTML=dArbeitHtml(f);
-  /* Das Kapitel wurde bei jedem Rendern ausgeblendet und nie wieder aktiviert — die Originalnachricht
-     war damit in der Akte praktisch unauffindbar (Nutzer-Befund). Jetzt sichtbar, sobald es eine gibt. */
-  const _origChap=document.getElementById("faOriginalChap");
-  const _origBody=document.getElementById("faOriginal");
-  if(f.originalTxt){
-   _origChap.style.display="";
-   _origBody.innerHTML="<div class='pa-meta' style='margin-bottom:8px'>"
-    +"<div class='pa-row'><span class='pa-k'>Eingang</span><span class='pa-v'>"+escapeHtml(f.originalKanal||f.kanal||"—")+(f.originalZeit?" · "+escapeHtml(f.originalZeit):"")+"</span></div>"
-    +(f.quelle?"<div class='pa-row'><span class='pa-k'>Absender</span><span class='pa-v'>"+escapeHtml(f.quelle)+"</span></div>":"")
-    +"</div><div class='eg-original'><div class='mtxt'>"+escapeHtml(f.originalTxt)+"</div></div>";
-  }else{
-   _origChap.style.display="none";
-   _origBody.innerHTML="";
-  }
   updateDocCnt();
   document.getElementById("dKT").value=f.kt;
   document.getElementById("dSaluto").checked=f.saluto;
@@ -8616,10 +8684,12 @@ function renderFallakte(){
       +"</span></div></div>":"";
   document.getElementById("faUebersicht").innerHTML=_aufnZeile+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId,{verlauf:false})+"</details>";
   document.getElementById("faWerdegang").innerHTML=
-    "<div class='lg-tabs'>"
+    kommPartnerHtml(f)
+    +"<div class='lg-tabs'>"
     +"<button type='button' class='lg-tab"+(_lgTab==="nachrichten"?" active":"")+"' data-lg='nachrichten' onclick=\"lgTabSet('nachrichten')\">Gespräche</button>"
     +"<button type='button' class='lg-tab"+(_lgTab==="alles"?" active":"")+"' data-lg='alles' onclick=\"lgTabSet('alles')\">Alles</button>"
-    +"</div><div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
+    +"</div>"+faOriginalHtml(f)
+    +"<div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
   const med=inReha.find(p=>p.personId===f.personId);
   document.getElementById("faMedizin").innerHTML=med?("<div class='pa-meta'>"
     +"<div class='pa-row'><span class='pa-k'>Reha-Ziel</span><span class='pa-v'>"+escapeHtml(med.rehaZiel||"—")+"</span></div>"
@@ -8734,8 +8804,94 @@ function fallImBlick(f){
  const v=document.getElementById("view-fallakte");
  return typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&!!v&&v.classList.contains("active");
 }
+/* ---------- Generische Rückmeldungen (R14) ----------
+   Nur die vier Leitfälle hatten gescriptete Antworten — bei jedem selbst übernommenen Fall blieb es
+   nach „Unterlagen anfordern" für immer still (Nutzer-Befund). Die generischen Antworten folgen der
+   realen Arbeitsteilung: wer den Patienten angemeldet hat (Sozialdienst, Entlassmanagement,
+   Zuweiser), antwortet auf Unterlagen und Rückfragen; der Patient bzw. seine Angehörigen melden
+   sich zu allem, was ihn persönlich betrifft. Kommt die Anfrage direkt vom Patienten, gibt es nur
+   diese eine Gegenseite. */
+function anmeldStelle(f){
+ if(!f)return null;
+ const ctx=String(f.kanal||"")+" "+String(f.rolle||"")+" "+String(f.quelle||"");
+ if(!/fax|recare|zuweiser|sozialdienst|entlassmanagement|klinik|krankenhaus|primo|hausarzt/i.test(ctx))return null;
+ const q=String(f.quelle||"").trim();
+ if(!q||/^(website|empfehlung|broschüre|telefon)/i.test(q))return null;
+ return q;
+}
+/* Adressat ausgehender Nachrichten: der festgehaltene Ansprechpartner, sonst die anmeldende
+   Stelle, sonst der Patient selbst. Vorher stand in jedem Verlaufseintrag „an <Fallname>" — auch
+   dann, wenn faktisch mit dem Sozialdienst kommuniziert wurde (R14). */
+function kommEmpfaenger(f){
+ if(!f)return "";
+ const ap=kfAnsprech(f);
+ if(ap.name)return ap.name;
+ return anmeldStelle(f)||f.name||"Anfragende Person";
+}
+function genKanal(f){
+ const k=String(f.originalKanal||f.kanal||"");
+ if(/fax/i.test(k))return "Fax";
+ if(/recare/i.test(k))return "Recare";
+ return "E-Mail";
+}
+function genAbsender(f,seite){
+ const st=anmeldStelle(f);
+ const stelle=(seite==="stelle"&&st);
+ let label=stelle?st:(function(){
+   const ap=kfAnsprech(f);
+   if(ap.name&&ap.bezug!=="Sozialdienst / Klinik")
+    return ap.name+(ap.bezug&&ap.bezug!=="Patient selbst"?" ("+ap.bezug+")":"");
+   return f.name||"Patient";
+ })();
+ return label+" ("+(stelle?genKanal(f):"E-Mail")+")";
+}
+/* Jeder Eintrag: seite = wer antwortet ("stelle" = anmeldende Stelle, sonst Patientenseite),
+   txt(f) = Nachrichtentext OHNE Absender (der wird vorangestellt, damit logHtml() den Sprecher
+   erkennt), after(f) = Wirkung auf den Fall. */
+const GEN_EVENTS={
+ antwort:{seite:"stelle",delay:9000,txt:function(f){
+   return anmeldStelle(f)
+    ?"Rückmeldung zur Anmeldung"+(f.name?" von "+f.name:"")+": Patient ist über die Reha informiert, die Angehörigen sind eingebunden. Entlassung wäre aus unserer Sicht Ende der Woche möglich, Rückfragen gern an den Sozialdienst."
+    :"Vielen Dank für Ihre Rückmeldung — meine Fragen zum Ablauf sind damit beantwortet. Den Platz würde ich gern annehmen, bitte sagen Sie mir Bescheid, was Sie von mir brauchen.";},
+  after:function(f){}},
+ unterlagen:{seite:"stelle",delay:11000,txt:function(f){
+   return anmeldStelle(f)
+    ?"Entlassbrief und aktuelle Befunde übermittelt. Die Datenschutz-Einwilligung haben wir dem Patienten zur Unterschrift vorgelegt."
+    :"Arztbrief und Befunde sende ich Ihnen anbei — mehr habe ich aktuell nicht. Sagen Sie mir bitte, falls noch etwas fehlt.";},
+  after:function(f){f.docs[0]=true;f.docs[1]=true;}},
+ versicherung:{seite:"patient",delay:17000,txt:function(f){
+   return "Versichertennummer und Tarifdaten habe ich zusammengesucht und nachgereicht — falls noch etwas fehlt, bitte kurz melden.";},
+  after:function(f){f.docs[2]=true;}},
+ kosten:{seite:"kasse",delay:13000,txt:function(f){
+   return "Nach Prüfung der Unterlagen ist die Kostenzusage für die Anschlussrehabilitation erteilt. Die schriftliche Bestätigung folgt per Post.";},
+  after:function(f){kostenSetzen(f,"Zusage liegt vor","Kostenzusage liegt vor (Rückmeldung Kostenträger)");}},
+ paket:{seite:"patient",delay:9000,txt:function(f){
+   return "Das Einladungspaket ist angekommen, die Checkliste ist verständlich. Vielen Dank für die Organisation!";},
+  after:function(f){}}
+};
+function genVon(f,art){
+ if(GEN_EVENTS[art].seite==="kasse"){
+  const kt=String(f.kt||"");
+  if(/beihilfe/i.test(kt))return "Beihilfestelle (Post)";
+  if(/gkv/i.test(kt))return "Krankenkasse (Post)";
+  return "PKV (Sachbearbeitung)";
+ }
+ return genAbsender(f,GEN_EVENTS[art].seite);
+}
+function genEvent(f,art){
+ const g=GEN_EVENTS[art];
+ const von=genVon(f,art);
+ /* Absender vor den Text: logHtml() liest den Sprecher aus dem Textanfang bis zum ersten
+    Doppelpunkt (nur bis Position 40) — deshalb wird das Präfix bei Bedarf gekürzt. */
+ let pre=von.replace(/\s*\((Fax|Recare|E-Mail)\)$/,"");
+ if(pre.length>36)pre=pre.slice(0,35).trim();
+ return {von:von,text:pre+": "+g.txt(f),after:g.after};
+}
 function simFire(key){
- const ev=LEITFALL_EVENTS[key],f=ev&&simFallResolver(ev);
+ const ev=LEITFALL_EVENTS[key];
+ simApply(key,ev,ev&&simFallResolver(ev));
+}
+function simApply(key,ev,f){
  if(!f||!ev)return;
  f.sim=f.sim||{done:{},pending:[]};
  f.sim.pending=(f.sim.pending||[]).filter(p=>p!==key);
@@ -8748,6 +8904,21 @@ function simFire(key){
  inbToast("done","<b>Neue Nachricht · "+escapeHtml(ev.von)+"</b>","Fall "+escapeHtml(f.name),null);
  renderAll();
  if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&typeof renderFallakte==="function")renderFallakte();
+}
+function genFire(art,fid){
+ const f=faelle.find(x=>x.id===fid);
+ if(!f||!GEN_EVENTS[art])return;
+ simApply("gen:"+art,genEvent(f,art),f);
+}
+function genSchedule(art,f){
+ if(!f||!GEN_EVENTS[art])return;
+ f.sim=f.sim||{done:{},pending:[]};
+ const key="gen:"+art;
+ if(f.sim.done[key]||f.sim.pending.indexOf(key)>=0)return;
+ f.sim.pending.push(key);
+ if(typeof demoSave==="function")demoSave();
+ const fid=f.id;
+ setTimeout(function(){genFire(art,fid);},GEN_EVENTS[art].delay*LEITFALL_TEMPO);
 }
 function simSchedule(key){
  const ev=LEITFALL_EVENTS[key],f=ev&&simFallResolver(ev);
@@ -8784,6 +8955,13 @@ function simTrigger(art,f){
    if(art==="unterlagen") simSchedule("hoffmann-bericht");
    if(art==="kosten") simSchedule("hoffmann-zusage");
    if(art==="paket") simSchedule("hoffmann-danke");
+ } else {
+  /* Alle selbst übernommenen Fälle: keine gescriptete Dramaturgie, aber sehr wohl Antworten. */
+  if(art==="antwort")genSchedule("antwort",f);
+  if(art==="status:Kontaktiert")genSchedule("antwort",f);
+  if(art==="unterlagen"){genSchedule("unterlagen",f);genSchedule("versicherung",f);}
+  if(art==="kosten"&&f.kt!=="Selbstzahler")genSchedule("kosten",f);
+  if(art==="paket")genSchedule("paket",f);
  }
 }
 
@@ -8903,7 +9081,8 @@ function betaClose(merken){
 document.getElementById("fFrist").value=dstr(1);
 demoRestore();
 renderAll();
-(function(){faelle.forEach(function(f){ if(f&&f.sim&&Array.isArray(f.sim.pending)) f.sim.pending.slice().forEach(function(k){setTimeout(function(){simFire(k);},3000);}); });})();
+(function(){faelle.forEach(function(f){ if(f&&f.sim&&Array.isArray(f.sim.pending)) f.sim.pending.slice().forEach(function(k){
+ setTimeout(function(){ if(/^gen:/.test(k))genFire(k.slice(4),f.id); else simFire(k); },3000); }); });})();
 applyHash();
 document.addEventListener("visibilitychange",function(){ if(!document.hidden&&typeof kpiCountUp==="function")kpiCountUp(); });
 try{ if(!localStorage.getItem(BETA_SEEN_KEY)) setTimeout(betaOpen,900); }catch(e){}
