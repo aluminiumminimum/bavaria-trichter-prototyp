@@ -7420,6 +7420,7 @@ function kfKontaktHtml(f){
 }
 function kfNachrichtHtml(f){
  return "<div class='komm-block' style='margin-top:12px'><label>Antwort senden</label>"
+  +"<p class='kz-hint' style='margin:0 0 6px'>Textbausteine lassen sich kombinieren — jeder Klick ergänzt einen Absatz vor der Grußformel.</p>"
   +"<div class='tb-row'>"
   +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('beihilfe')\">Beihilfe 30/70</button>"
   +"<button class='tb-chip' type='button' onclick=\"bausteinEinfuegen('pkv')\">PKV-Vollversicherung</button>"
@@ -7687,20 +7688,53 @@ function epkClose(){
 }
 /* Standard-Textbausteine (angebot-Werkzeug) — parametrisiert mit Kostenträger/Name, schreiben
    direkt in #dReply.value (kein escapeHtml nötig, .value statt innerHTML). */
-function bausteinEinfuegen(key){
- const f=aktuellerFall;if(!f)return;
- const _fk=fallFakten(f);
+/* Textbausteine sind ABSÄTZE, kein fertiger Brief (R11, Beta-Feedback: „ich kann nicht Unterlagen
+   UND Beihilfe wählen, obwohl das getrennte Dinge sind"). Vorher ersetzte jeder Baustein den
+   kompletten Text samt Anrede und Grußformel — kombinieren war dadurch unmöglich. Jetzt liefert
+   jeder Baustein nur seinen Mittelteil; die Anrede steht einmal oben, die Grußformel einmal unten,
+   und jeder weitere Baustein wird davor eingefügt. Eigener Text bleibt erhalten. */
+const TB_GRUSS_ANFANG="Mit freundlichen Grüßen";
+function bausteinBloecke(f){
+ const _fk=(typeof fallFakten==="function")?fallFakten(f):[];
  const ktC=_fk.find(c=>c.typ==="kt");
  const kt=(ktC&&ktC.text)||f.kt||"Ihre Versicherung";
- const name=f.name;
- const TEXTE={
-   beihilfe:"Guten Tag "+name+",\n\nSie haben die Konstellation, dass Ihre private Krankenversicherung ("+kt+") 30% der Kosten übernimmt, während die Beihilfe 70% übernimmt. Das bedeutet ...\n\nFür Sie bedeuten die nächsten Schritte ...\n\nMit freundlichen Grüßen\nKlinik Bavaria",
-   pkv:"Guten Tag "+name+",\n\nIhre private Krankenversicherung ("+kt+") übernimmt die Kosten Ihrer Reha gemäß Ihrem Tarif. Das bedeutet ...\n\nFür Sie bedeuten die nächsten Schritte ...\n\nMit freundlichen Grüßen\nKlinik Bavaria",
-   selbst:"Guten Tag "+name+",\n\nals Selbstzahlerin bzw. Selbstzahler tragen Sie die Kosten Ihres Aufenthalts selbst — dafür entfällt jede Genehmigung durch einen Kostenträger, und wir können den Aufnahmetermin sofort verbindlich planen.\n\nKomfortzimmer: 285 € pro Tag (1.995 € pro Woche), inklusive Vollpension und aller ärztlich verordneten Therapien.\nPanorama-Suite: 340 € pro Tag (2.380 € pro Woche).\nBei einer Buchung von drei Wochen am Stück reduziert sich der Tagessatz um 10 % (Komfortzimmer: 5.386 € statt 5.985 €).\n\nDie Rechnung stellen wir wöchentlich; eine Anzahlung ist nicht erforderlich.\n\nMit freundlichen Grüßen\nKlinik Bavaria",
-   unterlagen:"Guten Tag "+name+",\n\nfür Ihre Aufnahme benötigen wir noch folgende Unterlagen:\n- Entlassbrief\n- Aktuelle Befunde\n- Versicherungsdaten\n- Kostenzusage\n\nBitte senden Sie uns diese ...\n\nMit freundlichen Grüßen\nKlinik Bavaria"
+ return {
+  beihilfe:"zu Ihrer Kostenaufteilung: Bei der Beihilfe-Konstellation übernimmt Ihre private Krankenversicherung ("+kt+") 30 % der Kosten, die Beihilfestelle die übrigen 70 %. Sie stellen den Antrag bei beiden Stellen; die ärztliche Begründung und einen Kostenplan stellen wir Ihnen dafür zusammen. Sobald uns beide Zusagen vorliegen, bestätigen wir Ihnen den Aufnahmetermin verbindlich.",
+  pkv:"zur Kostenübernahme: Ihre private Krankenversicherung ("+kt+") trägt die Kosten der Rehabilitation nach Ihrem Tarif. Wir beantragen die Kostenzusage direkt bei Ihrer Versicherung — dafür brauchen wir lediglich Ihre Versichertennummer und Ihre Tarifdaten. Die Rückmeldung dauert erfahrungsgemäß drei bis fünf Werktage, und wir informieren Sie, sobald die Zusage vorliegt.",
+  selbst:"als Selbstzahlerin bzw. Selbstzahler tragen Sie die Kosten Ihres Aufenthalts selbst — dafür entfällt jede Genehmigung durch einen Kostenträger, und wir können den Aufnahmetermin sofort verbindlich planen.\n\nKomfortzimmer: 285 € pro Tag (1.995 € pro Woche), inklusive Vollpension und aller ärztlich verordneten Therapien.\nPanorama-Suite: 340 € pro Tag (2.380 € pro Woche).\nBei einer Buchung von drei Wochen am Stück reduziert sich der Tagessatz um 10 % (Komfortzimmer: 5.386 € statt 5.985 €).\n\nDie Rechnung stellen wir wöchentlich; eine Anzahlung ist nicht erforderlich.",
+  unterlagen:"für die Aufnahme benötigen wir noch folgende Unterlagen:\n- Entlassbrief\n- Aktuelle Befunde\n- Versicherungsdaten\n- Kostenzusage des Kostenträgers\n\nSie können die Unterlagen per E-Mail an aufnahme@demo-klinik.local senden oder direkt von der entlassenden Klinik an uns übermitteln lassen."
  };
- const el=document.getElementById("dReply");
- if(el&&TEXTE[key])el.value=TEXTE[key];
+}
+function bausteinEinfuegen(key){
+ const f=aktuellerFall;if(!f)return;
+ const el=document.getElementById("dReply");if(!el)return;
+ const block=bausteinBloecke(f)[key];if(!block)return;
+ /* Dubletten-Schutz über den ersten Satzteil — zweimal derselbe Absatz ist immer ein Versehen. */
+ const kern=block.split("\n")[0].slice(0,40);
+ if(el.value.indexOf(kern)>=0){
+  if(typeof inbToast==="function")inbToast("done","<b>Baustein steht schon im Text</b>","Er wurde nicht doppelt eingefügt",null);
+  el.focus();return;
+ }
+ const anrede="Guten Tag "+(f.name||"")+",";
+ const gruss=TB_GRUSS_ANFANG+"\nKlinik Bavaria";
+ const vorhanden=el.value.replace(/\s+$/,"");
+ /* Die Bausteine sind als Fortsetzung der Anrede formuliert und beginnen deshalb klein. Ab dem
+    zweiten Absatz im Brief wäre das falsch — dann wird der erste Buchstabe großgeschrieben. */
+ let koerper=vorhanden;
+ const ai=koerper.indexOf(anrede);
+ if(ai>=0)koerper=koerper.slice(ai+anrede.length);
+ const gk=koerper.lastIndexOf(TB_GRUSS_ANFANG);
+ if(gk>=0)koerper=koerper.slice(0,gk);
+ const text=koerper.trim()?block.charAt(0).toUpperCase()+block.slice(1):block;
+ if(!vorhanden.trim()){
+  el.value=anrede+"\n\n"+text+"\n\n"+gruss;
+ }else{
+  const gi=vorhanden.lastIndexOf(TB_GRUSS_ANFANG);
+  if(gi>=0) el.value=vorhanden.slice(0,gi).replace(/\s+$/,"")+"\n\n"+text+"\n\n"+vorhanden.slice(gi);
+  else el.value=vorhanden+"\n\n"+text+"\n\n"+gruss;
+ }
+ el.focus();
+ el.scrollTop=el.scrollHeight;
 }
 /* ---------- Kostenzusage-Workflow (nur aktive Station gefüllt, kein kumulativer Fortschritt) ---------- */
 const KZ_STAGES=[["offen","Offen"],["angefragt","Angefragt"],["Zusage liegt vor","Zusage"],["abgelehnt","Abgelehnt"]];
