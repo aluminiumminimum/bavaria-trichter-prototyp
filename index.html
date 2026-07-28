@@ -3381,18 +3381,26 @@ details.fk-fold[open]>summary.chap-h2::after{transform:rotate(90deg)}
    dort unter. Jetzt eigene, mitlaufende Spalte links neben der Arbeitsfläche; am Handy bleibt sie
    als horizontales Band oben. */
 @media(min-width:1024px){
- #view-fallakte .fk-cols{grid-template-columns:168px minmax(0,1fr) minmax(0,1fr)}
+ #view-fallakte .fk-cols{grid-template-columns:184px minmax(0,1fr) minmax(0,1fr)}
  .fk-col-zeit{position:sticky;top:16px}
  .fk-col-zeit .fk-stageband{flex-direction:column;align-items:flex-start;gap:0;margin:0}
  .fk-col-zeit .fk-stage{width:100%;padding:2px 0}
  .fk-col-zeit .fk-stage-label{white-space:normal}
  .fk-col-zeit .fk-stage-sep{width:2px;height:18px;margin:0 0 0 4px;background:var(--brass-line);flex:0 0 auto}
+ .fk-col-zeit .fk-stage{font-size:13px;font-weight:400;line-height:1.35;padding:3px 0}
+ .fk-col-zeit .fk-stage.current .fk-stage-label{font-weight:600;color:var(--ink)}
+ .fk-col-zeit .fk-stage.done .fk-stage-label{color:var(--ink-soft)}
+ .fk-col-zeit .fk-stage-dot{width:9px;height:9px}
+ .fk-col-zeit .fk-stage-sep{height:14px}
+ .fk-col-zeit .fk-zeit-kicker{font-size:11px}
 }
 .fk-col-zeit .fk-zeit-kicker{font:600 10px/1 "Fragment Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--brass-deep);margin:0 0 10px}
 /* Der aktuelle Schritt pulsiert dezent — bewusst über den bestehenden lxPulse-Keyframe, damit das
    Motion-Set der App nicht wächst. */
 .fk-col-zeit .fk-stage.current .fk-stage-dot{position:relative}
 .fk-col-zeit .fk-stage.current .fk-stage-dot::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:1.5px solid var(--brass);animation:lxPulse 2.2s ease-out infinite}
+/* Kurzanmeldungen sind zeilenweise aufgebaut — die Umbrüche müssen erhalten bleiben. */
+#faOriginal .mtxt,.eg-original .mtxt{white-space:pre-line}
 </style>
 </head>
 <body>
@@ -4560,16 +4568,16 @@ const passivLead={id:201,name:"Sabine Vogt",alter:54,rolle:"Patient selbst",kana
  ],log:[]};
 
 let eingang=[
- {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Anruf Fr. Herrmann, 09:15 · Ehefrau ruft für ihren Mann an, der aktuell in der Inneren liegt · möchte heute unbedingt zurückgerufen werden · nach ihren Angaben vermutlich PKV, sie ist sich aber nicht ganz sicher · Nummer im System hinterlegt",zeit:"vor 25 Min.",achse:"Innere",done:false,typ:"qualifiziert",wer:"Ehefrau fragt für Mann (72)",zusammenfassung:"Ehefrau fragt telefonisch für ihren Mann (72) nach Reha nach Herz-OP — PKV, Rückruf heute gewünscht.",gruppe:null,sterne:null,autoVerteilt:false,patient:{name:null,alter:72}},
- {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Kurzanmeldung Sozialdienst RHÖN Bad Neustadt, Station Neurologie, Az. N-0472/26 · Patient (68), PKV, Entlassung in 4 Tagen. Unterlagen anbei. · Bitte um Rückmeldung zur Aufnahmefähigkeit.",zeit:"vor 1 Std.",achse:"Neurologie",done:false,typ:"qualifiziert",wer:"Sozialdienst RHÖN Bad Neustadt meldet Patient (68) nach Schlaganfall an",zusammenfassung:"Sozialdienst RHÖN Bad Neustadt meldet einen Patienten (68) nach Schlaganfall zur AHB an — PKV, Entlassung in 4 Tagen.",gruppe:"Neuro-Geri",sterne:null,autoVerteilt:true,saluto:false,hinweis:""},
- {id:103,kanal:"Website",tit:"Website-Formular: Selbstzahlerin (55) fragt nach Premium-Reha",txt:"Hallo, ich bin auf der Suche nach einer Reha mit etwas mehr Komfort und habe auf Ihrer Seite die Suite entdeckt, die spricht mich sehr an. Können Sie mir sagen, was das kostet und ob da in nächster Zeit noch was frei ist? Über eine Rückmeldung würde ich mich freuen. Viele Grüße, S. Falk, 0170 2205567",zeit:"vor 2 Std.",achse:"SalutoCare",done:false,typ:"qualifiziert",wer:"Selbstzahlerin fragt selbst nach Premium-Suite (55)",zusammenfassung:"Selbstzahlerin (55) fragt über die Website nach der Premium-Suite — interessiert an Preisen und freien Terminen.",gruppe:null,sterne:null,autoVerteilt:false,patient:{name:null,alter:55}},
+ {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Anruf Fr. Herrmann, 09:15 · Ehefrau ruft für ihren Mann Gerhard Herrmann (72) an, geb. 08.05.1954, liegt derzeit Station Innere 3 im Klinikum Coburg nach Herz-OP (Bypass) · sie ist unsicher beim Kostenträger, vermutet PKV, Unterlagen könne die Station schicken · möchte heute unbedingt zurückgerufen werden, Tel. 09561 0000-772",zeit:"vor 25 Min.",achse:"Innere",done:false,typ:"qualifiziert",wer:"Ehefrau Herrmann meldet Ehemann Gerhard (72) nach Herz-OP an",zusammenfassung:"Ehefrau meldet telefonisch ihren Mann Gerhard Herrmann (72) nach Herz-OP zur Reha an — Kostenträger unklar, Rückruf heute gewünscht.",gruppe:null,sterne:null,autoVerteilt:false,patient:{name:"Gerhard Herrmann",alter:72}},
+ {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Kurzanmeldung Sozialdienst RHÖN Bad Neustadt, Station Neurologie 2, Az. N-0472/26.\nPatient: Friedrich Sander, geb. 14.03.1958 (68 J.), wohnhaft in Bad Kissingen.\nDiagnose: Z. n. Media-Infarkt links mit Hemiparese rechts; Nebendiagnose arterielle Hypertonie.\nKostenträger: PKV, Versichertennummer liegt der Station vor.\nEntlassung in 4 Tagen geplant, Verlegung direkt in die AHB gewünscht.\nBeigefügt: Entlassbrief, aktuelle Befunde, Pflegeüberleitungsbogen.\nRückfragen: Sozialdienst Fr. Bergmann, Tel. 09771 0000-318, sozialdienst@demo-rhoen.local. Um Rückmeldung zur Aufnahmefähigkeit wird gebeten.",zeit:"vor 1 Std.",achse:"Neurologie",done:false,typ:"qualifiziert",wer:"Sozialdienst RHÖN Bad Neustadt meldet Friedrich Sander (68) nach Schlaganfall an",zusammenfassung:"Sozialdienst RHÖN Bad Neustadt meldet Friedrich Sander (68) nach Media-Infarkt zur AHB an — PKV, Entlassung in 4 Tagen, Unterlagen beigefügt.",gruppe:"Neuro-Geri",sterne:null,autoVerteilt:true,saluto:false,hinweis:"",patient:{name:"Friedrich Sander",alter:68}},
+ {id:103,kanal:"Website",tit:"Website-Formular: Selbstzahlerin (55) fragt nach Premium-Reha",txt:"Hallo, ich bin auf der Suche nach einer Reha mit etwas mehr Komfort und habe auf Ihrer Seite die Suite entdeckt, die spricht mich sehr an. Ich bin 55 Jahre alt (geb. 27.06.1971) und zahle selbst. Können Sie mir sagen, was das kostet und ob da in nächster Zeit noch was frei ist? Über eine Rückmeldung würde ich mich freuen. Viele Grüße, Sandra Falk, 0170 2205567, s.falk@demo-mail.local",zeit:"vor 2 Std.",achse:"SalutoCare",done:false,typ:"qualifiziert",wer:"Sandra Falk fragt selbst nach Premium-Suite (55)",zusammenfassung:"Sandra Falk (55) fragt über die Website nach der Premium-Suite — Selbstzahlerin, interessiert an Preisen und freien Terminen.",gruppe:null,sterne:null,autoVerteilt:false,patient:{name:"Sandra Falk",alter:55}},
  {id:104,kanal:"E-Mail",tit:"E-Mail: Hausarzt Dr. Sommer empfiehlt Patientin (79)",txt:"Sehr geehrte Damen und Herren, ich möchte Ihnen meine Patientin zur geriatrischen Reha vorstellen. Sie ist bei mir in hausärztlicher Behandlung, Kostenträger ist die Beihilfe, ihre Tochter kümmert sich um die Organisation der Aufnahme. Über eine kurzfristige Rückmeldung wäre ich dankbar. Mit freundlichen Grüßen, Dr. med. Andreas Sommer, Hausarztpraxis Bad Neustadt, Tel. 09771 4471023, a.sommer@demo-praxis.local",zeit:"gestern",achse:"Geriatrie",done:true,typ:"qualifiziert",wer:"Hausarzt Dr. Sommer empfiehlt Patientin (79), Tochter koordiniert",zusammenfassung:"Hausarzt Dr. Sommer empfiehlt seine Patientin (79) für eine geriatrische Reha — Beihilfe, Tochter koordiniert die Aufnahme."},
  {id:105,kanal:"Recare",tit:"Recare: Klinikum Fulda sucht Neuro-Reha-Platz",txt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · GKV + Komfort-Wunsch, Übernahme in 6 Tagen möglich. · Patient wünscht nach Möglichkeit ein Komfortzimmer, bitte um Rückmeldung zur Kapazität.",zeit:"gestern",achse:"Neurologie",done:true,typ:"qualifiziert",wer:"Entlassmanagement Klinikum Fulda sucht Reha-Platz",zusammenfassung:"Entlassmanagement Klinikum Fulda sucht über Recare einen Neuro-Reha-Platz — GKV mit Komfort-Wunsch, Übernahme in 6 Tagen möglich."},
  {id:106,kanal:"PRIMO MEDICO",tit:"PRIMO MEDICO: internationale Premium-Anfrage",txt:"Guten Tag, ich schreibe für meinen Vater (64). Er liegt aktuell auf der Intensivstation und wird noch beatmet, wir suchen für ihn über PRIMO MEDICO eine Reha-Klinik mit Erfahrung in der Beatmungsentwöhnung nach der Intensivphase. Könnten Sie uns sagen, ob dort ein Platz frei wäre? Vielen Dank für eine Rückmeldung. Familie K., international@demo-mail.local",zeit:"vor 2 Tagen",achse:"SalutoCare",done:true,typ:"qualifiziert",wer:"Familie fragt für Vater (64)",zusammenfassung:"Familie fragt über PRIMO MEDICO für ihren Vater (64) nach Intensiv-Reha mit Beatmung — internationale Premium-Anfrage."}
  ,{id:107,einzelperson:true,pName:"Carola Diehm",kanal:"Website",tit:"Broschüre-Download: Interessentin (57) lädt Reha-Broschüre",txt:"Ich hätte gerne mehr Infos zur Reha, deshalb lade ich mir erstmal die Broschüre runter. Bin gerade nur am Schauen, noch keine konkrete Anfrage. Meine E-Mail habe ich hinterlegt und bin mit einer Kontaktaufnahme/Freigabe einverstanden.",zeit:"vor 40 Min.",achse:"Orthopädie",done:false,typ:"passiv",zusammenfassung:"Interessentin (57) lädt die Reha-Broschüre herunter und erteilt Kontaktfreigabe — noch keine konkrete Anfrage."}
  ,{id:108,einzelperson:false,kanal:"E-Mail",tit:"Lose Mail: Habt ihr eigentlich freie Plätze?",txt:"Hi, habt ihr gerade noch freie Plätze frei? Bitte kurz Bescheid geben. Danke!",zeit:"vor 3 Std.",achse:"Innere",done:false,typ:"passiv",zusammenfassung:"Anonyme Anfrage per E-Mail nach freien Plätzen — kein Name, kein Follow-up erkennbar."}
- ,{id:109,kanal:"Zuweiser-Fax",tit:"Fax: Sozialdienst Klinikum Hammelburg, Anmeldung AHB nach Knie-TEP",txt:"Kurzanmeldung Sozialdienst Klinikum Hammelburg, Station Orthopädie, Az. O-1183/26 · Patient (66), GKV, Entlassung in 5 Tagen. Unterlagen vollständig beigefügt. · Bitte um Rückmeldung zur Aufnahmefähigkeit.",zeit:"vor 50 Min.",achse:"Orthopädie",done:false,typ:"qualifiziert",wer:"Sozialdienst Klinikum Hammelburg meldet Patient (66) nach Knie-TEP an",zusammenfassung:"Sozialdienst Klinikum Hammelburg meldet einen Patienten (66) nach Knie-TEP zur AHB an — GKV, Entlassung in 5 Tagen.",gruppe:"Orthopädie",sterne:null,autoVerteilt:true,saluto:false,hinweis:""}
- ,{id:110,kanal:"Recare",tit:"Recare: Entlassmanagement Bad Kissingen sucht Geriatrie-Reha-Platz",txt:"Anmeldung über Recare, Entlassmanagement Bad Kissingen, Station Geriatrie · Patientin (81), Beihilfe, Übernahme in 6 Tagen möglich. · Suche nach einem Reha-Platz mit zeitnaher Aufnahme.",zeit:"vor 90 Min.",achse:"Geriatrie",done:false,typ:"qualifiziert",wer:"Entlassmanagement Bad Kissingen sucht Reha-Platz für Patientin (81)",zusammenfassung:"Entlassmanagement Bad Kissingen sucht über Recare einen Geriatrie-Reha-Platz für eine Patientin (81) — Beihilfe, Übernahme in 6 Tagen möglich.",gruppe:"Neuro-Geri",sterne:null,autoVerteilt:true,saluto:false,hinweis:""}
+ ,{id:109,kanal:"Zuweiser-Fax",tit:"Fax: Sozialdienst Klinikum Hammelburg, Anmeldung AHB nach Knie-TEP",txt:"Kurzanmeldung Sozialdienst Klinikum Hammelburg, Station Orthopädie, Az. O-1183/26.\nPatient: Otto Wenzel, geb. 02.09.1959 (66 J.).\nDiagnose: Z. n. Knie-TEP rechts, Mobilisation an zwei Unterarmgehstützen, Wundverhältnisse reizlos.\nKostenträger: GKV (AOK Bayern), AHB-Antrag liegt bei.\nEntlassung in 5 Tagen.\nUnterlagen vollständig beigefügt: Entlassbrief, OP-Bericht, aktuelle Befunde.\nRückfragen: Sozialdienst Hr. Kunz, Tel. 09732 0000-140, sozialdienst@demo-hammelburg.local.",zeit:"vor 50 Min.",achse:"Orthopädie",done:false,typ:"qualifiziert",wer:"Sozialdienst Klinikum Hammelburg meldet Otto Wenzel (66) nach Knie-TEP an",zusammenfassung:"Sozialdienst Klinikum Hammelburg meldet Otto Wenzel (66) nach Knie-TEP zur AHB an — GKV, Entlassung in 5 Tagen, Unterlagen vollständig.",gruppe:"Orthopädie",sterne:null,autoVerteilt:true,saluto:false,hinweis:"",patient:{name:"Otto Wenzel",alter:66}}
+ ,{id:110,kanal:"Recare",tit:"Recare: Entlassmanagement Bad Kissingen sucht Geriatrie-Reha-Platz",txt:"Anmeldung über Recare, Entlassmanagement Bad Kissingen, Station Geriatrie.\nPatientin: Elfriede Kolb, geb. 21.11.1944 (81 J.).\nDiagnose: Z. n. Sturz mit Schenkelhalsfraktur, osteoporotische Grunderkrankung, geriatrischer Komplexbehandlungsbedarf.\nKostenträger: Beihilfe 70 Prozent, PKV 30 Prozent.\nÜbernahme in 6 Tagen möglich, zeitnahe Aufnahme erbeten.\nBeigefügt: Entlassbrief, Medikationsplan, Barthel-Index (45 Punkte).\nRückfragen: Entlassmanagement Fr. Sailer, Tel. 0971 0000-905, entlassmanagement@demo-kissingen.local.",zeit:"vor 90 Min.",achse:"Geriatrie",done:false,typ:"qualifiziert",wer:"Entlassmanagement Bad Kissingen meldet Elfriede Kolb (81) an",zusammenfassung:"Entlassmanagement Bad Kissingen meldet Elfriede Kolb (81) nach Schenkelhalsfraktur zur geriatrischen Reha an — Beihilfe, Übernahme in 6 Tagen.",gruppe:"Neuro-Geri",sterne:null,autoVerteilt:true,saluto:false,hinweis:"",patient:{name:"Elfriede Kolb",alter:81}}
 ];
 
 let bestand=[
@@ -5162,7 +5170,7 @@ let _inbId=201,_inbN=0,_inbToastTimer=null;
 const INBOUND_POOL=[
  {kanal:"Website",einzelperson:false,name:"Familie Hoffmann",alter:74,rolle:"Angehörige",achse:"Neurologie",kt:"Privat",quelle:"wechselreha.de",tit:"Website-Formular: Angehörige fragt für Vater (74) nach Wechsel-Reha",txt:"Hallo, mein Vater (74 Jahre) liegt gerade in einer anderen Reha-Klinik, aber wir sind damit überhaupt nicht zufrieden. Wir würden ihn liebend gern zu Ihnen in die Premium-Neuro-Reha wechseln lassen, das würde ihm sicher besser tun. Es ist leider dringend, weil es ihm dort im Moment gar nicht gut geht. Viele Grüße, Familie Hoffmann, 0170 8834412",wer:"Familie Hoffmann fragt für Vater (74)",zusammenfassung:"Familie fragt über die Website für ihren Vater (74) nach einem dringenden Wechsel in die Premium-Neuro-Reha — unzufrieden mit der aktuellen Einrichtung."},
  {kanal:"E-Mail",einzelperson:true,name:"Herr Reinhardt",alter:61,rolle:"Patient",achse:"SalutoCare",kt:"Selbstzahler",quelle:"klinik-bavaria.com",tit:"E-Mail: Selbstzahler (61) fragt Premium-Suite an",txt:"Sehr geehrte Damen und Herren, ich hatte kürzlich eine Operation und suche jetzt eine Anschluss-Reha mit etwas mehr Komfort, wenn möglich eine Ihrer Suiten. Ich bin 61 Jahre alt und zahle selbst, daher wäre mir wichtig, möglichst schnell einen Termin zu bekommen. Über eine Rückmeldung würde ich mich sehr freuen. Mit freundlichen Grüßen, Werner Reinhardt, Tel. 0171 2298034, w.reinhardt@demo-mail.local",wer:"Herr Reinhardt fragt selbst (61)",zusammenfassung:"Herr Reinhardt (61) fragt per E-Mail selbst nach der Premium-Suite — Komfort-Reha nach OP, möglichst kurzfristig."},
- {kanal:"Website",einzelperson:false,name:"Frau Dr. Kessler",alter:58,rolle:"Zuweiser",achse:"Orthopädie",kt:"Privat",quelle:"Privatpraxis",tit:"Website-Formular: Privatärztin meldet Patientin (58) nach Hüft-TEP",txt:"Guten Tag, ich bin niedergelassene Fachärztin in eigener Privatpraxis und möchte Ihnen eine Patientin nach Hüft-TEP vorstellen. Sie ist bei mir privatversichert und wünscht sich eine möglichst kurzfristige Aufnahme zur AHB. Für Rückfragen stehe ich gerne zur Verfügung. Mit freundlichen Grüßen, Dr. med. S. Kessler, Privatpraxis Bad Kissingen, Tel. 09732 5510044, praxis.kessler@demo-privatpraxis.local",wer:"Privatärztin Dr. Kessler meldet Patientin (58) an",zusammenfassung:"Privatärztin Dr. Kessler meldet ihre Patientin (58) nach Hüft-TEP zur AHB an — Privatpatientin, kurzfristige Aufnahme erbeten."}
+ {kanal:"Website",einzelperson:false,name:"Frau Dr. Kessler",alter:58,rolle:"Zuweiser",achse:"Orthopädie",kt:"Privat",quelle:"Privatpraxis",tit:"Website-Formular: Privatärztin meldet Patientin (58) nach Hüft-TEP",txt:"Guten Tag, ich bin niedergelassene Fachärztin in eigener Privatpraxis und möchte Ihnen meine Patientin Renate Hofstetter, geb. 19.02.1968 (58 J.), nach Hüft-TEP rechts zur AHB vorstellen. Sie ist privat versichert (Vollversicherung), Operation war vor neun Tagen, Mobilisation läuft gut. Eine möglichst kurzfristige Aufnahme wäre ihr wichtig. Arztbrief und OP-Bericht sende ich auf Ihre Rückmeldung sofort zu. Mit freundlichen Grüßen, Dr. med. S. Kessler, Privatpraxis Bad Kissingen, Tel. 09732 5510044, praxis.kessler@demo-privatpraxis.local",patient:{name:"Renate Hofstetter",alter:58},wer:"Privatärztin Dr. Kessler meldet Renate Hofstetter (58) nach Hüft-TEP an",zusammenfassung:"Privatärztin Dr. Kessler meldet ihre Patientin Renate Hofstetter (58) nach Hüft-TEP zur AHB an — PKV-Vollversicherung, kurzfristige Aufnahme gewünscht."}
 ];
 function inbToast(state,title,sub,fid){
  let el=document.getElementById("inbToast");
@@ -5256,6 +5264,30 @@ function fallAbsenderTyp(f){
   return null;
 }
 
+/* Telefonnummer aus einem Anfragetext ziehen (R13): Das frühere Muster (?:0|+49)[Ziffern/Leerzeichen]
+   griff auf Aktenzeichen wie „Az. N-0472/26" und zeigte im Lagebild „☎ 0472/26" an. Jetzt zuerst
+   Nummern mit Bezeichner (Tel./Telefon/Rückruf/Fax), danach freistehende Nummern mit mindestens acht
+   Ziffern; Fundstellen direkt hinter einem Aktenzeichen werden verworfen. */
+function telAusText(txt){
+ const s=String(txt||"");
+ const mitLabel=/(?:tel\.?|telefon|rückruf(?:nummer)?|fon|mobil|fax)[:\s]*((?:0|\+49)[\d][\d \-\/]{5,})/i.exec(s);
+ if(mitLabel)return mitLabel[1].trim().replace(/[\s\-\/]+$/,"");
+ const re=/(?:0|\+49)[\d][\d \-\/]{6,}/g;
+ let m;
+ while((m=re.exec(s))!==null){
+  const davor=s.slice(Math.max(0,m.index-14),m.index);
+  if(/az\.?\s*[\wäöü\-]*$/i.test(davor))continue;
+  const ziffern=(m[0].match(/\d/g)||[]).length;
+  if(ziffern>=8)return m[0].trim().replace(/[\s\-\/]+$/,"");
+ }
+ return "";
+}
+/* Mailadresse aus einem Anfragetext: das Muster nimmt sonst den Satzpunkt mit
+   („sozialdienst@demo-rhoen.local." mit Punkt am Ende). */
+function mailAusText(txt){
+ const m=/[\w.+-]+@[\w-]+\.[\w.-]+/.exec(String(txt||""));
+ return m?m[0].replace(/[.,;:]+$/,""):"";
+}
 function fallFakten(f){
   const txt=String(f.originalTxt||f.txt||"");
   const out=[];
@@ -5380,7 +5412,12 @@ function uebernehmen(id,owner){
   const _name=(m.patient&&m.patient.name)
     ||(_alterC?("Patient/Patientin ("+_alterC.raw+")"+(_diagC?" · "+_diagC.text:"")):null)
     ||"Neuer Fall (aus Eingang)";
-  faelle.push({id:fid,name:_name,alter:(m.patient&&m.patient.alter!=null)?m.patient.alter:null,rolle:"offen",kanal:m.kanal,quelle:m.tit.split(":")[1]?m.tit.split(":")[1].trim():m.kanal,
+  /* Absender ist die Einrichtung, nicht der ganze Betreff: aus „Fax: RHÖN Bad Neustadt, Anmeldung
+     AHB nach Schlaganfall" wird „RHÖN Bad Neustadt" — sonst steht in der Akte unter Absender ein
+     halber Anfragetitel. */
+  const _titRest=m.tit.split(":")[1]?m.tit.split(":")[1].trim():"";
+  const _quelle=_titRest?_titRest.split(",")[0].trim():m.kanal;
+  faelle.push({id:fid,name:_name,alter:(m.patient&&m.patient.alter!=null)?m.patient.alter:null,rolle:"offen",kanal:m.kanal,quelle:_quelle,
     achse:m.achse,kt:"Unklar",status:"Neu",owner:owner,aufgabe:STATUS_AUFGABE["Neu"],frist:dstr(0),
     saluto:m.saluto===true,zuordnungsHinweis:m.hinweis||"",
     sterne:m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt)),
@@ -7134,18 +7171,20 @@ function fkwStammBestaetigen(){
     hier, mit dem echten Namen, entsteht sie. Eine bereits verknüpfte Person wird aktualisiert.
     Sammelnamen (Familie/Eheleute) bekommen bewusst keine Einzelperson-Akte. */
  const _txt=String(f.originalTxt||"");
- const _telM=/(?:0|\+49)[\d \-\/]{6,}/.exec(_txt), _mailM=/[\w.+-]+@[\w-]+\.[\w.-]+/.exec(_txt);
- const _kt={tel:_telM?_telM[0].trim():"",mail:_mailM?_mailM[0]:""};
+ const _kt={tel:telAusText(_txt),mail:mailAusText(_txt)};
  /* Kein Geburtsdatum aus dem Alter erfinden: gebIn(0,alter) hätte jeder neu erfassten Person den
     heutigen Tag als Geburtstag gegeben und damit sofort einen Geburtstags-Anlass ausgelöst.
     Das Alter wird als eigenes Feld geführt, das Geburtsdatum bleibt offen bis es erfragt ist. */
  const _alter=f.alter?+f.alter:null;
+ /* Steht in der Anmeldung ein Geburtsdatum, ist es die belastbarere Angabe als das Alter. */
+ const _gebM=/geb\.?\s*(\d{2})\.(\d{2})\.(\d{4})/.exec(_txt);
+ const _geb=_gebM?(_gebM[3]+"-"+_gebM[2]+"-"+_gebM[1]):null;
  /* zuweiserRef nur bei echten Zuweiser-Kanälen — bei einer Website- oder Telefonanfrage der
     Familie stünde sonst der Anfrage-Titel als „Zuweiser" in der Akte. */
  const _ueberZuweiser=/zuweiser|recare|fax|primo|sozialdienst/i.test(String(f.kanal||"")+" "+String(f.rolle||""));
  if(!f.personId){
   if(typeof istEinzelperson==="function"&&istEinzelperson(name)&&typeof pNew==="function"){
-   f.personId=pNew(name,{kt:f.kt||"Unklar",geb:null,alter:_alter,
+   f.personId=pNew(name,{kt:f.kt||"Unklar",geb:_geb,alter:_geb?null:_alter,
     kontakt:_kt,zuweiserRef:_ueberZuweiser?(f.quelle||null):null});
    if(typeof pHist==="function")pHist(f.personId,"kontakt","Stammdaten im Erstgespräch erfasst: "+name+(_alter?" ("+_alter+" J.)":""));
    f.log.push([dstr(0),"Stammdaten-Akte angelegt: "+name,logZeit()]);
@@ -7154,7 +7193,7 @@ function fkwStammBestaetigen(){
   const _p=person(f.personId);
   if(_p){
    _p.name=name;
-   if(_alter&&!_p.geb)_p.alter=_alter;
+   if(_geb&&!_p.geb)_p.geb=_geb; else if(_alter&&!_p.geb)_p.alter=_alter;
    if(!_p.kontakt)_p.kontakt={tel:"",mail:""};
    if(!_p.kontakt.tel&&_kt.tel)_p.kontakt.tel=_kt.tel;
    if(!_p.kontakt.mail&&_kt.mail)_p.kontakt.mail=_kt.mail;
@@ -7247,10 +7286,10 @@ function kfAufgabe(f){
  if(!erste)return {feld:null,text:"Alles geklärt — Aufnahme"+(f.aufnahmeTermin?" zum "+paDate(f.aufnahmeTermin):"")+" kann bestätigt werden.",fertig:true};
  if(erste.key==="kontakt"){
   const txt=String(f.originalTxt||"");
-  const telM=/(?:0|\+49)[\d \-\/]{6,}/.exec(txt);
+  const tel=telAusText(txt);
   if(f.stammOk)
    return {feld:"kontakt",text:"Stammdaten sind bestätigt — Gespräch führen und mit „✓ Erstgespräch abschließen\" beenden."};
-  return {feld:"kontakt",text:"Erstgespräch führen und Stammdaten bestätigen"+(telM?" · ☎ "+telM[0].trim():"")+"."};
+  return {feld:"kontakt",text:"Erstgespräch führen und Stammdaten bestätigen"+(tel?" · ☎ "+tel:"")+"."};
  }
  if(erste.key==="bedarf")return {feld:"bedarf",text:"Medizinischen Bedarf erfassen: Diagnose/Indikation eintragen oder aus der Antwort übernehmen."};
  if(erste.key==="unterlagen"){
@@ -7284,7 +7323,12 @@ function lbPulsHtml(f){
  (f.log||[]).forEach(function(l){const t=lgTyp(l[1]);if(t==="in"||t==="out")letzte={l:l,t:t};});
  let inner;
  if(!letzte){
-  inner="<span class='lb-puls-txt'>Noch keine Kommunikation — Erstkontakt steht aus.</span>";
+  /* Wenn ohnehin der Erstkontakt ansteht, sagt diese Zeile dasselbe wie das „Jetzt zu tun" direkt
+     darüber — dann bleibt sie weg. Bei weiter fortgeschrittenen Fällen ist der Hinweis dagegen eine
+     echte Information (es wurde nur intern dokumentiert, nie mit der Familie gesprochen). */
+  const _auf=(typeof kfAufgabe==="function")?kfAufgabe(f):null;
+  if(_auf&&_auf.feld==="kontakt")return "";
+  inner="<span class='lb-puls-txt'>Noch keine Nachricht im Verlauf — bisher nur interne Einträge.</span>";
  }else{
   const txt=String(letzte.l[1]||"").replace(/^↦\s*/,"");
   const kurz=txt.length>110?txt.slice(0,110)+"…":txt;
@@ -7431,11 +7475,10 @@ function kfAnsprechSet(feld,wert){
    als die Stammdaten-Akte), sonst Fallback auf person(f.personId).kontakt. */
 function kfKontaktHtml(f){
  const txt=String(f.originalTxt||"");
- const telM=/(?:0|\+49)[\d \-\/]{6,}/.exec(txt);
- const mailM=/[\w.+-]+@[\w-]+\.[\w.-]+/.exec(txt);
+
  const p=f.personId?person(f.personId):null;
- const tel=telM?telM[0].trim():((p&&p.kontakt&&p.kontakt.tel)||"");
- const mail=mailM?mailM[0]:((p&&p.kontakt&&p.kontakt.mail)||"");
+ const tel=telAusText(txt)||((p&&p.kontakt&&p.kontakt.tel)||"");
+ const mail=mailAusText(txt)||((p&&p.kontakt&&p.kontakt.mail)||"");
  const wer=fallAbsenderTyp(f)+(f.wer?" · "+f.wer:"");
  return "<div class='pa-meta' style='margin-bottom:12px'>"
   +"<div class='pa-row'><span class='pa-k'>Ansprechpartner</span><span class='pa-v'>"+escapeHtml(wer)+"</span></div>"
@@ -8536,9 +8579,20 @@ function renderFallakte(){
   document.getElementById("dOwner").value=f.owner;
   document.getElementById("dOwnerAva").textContent=initialen(f.owner);
   document.getElementById("dArbeit").innerHTML=dArbeitHtml(f);
-  /* Original ist jetzt immer Teil des Kontakt-Klärungsfelds (K1) — Kontext-Kapitel ausblenden,
-     um dieselbe Information nicht doppelt zu zeigen. */
-  document.getElementById("faOriginalChap").style.display="none";
+  /* Das Kapitel wurde bei jedem Rendern ausgeblendet und nie wieder aktiviert — die Originalnachricht
+     war damit in der Akte praktisch unauffindbar (Nutzer-Befund). Jetzt sichtbar, sobald es eine gibt. */
+  const _origChap=document.getElementById("faOriginalChap");
+  const _origBody=document.getElementById("faOriginal");
+  if(f.originalTxt){
+   _origChap.style.display="";
+   _origBody.innerHTML="<div class='pa-meta' style='margin-bottom:8px'>"
+    +"<div class='pa-row'><span class='pa-k'>Eingang</span><span class='pa-v'>"+escapeHtml(f.originalKanal||f.kanal||"—")+(f.originalZeit?" · "+escapeHtml(f.originalZeit):"")+"</span></div>"
+    +(f.quelle?"<div class='pa-row'><span class='pa-k'>Absender</span><span class='pa-v'>"+escapeHtml(f.quelle)+"</span></div>":"")
+    +"</div><div class='eg-original'><div class='mtxt'>"+escapeHtml(f.originalTxt)+"</div></div>";
+  }else{
+   _origChap.style.display="none";
+   _origBody.innerHTML="";
+  }
   updateDocCnt();
   document.getElementById("dKT").value=f.kt;
   document.getElementById("dSaluto").checked=f.saluto;
@@ -8770,7 +8824,7 @@ function ktaUebernehmen(){
 
 /* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
    strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
-const DEMO_SCHEMA=3;
+const DEMO_SCHEMA=4;
 const DEMO_KEY="kbDemoState";
 let _demoSaveT=null;
 function demoSave(){
