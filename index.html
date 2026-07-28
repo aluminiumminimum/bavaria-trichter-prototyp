@@ -3377,6 +3377,22 @@ details.fk-fold>summary.chap-h2{cursor:pointer;list-style:none;display:flex;alig
 details.fk-fold>summary.chap-h2::-webkit-details-marker{display:none}
 details.fk-fold>summary.chap-h2::after{content:"›";margin-left:auto;color:var(--brass-deep);transition:transform .2s}
 details.fk-fold[open]>summary.chap-h2::after{transform:rotate(90deg)}
+/* Zeitleiste (R12, Nutzerwunsch): der Prozessfortschritt stand als schmales Band im Kopf und ging
+   dort unter. Jetzt eigene, mitlaufende Spalte links neben der Arbeitsfläche; am Handy bleibt sie
+   als horizontales Band oben. */
+@media(min-width:1024px){
+ #view-fallakte .fk-cols{grid-template-columns:168px minmax(0,1fr) minmax(0,1fr)}
+ .fk-col-zeit{position:sticky;top:16px}
+ .fk-col-zeit .fk-stageband{flex-direction:column;align-items:flex-start;gap:0;margin:0}
+ .fk-col-zeit .fk-stage{width:100%;padding:2px 0}
+ .fk-col-zeit .fk-stage-label{white-space:normal}
+ .fk-col-zeit .fk-stage-sep{width:2px;height:18px;margin:0 0 0 4px;background:var(--brass-line);flex:0 0 auto}
+}
+.fk-col-zeit .fk-zeit-kicker{font:600 10px/1 "Fragment Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--brass-deep);margin:0 0 10px}
+/* Der aktuelle Schritt pulsiert dezent — bewusst über den bestehenden lxPulse-Keyframe, damit das
+   Motion-Set der App nicht wächst. */
+.fk-col-zeit .fk-stage.current .fk-stage-dot{position:relative}
+.fk-col-zeit .fk-stage.current .fk-stage-dot::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:1.5px solid var(--brass);animation:lxPulse 2.2s ease-out infinite}
 </style>
 </head>
 <body>
@@ -4306,11 +4322,11 @@ details.fk-fold[open]>summary.chap-h2::after{transform:rotate(90deg)}
       <h1><span class="ava" id="faAva"></span> <span id="faName"></span></h1>
       <p class="lblline" id="faSub"></p>
       <div class="pa-head" id="faHeadMeta"></div>
-      <div id="faStage"></div>
       <div id="faHinweis"></div>
       <button class="btn-ghost btn-sm" type="button" id="faBackBtn" onclick="faZurueck()">‹ Zurück zum Board</button>
     </header>
     <div class="fk-cols">
+      <div class="fk-col-zeit"><div id="faStage"></div></div>
       <div class="fk-col-arbeit">
         <div class="fh-hero" id="faNaechste">
           <div class="kicker">Lagebild</div>
@@ -4695,7 +4711,16 @@ function egSummaryHtml(m){
    +"<div class='msub2'><span class='chtag'>"+escapeHtml(m.kanal)+"</span> · <span class='mtime'>"+escapeHtml(m.zeit)+"</span> · "
    +"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span></div></div></div>"
    +"<div style='padding:16px 20px'>"+mid
-   +"<div class='eg-zsf'><span class='kicker'>Kurzüberblick</span><p>"+escapeHtml(egZusammenfassung(m))+"</p></div>"
+   /* Auch hier gilt: ein formulierter Zusammenfassungssatz existiert erst nach der KI-Analyse.
+      Vorher nur, was Regeln ablesen können — sonst behauptet das Fenster eine Analyse, die für
+      diese Anfrage nie gelaufen ist (derselbe Befund wie im Triage-Layout). */
+   +(m.kiDone
+     ?"<div class='eg-zsf eg-ki'><span class='kicker'>✦ KI-Zusammenfassung</span><p>"+escapeHtml(m.kiSummary||"")+"</p></div>"
+     :"<div class='eg-zsf'><span class='kicker'>Automatisch erkannt</span><p>"
+      +escapeHtml([sig.kostentraeger?"Kostenträger: "+sig.kostentraeger:null,
+        sig.dringlichkeit?"Dringlichkeit: "+sig.dringlichkeit:null,
+        (m.achse&&m.achse!=="Unklar")?"Fachbereich: "+m.achse:null].filter(Boolean).join(" · ")
+        ||"Aus dem Text ließ sich nichts eindeutig ableiten.")+"</p></div>")
    +"<details class='egt-original'><summary class='rk'>Originalnachricht</summary><div class='eg-original'><div class='mtxt'>"+escapeHtml(m.txt)+"</div></div></details>"
    +(m.notiz?"<div class='mt-eingang-notiz'>Notiz: "+escapeHtml(m.notiz)+"</div>":"")+"</div>";
 }
@@ -7468,6 +7493,14 @@ function kfBedarfHtml(f){
    +escapeHtml([v.diagnose,v.neben,v.isolation,v.schwere].filter(Boolean).join(" · "))
    +"<div style='margin-top:6px'><button class='btn-ghost btn-sm' type='button' onclick='kfMedVorschlag()'>Vorschlag übernehmen</button></div></div>";
  }
+ /* Aus der Anfrage erkannte Diagnose sichtbar machen: der Wert stand bisher still im Feld und sah
+    wie eine eigene Eingabe aus. Übernommen wird weiter bewusst per Klick — automatisch gesetzt
+    würde das Klärungsfeld als erledigt gelten und der Status ohne Prüfung vorrücken. */
+ if(!f.medVorschlag&&!(f.med&&f.med.diagnose)&&_diagChip&&_diagChip.text){
+  html+="<div class='kf-vorschlag'>✦ Aus der Anfrage erkannt: <b>"+escapeHtml(_diagChip.text)+"</b>"
+   +"<div class='kz-hint' style='margin-top:2px'>Noch nicht in der Akte gespeichert — bitte prüfen und übernehmen.</div>"
+   +"<div style='margin-top:6px'><button class='btn-ghost btn-sm' type='button' onclick='kfDiagVorschlagUebernehmen()'>Als Diagnose übernehmen</button></div></div>";
+ }
  html+="<div class='kf-form'>"
   +"<div><label for='kfDiag'>Diagnose/Indikation</label><input id='kfDiag' value=\""+escapeHtml(diagVal)+"\"></div>"
   +"<div><label for='kfNeben'>Nebendiagnosen</label><input id='kfNeben' value=\""+escapeHtml(nebenVal)+"\"></div>"
@@ -7490,6 +7523,22 @@ function kfMedSave(){
  f.med={diagnose:diag,neben:neben,isolation:isolation,schwere:schwere};
  f.log.push([dstr(0),"Bedarf qualifiziert: "+diag+(isolation==="Ja"?", isolationspflichtig":""),logZeit()]);
  kfSyncStatus(f);
+ renderAll();renderFallakte();
+}
+/* Ein-Klick-Weg für die aus der Anfrage erkannte Diagnose: schreibt sie in die Akte und
+   dokumentiert die Herkunft, damit später nachvollziehbar ist, woher der Wert kam. */
+function kfDiagVorschlagUebernehmen(){
+ const f=aktuellerFall;if(!f)return;
+ const chip=fallFakten(f).find(c=>c.typ==="diagnose");
+ const diag=chip&&chip.text?chip.text:"";
+ if(!diag)return;
+ const _iso=document.getElementById("kfIso"),_schwere=document.getElementById("kfSchwere");
+ const _neben=document.getElementById("kfNeben");
+ f.med={diagnose:diag,neben:(_neben&&_neben.value?_neben.value.trim():""),
+  isolation:_iso?_iso.value:"—",schwere:_schwere?_schwere.value:"—"};
+ f.log.push([dstr(0),"Bedarf qualifiziert: "+diag+" (aus der Anfrage übernommen)",logZeit()]);
+ if(typeof kfSyncStatus==="function")kfSyncStatus(f);
+ if(typeof inbToast==="function")inbToast("done","<b>Diagnose übernommen</b>",escapeHtml(diag)+" steht jetzt in der Akte",null);
  renderAll();renderFallakte();
 }
 function kfMedVorschlag(){
@@ -8452,7 +8501,7 @@ function faZurueck(){
    vertikalen .stepper in der Kontext-Zone: Jade gefüllt = done, Gold = current, hohl = zukünftig. */
 function stageBandHtml(f){
  const schritte=f.schritte||deriveSchritte(f);
- return "<div class='fk-stageband'>"+schritte.map(function(s,i){
+ return "<div class='fk-zeit-kicker'>Prozess</div><div class='fk-stageband'>"+schritte.map(function(s,i){
    const cls=s.done?"done":(s.current?"current":"");
    return (i>0?"<span class='fk-stage-sep'></span>":"")
     +"<span class='fk-stage "+cls+"'><span class='fk-stage-dot'></span><span class='fk-stage-label'>"+escapeHtml(s.label)+"</span></span>";
@@ -8951,6 +9000,39 @@ function kiStatusRender(){
 }
 function kiStatusClick(){ if(kiStatusState()==="locked"){ kiPromptCode(); return; } kiChatOpen(); }
 /* F1 — Anfrage-Analyse im #egDetail: ein Klick → analysiert Text → füllt Zusammenfassung + Felder DIREKT. */
+/* Offline-Analyse aus der KONKRETEN Anfrage (R12, beim Testen gefunden): KI_FALLBACK.analyse ist ein
+   fest formulierter Text über die Hoffmann-Website-Anfrage. Ohne erreichbaren Proxy bekam damit jede
+   Anfrage dieselbe fremde Zusammenfassung — eine Fax-Anmeldung über einen 68-Jährigen wurde als
+   Website-Wechselwunsch eines 74-Jährigen beschrieben. Der Ersatz leitet Satz und Felder aus den
+   erkannten Signalen der jeweiligen Anfrage ab und bleibt damit immer wahr. */
+function kiFallbackAnalyse(m){
+ const sig=(typeof erkenneSignale==="function")?erkenneSignale(m.txt||""):{};
+ /* Betreff und Absenderzeile mitlesen: bei Fax-Anmeldungen steht die Diagnose dort und nicht im
+    Nachrichtentext („Anmeldung AHB nach Schlaganfall"). */
+ const txt=[m.txt,m.tit,m.wer].filter(Boolean).join(" ");
+ let diagnose="";
+ Object.keys(DIAG_LABEL).forEach(function(k){
+  if(!diagnose&&new RegExp(k.replace(/[-]/g,"\\-"),"i").test(txt))diagnose=DIAG_LABEL[k];
+ });
+ const alterM=/\((\d{2})\s*(?:Jahre|J\.)?\)/.exec(txt);
+ const alter=(m.patient&&m.patient.alter)||(alterM?alterM[1]:"");
+ /* Eigenes, volleres Frist-Muster: das aus erkenneSignale() schneidet „Entlassung in 4 Tagen"
+    nach „Entlassung in" ab (dort dokumentiert) und ergäbe einen halben Satz. */
+ const fristM=/entlassung\s+in\s+\d+\s+tagen|entlassung\s+am\s+[\wäöü.]+|übernahme\s+in\s+\d+\s+tagen|in\s+\d+\s+tagen|dringend|möglichst schnell/i.exec(txt);
+ const frist=fristM?fristM[0]:"";
+ const fehlt=[sig.kostentraeger?null:"Kostenträger",diagnose?null:"Diagnose"].filter(Boolean);
+ const satz=[(m.wer||m.tit||"Anfrage")+" — eingegangen über "+(m.kanal||"unbekannten Kanal")+".",
+  (alter||diagnose)?[alter?alter+" Jahre":null,diagnose||null].filter(Boolean).join(", ")+".":null,
+  sig.kostentraeger?"Kostenträger: "+sig.kostentraeger+".":null,
+  frist?"Zeitlicher Rahmen: "+frist+".":null,
+  fehlt.length?"Noch zu klären: "+fehlt.join(" und ")+".":"Angaben wirken vollständig."].filter(Boolean).join(" ");
+ return {summary:satz,achse:m.achse||"",
+  gruppe:(typeof achseZuGruppe==="function"&&achseZuGruppe(m.achse))||"",
+  kt:sig.kostentraeger||"",diagnose:diagnose,dringlichkeit:frist?"hoch":"mittel",
+  sterne:(typeof sterneAusSignal==="function")?sterneAusSignal(sig):3,
+  sterneGrund:"Aus den erkannten Signalen der Anfrage abgeleitet (KI offline)",
+  hinweis:fehlt.length?("Beim Erstkontakt "+fehlt.join(" und ")+" klären."):"Rückruf zeitnah einplanen."};
+}
 function kiAnalyse(id){
  const m=eingang.find(x=>x.id===id);if(!m)return;
  const panel=document.getElementById("kiPanelEg");
@@ -8959,7 +9041,10 @@ function kiAnalyse(id){
   {role:"system",content:"Du bist Triage-Assistent einer Premium-Reha-Klinik (Achsen: Orthopädie, Neurologie, Geriatrie, Innere, SalutoCare; Belegungs-Gruppen: Orthopädie, Neuro-Geri). Antworte NUR mit einem JSON-Objekt: {summary (2-3 Sätze, sachliche Zusammenfassung der Anfrage auf Deutsch), achse, gruppe (Orthopädie|Neuro-Geri), kt (PKV|Selbstzahler|Beihilfe|GKV + Komfort|GKV), diagnose, dringlichkeit (hoch|mittel|niedrig), sterne (1-5 als Zahl; 5=PKV+konkret+dringend), sterneGrund, hinweis (1 Satz Bearbeitungshinweis)}. Keine erfundenen Fakten — fehlt etwas, lass das Feld leer."},
   {role:"user",content:"Kanal: "+m.kanal+"\nBetreff: "+(m.tit||"")+"\nText: "+(m.txt||"")+(m.originalTxt?"\nOriginal:\n"+m.originalTxt:"")}
  ],{json:true}).then(function(out){ kiAnalyseFuellen(m,out.data||{},false); })
-  .catch(function(e){ console.warn("KI-Fallback:",e.message); kiAnalyseFuellen(m,KI_FALLBACK.analyse,true); });
+  .catch(function(e){ console.warn("KI-Fallback:",e.message);
+   /* Ohne Proxy schlägt der Aufruf sofort fehl — der Spinner wäre nie zu sehen. Kurze, feste
+      Verzögerung, damit die Demo die Rechenphase zeigt (deterministisch, kein Zufallswert). */
+   setTimeout(function(){ kiAnalyseFuellen(m,kiFallbackAnalyse(m),true); },700); });
 }
 /* Ergebnis direkt in die Felder + Zusammenfassung schreiben, dann #egDetail neu rendern. */
 function kiAnalyseFuellen(m,d,off){
