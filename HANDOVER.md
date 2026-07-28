@@ -573,6 +573,48 @@ Rückmeldung, Reihenfolge-Frust) — beides braucht es. Spec-Code an Lanes immer
 gekostet (sie hat es korrekt gemeldet und escaped). QA-Falle: `offsetParent` ist bei
 `position:fixed` immer `null` → Sichtbarkeit über `getComputedStyle` + `getBoundingClientRect`.
 
+## 4n. Runde 10 — Ansprechpartner, Verlauf-Größe, Personen-Verknüpfung (27.07.)
+
+Vier Beta-Punkte des Nutzers, alle vor dem Fix im Browser verifiziert:
+
+**(1) Zusammenfassung ohne KI war eine Lüge.** `egTriageHtml` zeigte im `!m.kiDone`-Zweig den
+Seed-Satz `m.zusammenfassung` unter „Zusammenfassung" — ein vollformulierter Satz, den ohne
+Analyse niemand erzeugt haben kann. Jetzt: nur regelbasiert Ablesbares („Kostenträger · Dringlichkeit
+· Fachbereich") unter „Automatisch erkannt" plus Hinweis, dass die Zusammenfassung mit der
+KI-Analyse entsteht. Nur dieser else-Zweig im fremden KI-Code angefasst; `egSummaryHtml`-Kicker
+zu „Kurzüberblick".
+
+**(2) Primärer Ansprechpartner mit Auskunftsberechtigung (neu).** Laufzeitfeld `f.ansprech`
+{name,bezug,legit}; `ANSPRECH_BEZUG`/`ANSPRECH_LEGIT`, `kfAnsprech(f)` (Default aus `f.rolle`),
+`kfAnsprechHtml`/`kfAnsprechSet` im Klärungsfeld Kontakt, plus **Lagebild-Zeile `.lb-ap`**
+(„Kommunikation mit: Name (Bezug) · Legitimation", bei `legit==="ungeklärt"` oder fehlendem Namen
+rot mit Hinweis, dass keine Gesundheitsauskünfte erlaubt sind; Klick springt ins Kontakt-Feld).
+Sync in `person().angehoerige`. `LG_SYS_RE` um „Ansprechpartner:" erweitert.
+
+**(3) Verlauf war ein 150-px-Guckloch.** Gemessen bei 1440: `#dLog` 62 px hoch (globale
+`.timeline`-Regel `max-height:150px`), Klärungsfeld-Block 1478 px. Additiv (globale Regel
+unangetastet, sie gilt auch für Mein-Tag-Karten): `#view-fallakte #dLog{max-height:min(58vh,560px)}`,
+mobil 52vh. Dazu die inhaltsarmen Kontext-Kapitel „Medizinische Kurzfelder", „Abrechnung",
+„Dokumente" als `<details class="chap fk-fold">` (zugeklappt je 94 px; innere IDs `faMedizin`/
+`faAbrechnung`/`faDokumente` unverändert, JS füllt weiter). „Kommunikation & Verlauf" und
+„Übersicht" bleiben offen.
+
+**(4) Stammdaten landeten nicht in der Personen-Akte.** Ein aus dem Eingang übernommener Fall
+hat `personId === null` — `uebernehmen()` legt keine Person an, `paAkteSlot` zeigte dauerhaft
+„Noch keine Einzelperson qualifiziert". `fkwStammBestaetigen()` legt die Person jetzt mit dem
+**echten Namen** an (`pNew` + `pHist`, Telefon/Mail per Regex aus `originalTxt`) bzw. aktualisiert
+eine verknüpfte Person; Sammelnamen („Familie …") bleiben bewusst ohne Einzelperson-Akte, die
+Akte entsteht also genau mit dem Patientennamen.
+
+**Drei Nachzüge bei der Abnahme (vom Orchestrator selbst gefixt):** (a) `gebIn(0,alter)` als
+Geburtsdatum-Ersatz gab **jeder neu erfassten Person heute Geburtstag** und löste sofort einen
+Geburtstags-Anlass aus → kein erfundenes Datum mehr, stattdessen Personenfeld `alter` und in
+`paAkte` die Zeile „Alter · Geburtsdatum noch offen". (b) `zuweiserRef` wurde blind aus `f.quelle`
+gefüllt → bei einer Website-Anfrage der Familie stand der Anfrage-Titel als „Zuweiser" in der
+Akte; jetzt nur bei echten Zuweiser-Kanälen. (c) Ein VOR den Stammdaten erfasster Ansprechpartner
+wanderte nie in die Person (Reihenfolge-Abhängigkeit, `kfAnsprechSet` syncte nur bei bestehender
+`personId`) → `fkwStammBestaetigen` übernimmt ihn beim Anlegen mit.
+
 ---
 
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"

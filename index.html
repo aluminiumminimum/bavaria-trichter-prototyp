@@ -3356,6 +3356,27 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
    Teil des Selektors sein: eine Regel ohne show hätte per ID-Spezifität auch das Ausblenden
    überstimmt und den Balken nach dem ersten Toast dauerhaft stehen lassen. */
 body.ma-mode #inbToast.show{display:flex}
+/* Ansprechpartner-Block im Klärungsfeld und die Lagebild-Zeile dazu. */
+.kf-ansprech{margin:0 0 14px;padding:10px 12px;background:var(--paper2,var(--paper));border:1px solid var(--hair);border-radius:8px}
+.kf-ansprech-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.kf-ansprech-grid>div{min-width:0}
+.kf-ansprech label{display:block;font-size:11px;color:var(--brass-deep);margin-bottom:3px}
+.kf-ansprech input,.kf-ansprech select{font:inherit;width:100%;padding:7px 8px;border:1px solid var(--hair);border-radius:8px;background:var(--paper)}
+.lb-ap{display:flex;align-items:center;gap:8px;margin-top:8px;padding:8px 10px;border:1px solid var(--hair);border-radius:8px;cursor:pointer;font-size:13px}
+.lb-ap:hover{border-color:var(--brass-line)}
+.lb-ap.warn{border-color:rgba(168,52,31,.45);background:rgba(168,52,31,.05)}
+.lb-ap-k{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--brass-deep);flex:0 0 auto}
+.lb-ap-v{flex:1;min-width:0}
+@media(max-width:640px){.kf-ansprech-grid{grid-template-columns:1fr}}
+/* Der Kommunikationsverlauf ist in der Fallakte Arbeitsmaterial, kein Randvermerk:
+   150px Guckloch (globale timeline-Regel) reichen dort nicht. */
+#view-fallakte #dLog{max-height:min(58vh,560px)}
+@media(max-width:1023px){#view-fallakte #dLog{max-height:52vh}}
+/* Zugeklappte Kontext-Kapitel: summary trägt die chap-h2-Optik, Marker als dezenter Pfeil. */
+details.fk-fold>summary.chap-h2{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}
+details.fk-fold>summary.chap-h2::-webkit-details-marker{display:none}
+details.fk-fold>summary.chap-h2::after{content:"›";margin-left:auto;color:var(--brass-deep);transition:transform .2s}
+details.fk-fold[open]>summary.chap-h2::after{transform:rotate(90deg)}
 </style>
 </head>
 <body>
@@ -4334,18 +4355,18 @@ body.ma-mode #inbToast.show{display:flex}
           <h2 class="chap-h2">Originalanfrage</h2>
           <div id="faOriginal"></div>
         </div>
-        <div class="chap">
-          <h2 class="chap-h2">Medizinische Kurzfelder</h2>
+        <details class="chap fk-fold">
+          <summary class="chap-h2">Medizinische Kurzfelder</summary>
           <div id="faMedizin"></div>
-        </div>
-        <div class="chap">
-          <h2 class="chap-h2">Abrechnung</h2>
+        </details>
+        <details class="chap fk-fold">
+          <summary class="chap-h2">Abrechnung</summary>
           <div id="faAbrechnung" class="kz-block"></div>
-        </div>
-        <div class="chap">
-          <h2 class="chap-h2">Dokumente</h2>
+        </details>
+        <details class="chap fk-fold">
+          <summary class="chap-h2">Dokumente</summary>
           <div id="faDokumente"></div>
-        </div>
+        </details>
       </div>
     </div>
   </section>
@@ -4674,7 +4695,7 @@ function egSummaryHtml(m){
    +"<div class='msub2'><span class='chtag'>"+escapeHtml(m.kanal)+"</span> · <span class='mtime'>"+escapeHtml(m.zeit)+"</span> · "
    +"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span></div></div></div>"
    +"<div style='padding:16px 20px'>"+mid
-   +"<div class='eg-zsf'><span class='kicker'>Zusammenfassung</span><p>"+escapeHtml(egZusammenfassung(m))+"</p></div>"
+   +"<div class='eg-zsf'><span class='kicker'>Kurzüberblick</span><p>"+escapeHtml(egZusammenfassung(m))+"</p></div>"
    +"<details class='egt-original'><summary class='rk'>Originalnachricht</summary><div class='eg-original'><div class='mtxt'>"+escapeHtml(m.txt)+"</div></div></details>"
    +(m.notiz?"<div class='mt-eingang-notiz'>Notiz: "+escapeHtml(m.notiz)+"</div>":"")+"</div>";
 }
@@ -4689,7 +4710,14 @@ function egTriageHtml(m){
   const extract=[d.kt?"Kostenträger: "+d.kt:null,d.diagnose?"Diagnose: "+d.diagnose:null,d.dringlichkeit?"Dringlichkeit: "+d.dringlichkeit:null].filter(Boolean).join(" · ");
   summaryBlock="<div id='kiSummary' class='eg-zsf eg-ki'><span class='kicker'>✦ KI-Zusammenfassung</span><p>"+escapeHtml(m.kiSummary||"")+"</p>"+(extract?"<p class='eg-ki-extract'>"+escapeHtml(extract)+"</p>":"")+"</div>";
  }else{
-  summaryBlock="<div id='kiSummary' class='eg-zsf'><span class='kicker'>Zusammenfassung</span><p>"+escapeHtml(egZusammenfassung(m))+"</p><p class='eg-ki-hint'>KI-Analyse noch nicht ausgeführt</p></div>";
+  /* Vor der KI-Analyse gibt es nur, was Regeln aus dem Text ablesen können — ein formulierter
+     Zusammenfassungssatz würde eine Analyse vortäuschen, die noch nicht gelaufen ist. */
+  const _fakten=[sig.kostentraeger?"Kostenträger: "+sig.kostentraeger:null,
+   sig.dringlichkeit?"Dringlichkeit: "+sig.dringlichkeit:null,
+   (m.achse&&m.achse!=="Unklar")?"Fachbereich: "+m.achse:null].filter(Boolean).join(" · ");
+  summaryBlock="<div id='kiSummary' class='eg-zsf'><span class='kicker'>Automatisch erkannt</span>"
+   +(_fakten?"<p>"+escapeHtml(_fakten)+"</p>":"<p class='eg-ki-hint'>Aus dem Text ließ sich noch nichts eindeutig ableiten.</p>")
+   +"<p class='eg-ki-hint'>Eine Zusammenfassung entsteht mit der KI-Analyse — bis dahin gilt die Originalnachricht oben.</p></div>";
  }
  return "<div class='mhead'><div class='ava'>"+initialen(m.wer||"")+"</div><div><h2>"+escapeHtml(m.wer||m.tit)+"</h2>"
   +"<div class='msub2'><span class='chtag'>"+escapeHtml(m.kanal)+"</span> · <span class='mtime'>"+escapeHtml(m.zeit)+"</span> · <span class='typ-chip qual'>qualifiziert</span></div></div></div>"
@@ -4993,7 +5021,8 @@ function paAkte(pid,opts){
   +"<div class='pa-head'><span class='pa-title'>Akte</span><span class='pa-lz lz-"+p.lebenszyklus+"'><span class='pa-lzdot'></span>"+(LZ[p.lebenszyklus]||p.lebenszyklus)+"</span><span class='pa-ktchip'>"+escapeHtml(p.kt)+"</span>"+(o.sterne&&p.sterne?sterneHtml(p.sterne):"")+"</div>"
   +((g&&g.tage<=30)?"<div class='pa-anlass'>✦ <b>Wird "+g.wird+" am "+g.datum+"</b> — Geburtstag in "+g.tage+" Tagen. Anlass für eine persönliche Aufmerksamkeit.</div>":"")
   +"<div class='pa-meta'>"
-  +(p.geb?"<div class='pa-row'><span class='pa-k'>Geboren</span><span class='pa-v'>"+escapeHtml(paDate(p.geb))+"</span></div>":"")
+  +(p.geb?"<div class='pa-row'><span class='pa-k'>Geboren</span><span class='pa-v'>"+escapeHtml(paDate(p.geb))+"</span></div>"
+    :(p.alter?"<div class='pa-row'><span class='pa-k'>Alter</span><span class='pa-v'>"+escapeHtml(String(p.alter))+" Jahre <small>· Geburtsdatum noch offen</small></span></div>":""))
   +((p.kontakt&&p.kontakt.tel)?"<div class='pa-row'><span class='pa-k'>Telefon</span><span class='pa-v'>"+escapeHtml(p.kontakt.tel)+"</span></div>":"")
   +((p.kontakt&&p.kontakt.mail)?"<div class='pa-row'><span class='pa-k'>E-Mail</span><span class='pa-v'>"+escapeHtml(p.kontakt.mail)+"</span></div>":"")
   +(o.einwilligung?"<div class='pa-row'><span class='pa-k'>Einwilligung</span><span class='pa-v'>"+escapeHtml(ewTxt)+((ew.zwecke&&ew.zwecke.length)?"<span class='pa-zwr'>"+ew.zwecke.map(z=>"<span class='pa-zw'>"+escapeHtml(PA_ZW[z]||z)+"</span>").join("")+"</span>":"")+"</span></div>":"")
@@ -5032,7 +5061,7 @@ function lgDatumHtml(iso){
  if(!m)return escapeHtml(iso||"");
  return (+m[3])+". "+(LG_MONATE[+m[2]-1]||"");
 }
-const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Kostenträger geändert|Verantwortlich:|Einwilligung Kontaktaufnahme:|Aufnahmetermin bestätigt|Erstgespräch geführt|Status:)/;
+const LG_SYS_RE=/^(Aufgabe erledigt|Erledigt:|Stammdaten im Erstkontakt|Stammdaten-Akte angelegt|Bedarf qualifiziert|Aus Eingang übernommen|\[Hinweis|Kostenzusage angefragt|Kostenzusage liegt vor|Kostenzusage abgelehnt|Selbstzahlung bestätigt|Anfrage e(?:rfasst|ingegangen)|Kostenträger geändert|Verantwortlich:|Einwilligung Kontaktaufnahme:|Ansprechpartner:|Aufnahmetermin bestätigt|Erstgespräch geführt|Status:)/;
 /* Zeilentyp eines Verlaufseintrags — eine Quelle für logHtml() UND das Lagebild (Etappe 2):
    sys=Systemzeile, note=manuelle Notiz (✎-Präfix aus kzNotizAdd), out=ausgehend (↦), in=eingehend. */
 function lgTyp(txt){
@@ -7076,6 +7105,43 @@ function fkwStammBestaetigen(){
  }
  const vorher=f.name;
  f.name=name; f.alter=alterEl&&alterEl.value?+alterEl.value:f.alter; f.stammOk=true;
+ /* Stammdaten gehören in die Personen-Datenbank: Fälle aus dem Eingang tragen keine Person —
+    hier, mit dem echten Namen, entsteht sie. Eine bereits verknüpfte Person wird aktualisiert.
+    Sammelnamen (Familie/Eheleute) bekommen bewusst keine Einzelperson-Akte. */
+ const _txt=String(f.originalTxt||"");
+ const _telM=/(?:0|\+49)[\d \-\/]{6,}/.exec(_txt), _mailM=/[\w.+-]+@[\w-]+\.[\w.-]+/.exec(_txt);
+ const _kt={tel:_telM?_telM[0].trim():"",mail:_mailM?_mailM[0]:""};
+ /* Kein Geburtsdatum aus dem Alter erfinden: gebIn(0,alter) hätte jeder neu erfassten Person den
+    heutigen Tag als Geburtstag gegeben und damit sofort einen Geburtstags-Anlass ausgelöst.
+    Das Alter wird als eigenes Feld geführt, das Geburtsdatum bleibt offen bis es erfragt ist. */
+ const _alter=f.alter?+f.alter:null;
+ /* zuweiserRef nur bei echten Zuweiser-Kanälen — bei einer Website- oder Telefonanfrage der
+    Familie stünde sonst der Anfrage-Titel als „Zuweiser" in der Akte. */
+ const _ueberZuweiser=/zuweiser|recare|fax|primo|sozialdienst/i.test(String(f.kanal||"")+" "+String(f.rolle||""));
+ if(!f.personId){
+  if(typeof istEinzelperson==="function"&&istEinzelperson(name)&&typeof pNew==="function"){
+   f.personId=pNew(name,{kt:f.kt||"Unklar",geb:null,alter:_alter,
+    kontakt:_kt,zuweiserRef:_ueberZuweiser?(f.quelle||null):null});
+   if(typeof pHist==="function")pHist(f.personId,"kontakt","Stammdaten im Erstgespräch erfasst: "+name+(_alter?" ("+_alter+" J.)":""));
+   f.log.push([dstr(0),"Stammdaten-Akte angelegt: "+name,logZeit()]);
+  }
+ }else if(typeof person==="function"){
+  const _p=person(f.personId);
+  if(_p){
+   _p.name=name;
+   if(_alter&&!_p.geb)_p.alter=_alter;
+   if(!_p.kontakt)_p.kontakt={tel:"",mail:""};
+   if(!_p.kontakt.tel&&_kt.tel)_p.kontakt.tel=_kt.tel;
+   if(!_p.kontakt.mail&&_kt.mail)_p.kontakt.mail=_kt.mail;
+   if(typeof pHist==="function")pHist(f.personId,"kontakt","Stammdaten aktualisiert: "+name+(_alter?" ("+_alter+" J.)":""));
+  }
+ }
+ /* Ein zuvor erfasster Ansprechpartner muss mitwandern: er wird im Gespräch meist VOR den
+    Stammdaten notiert, die Person entsteht aber erst hier. */
+ if(f.personId&&f.ansprech&&f.ansprech.name&&f.ansprech.bezug!=="Patient selbst"&&typeof person==="function"){
+  const _pp=person(f.personId);
+  if(_pp)_pp.angehoerige=[{name:f.ansprech.name,bezug:f.ansprech.bezug}];
+ }
  f.log.push([dstr(0),"Stammdaten im Erstkontakt bestätigt: "+name+(f.alter?" ("+f.alter+")":""),logZeit()]);
  kfSyncStatus(f);
  renderAll();renderFallakte();
@@ -7220,6 +7286,14 @@ function lagebildHtml(f){
  let html="<div class='lb-status-row'><span class='lb-status' style='background:"+(STATUS_COL[f.status]||"#7A7265")+"'>"+escapeHtml(f.status)+"</span>";
  if(f.status!=="Aufgenommen"&&f.status!=="Verloren")html+="<span class='lb-feld num'>"+ok+" von 5 Feldern geklärt</span>";
  html+="</div>";
+ /* „Mit wem darf ich sprechen" ist eine Lagebild-Frage — nicht etwas, das man sich aus
+    Feldern zusammensuchen muss. */
+ const _ap=kfAnsprech(f);
+ const _apOffen=(_ap.legit==="ungeklärt")||!_ap.name;
+ html+="<div class='lb-ap"+(_apOffen?" warn":"")+"' onclick=\"lbOeffneFeld('kontakt')\">"
+  +"<span class='lb-ap-k'>Kommunikation mit</span>"
+  +"<span class='lb-ap-v'>"+(_ap.name?escapeHtml(_ap.name)+" ("+escapeHtml(_ap.bezug)+")":"noch nicht festgehalten")
+  +" · "+escapeHtml(_ap.legit)+"</span><span class='lb-todo-pfeil'>›</span></div>";
  html+="<div class='lb-todo"+(auf.feld?" lb-klick":"")+"'"+(auf.feld?" onclick=\"lbOeffneFeld('"+auf.feld+"')\"":"")+">"
   +"<span class='lb-todo-k'>Jetzt zu tun</span><span class='lb-todo-txt'>"+escapeHtml(auf.text)+"</span>"
   +(auf.feld?"<span class='lb-todo-pfeil'>›</span>":"")+"</div>";
@@ -7287,6 +7361,47 @@ function kfIconHtml(ok,isCur){
  if(isCur)return "<span class='kf-ic cur'>●</span>";
  return "<span class='kf-ic'>○</span>";
 }
+/* Primärer Ansprechpartner (R10, Nutzerwunsch): Wer ist für diesen Fall die Kontaktperson und
+   darf sie überhaupt Auskunft erhalten? Läuft als eigenes Laufzeit-Feld f.ansprech, damit jede
+   Mitarbeiterin es sofort im Lagebild sieht. */
+const ANSPRECH_BEZUG=["Patient selbst","Ehepartner/in","Tochter/Sohn","weitere Angehörige","Gesetzliche Betreuung","Bevollmächtigte Person","Sozialdienst / Klinik","Sonstige"];
+const ANSPRECH_LEGIT=["ungeklärt","Patient selbst","Vollmacht liegt vor","Gesetzliche Betreuung bestellt","Angehöriger ohne Vollmacht"];
+function kfAnsprech(f){
+ if(f.ansprech)return f.ansprech;
+ const rolle=String(f.rolle||"");
+ if(/patient selbst/i.test(rolle))return {name:f.name||"",bezug:"Patient selbst",legit:"Patient selbst"};
+ if(/zuweiser/i.test(rolle))return {name:f.quelle||"",bezug:"Sozialdienst / Klinik",legit:"ungeklärt"};
+ if(/angehör/i.test(rolle))return {name:"",bezug:"weitere Angehörige",legit:"ungeklärt"};
+ return {name:"",bezug:"Sonstige",legit:"ungeklärt"};
+}
+function kfAnsprechHtml(f){
+ const a=kfAnsprech(f);
+ const opt=(arr,akt)=>arr.map(o=>"<option"+(o===akt?" selected":"")+">"+escapeHtml(o)+"</option>").join("");
+ return "<div class='kf-ansprech'>"
+  +"<div class='kicker'>Primärer Ansprechpartner</div>"
+  +"<div class='kf-ansprech-grid'>"
+   +"<div><label for='kfApName'>Name</label><input id='kfApName' value=\""+escapeHtml(a.name||"")+"\" placeholder='z. B. Jutta Muster' onchange='kfAnsprechSet(\"name\",this.value)'></div>"
+   +"<div><label for='kfApBezug'>Verhältnis zum Patienten</label><select id='kfApBezug' onchange='kfAnsprechSet(\"bezug\",this.value)'>"+opt(ANSPRECH_BEZUG,a.bezug)+"</select></div>"
+   +"<div><label for='kfApLegit'>Auskunft zulässig auf Basis von</label><select id='kfApLegit' onchange='kfAnsprechSet(\"legit\",this.value)'>"+opt(ANSPRECH_LEGIT,a.legit)+"</select></div>"
+  +"</div>"
+  +(a.legit==="ungeklärt"?"<p class='kz-hint'>Solange die Berechtigung ungeklärt ist, dürfen keine Auskünfte zum Gesundheitszustand gegeben werden.</p>":"")
+  +"</div>";
+}
+function kfAnsprechSet(feld,wert){
+ const f=aktuellerFall;if(!f)return;
+ const a=Object.assign({},kfAnsprech(f));
+ a[feld]=String(wert||"").trim()||a[feld];
+ if(feld==="name")a.name=String(wert||"").trim();
+ f.ansprech=a;
+ f.log.push([dstr(0),"Ansprechpartner: "+(a.name||"ohne Namen")+" ("+a.bezug+") · Auskunft: "+a.legit,logZeit()]);
+ /* Der Ansprechpartner gehört auch in die Personen-Akte, sobald es eine gibt. */
+ if(f.personId&&typeof person==="function"&&a.bezug!=="Patient selbst"&&a.name){
+  const p=person(f.personId);
+  if(p){p.angehoerige=[{name:a.name,bezug:a.bezug}];}
+ }
+ if(typeof renderAll==="function")renderAll();
+ if(typeof renderFallakte==="function")renderFallakte();
+}
 /* Kontaktblock (Feld 1): Telefon/E-Mail zuerst aus originalTxt gezogen (Erstkontext oft konkreter
    als die Stammdaten-Akte), sonst Fallback auf person(f.personId).kontakt. */
 function kfKontaktHtml(f){
@@ -7323,7 +7438,7 @@ function kfConsentHtml(f){
 }
 function kfKontaktBody(f){
  const sop=sopChecklisteHtml(f,"rueckruf");
- return kfKontaktHtml(f)+fkwStammHtml(f)+kfConsentHtml(f)+fkwOriginalHtml(f)
+ return kfKontaktHtml(f)+fkwStammHtml(f)+kfAnsprechHtml(f)+kfConsentHtml(f)+fkwOriginalHtml(f)
   +(sop?("<div class='kicker' style='margin-top:12px'>Gesprächsleitfaden</div>"+sop):"")
   +"<div class='full' style='margin-top:12px'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL.rueckruf)+"</label>"
   +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
