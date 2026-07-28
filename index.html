@@ -765,7 +765,10 @@
   .dt-actions{display:flex;align-items:center;gap:16px}
   .dt-date{font-size:13px;color:var(--muted);letter-spacing:.03em;text-transform:capitalize}
   .app{max-width:none;margin-left:248px}
-  .content{max-width:1240px;margin:0 auto;padding:calc(64px + 26px) 40px 64px}
+  /* R14: 1240px liessen auf einem 1920er-Monitor rechts und links breite Leerstreifen stehen, die
+     wie gesperrte Panels wirken (Nutzer-Befund). 1640px füllen 1920 aus; darüber bleibt bewusst
+     zentriert, weil Zeilen jenseits davon unlesbar lang werden. */
+  .content{max-width:1640px;margin:0 auto;padding:calc(64px + 26px) 40px 64px}
   .tabbar{display:none}
 }
 /* ===== DESKTOP TASK 2 — Fälle Master-Detail (angedockte Schiene, #ovDetail entfernt) ===== */
@@ -3432,6 +3435,12 @@ details.fa-orig>div{padding:0 12px 12px}
 .komm-partner .kp-hint{margin:6px 0 0;font-size:11px;color:var(--brass-deep)}
 @media(max-width:1023px){.komm-partner .kp-row{flex-direction:column;gap:1px}
  .komm-partner .kp-k{flex:none}}
+/* R14 · Zahlen zweispaltig ab 1500px: gestapelt zog die breitere Inhaltsspalte die Balken auf
+   1560px, die Zahl am Ende stand meterweit vom Label. Kopf und Schluss-Kapitel bleiben durchgehend. */
+@media(min-width:1500px){
+ #view-auswertung.view.active{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+ #view-auswertung>.vhead,#view-auswertung>.chap{grid-column:1 / -1}
+}
 </style>
 </head>
 <body>
