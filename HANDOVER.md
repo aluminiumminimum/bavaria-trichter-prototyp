@@ -567,6 +567,42 @@ Kostenzusage) zurück zu „Medizinischen Bedarf erfassen". Die sechs Fälle ab 
 und Maria (Kontaktiert) bleiben bewusst ohne — dort SOLL der Tester den Bedarf selbst erfassen.
 Kein `DEMO_SCHEMA`-Bump (nur zusätzliche Felder, Alt-Stände bleiben gültig).
 
+## 4o. Runden 11–12 — Textbausteine, Zeitleiste, KI-Ehrlichkeit (27./28.07.)
+
+**R11 (`7933e55`) — Textbausteine kombinierbar.** `bausteinEinfuegen` setzte `el.value` auf einen
+kompletten Brief (Anrede + Absatz + Grußformel) — zwei Bausteine zu kombinieren war unmöglich, der
+zweite Klick warf den ersten weg (Nutzer: „ich kann nicht Unterlagen UND Beihilfe wählen"). Jetzt
+liefert `bausteinBloecke(f)` nur Absätze; Anrede einmal oben, Grußformel einmal unten, jeder weitere
+Baustein wird davor eingefügt, eigener Vortext bleibt. Dubletten-Schutz über den ersten Satzteil
+(Toast). Die Blöcke sind als Fortsetzung der Anrede formuliert (klein) → ab dem zweiten Absatz wird
+großgeschrieben. Platzhalter-Prosa („Das bedeutet …", „Bitte senden Sie uns diese …") durch
+vollständige Demo-Texte ersetzt.
+
+**R12 (`a223bb5`) — drei Nutzerwünsche + zwei eigene Funde.** (1) Prozessband aus dem Aktenkopf in
+eine **eigene sticky Spalte** links (`.fk-col-zeit`, 168 px, Kicker „Prozess"; `#faStage` per DOM-Umzug
+erstes Kind von `.fk-cols`, ID bleibt); aktueller Schritt pulsiert über den **bestehenden**
+`lxPulse`-Keyframe (16 Keyframes vor und nach der Änderung — Motion-Set wächst nicht); unter 1024 px
+unverändert horizontal. (2) KI-Analyse zeigte ihre Rechenphase nie: der Spinner existierte, aber ohne
+Proxy scheitert `kiComplete` in Millisekunden → 700 ms feste Verzögerung im Offline-Zweig.
+(3) Erkannte Diagnose als sichtbares Panel „✦ Aus der Anfrage erkannt … noch nicht gespeichert" +
+`kfDiagVorschlagUebernehmen()`; **bewusst keine Automatik**, weil gesetzte `f.med.diagnose` das
+Klärungsfeld als erledigt gelten lässt und den Status ohne Prüfung vorrücken würde.
+
+**Zwei Funde aus der Abnahme — beide betreffen die KI-Ehrlichkeit:** `KI_FALLBACK.analyse` ist ein
+fest formulierter Text über die Hoffmann-Website-Anfrage; **ohne Proxy bekam damit JEDE Anfrage diese
+fremde Zusammenfassung** (Fax über 68-Jährigen wurde als Website-Wechselwunsch eines 74-Jährigen
+beschrieben — im Pitch fatal). Neu `kiFallbackAnalyse(m)`: leitet Satz und Felder aus den Signalen der
+konkreten Anfrage ab, liest **Betreff und Absenderzeile mit** (Fax-Anmeldungen tragen die Diagnose
+dort, nicht im Text) und nutzt ein **eigenes volleres Frist-Muster**, weil `erkenneSignale`
+„Entlassung in 4 Tagen" nach „Entlassung in" abschneidet (dort dokumentiert). Zweitens: bei
+auto-verteilten Anfragen (`m.gruppe`) rendert `egSummaryHtml` statt `egTriageHtml` — dort stand
+weiter der Seed-Satz und die fertige KI-Zusammenfassung wurde nicht gezeigt; jetzt beide Pfade
+konsistent („Automatisch erkannt" vor der Analyse, KI-Zusammenfassung danach).
+**Lehre: Ein Fix am Anzeige-Text muss ALLE Render-Pfade eines Fensters abdecken — `openEgDetail` hat
+vier (done / passiv / gruppe / offen).**
+
+---
+
 **Prozess-Lehren:** Persona-Testläufe finden anderes als Logik-Audits (Wortwahl, fehlende
 Rückmeldung, Reihenfolge-Frust) — beides braucht es. Spec-Code an Lanes immer selbst
 `node --check`-fähig schreiben: ein gerades `"` in einem doppelt gequoteten String hat die Lane
