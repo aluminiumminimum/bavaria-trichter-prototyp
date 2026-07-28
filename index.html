@@ -3375,13 +3375,26 @@ body.ma-mode #inbToast.show{display:flex}
    Arbeitsspalte DIREKT unter dem Lagebild, nicht hinter den 1600px hohen Klärungsfeldern.
    Grosszuegiges Fenster mit eigenem Scroll (die Felder darunter müssen erreichbar bleiben),
    Ansicht springt auf die neueste Nachricht. Nachrichten groesser, ein-/ausgehend abgesetzt. */
-#view-fallakte #dLog{max-height:min(56vh,600px);overflow:auto;font-size:14px;padding-left:18px}
+#view-fallakte #dLog{max-height:min(60vh,680px);overflow:auto;font-size:14px;padding-left:18px}
 #view-fallakte #dLog .lgm{padding:10px 12px;line-height:1.5}
 #view-fallakte #dLog .lgm-in{margin-right:6%}
 #view-fallakte #dLog .lgm-out{margin-left:6%}
 #view-fallakte #dLog .lg-who{font-size:11px;margin-bottom:3px}
 #view-fallakte #dLog .lg-zeit{font-size:11px}
-#view-fallakte .fk-komm{margin-top:14px}
+#view-fallakte .fk-komm{margin-top:0}
+/* Am Handy gibt es keine zweite Spalte — dort muss der Verlauf trotzdem direkt hinter dem
+   Lagebild kommen und nicht hinter allen Feldern. display:contents löst die Spalten-Container
+   auf, sodass die Kapitel selbst sortierbar werden. */
+@media(max-width:1023px){
+ #view-fallakte .fk-cols{display:flex;flex-direction:column;gap:14px}
+ #view-fallakte .fk-col-arbeit,#view-fallakte .fk-col-kontext{display:contents}
+ #view-fallakte .fk-col-zeit{order:1}
+ #view-fallakte #faNaechste{order:2}
+ #view-fallakte .fk-komm{order:3}
+ #view-fallakte #dArbeit{order:4}
+ #view-fallakte .fk-col-arbeit>.chap:not(.fk-komm){order:5}
+ #view-fallakte .fk-col-kontext>.chap:not(.fk-komm),#view-fallakte .fk-col-kontext>.fk-fold{order:6}
+}
 @media(max-width:1023px){#view-fallakte #dLog{font-size:13.5px;padding-left:15px;max-height:min(62vh,560px)}
  #view-fallakte #dLog .lgm-in{margin-right:0}
  #view-fallakte #dLog .lgm-out{margin-left:8%}}
@@ -3394,9 +3407,10 @@ details.fk-fold[open]>summary.chap-h2::after{transform:rotate(90deg)}
    dort unter. Jetzt eigene, mitlaufende Spalte links neben der Arbeitsfläche; am Handy bleibt sie
    als horizontales Band oben. */
 @media(min-width:1024px){
- /* R14: Die Arbeitsspalte trägt jetzt auch den Verlauf — sie bekommt mehr Breite als die
-    Kontextspalte, in der nur noch zugeklappte Kapitel stehen. */
- #view-fallakte .fk-cols{grid-template-columns:184px minmax(0,1.5fr) minmax(0,1fr)}
+ /* R14: Der Verlauf steht wieder in der zweiten Spalte, aber GANZ OBEN — man muss ihn beim
+    Arbeiten in den Feldern daneben sehen, nicht darunter suchen. Beide Spalten deshalb gleich
+    breit; die Kontextspalte trägt jetzt echtes Arbeitsmaterial. */
+ #view-fallakte .fk-cols{grid-template-columns:184px minmax(0,1fr) minmax(0,1fr)}
  .fk-col-zeit{position:sticky;top:16px}
  .fk-col-zeit .fk-stageband{flex-direction:column;align-items:flex-start;gap:0;margin:0}
  .fk-col-zeit .fk-stage{width:100%;padding:2px 0}
@@ -4385,10 +4399,6 @@ details.fa-orig>div{padding:0 12px 12px}
             <div><label for="dOwner">Verantwortlich</label><span class="fh-owner-chip"><span class="ava" id="dOwnerAva"></span><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></span></div>
           </div>
         </div>
-        <div class="chap fk-komm">
-          <h2 class="chap-h2">Kommunikation &amp; Verlauf</h2>
-          <div id="faWerdegang"></div>
-        </div>
         <div id="dArbeit"></div>
         <div class="chap">
           <h2 class="chap-h2">Verwaltung</h2>
@@ -4412,6 +4422,10 @@ details.fa-orig>div{padding:0 12px 12px}
         </div>
       </div>
       <div class="fk-col-kontext">
+        <div class="chap fk-komm">
+          <h2 class="chap-h2">Kommunikation &amp; Verlauf</h2>
+          <div id="faWerdegang"></div>
+        </div>
         <div class="chap">
           <h2 class="chap-h2">Übersicht</h2>
           <div id="faUebersicht"></div>
