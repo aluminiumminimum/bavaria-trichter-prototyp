@@ -3372,16 +3372,17 @@ body.ma-mode #inbToast.show{display:flex}
 .lb-ap-v{flex:1;min-width:0}
 @media(max-width:640px){.kf-ansprech-grid{grid-template-columns:1fr}}
 /* R14: Der Verlauf ist das Herzstück der Fallakte (Nutzer-Befund) — er steht jetzt in der
-   Arbeitsspalte und darf mitwachsen, statt in einem 560px-Fensterchen zu scrollen. Nachrichten
-   werden groesser und greifbarer, ein-/ausgehend deutlicher gegeneinander gesetzt. */
-#view-fallakte #dLog{max-height:none;overflow:visible;font-size:14px;padding-left:18px}
+   Arbeitsspalte DIREKT unter dem Lagebild, nicht hinter den 1600px hohen Klärungsfeldern.
+   Grosszuegiges Fenster mit eigenem Scroll (die Felder darunter müssen erreichbar bleiben),
+   Ansicht springt auf die neueste Nachricht. Nachrichten groesser, ein-/ausgehend abgesetzt. */
+#view-fallakte #dLog{max-height:min(56vh,600px);overflow:auto;font-size:14px;padding-left:18px}
 #view-fallakte #dLog .lgm{padding:10px 12px;line-height:1.5}
 #view-fallakte #dLog .lgm-in{margin-right:6%}
 #view-fallakte #dLog .lgm-out{margin-left:6%}
 #view-fallakte #dLog .lg-who{font-size:11px;margin-bottom:3px}
 #view-fallakte #dLog .lg-zeit{font-size:11px}
 #view-fallakte .fk-komm{margin-top:14px}
-@media(max-width:1023px){#view-fallakte #dLog{font-size:13.5px;padding-left:15px}
+@media(max-width:1023px){#view-fallakte #dLog{font-size:13.5px;padding-left:15px;max-height:min(62vh,560px)}
  #view-fallakte #dLog .lgm-in{margin-right:0}
  #view-fallakte #dLog .lgm-out{margin-left:8%}}
 /* Zugeklappte Kontext-Kapitel: summary trägt die chap-h2-Optik, Marker als dezenter Pfeil. */
@@ -4384,11 +4385,11 @@ details.fa-orig>div{padding:0 12px 12px}
             <div><label for="dOwner">Verantwortlich</label><span class="fh-owner-chip"><span class="ava" id="dOwnerAva"></span><select id="dOwner"><option>S. Koordination</option><option>M. Belegung</option><option>T. Abrechnung</option><option>Recovery Manager</option></select></span></div>
           </div>
         </div>
-        <div id="dArbeit"></div>
         <div class="chap fk-komm">
           <h2 class="chap-h2">Kommunikation &amp; Verlauf</h2>
           <div id="faWerdegang"></div>
         </div>
+        <div id="dArbeit"></div>
         <div class="chap">
           <h2 class="chap-h2">Verwaltung</h2>
           <div class="fvw">
@@ -5168,11 +5169,18 @@ function logHtml(f){
  if(_lgTab==="nachrichten"&&n===0)html="<p class='empty'>Noch keine Gespräche oder Nachrichten — hier erscheint die Kommunikation mit Patient und Angehörigen.</p>";
  return html;
 }
+/* Der Verlauf scrollt in einem eigenen Fenster (die Klärungsfelder darunter müssen erreichbar
+   bleiben) — neue Einträge stehen unten, also nach jedem Neuaufbau dorthin springen. */
+function lgZumEnde(){
+ const el=document.getElementById("dLog");
+ if(el)el.scrollTop=el.scrollHeight;
+}
 function lgTabSet(which){
  _lgTab=which;
  document.querySelectorAll(".lg-tab").forEach(b=>b.classList.toggle("active",b.dataset.lg===which));
  const el=document.getElementById("dLog");
  if(el&&typeof aktuellerFall!=="undefined"&&aktuellerFall)el.innerHTML=logHtml(aktuellerFall);
+ lgZumEnde();
 }
 function bar(el,daten,warm){const max=Math.max(1,...daten.map(d=>d[1]));
   el.innerHTML=daten.map(d=>"<div class='bar"+(warm?" warm":"")+"'><span class='blbl'>"+escapeHtml(d[0])+"</span><span class='track'><span class='fill' style='width:"+(d[1]/max*100)+"%'></span></span><span class='bnum num'>"+d[1]+"</span></div>").join("")||"<p class='empty'>noch keine Daten</p>";}
@@ -5495,6 +5503,7 @@ function sendReply(){
   pruefeUpsell(f,txt);
   if(r)r.value="";
   document.getElementById("dLog").innerHTML=logHtml(f);
+  lgZumEnde();
   if(typeof inbToast==="function") inbToast("done","<b>Antwort gesendet</b> (Demo)","per "+kanal+" an "+escapeHtml(kommEmpfaenger(f)),null);
 }
 function inDatenbank(id){
@@ -7960,6 +7969,7 @@ function kzNotizAdd(){
  pruefeUpsell(f,txt);
  if(el)el.value="";
  document.getElementById("dLog").innerHTML=logHtml(f);
+ lgZumEnde();
 }
 function advanceFallStatus(f){
  const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return false;
@@ -8699,6 +8709,7 @@ function renderFallakte(){
     +"<button type='button' class='lg-tab"+(_lgTab==="alles"?" active":"")+"' data-lg='alles' onclick=\"lgTabSet('alles')\">Alles</button>"
     +"</div>"+faOriginalHtml(f)
     +"<div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
+  lgZumEnde();
   const med=inReha.find(p=>p.personId===f.personId);
   document.getElementById("faMedizin").innerHTML=med?("<div class='pa-meta'>"
     +"<div class='pa-row'><span class='pa-k'>Reha-Ziel</span><span class='pa-v'>"+escapeHtml(med.rehaZiel||"—")+"</span></div>"
