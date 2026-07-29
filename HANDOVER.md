@@ -858,13 +858,113 @@ derselben Arbeitskopie. Für Codex gilt exakt dasselbe wie für jeden Mitwirkend
 
 ## 7. NÄCHSTE AUFGABE
 
-**An Codex/ChatGPT delegiert (28.07.): systematischer Debugging-Durchlauf.** Ziel: unabhängig von
+**An Codex/ChatGPT delegiert (28.07.), am 29.07. abgeschlossen: systematischer
+Debugging-Durchlauf.** Ziel war, unabhängig von
 Fable/Claude herausfinden, wo die App noch hakt oder nicht funktioniert — nach den vielen
 Iterationsrunden (R1–R15b, siehe §4) ist ein frischer, unvoreingenommener Blick wertvoll. Codex
-soll **zunächst nur berichten, nicht fixen** (Findings-Report mit Datei:Zeile, Reproduktion,
-Schweregrad) — Fixes laufen danach in einer eigenen Runde, damit der Nutzer vor Änderungen sehen
-kann, was gefunden wurde. Siehe der komplette Erst-Prompt weiter unten in der Übergabe an den
-Nutzer (nicht Teil dieser Datei, da er sich an Codex direkt richtet).
+sollte **zunächst nur berichten, nicht fixen** (Findings-Report mit Datei:Zeile, Reproduktion,
+Schweregrad). Dieser Bericht steht vollständig in §7a; Fixes laufen danach in einer eigenen Runde,
+damit der Nutzer vor Änderungen sehen kann, was gefunden wurde.
+
+### 7a. Codex-Audit abgeschlossen (29.07.2026, keine Fixes)
+
+Codex hat `CLAUDE.md` und dieses Handover vollständig gelesen, danach einen statischen Audit und
+einen echten Laufzeittest mit Playwright/Google Chrome durchgeführt. Getestet wurden 390, 1024 und
+1440 px, Reduced Motion sowie der Kernweg Eingang -> Fall -> Klärung -> Aufnahme -> In Reha ->
+Entlassung. Zusätzlich geprüft: Board, Netzwerk/Zuweiser, Team/Mein Tag, Zuweiserportal und die
+Live-Version auf GitHub Pages. Am Code wurde dabei **nichts geändert oder committed**.
+
+**Befunde, nach Schwere geordnet:**
+
+1. **P1 - Personen-ID-Kollision nach Reload (`index.html:5081-5087`, `9370-9376`,
+   `9406-9419`).** `_pidN` startet bei jedem Laden mit 0. `demoSave()` persistiert den Zähler
+   nicht und `demoRestore()` rekonstruiert ihn nicht aus `personen[]`. Nach dem ersten neu
+   angelegten Patienten (`PR1`), einem Reload und der nächsten Stammdatenbestätigung entsteht ein
+   zweiter Patient mit `PR1`; `person("PR1")` kann danach die falsche Akte liefern.
+   Reproduktion: Anfrage übernehmen -> Stammdaten bestätigen -> Reload -> zweite neue Anfrage
+   übernehmen -> Stammdaten bestätigen.
+
+2. **P1 - Zuweiserportal/Behandlungs-Einblick stürzt mit dem Seed ab
+   (`index.html:6974-6988`).** `renderEinblick()` ruft ungeschützt `p.labor.map()` auf. Ludwig
+   Bauer und Elisabeth Cramer besitzen kein `labor`; neue Aufnahmen bekommen `labor:null`
+   (`index.html:7297-7302`). Klick auf Zuweiserportal -> in der Reha erzeugt
+   `Cannot read properties of undefined (reading 'map')` und lässt den alten Portalinhalt stehen.
+   Das zeigt zugleich: `DEMO_SCHEMA=6` ist aktuell, aber die `inReha`-Seed-Struktur erfüllt die
+   vom Renderer vorausgesetzte Feldinvariante nicht.
+
+3. **P1 - Zuweiserportal ist nicht auf den gewählten Zuweiser begrenzt
+   (`index.html:6974-6976`).** `renderEinblick(zName)` benutzt `zName` überhaupt nicht, sondern
+   rendert pauschal alle Einträge aus `inReha`. Nach einem reinen Laufzeit-Guard für den Laborfehler
+   zeigte das Leopoldina-Portal fünf Patienten; korrekt zugeordnet war nur Ludwig Bauer. Das ist
+   im Pitch ein gravierender Mandanten-/Vertraulichkeitsbruch. Achtung: Der Fix liegt im
+   Cofounder-Bereich `openReferrer`/`.rp-*` und muss daher mit Cofounder/Fable abgestimmt werden.
+
+4. **P2 - Aufnahme und Entlassung synchronisieren den Personen-Lebenszyklus nicht
+   (`index.html:7288-7317`, `7181-7191`).** `rehaAufnahme()` ändert die Person nicht von
+   `interessent` zu `patient`; `rehaEntlassung()` setzt sie nicht auf `altpatient`. Im getesteten
+   Kernweg blieb die Person vor, während und nach der Reha ein „Interessent“. Dadurch können
+   Personenakte, Segmentierung und Kampagnen den falschen Zustand zeigen.
+
+5. **P2 - Entlassene bleiben in anderen Renderpfaden „In Reha“
+   (`index.html:6976`, `9719-9724`).** Board, In-Reha-Grid und Cockpit filtern `p.entlassen`.
+   Zuweiserportal und `kiSnapshot()` mappen dagegen das komplette `inReha[]`. Nach einer Entlassung
+   verschwindet der Patient korrekt aus der Hauptansicht, wird Portal und Copilot aber weiter als
+   laufender Reha-Patient übergeben. Ein Entlassungsfix muss alle Render-/Snapshot-Pfade abdecken.
+
+6. **P2 - Entlassung ist ungeprüft und nicht rücknehmbar (`index.html:7126-7129`,
+   `7181-7191`).** Der Button ist für jeden nicht entlassenen Patienten sichtbar, auch direkt an
+   Reha-Tag 1. Ein Klick setzt sofort `p.entlassen`, ohne Bestätigung, Mindestvoraussetzungen oder
+   Undo. Reproduktion: neuen Fall aufnehmen -> In Reha -> Patienten öffnen -> Entlassung
+   dokumentieren.
+
+7. **P2 - „Fall wieder öffnen“ ist in aktiven Fällen sichtbar und funktionslos
+   (`index.html:84-86`, `4430-4433`, `9024-9026`).** `.btn-ghost {display:inline-flex}`
+   überstimmt das HTML-Attribut `hidden`. Deshalb stehen in einer aktiven Fallakte gleichzeitig
+   „Fall verloren melden“ und „Fall wieder öffnen“. Der zweite Klick verpufft am Status-Guard.
+   Für die Verlustbox existiert bereits eine gezielte `[hidden]`-Regel; für den Button nicht.
+
+8. **P2 - Automatisierungs-Toast blockiert bei 390 px die Tabbar
+   (`index.html:1211-1219`, `5277-5288`, `9455`).** Gemessen: 366 x 80 px ab y=742 bei einem
+   390x844-Viewport; die Tabbar beginnt bei y=778. Nach dem Anfrage-Autostart liegt der Toast über
+   fast allen Navigationszielen, Playwright konnte „Reha“ nicht anklicken. Der Folge-Toast bleibt
+   bis zu neun Sekunden sichtbar.
+
+9. **P2 - In-Reha-Karten brechen bei der Pflichtbreite 1024 px
+   (`index.html:1144-1147`, `3118-3130`).** Ab 900 px erzwingt das Grid zwei Karten, jede Karte
+   erzwingt aber vier BWL-Kacheln. Bei 1024 px ragen die Kacheln in die Nachbarkarte bzw. werden
+   abgeschnitten; besonders „Zusatzerlöse/Tag“. Der Dokument-Viewport selbst bleibt 1024 px breit,
+   daher erkennt ein bloßer `document.scrollWidth`-Check diesen internen Clip nicht.
+
+10. **P2 - Jeder Start erzeugt Console-Errors (`index.html:9530-9533`).** Der
+    `https://ai.quintia.de/health`-Ping wird sowohl von `localhost:8765` als auch von der
+    GitHub-Pages-Live-Origin per CORS abgewiesen. Pro Laden erscheinen CORS-Fehler und
+    `net::ERR_FAILED`. Der Promise-Catch setzt die UI zwar auf offline, macht den Browserfehler
+    aber nicht „leise“. Verstößt gegen den verbindlichen 0-Console-Errors-Vertrag.
+
+11. **P3 - Tote Altpfade plus Determinismus-Verstoß.** Jeweils nur definiert, nie aufgerufen:
+    `antwortenEingang` (`5545`), `setDbView` (`5730`), `closeDbDetail` (`6398`),
+    `findeOderErstelleZuweiser` (`6453`), `mxMetric` (`6855`), `refToast` (`6973`),
+    `rsSpark` (`7221`), `closeDetail` (`8348`), `mtRollToggle` (`8828`) und `stepper`
+    (`6896`). `closeDetail()` referenziert sogar das entfernte `#ovDetail`. Außerdem verletzt
+    `const heute=new Date()` (`4605`) die für diesen Auftrag ausdrücklich gesetzte Regel gegen
+    argumentloses `new Date()` und macht den Demo-Anker laufzeitabhängig.
+
+**Positiv verifiziert:** Der eigentliche Klärungsweg trägt bis zur Aufnahme, das Assessment trifft
+deterministisch ein, Team/Mein Tag kehrt korrekt aus der Fallakte zurück, Reduced Motion rendert
+alle sechs Hauptviews sichtbar und die Hauptviews erzeugen bei 390/1024/1440 keinen
+dokumentweiten horizontalen Overflow. Abgesehen vom KI-Healthcheck und dem Zuweiserportal-Fehler
+traten in Board, Netzwerk, Team/Mein Tag, Fallakte und Reha-Detail keine weiteren Console-Errors auf.
+
+**Empfohlene Fix-Reihenfolge für Claude/Fable:**
+1. `_pidN` beim Persistieren/Restore eindeutig machen und doppelte `pid` reparieren/validieren.
+2. `renderEinblick()` gegen fehlende Reha-Felder härten.
+3. Zuweiserportal nach `zName`/echter Fallbeziehung filtern (Cofounder-Abstimmung).
+4. Aufnahme/Entlassung als zentralen Zustandsübergang für Person, Board, Portal und KI vereinheitlichen.
+5. Danach mobile Toast-Lage, 1024-px-Reha-Karten, Hidden-Button und KI-Healthcheck.
+
+**Wichtig für die nächste Runde:** Noch wurde bewusst nichts gefixt. Vor Implementierung die
+P1/P2-Priorisierung kurz mit dem Nutzer bestätigen; Cofounder-Namespaces weiterhin nicht ohne
+Abstimmung anfassen.
 
 Davor zuletzt abgeschlossen: Runden 13–15b (§4p–§4u) — Zuweiser-Anmeldungen mit echten Stammdaten,
 Kommunikation & Verlauf als Herzstück (inkl. zweier Korrekturrunden zur Platzierung), Breite/
