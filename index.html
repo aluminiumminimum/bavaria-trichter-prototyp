@@ -4997,6 +4997,7 @@ let inReha=[
     bill liegt hier wie bei neu aufgenommenen Patienten am Datensatz. */
  {personId:"P07",fallId:10,name:"Ludwig Bauer",alter:71,achse:"Orthopädie",owner:"M. Belegung",icd:"Z96.64 — Z. n. Hüft-TEP links",aufnahme:dstr(-2),verweildauer:{ist:3,plan:21},barthel:{auf:45,akt:55},fim:{auf:78,akt:88},ziel:50,
    kurzbericht:"Postoperativ reizlos, Teilbelastung nach Schema, Transfers selbstständig.",
+   labor:[{k:"CRP",v:"5 mg/l"},{k:"Hb",v:"12,8 g/dl"},{k:"Wunde",v:"reizlos"}],
    eintraege:[{d:dstr(-1),txt:"Gangschule an Unterarmgehstützen begonnen, 20 m Gehstrecke."},{d:dstr(-2),txt:"Aufnahme abgeschlossen, Zielplan mit Patient abgestimmt."}],
    zwischenstand:{datum:dstr(-1),text:"Mobilisation planmäßig, Schmerz gut kontrolliert.",autor:"M. Belegung"},
    rehaZiel:"Vollbelastung erreichen, selbstständiges Treppensteigen",
@@ -5007,6 +5008,7 @@ let inReha=[
    bill:{tagessatz:1045,kostenTag:650,kostenzusage:"liegt vor",zimmer:"Einzelzimmer",verlaengerung:false,zusatz:[{label:"Einzelzimmer-Zuschlag",eur:65}]}},
  {personId:"P08",fallId:11,name:"Elisabeth Cramer",alter:66,achse:"Neurologie",owner:"S. Koordination",icd:"I63.9 — Z. n. Schlaganfall",aufnahme:dstr(-3),verweildauer:{ist:4,plan:25},barthel:{auf:55,akt:65},fim:{auf:85,akt:95},ziel:60,
    kurzbericht:"Feinmotorik rechts verbessert, Gangbild sicher, kognitiv unauffällig.",
+   labor:[{k:"INR",v:"2,1"},{k:"CRP",v:"3 mg/l"},{k:"RR",v:"128/78"}],
    eintraege:[{d:dstr(-1),txt:"Ergotherapie Feinmotorik ausgebaut, Alltagstraining begonnen."},{d:dstr(-3),txt:"Aufnahme abgeschlossen, neurologisches Assessment erfolgt."}],
    zwischenstand:{datum:dstr(-1),text:"Fortschritte in Motorik und Ausdauer, Ziele im Plan.",autor:"S. Koordination"},
    rehaZiel:"Vollständige Alltagsselbstständigkeit, Rückkehr in den Beruf prüfen",
@@ -6980,7 +6982,7 @@ function renderEinblick(zName){
     <div class="rp-pathead"><span class="rp-ava">${initialen(p.name)}</span><div><b>${escapeHtml(p.name)} (${p.alter})</b><small>${escapeHtml(p.achse)} · ${escapeHtml(p.icd)}</small></div><span class="rp-tag">Reha-Tag ${p.verweildauer.ist}/${p.verweildauer.plan}</span></div>
     <div class="rp-stay"><div class="fill" style="width:${stayPct}%"></div></div>
     <p class="rp-kurz">${escapeHtml(p.kurzbericht)}</p>
-    <div class="rp-labs">${p.labor.map(l=>`<div class="rp-lab"><span>${escapeHtml(l.k)}</span><b>${escapeHtml(l.v)}</b></div>`).join("")}</div>
+    <div class="rp-labs">${(p.labor||[]).map(l=>`<div class="rp-lab"><span>${escapeHtml(l.k)}</span><b>${escapeHtml(l.v)}</b></div>`).join("")}</div>
     <div class="rp-verlauf">${p.eintraege.map(e=>`<div class="rp-tl"><small>${escapeHtml(e.d)}</small><p>${escapeHtml(e.txt)}</p></div>`).join("")}</div>
     <a class="rp-call" href="#" onclick="rpToast('Rücksprache angefragt — das Behandlungsteam meldet sich');return false">☎ Rücksprache mit dem Behandlungsteam</a>
    </div>
@@ -7185,6 +7187,8 @@ function rehaEntlassung(i){
  const f=p.fallId?faelle.find(x=>x.id===p.fallId):null;
  if(f)f.log.push([dstr(0),"Entlassung dokumentiert — Reha abgeschlossen (Tag "+p.verweildauer.ist+" von "+p.verweildauer.plan+")",logZeit()]);
  if(p.personId&&typeof pHist==="function")pHist(p.personId,"entlassung","Reha abgeschlossen · "+p.achse);
+ const per=person(p.personId);
+ if(per)per.lebenszyklus="altpatient";
  const stelle=rehaZuweiserStelle(p);
  inbToast("done","<b>Entlassung dokumentiert</b>","Nachsorge-Kontakt für die 6. Woche vorgemerkt"+(stelle?" · Rückmeldung an "+escapeHtml(stelle)+" offen":""),null);
  if(typeof dismissDetail==="function")dismissDetail();
@@ -7313,6 +7317,8 @@ function rehaAufnahme(f){
  inReha.push(p);
  f.log.push([dstr(0),"Aufnahme vollzogen · "+zimmer+" · geplante Verweildauer "+plan+" Tage",logZeit()]);
  if(typeof pHist==="function")pHist(f.personId,"aufnahme","Aufnahme in die Reha · "+zimmer);
+ const per=person(f.personId);
+ if(per)per.lebenszyklus="patient";
  if(typeof rehaAssessSchedule==="function")rehaAssessSchedule(f);
  return p;
 }
@@ -9373,7 +9379,7 @@ function demoSave(){
   try{
    localStorage.setItem(DEMO_KEY,JSON.stringify({v:DEMO_SCHEMA,saved:dstr(0),
     faelle:faelle,eingang:eingang,personen:personen,inReha:inReha,
-    zuweiser:zuweiser,zuweiserEvents:zuweiserEvents,bestand:bestand,radar:radar,inbN:_inbN,inbId:_inbId}));
+    zuweiser:zuweiser,zuweiserEvents:zuweiserEvents,bestand:bestand,radar:radar,inbN:_inbN,inbId:_inbId,pidN:_pidN}));
   }catch(e){/* Quota/Privacy-Mode: Persistenz still deaktiviert */}
  },400);
 }
@@ -9416,6 +9422,11 @@ function demoRestore(){
   if(typeof s.inbN==="number")_inbN=s.inbN;
   if(typeof s.inbId==="number")_inbId=s.inbId;
   eingang.forEach(function(m){if(typeof m.id==="number"&&m.id>=_inbId)_inbId=m.id+1;});
+  if(typeof s.pidN==="number")_pidN=s.pidN;
+  personen.forEach(function(pp){
+   const m=/^PR(\d+)$/.exec(pp.pid||"");
+   if(m){const n=parseInt(m[1],10);if(n>=_pidN)_pidN=n;}
+  });
   demoRepair();
   return true;
  }catch(e){return false;}
