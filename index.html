@@ -3482,6 +3482,9 @@ details.fa-orig>div{padding:0 12px 12px}
 /* R16 Feature 1: "stockt"-Hinweis im Konvergenz-Hero ist jetzt klickbar (Board-Filter). */
 .cv-stockt{cursor:pointer}
 .lx-chip--stock{cursor:pointer}
+/* R16b: auch der "N Anfragen heute"-Chip oben rechts im Hero ist klickbar (Beta-Befund —
+   Nutzer klickt den Chip, nicht den Gold-Knoten). Ziel identisch: Eingang. */
+.lx-chip--in{cursor:pointer}
 /* R16 Feature 2: Ärztliche Übernahme-Freigabe (Bedarf-Klärungsfeld, nur bei med.schwere=hoch). */
 .kfg-box{border:1px solid var(--jade-line);border-radius:4px;background:var(--paper);padding:10px 12px;margin-top:12px}
 .kfg-title{font:600 10.5px "Fragment Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:6px}
@@ -3693,7 +3696,7 @@ details.fa-orig>div{padding:0 12px 12px}
     <text class="cv-copy" x="170" y="356">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
   </svg>
 
-  <div class="cv-badges"><div class="lx-chip lx-chip--in"><b data-sync="cvTotal">5</b> Anfragen heute</div><div class="lx-chip lx-chip--stock" data-sync-wrap="cvStockWrap" role="button" tabindex="0" aria-label="Stockende Fälle im Board ansehen" onclick="openStockt()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openStockt()}"><b data-sync="cvStock">1</b> stockt</div></div>
+  <div class="cv-badges"><div class="lx-chip lx-chip--in" role="button" tabindex="0" aria-label="Alle Anfragen im Eingang öffnen" onclick="go('faelle','anfragen')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('faelle','anfragen')}"><b data-sync="cvTotal">5</b> Anfragen heute</div><div class="lx-chip lx-chip--stock" data-sync-wrap="cvStockWrap" role="button" tabindex="0" aria-label="Stockende Fälle im Board ansehen" onclick="openStockt()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openStockt()}"><b data-sync="cvStock">1</b> stockt</div></div>
 </div>
     </header>
 
