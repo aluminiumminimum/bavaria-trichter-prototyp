@@ -966,6 +966,21 @@ traten in Board, Netzwerk, Team/Mein Tag, Fallakte und Reha-Detail keine weitere
 P1/P2-Priorisierung kurz mit dem Nutzer bestätigen; Cofounder-Namespaces weiterhin nicht ohne
 Abstimmung anfassen.
 
+**Update 29.07.2026, `e3c01d4` (live):** Befunde 1, 2 und 4 gefixt — `_pidN` wird jetzt wie
+`_inbN`/`_inbId` in `demoSave`/`demoRestore` persistiert (Fallback-Scan über `personen[]` nach
+`PR<Zahl>`-Pids für Alt-Stände); `renderEinblick()` schützt sich mit `(p.labor||[]).map(...)`
+gegen fehlendes `labor`, zusätzlich bekamen Ludwig Bauer/Elisabeth Cramer passende Laborwerte in
+den R15b-Seeds nachgetragen; `rehaAufnahme()`/`rehaEntlassung()` setzen `person().lebenszyklus`
+jetzt auf `"patient"`/`"altpatient"` statt es bei `"interessent"` stehen zu lassen. Verifiziert:
+`node --check` sauber, PID-Kollisionstest (zwei Neuanlagen mit Reload dazwischen → `PR1`/`PR2`),
+Zuweiserportal-Öffnung für Leopoldina 0 neue Console-Errors mit sichtbaren Laborwerten,
+Lebenszyklus-Wechsel bei Aufnahme→Entlassung geprüft, 0 horizontaler Overflow @390/@1440.
+**Bewusst NICHT gefixt** (Befund 3, 5–11): Befund 3 (Portal zeigt alle Patienten statt nur den
+gewählten Zuweiser) liegt in `openReferrer`/`.rp-*` und braucht Cofounder-Abstimmung; die
+restlichen P2/P3-Punkte (Entlassungs-Guard, `hidden`-Button-Bug, mobiler Toast über der Tabbar,
+1024px-Reha-Karten, KI-Healthcheck-Console-Errors, tote Funktionen) stehen noch offen für eine
+künftige Runde.
+
 Davor zuletzt abgeschlossen: Runden 13–15b (§4p–§4u) — Zuweiser-Anmeldungen mit echten Stammdaten,
 Kommunikation & Verlauf als Herzstück (inkl. zweier Korrekturrunden zur Platzierung), Breite/
 Auswertung 2-spaltig, die In-Reha-Phase (Aufnahme als Übergabe, nicht Abschluss) und die Board-Zone
