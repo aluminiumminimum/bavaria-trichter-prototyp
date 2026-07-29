@@ -1217,6 +1217,9 @@ label{font-size:12px;letter-spacing:.08em}
   .inb-s{font:400 12px/1.3 Inter;color:var(--muted);margin-top:2px}
   .inb-open{flex:0 0 auto;font:600 12px/1 Inter;color:var(--brass-deep);background:var(--brass-soft);border:1px solid var(--brass-line);border-radius:99px;padding:8px 12px;white-space:nowrap}
   .inb-x{flex:0 0 auto;color:var(--muted);font-size:18px;line-height:1;padding:0 2px}
+  @media(max-width:1023px){
+   .inb-toast{bottom:calc(74px + env(safe-area-inset-bottom) + 16px)}
+  }
   /* ===== WS5 · Reha-Steuerung — betriebswirtschaftliches Panel ===== */
   .rs-cockpit{margin-bottom:16px}
   .rs-cockpit .dbc-stat{flex:1;min-width:0}
@@ -1734,7 +1737,6 @@ body.ma-mode:has(#view-fallakte.active) #view-meintag{display:none}
    Reha-Verlaufscharts (.rsp-*) + Auswertungs-Donut (#donut) sind Cofounder-/JS-SVGs:
    nur per Präsentationsattribut-Selektoren auf Dunkel gehoben (kein Markup-Eingriff).
    Plus: Matrix-Hover & Mono-Zeilenlabels (.mx-*). */
-/* (a) Reha-Sparkline auf Board-Karten (rsSpark) — J6: Jade-Linie, Gold-Endpunkt */
 .rsp-spark path[stroke="#bca37d"]{stroke:var(--sage)}
 .rsp-spark stop{stop-color:var(--sage)}
 .rsp-spark circle{fill:var(--brass)}
@@ -3127,7 +3129,7 @@ summary.rk::-webkit-details-marker{display:none}
 .irb-foot{display:flex;justify-content:space-between;gap:8px;font-size:12px;flex-wrap:wrap}
 .irb-ms-l{font-weight:600;color:var(--ink-soft)}
 .irb-ms-d{color:var(--faint)}
-@media(max-width:600px){.irb-bwl{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1024px){.irb-bwl{grid-template-columns:repeat(2,1fr)}}
 /* Runde 6 Punkt 5: .zwa-* — Zuweiser-Anlass-Karten im Etiketten-Stil (Doppelrahmen + Gold-Eckwinkel,
    Muster wie .mtp-row), ersetzt arCard()/.radar-card für die Zuweiser-Pflege. Keine neue Animation. */
 .zwa-group{margin-bottom:18px}
@@ -3346,6 +3348,7 @@ details.kf{background:var(--paper);border:1px solid var(--jade-line);border-radi
    Die Verlust-Box trug hidden, aber die Klassenregel display:grid schlug das
    UA-Default und die Box stand in jedem Fall offen. */
 .fvw-verlust-box[hidden]{display:none}
+#fvwReaktivierenBtn[hidden]{display:none}
 /* Touch-Ziele: Textbaustein-Chips und Leitfaden-Kaestchen waren am Handy
    deutlich unter der empfohlenen Fingergroesse (gemessen 29px bzw. 18px). */
 @media(max-width:640px){
@@ -5544,11 +5547,6 @@ function uebernehmen(id,owner){
   m.fallId=fid;
   renderAll();openDetail(fid);
 }
-function antwortenEingang(id,owner){
-  const m=eingang.find(x=>x.id===id); if(!m)return;
-  if(!m.done) uebernehmen(id,owner);
-  if(m.fallId){ openDetail(m.fallId); setTimeout(function(){const r=document.getElementById("dReply");if(r)r.focus();},80); }
-}
 function sendReply(){
   const f=aktuellerFall; if(!f)return;
   const r=document.getElementById("dReply"); const txt=(r?r.value:"").trim(); if(!txt){alert("Bitte eine Antwort verfassen.");return;}
@@ -5729,7 +5727,6 @@ function renderBoard(){
 }
 
 /* ---------- Render: Altpatienten (Bestand) ---------- */
-function setDbView(v){go("netzwerk","patienten");}
 const STERNE={
  5:{label:"Heißester Lead — Wiederkehr / VIP",note:"War bereits da & begeistert · aktiver Selbstzahler/Privatpatient · hat aktiv weiterempfohlen",auto:"Persönliche Betreuung durch Recovery Manager · bevorzugte Terminvergabe",geste:"Geschenk (Stift, Visitenkarte, persönliche Note)"},
  4:{label:"Sehr qualifiziert — Selbstzahler mit Interesse",note:"Selbstzahler bestätigt · konkretes Gespräch, echter Bedarf · Angehöriger mit Entscheidungsauftrag",auto:"Persönlicher Rückruf + Wiedervorlage",geste:"Handgeschriebene Karte + persönlicher Anruf"},
@@ -6397,10 +6394,6 @@ function openDbDetail(i){
   document.body.classList.add("detail-open");
   pushDetailState();
 }
-function closeDbDetail(){
-  document.getElementById("dbDetail").classList.remove("open");
-  document.body.classList.remove("detail-open");
-}
 /* Escape wird zentral in WS1 (dismissDetail) behandelt */
 /* Automatisierungs-Vorschlag — abgeleitet aus Alter, Quelle & Einwilligung (gemäß Michaels Memo) */
 function autoFor(b){
@@ -6451,15 +6444,6 @@ function _zNorm(s){
   return String(s||"").toLowerCase().replace(/[-–,.]/g," ").split(/\s+/).filter(Boolean)
     .filter(w=>!["klinikum","klinik","krankenhaus","praxis","privatpraxis","zentrum","haus","gmbh","dr","fr","hr","prof"].includes(w))
     .join(" ").trim();
-}
-function findeOderErstelleZuweiser(name){
-  const n=_zNorm(name);
-  if(!n||n.length<4)return null;
-  const treffer=zuweiser.find(z=>{
-    const zn=_zNorm(z.name);
-    return zn.length>=4&&(zn===n||zn.includes(n)||n.includes(zn));
-  });
-  return treffer?{z:treffer,neu:false}:null;
 }
 function setZFilter(id){zFilter=id;renderZuweiser();}
 function mapOrt(o){return String(o||"").replace(/\s*\(.*/,"").replace("überregional","überreg.");}
@@ -6895,19 +6879,6 @@ function renderMatrix(){
  document.getElementById("matrixGrid").innerHTML=h;
 }
 function mxGo(a,b){ if(a==="ref"){ if(typeof openReferrer==="function") openReferrer(b,"Leopoldina-Krankenhaus"); return; } go(a,b); }
-function stepper(schritte){
- return `<div class="stepper">`+schritte.map((s,i,arr)=>{
-  // Determine if this step is current
-  let isCurrent=s.current===true;
-  if(!isCurrent&&s.current===undefined&&!s.done){
-   // For explicit schritte: current is first non-done step
-   isCurrent=!arr.slice(0,i).some(x=>x.done===false);
-  }
-  const dur=s.dauerMin!=null?` · <span class="dur">${s.dauerMin>=60?Math.round(s.dauerMin/60)+" Std":s.dauerMin+" Min"}</span>`:"";
-  const meta=[s.who,s.ts].filter(Boolean).join(" · ");
-  return `<div class="stp ${s.done?"done":""}${isCurrent?" current":""}"><span class="dot"></span><span><b>${escapeHtml(s.label)}</b><small>${escapeHtml(meta)}${dur}</small></span></div>`;
- }).join("")+`</div>`;
-}
 function renderSuite(screen,zName){
  const p=rpPersona(zName);
  const greet=p.name?"Herzlich willkommen, "+escapeHtml(p.name):"Herzlich willkommen";
@@ -6974,8 +6945,9 @@ function rpPrefill(achse,kw){
 }
 function refToast(){rpToast("Demo — in diesem Prototyp nicht aktiv abgesendet.");}
 function renderEinblick(zName){
+ const eigene=inReha.filter(p=>{const per=person(p.personId);return per&&per.zuweiserRef===zName;});
  return `<p class="rp-lead">Die ärztliche Sicht auf Ihre Patienten — Kurzbericht, Verlauf und aktuelle Werte, ohne interne Steuerungs-KPIs.</p>`
- +inReha.map(p=>{
+ +(eigene.length?eigene.map(p=>{
   const stayPct=Math.min(100,p.verweildauer.ist/p.verweildauer.plan*100);
   return `<div class="rp-card rp-pat">
    <div class="rp-patmain">
@@ -6987,7 +6959,7 @@ function renderEinblick(zName){
     <a class="rp-call" href="#" onclick="rpToast('Rücksprache angefragt — das Behandlungsteam meldet sich');return false">☎ Rücksprache mit dem Behandlungsteam</a>
    </div>
    <div class="rp-patrings">${kpiRing(p.barthel.akt,100,"Barthel","▲ "+(p.barthel.akt-p.barthel.auf))}${kpiRing(p.fim.akt,126,"FIM","▲ "+(p.fim.akt-p.fim.auf))}</div>
-  </div>`;}).join("");
+  </div>`;}).join(""):`<p class="rp-hint">Aktuell sind keine Ihrer Patienten in der Reha.</p>`);
 }
 function rpDocClose(){const v=document.getElementById("rpDocView");if(v)v.classList.remove("open");}
 function rpDoc(type,zName){
@@ -7182,6 +7154,7 @@ function rehaZwischenstandSenden(i){
    Entlass-Jubiläum — beide rechnen bereits darauf. */
 function rehaEntlassung(i){
  const p=inReha[i];if(!p||p.entlassen)return;
+ if(!confirm("„"+p.name+"“ wirklich als entlassen dokumentieren?\n\nDer Patient verschwindet danach aus den laufenden Reha-Listen."))return;
  p.entlassen=dstr(0);
  p.verweildauer.ist=Math.max(1,rehaTage(p.aufnahme,dstr(0))+1);
  const f=p.fallId?faelle.find(x=>x.id===p.fallId):null;
@@ -7221,18 +7194,6 @@ function rsSeries(from,to,n){
 function rsPath(pts,w,h,max){
  const n=pts.length;
  return pts.map((v,i)=>`${i?"L":"M"}${(i/(n-1)*w).toFixed(1)} ${(h-v/max*h).toFixed(1)}`).join(" ");
-}
-function rsSpark(p){
- const n=Math.max(3,Math.min(12,p.verweildauer.ist+1));
- const pts=rsSeries(p.barthel.auf,p.barthel.akt,n);
- const w=200,h=38,line=rsPath(pts,w,h,100);
- const lastY=(h-pts[n-1]/100*h).toFixed(1);
- return `<div class="rsp-spark"><svg viewBox="0 0 ${w} 44" preserveAspectRatio="none">
-   <defs><linearGradient id="rspg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bca37d"/><stop offset="1" stop-color="#bca37d" stop-opacity="0"/></linearGradient></defs>
-   <path d="${line} L${w} 44 L0 44 Z" fill="url(#rspg)" opacity=".18" stroke="none"/>
-   <path d="${line}" fill="none" stroke="#bca37d" stroke-width="2"/>
-   <circle cx="${w-1}" cy="${lastY}" r="3" fill="#8f7448"/></svg>
-  <div class="rsp-cap">Barthel-Verlauf seit Aufnahme</div></div>`;
 }
 function rsChart(p){
  const n=Math.max(3,Math.min(12,p.verweildauer.ist+1));
@@ -8351,10 +8312,6 @@ function advanceFall(){ const f=aktuellerFall;if(!f)return;
  renderAll(); renderFallakte();
 }
 function openDetail(id){openFallakte(id);}
-function closeDetail(){
-  document.getElementById("ovDetail").classList.remove("open");
-  document.body.classList.remove("locked","detail-open");
-}
 function updateDocCnt(){
   if(!document.getElementById("u1"))return;
   const n=["u1","u2","u3","u4"].filter(u=>document.getElementById(u).checked).length;
@@ -8831,11 +8788,6 @@ function mtNext(){
  mtSheetRender();
 }
 /* ---------- Mein Tag: Rollen-Umschalter (Desktop-Avatar) ---------- */
-function mtRollToggle(){
- const m=document.getElementById("mtRollmenu");if(!m)return;
- const open=m.classList.toggle("open");
- const btn=document.getElementById("mtAvaBtn");if(btn)btn.setAttribute("aria-expanded",open?"true":"false");
-}
 document.addEventListener("click",function(e){
  const wrap=e.target.closest?e.target.closest(".mt-avawrap"):null;
  if(!wrap){
@@ -9539,7 +9491,7 @@ async function kiVision(image,prompt,opts){opts=opts||{};
  return out;
 }
 (function kiHealth(){ /* einmaliger Ping; Fehler sind erwartbar und leise */
- try{fetch(KI_CONFIG.endpoint+"/health",{method:"GET"}).then(r=>{KI_ONLINE=r.ok;kiStatusRender();}).catch(()=>{KI_ONLINE=false;kiStatusRender();});}
+ try{fetch(KI_CONFIG.endpoint+"/health",{method:"GET",mode:"no-cors"}).then(function(){KI_ONLINE=true;kiStatusRender();}).catch(function(){KI_ONLINE=false;kiStatusRender();});}
  catch(e){KI_ONLINE=false;kiStatusRender();}
 })();
 /* Pitch-Fallbacks: pro Funktion ein plausibles gescriptetes Ergebnis (Spec §4). */
@@ -9731,7 +9683,7 @@ function kiSnapshot(){
  const of=faelle.filter(f=>f.status!=="Aufgenommen"&&f.status!=="Verloren");
  return "OFFENE FÄLLE:\n"+of.map(f=>"- "+f.name+" ("+f.achse+", "+f.kt+", Status "+f.status+", Aufgabe: "+(f.aufgabe||"—")+", Owner "+f.owner+")").join("\n")
   +"\n\nEINGANG (offen):\n"+eingang.filter(m=>!m.done).map(m=>"- "+(m.tit||m.kanal)+" ["+m.kanal+"]").join("\n")
-  +"\n\nIN REHA:\n"+inReha.map(p=>"- "+p.name+" ("+p.achse+", Tag "+p.verweildauer.ist+"/"+p.verweildauer.plan+", Barthel "+p.barthel.akt+")").join("\n")
+  +"\n\nIN REHA:\n"+inReha.filter(p=>!p.entlassen).map(p=>"- "+p.name+" ("+p.achse+", Tag "+p.verweildauer.ist+"/"+p.verweildauer.plan+", Barthel "+p.barthel.akt+")").join("\n")
   +"\n\nTOP-ZUWEISER:\n"+zuweiser.slice(0,6).map(z=>"- "+z.name+" ("+z.faelle+" Fälle, letzter Kontakt "+(z.letzter||"?")+")").join("\n");
 }
 function kiChatOpen(){
