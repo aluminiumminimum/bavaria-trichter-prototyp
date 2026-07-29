@@ -3479,6 +3479,20 @@ details.fa-orig>div{padding:0 12px 12px}
  padding:12px 14px;margin:0 0 14px;font-size:13px;color:var(--brass-deep);line-height:1.45}
 .reha-doc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .fa-med-src{margin:0 0 8px;font-size:11px;color:var(--faint);line-height:1.4}
+/* R16 Feature 1: "stockt"-Hinweis im Konvergenz-Hero ist jetzt klickbar (Board-Filter). */
+.cv-stockt{cursor:pointer}
+.lx-chip--stock{cursor:pointer}
+/* R16 Feature 2: Ärztliche Übernahme-Freigabe (Bedarf-Klärungsfeld, nur bei med.schwere=hoch). */
+.kfg-box{border:1px solid var(--jade-line);border-radius:4px;background:var(--paper);padding:10px 12px;margin-top:12px}
+.kfg-title{font:600 10.5px "Fragment Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:6px}
+.kfg-status{font-size:13px;color:var(--ink-soft)}
+.kfg-status.offen{color:var(--terra)}
+.kfg-status.angefragt{color:var(--brass-deep)}
+.kfg-status.erteilt{color:var(--sage-deep)}
+.kfg-hint{font-size:11px;color:var(--faint);margin-top:4px}
+/* R16 Feature 3: Nicht-erreicht-Automatik im Kontakt-Feld (Fallakte + Mein Tag). */
+.wv-box{margin-top:10px}
+.wv-box .au-micro{display:block;margin-top:6px}
 </style>
 </head>
 <body>
@@ -3582,7 +3596,10 @@ details.fa-orig>div{padding:0 12px 12px}
     </g>
 
     <!-- stockt-Hinweis -->
-    <g class="cv-stockt" id="cvStockWrap">
+    <g class="cv-stockt" id="cvStockWrap" role="button" tabindex="0" aria-label="Stockende Fälle im Board ansehen"
+       onclick="openStockt()"
+       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openStockt()}">
+      <rect class="cv-stockt-hit" x="684" y="97" width="82" height="30" fill="transparent"/>
       <line x1="688" y1="124" x2="703" y2="112"/>
       <circle cx="709" cy="107" r="3"/>
       <text x="717" y="111"><tspan id="cvStock">1</tspan> stockt</text>
@@ -3653,7 +3670,10 @@ details.fa-orig>div{padding:0 12px 12px}
       <text class="cv-node-s" x="248" y="161">heute</text>
     </g>
 
-    <g class="cv-stockt" data-sync-wrap="cvStockWrap">
+    <g class="cv-stockt" data-sync-wrap="cvStockWrap" role="button" tabindex="0" aria-label="Stockende Fälle im Board ansehen"
+       onclick="openStockt()"
+       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openStockt()}">
+      <rect class="cv-stockt-hit" x="145" y="162" width="74" height="41" fill="transparent"/>
       <line x1="215" y1="166" x2="203" y2="178"/>
       <circle cx="198" cy="182" r="2.5"/>
       <text x="190" y="196" style="text-anchor:end"><tspan data-sync="cvStock">1</tspan> stockt</text>
@@ -3673,7 +3693,7 @@ details.fa-orig>div{padding:0 12px 12px}
     <text class="cv-copy" x="170" y="356">Jeder Kanal. <tspan class="cv-copy-b">Ein Eingang.</tspan> Ein verantwortlicher Mensch.</text>
   </svg>
 
-  <div class="cv-badges"><div class="lx-chip lx-chip--in"><b data-sync="cvTotal">5</b> Anfragen heute</div><div class="lx-chip lx-chip--stock" data-sync-wrap="cvStockWrap"><b data-sync="cvStock">1</b> stockt</div></div>
+  <div class="cv-badges"><div class="lx-chip lx-chip--in"><b data-sync="cvTotal">5</b> Anfragen heute</div><div class="lx-chip lx-chip--stock" data-sync-wrap="cvStockWrap" role="button" tabindex="0" aria-label="Stockende Fälle im Board ansehen" onclick="openStockt()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openStockt()}"><b data-sync="cvStock">1</b> stockt</div></div>
 </div>
     </header>
 
@@ -5587,11 +5607,22 @@ function stageMeta(z){
 }
 function stageCases(z){const m=stageMeta(z);return faelle.filter(f=>m.statuses.includes(f.status));}
 function openStage(z){boardStageFilter=z;renderBoard();go("faelle","board");}
-function setBoardStage(z){boardStageFilter=z;renderBoard();}
+function setBoardStage(z){boardStageFilter=z;boardStocktFilter=false;renderBoard();}
+/* R16 Feature 1: „N stockt" im Konvergenz-Hero ist klickbar — eigener Board-Filter, analog zum
+   Stufen-Filter (boardStageFilter), aber quer über alle drei Stufen (nur stockende Fälle). Beide
+   Filter schließen sich gegenseitig aus, damit sie sich nicht stapeln. */
+let boardStocktFilter=false;
+function openStockt(){boardStocktFilter=true;boardStageFilter=null;renderBoard();go("faelle","board");}
+function clearStockt(){boardStocktFilter=false;renderBoard();}
+function stocktFaelle(){return offeneFaelle().filter(f=>zoneOf(f.status)>=0&&stockt(f));}
 function renderBoardFocus(){
   const el=document.getElementById("boardFocus");if(!el)return;
   const offen=offeneFaelle().length;
-  if(boardStageFilter===null){
+  if(boardStocktFilter){
+    const n=stocktFaelle().length;
+    el.innerHTML="<div class='bf-line'><span class='bf-title'>Stockende Fälle</span><span class='bf-count num'>"+n+" "+(n===1?"Fall":"Fälle")+"</span><button class='bf-clear' onclick='clearStockt()'>‹ Alle Fälle</button></div>"
+      +"<div class='bf-note'>Frist überfällig oder Kostenzusage blockiert — aus dem Konvergenz-Hero gefiltert.</div>";
+  }else if(boardStageFilter===null){
     el.innerHTML="<div class='bf-line'><span class='bf-title'>Alle Fälle</span><span class='bf-count num'>"+offen+" offen</span></div>"
       +"<div class='bf-note'>Drei Stufen vom ersten Kontakt bis zur Aufnahme — Stufenband antippen filtert. Rechts daneben: Patienten im Haus, dann Abgeschlossenes.</div>";
   }else{
@@ -5600,6 +5631,21 @@ function renderBoardFocus(){
     el.innerHTML="<div class='bf-line'><span class='bf-title'>"+(boardStageFilter+1)+" · "+m.title+"</span><span class='bf-count num'>"+n+" "+(n===1?"Fall":"Fälle")+"</span><button class='bf-clear' onclick='setBoardStage(null)'>‹ Alle Fälle</button></div>"
       +"<div class='bf-note'>Aus dem Trichter gefiltert. Alle Karten bleiben im gemeinsamen Fall-Board.</div>";
   }
+}
+/* Kartenoptik einer Fall-Karte (Board-Spalte) — ausgelagert aus makeBoardCol(), damit der
+   stockt-Filter (R16) dieselbe Optik ohne Dopplung wiederverwenden kann. */
+function makeFallKarte(x){
+  const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"");
+  const fk=fristKlasse(x.frist);
+  k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter&&!/\(\d+\)/.test(x.name)?"("+x.alter+")":"")+"</span></span></div>"
+    +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+escapeHtml(x.achse)+"</span><span class='pill-kt'>"+escapeHtml(x.kt)+"</span></div>"
+    +(x.ungelesen?"<div class='karte-msg'>✉ Antwort eingetroffen</div>":"")
+    +"<div class='kmeta'>"+escapeHtml(x.quelle)+"<br>"+escapeHtml(x.owner)+(x.aufgabe?" · "+escapeHtml(x.aufgabe):"")+"</div>"
+    +"<div class='stagebar' title='Statusfortschritt'><span style='width:"+statusFortschritt(x.status)+"%'></span></div>"
+    +(x.frist?"<span class='due "+fk+"'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(x.frist)+"</span>":"")
+    +(x.saluto?"<br><span class='star'>★ SalutoCare</span>":"");
+  k.onclick=()=>openDetail(x.id);
+  return k;
 }
 function makeBoardCol(st){
   const f=faelle.filter(x=>x.status===st);
@@ -5619,19 +5665,7 @@ function makeBoardCol(st){
     k.querySelector(".kpool-btn").onclick=(e)=>{e.stopPropagation();egUebernehmenAusPool(m.id);};
     col.appendChild(k);
   });
-  f.forEach(x=>{
-    const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"");
-    const fk=fristKlasse(x.frist);
-    k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter&&!/\(\d+\)/.test(x.name)?"("+x.alter+")":"")+"</span></span></div>"
-      +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+escapeHtml(x.achse)+"</span><span class='pill-kt'>"+escapeHtml(x.kt)+"</span></div>"
-      +(x.ungelesen?"<div class='karte-msg'>✉ Antwort eingetroffen</div>":"")
-      +"<div class='kmeta'>"+escapeHtml(x.quelle)+"<br>"+escapeHtml(x.owner)+(x.aufgabe?" · "+escapeHtml(x.aufgabe):"")+"</div>"
-      +"<div class='stagebar' title='Statusfortschritt'><span style='width:"+statusFortschritt(x.status)+"%'></span></div>"
-      +(x.frist?"<span class='due "+fk+"'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(x.frist)+"</span>":"")
-      +(x.saluto?"<br><span class='star'>★ SalutoCare</span>":"");
-    k.onclick=()=>openDetail(x.id);
-    col.appendChild(k);
-  });
+  f.forEach(x=>col.appendChild(makeFallKarte(x)));
   return col;
 }
 /* R15b: „Im Haus" ist eine eigene, verfolgbare Board-Spalte — vorher landete der Patient mit der
@@ -5707,6 +5741,18 @@ function boardZoneGroup(z){
 function renderBoard(){
   const b=document.getElementById("board");b.innerHTML="";
   renderBoardFocus();
+  if(boardStocktFilter){
+    const g=document.createElement("div");g.className="zone-group";
+    const list=stocktFaelle();
+    g.innerHTML="<div class='zone-head static'><span class='zone-t'>Stockende Fälle</span><span class='zone-cnt num'>"+list.length+"</span></div>";
+    const cols=document.createElement("div");cols.className="zone-cols";
+    const col=document.createElement("div");col.className="col";
+    col.innerHTML="<h3><span class='cdot' style='background:var(--terra)'></span>Stockt<span class='cnt num'>"+list.length+"</span></h3>";
+    list.forEach(f=>col.appendChild(makeFallKarte(f)));
+    if(!list.length)col.innerHTML+="<p class='empty'>Aktuell kein stockender Fall.</p>";
+    cols.appendChild(col);g.appendChild(cols);b.appendChild(g);
+    return;
+  }
   if(boardStageFilter!==null){b.appendChild(boardZoneGroup(boardStageFilter));return;}
   [0,1,2].forEach(z=>b.appendChild(boardZoneGroup(z)));
   /* R15b: Eigene Zone "Im Haus" (Behandlung läuft, verfolgbar) — vorher steckten diese Patienten
@@ -7557,12 +7603,26 @@ function kfKontaktAbschliessen(){
    verlässliche Beleg. Vorher wurde zusätzlich f.stammOk verlangt, das die Seeds nie setzen:
    dadurch behauptete das Lagebild bei jedem laufenden Fall „Erstgespräch führen". */
 function kfKontaktOk(f){ return !!f.kontaktOk || f.status!=="Neu"; }
+/* R16 Feature 2: Beatmungs-/Hochschwere-Fälle (med.schwere==="hoch") brauchen zusätzlich zur
+   Diagnose eine interne ärztliche Übernahme-Freigabe (f.medFreigabe), bevor das Bedarf-Feld als
+   erledigt gilt — sonst sprang das Lagebild bei Fall 6 (Heinz Vogel) direkt zur Kostenzusage,
+   obwohl die medizinisch kritische Übernahmefrage noch offen war. */
+function kfFreigabeNoetig(f){ return !!(f.med&&f.med.schwere==="hoch"); }
+function kfBedarfSub(f){
+ if(!(f.med&&f.med.diagnose))return "Diagnose/Indikation offen";
+ if(!kfFreigabeNoetig(f))return f.med.diagnose;
+ const fg=f.medFreigabe;
+ if(fg&&fg.status==="erteilt")return f.med.diagnose+" · Freigabe erteilt ("+fg.von+")";
+ if(fg&&fg.status==="angefragt")return f.med.diagnose+" · Freigabe angefragt";
+ return f.med.diagnose+" · ärztliche Freigabe offen";
+}
 function kfFelder(f){
  return [
   {key:"kontakt",label:"Kontakt & Erstgespräch",ok:kfKontaktOk(f),status:"Neu",
    sub:kfKontaktOk(f)?"Erstgespräch geführt":(f.stammOk?"Stammdaten bestätigt · Gespräch offen":"Stammdaten unbestätigt")},
-  {key:"bedarf",label:"Medizinischer Bedarf",ok:!!(f.med&&f.med.diagnose),status:"Kontaktiert",
-   sub:(f.med&&f.med.diagnose)?f.med.diagnose:"Diagnose/Indikation offen"},
+  {key:"bedarf",label:"Medizinischer Bedarf",
+   ok:!!(f.med&&f.med.diagnose)&&(!kfFreigabeNoetig(f)||(f.medFreigabe&&f.medFreigabe.status==="erteilt")),status:"Kontaktiert",
+   sub:kfBedarfSub(f)},
   {key:"unterlagen",label:"Unterlagen",ok:!!(f.docs[0]&&f.docs[1]&&f.docs[2]),status:"Qualifizierung",
    sub:[f.docs[0],f.docs[1],f.docs[2]].filter(Boolean).length+" / 3"},
   {key:"kosten",label:f.kt==="Selbstzahler"?"Kosten · Selbstzahlung":"Kostenzusage",
@@ -7622,7 +7682,11 @@ function kfAufgabe(f){
    return {feld:"kontakt",text:"Stammdaten sind bestätigt — Gespräch führen und mit „✓ Erstgespräch abschließen\" beenden."};
   return {feld:"kontakt",text:"Erstgespräch führen und Stammdaten bestätigen"+(tel?" · ☎ "+tel:"")+"."};
  }
- if(erste.key==="bedarf")return {feld:"bedarf",text:"Medizinischen Bedarf erfassen: Diagnose/Indikation eintragen oder aus der Antwort übernehmen."};
+ if(erste.key==="bedarf"){
+  if(!(f.med&&f.med.diagnose))return {feld:"bedarf",text:"Medizinischen Bedarf erfassen: Diagnose/Indikation eintragen oder aus der Antwort übernehmen."};
+  if(f.medFreigabe&&f.medFreigabe.status==="angefragt")return {feld:"bedarf",text:"Ärztliche Freigabe angefragt — Antwort der Ärztlichen Leitung abwarten."};
+  return {feld:"bedarf",text:"Ärztliche Übernahme-Freigabe einholen ("+f.med.diagnose+")."};
+ }
  if(erste.key==="unterlagen"){
   const fehlt=["Entlassbrief","Befunde","Versicherungsdaten"].filter((n,i)=>!f.docs[i]);
   return {feld:"unterlagen",text:"Es "+(fehlt.length===1?"fehlt":"fehlen")+": "+fehlt.join(", ")+" — anfordern oder abhaken."};
@@ -7847,6 +7911,38 @@ function kfConsentHtml(f){
   +["offen","mündlich erteilt","schriftlich liegt vor"].map(o=>"<option"+(o===f.consent?" selected":"")+">"+o+"</option>").join("")
   +"</select></div>";
 }
+/* R16 Feature 3: „Nicht erreicht"-Automatik — Wiedervorlage nach Sterne-Priorität statt manuell
+   gesetzter Frist. Eine Render-Funktion für BEIDE Aufrufer (Fallakte-Kontaktfeld + Mein-Tag-Sheet),
+   damit kein zweites Idiom für dieselbe Aktion entsteht. */
+function wvNichtErreichtHtml(f){
+ let html="<div class='wv-box'>"
+  +"<button class='btn-ghost btn-sm' type='button' onclick='wvNichtErreicht("+f.id+")'>✆ Nicht erreicht</button>"
+  +"<span class='au-micro'>Automatik: 5★ heute · 4★ morgen · 3★ +2 Tage · sonst +4 Tage</span>";
+ if((f.anrufe||0)>=3)
+  html+="<p class='kz-hint' style='margin-top:6px'>3× nicht erreicht — Kanalwechsel empfohlen: schriftlich kontaktieren (Composer unten).</p>";
+ html+="</div>";
+ return html;
+}
+function wvNichtErreicht(fid){
+ const f=faelle.find(x=>x.id===fid);if(!f)return;
+ f.anrufe=(f.anrufe||0)+1;
+ const per=(typeof person==="function"&&f.personId)?person(f.personId):null;
+ const st=(per&&per.sterne)||3;
+ const tage=st>=5?0:st===4?1:st===3?2:4;
+ const slot=st>=5?"heute 16:00":tage===1?"morgen 09:00":paDate(dstr(tage))+" 09:00";
+ f.frist=dstr(tage);
+ f.aufgabe="Rückruf (Versuch "+(f.anrufe+1)+")";
+ let logTxt="✆ Nicht erreicht (Versuch "+f.anrufe+") — automatische Wiedervorlage: "+slot+" ("+st+"★-Priorität)";
+ if(f.anrufe>=3)logTxt+=" — Kanalwechsel empfohlen";
+ f.log.push([dstr(0),logTxt,logZeit()]);
+ if(f.personId&&typeof pHist==="function")pHist(f.personId,"kontakt","Rückrufversuch "+f.anrufe+" — nicht erreicht, WV "+slot);
+ if(typeof inbToast==="function")inbToast("done","<b>Wiedervorlage gesetzt</b>",escapeHtml(f.name)+" · "+slot+" — nach Sterne-Priorität",null);
+ if(typeof kfSyncStatus==="function")kfSyncStatus(f);
+ renderAll();
+ if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&typeof renderFallakte==="function")renderFallakte();
+ if(typeof renderMeinTag==="function")renderMeinTag();
+ if(typeof mtSheetRender==="function")mtSheetRender();
+}
 function kfKontaktBody(f){
  const sop=sopChecklisteHtml(f,"rueckruf");
  return kfKontaktHtml(f)+fkwStammHtml(f)+kfAnsprechHtml(f)+kfConsentHtml(f)+fkwOriginalHtml(f)
@@ -7854,6 +7950,7 @@ function kfKontaktBody(f){
   +"<div class='full' style='margin-top:12px'><label for='dNotizSofort'>"+escapeHtml(MT_NOTIZ_LABEL.rueckruf)+"</label>"
   +"<div class='kz-notiz-row'><input id='dNotizSofort' placeholder='z. B. Rückruf erledigt'>"
   +"<button class='btn-ghost btn-sm' type='button' onclick='kzNotizAdd()'>Ins Protokoll</button></div></div>"
+  +wvNichtErreichtHtml(f)
   +kfNachrichtHtml(f)
   +(kfKontaktOk(f)?"":"<div class='kf-abschluss'><span class='kz-hint'>"
    +(f.stammOk?"Leitfaden durchgehen, Notiz erfassen, ggf. Nachricht senden — dann:"
@@ -7896,8 +7993,34 @@ function kfBedarfHtml(f){
   +["—","leicht","mittel","hoch"].map(o=>"<option"+(o===schwereVal?" selected":"")+">"+o+"</option>").join("")
   +"</select></div>"
   +"</div>"
-  +"<button class='btn-ghost btn-sm' type='button' style='margin-top:8px' onclick='kfMedSave()'>Bedarf übernehmen</button>";
+  +"<button class='btn-ghost btn-sm' type='button' style='margin-top:8px' onclick='kfMedSave()'>Bedarf übernehmen</button>"
+  +kfFreigabeHtml(f);
  return html;
+}
+/* R16 Feature 2: Ärztliche Übernahme-Freigabe — nur bei med.schwere==="hoch" (z. B. Fall 6, Heinz
+   Vogel, Beatmung/Weaning). Die Antwort läuft über die generische Sim-Mechanik (GEN_EVENTS.freigabe). */
+function kfFreigabeHtml(f){
+ if(!kfFreigabeNoetig(f))return "";
+ const fg=f.medFreigabe;
+ const stat=fg?fg.status:"offen";
+ const statLabel=stat==="erteilt"?"Erteilt":stat==="angefragt"?"Angefragt":"Offen";
+ let html="<div class='kfg-box'><div class='kfg-title'>Ärztliche Übernahme-Freigabe</div>"
+  +"<div class='kfg-status "+stat+"'>"+statLabel
+  +(fg&&fg.von?" · "+escapeHtml(fg.von):"")+(fg&&fg.datum?" · "+escapeHtml(paDate(fg.datum)):"")+"</div>";
+ if(fg&&fg.hinweis)html+="<div class='kfg-hint'>"+escapeHtml(fg.hinweis)+"</div>";
+ if(stat==="angefragt")html+="<div class='kfg-hint'>Antwort der Ärztlichen Leitung steht aus.</div>";
+ if(stat==="offen")html+="<button class='btn-ghost btn-sm' type='button' style='margin-top:8px' onclick='kfFreigabeAnfragen("+f.id+")'>→ Ärztliche Leitung um Freigabe bitten</button>";
+ html+="</div>";
+ return html;
+}
+function kfFreigabeAnfragen(fid){
+ const f=faelle.find(x=>x.id===fid);if(!f)return;
+ f.medFreigabe={status:"angefragt",datum:dstr(0)};
+ f.log.push([dstr(0),"↦ Übernahme-Freigabe bei der Ärztlichen Leitung angefragt: "+(f.med&&f.med.diagnose||"")+" · Schweregrad hoch",logZeit()]);
+ if(typeof kfSyncStatus==="function")kfSyncStatus(f);
+ if(typeof genSchedule==="function")genSchedule("freigabe",f);
+ renderAll();
+ if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&typeof renderFallakte==="function")renderFallakte();
 }
 function kfMedSave(){
  const f=aktuellerFall;if(!f)return;
@@ -8358,7 +8481,7 @@ document.getElementById("formNeu").addEventListener("submit",e=>{
   document.getElementById("fFrist").value=dstr(1);
   closeSheetNeu();
   renderAll();
-  boardStageFilter=null;renderBoard();
+  boardStageFilter=null;boardStocktFilter=false;renderBoard();
   go("faelle","board");
 });
 /* §2.1 Signal-Chips — Bereich B: Live-Erkennung in der manuellen Schnellerfassung, Übernahme nur per Klick */
@@ -8723,7 +8846,8 @@ function mtSheetRender(){
     kosten bekommt zusätzlich einen Status-Select. Button bleibt disabled, bis das Notizfeld befüllt ist. */
  const notizBody=(item.typ==="zwischenstand"||done)?""
   :(item.typ==="kosten"?"<div class='radar-prog'><span class='rk'>Kosten-Status</span><select id='mtKostenStatus' class='rsz-input'><option value=''>Ausstehend</option><option value='zusage'>Zusage erhalten</option><option value='ablehnung'>Ablehnung erhalten</option></select></div>":"")
-  +"<div class='radar-prog'><span class='rk'>"+escapeHtml(MT_NOTIZ_LABEL[item.typ]||"Notiz")+"</span><textarea id='mtNotiz' class='rsz-textarea' placeholder='Was wurde besprochen / vereinbart?' oninput=\"document.getElementById('mtAbschlBtn').disabled=!this.value.trim()\"></textarea></div>";
+  +"<div class='radar-prog'><span class='rk'>"+escapeHtml(MT_NOTIZ_LABEL[item.typ]||"Notiz")+"</span><textarea id='mtNotiz' class='rsz-textarea' placeholder='Was wurde besprochen / vereinbart?' oninput=\"document.getElementById('mtAbschlBtn').disabled=!this.value.trim()\"></textarea></div>"
+  +(item.typ==="rueckruf"&&item.kind==="fall"?wvNichtErreichtHtml(item.ref):"");
  const body="<div class='radar-prog'><span class='rk'>Warum jetzt</span><p>"+mtWarum(item)+"</p></div>"
    +"<div class='radar-prog'><span class='rk'>So gehst du vor</span><ol class='mt-ssteps'>"+schritte.map(x=>"<li>"+escapeHtml(x)+"</li>").join("")+"</ol></div>"
    +"<details class='mt-sleitfaden-details'><summary class='rk'>Leitfaden</summary><div class='mt-sleitfaden'>"+leitfaden.map(x=>"<p>"+escapeHtml(x)+"</p>").join("")+"</div></details>"
@@ -8855,12 +8979,12 @@ function switchTab(t){
   go(m[0],m[1]);
 }
 document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{
-  if(b.dataset.nav==="faelle"&&boardStageFilter!==null){boardStageFilter=null;renderBoard();}
+  if(b.dataset.nav==="faelle"&&(boardStageFilter!==null||boardStocktFilter)){boardStageFilter=null;boardStocktFilter=false;renderBoard();}
   go(b.dataset.nav);
 }));
 document.querySelectorAll(".seg").forEach(b=>b.addEventListener("click",()=>{
   const v=b.closest("section.view").id.replace("view-","");
-  if(v==="faelle"&&b.dataset.seg==="board"&&boardStageFilter!==null){boardStageFilter=null;renderBoard();}
+  if(v==="faelle"&&b.dataset.seg==="board"&&(boardStageFilter!==null||boardStocktFilter)){boardStageFilter=null;boardStocktFilter=false;renderBoard();}
   go(v,b.dataset.seg);
 }));
 function applyHash(){
@@ -9187,7 +9311,16 @@ const GEN_EVENTS={
   after:function(f){kostenSetzen(f,"Zusage liegt vor","Kostenzusage liegt vor (Rückmeldung Kostenträger)");}},
  paket:{seite:"patient",delay:9000,txt:function(f){
    return "Das Einladungspaket ist angekommen, die Checkliste ist verständlich. Vielen Dank für die Organisation!";},
-  after:function(f){}}
+  after:function(f){}},
+ /* R16 Feature 2: interne ärztliche Übernahme-Freigabe (kein anmeldStelle/Patient/Kasse, sondern
+    die Ärztliche Leitung selbst) — seite "intern" wird von genVon() gesondert behandelt. */
+ freigabe:{seite:"intern",delay:12000,txt:function(f){
+   return "Übernahme als Beatmungspatient zur weiteren Entwöhnung möglich. Voraussetzung: Monitoring-Bett, Sauerstoff-Anschluss im Zimmer. Aufnahme ab nächster Woche möglich — bitte Kostenzusage inkl. Beatmungs-Zuschlag anfragen.";},
+  after:function(f){
+   f.medFreigabe={status:"erteilt",von:"Dr. Weidner (Ärztliche Leitung)",datum:dstr(0),hinweis:"Monitoring-Bett erforderlich"};
+   f.aufgabe="Kostenzusage nachfassen (Beatmungs-Zuschlag)";
+   f.frist=dstr(1);
+  }}
 };
 function genVon(f,art){
  if(GEN_EVENTS[art].seite==="kasse"){
@@ -9196,6 +9329,7 @@ function genVon(f,art){
   if(/gkv/i.test(kt))return "Krankenkasse (Post)";
   return "PKV (Sachbearbeitung)";
  }
+ if(GEN_EVENTS[art].seite==="intern")return "Dr. Weidner (Ärztliche Leitung)";
  return genAbsender(f,GEN_EVENTS[art].seite);
 }
 function genEvent(f,art){
@@ -9229,6 +9363,16 @@ function genFire(art,fid){
  const f=faelle.find(x=>x.id===fid);
  if(!f||!GEN_EVENTS[art])return;
  simApply("gen:"+art,genEvent(f,art),f);
+ /* R16 Feature 2: simApply() ruft danach kfSyncStatus(f) auf, das f.aufgabe/f.frist mit dem
+    generischen Meilenstein-Text überschreibt, sobald die erteilte Freigabe das Bedarf-Feld
+    abschließt und der Status auf "Unterlagen" vorrückt (Kosten ist schon der nächste Blocker).
+    Die fachlich genauere Formulierung (Beatmungs-Zuschlag) hier verbindlich wiederherstellen. */
+ if(art==="freigabe"&&f.medFreigabe&&f.medFreigabe.status==="erteilt"){
+  f.aufgabe="Kostenzusage nachfassen (Beatmungs-Zuschlag)";
+  f.frist=dstr(1);
+  if(typeof renderAll==="function")renderAll();
+  if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id&&typeof renderFallakte==="function")renderFallakte();
+ }
 }
 function genSchedule(art,f){
  if(!f||!GEN_EVENTS[art])return;
