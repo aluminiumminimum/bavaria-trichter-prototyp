@@ -975,11 +975,34 @@ jetzt auf `"patient"`/`"altpatient"` statt es bei `"interessent"` stehen zu lass
 `node --check` sauber, PID-Kollisionstest (zwei Neuanlagen mit Reload dazwischen → `PR1`/`PR2`),
 Zuweiserportal-Öffnung für Leopoldina 0 neue Console-Errors mit sichtbaren Laborwerten,
 Lebenszyklus-Wechsel bei Aufnahme→Entlassung geprüft, 0 horizontaler Overflow @390/@1440.
-**Bewusst NICHT gefixt** (Befund 3, 5–11): Befund 3 (Portal zeigt alle Patienten statt nur den
-gewählten Zuweiser) liegt in `openReferrer`/`.rp-*` und braucht Cofounder-Abstimmung; die
-restlichen P2/P3-Punkte (Entlassungs-Guard, `hidden`-Button-Bug, mobiler Toast über der Tabbar,
-1024px-Reha-Karten, KI-Healthcheck-Console-Errors, tote Funktionen) stehen noch offen für eine
-künftige Runde.
+**Update 29.07.2026, `f1a005a` (live):** Rest-Befunde gefixt, nach kurzer Nutzer-Entscheidung
+(Befund 3 = Datenschutzproblem, Befund 6 = Bestätigung, beide ausdrücklich autorisiert). `renderEinblick(zName)`
+filtert jetzt über `person(p.personId).zuweiserRef===zName` (Leer-Zustand-Hinweis, falls ein
+Zuweiser gerade niemanden im Haus hat) — bewusste, einmalige Ausnahme von der
+Cofounder-Zurückhaltung, weil ein Zuweiser sonst alle Patienten anderer Zuweiser sah;
+`rehaEntlassung()` fragt jetzt mit `confirm()` (Patientenname) nach, bewusst ohne Undo;
+`kiSnapshot()` filtert Entlassene aus dem „IN REHA"-Abschnitt; `#fvwReaktivierenBtn[hidden]`
+bekam dieselbe `[hidden]{display:none}`-Regel wie zuvor die Verlust-Box; `.inb-toast` rückt
+unter 1024px über die Tabbar; `.irb-bwl`-Fallback (2 statt 4 Kacheln) greift jetzt bis 1024px
+(nicht 1023px — Browser-Rundung an der exakten Pflichtbreite erzwang diese Korrektur);
+`kiHealth()`-Ping nutzt `mode:"no-cors"` (unterdrückt die CORS-Konsolenmeldung; ein Rest-Fehler
+bleibt, weil der Proxy aktuell mit 404 antwortet — Server-seitig, nicht hier behebbar); 8 nie
+aufgerufene Funktionen entfernt (`antwortenEingang`, `setDbView`, `closeDbDetail`,
+`findeOderErstelleZuweiser`, `rsSpark`, `closeDetail`, `mtRollToggle`, `stepper`).
+**Bewusst NICHT angefasst:** `mxMetric`/`refToast` (tot, aber Cofounder-Bereich `.mx-*`/`.rp-*`
+— nicht ohne Absprache löschen), `_zNorm()` (durch die Löschung von `findeOderErstelleZuweiser`
+neu verwaist, aber nicht Teil des Auftrags — nächste Aufräum-Runde), die `new Date()`-Ankerzeile
+(Zeile 4605 — kein Bug, sondern der bewusste einzige Punkt, an dem die Demo die echte Uhrzeit
+abfragt; alles andere rechnet über `dstr()` relativ dazu).
+
+**Nebenbefund (29.07., behoben):** Zwischen den beiden Fix-Runden landete ein fremder Commit
+(`0eea0ac`, „Doku: globalen Codex-Claude-Agent-Hub spezifizieren") auf `origin/main` — eine
+399-Zeilen-Spec für ein von Codex initiiertes, projektunabhängiges Tooling-Vorhaben
+(Codex↔Claude-Code-Koordination inkl. autonomer Nachtläufe), die nicht in dieses Produkt-Repo
+gehört. Der Fast-Forward-Push der zweiten Fix-Runde hat ihn versehentlich mitgenommen. Per
+Nutzer-Entscheidung mit `d17c4d8` wieder entfernt (reine Löschung, keine Historie umgeschrieben).
+Das Agent-Hub-Vorhaben selbst läuft komplett separat (Codex baut es, lebt projektunabhängig
+unter `~/.agent-hub/`) — hat mit diesem Repo nichts zu tun.
 
 Davor zuletzt abgeschlossen: Runden 13–15b (§4p–§4u) — Zuweiser-Anmeldungen mit echten Stammdaten,
 Kommunikation & Verlauf als Herzstück (inkl. zweier Korrekturrunden zur Platzierung), Breite/
