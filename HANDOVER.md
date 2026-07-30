@@ -806,8 +806,8 @@ Cramer) wurden mit `bill` auf dem Datensatz nachgeseedet, damit sie ohne Bruch e
 
 ## 4v. Telefon-View — KI-Anruf-Assistent als Demo (30.07., Branch feat/telefon)
 
-Neuer Top-Level-Nav-Punkt **„Telefon"** (nach „Fälle", Sidebar + Tabbar — 7 Tabbar-Einträge
-passen bei 390 px, gemessen). Namespace `.tel-` / `tel*`-Funktionen, View `#view-telefon`.
+Neuer Top-Level-Nav-Punkt **„Call AI"** (nach „Fälle", Sidebar + Tabbar — 7 Tabbar-Einträge
+passen bei 390 px, gemessen; interne Routen/Namespaces bleiben `telefon`/`.tel-`, Namen historisch). Namespace `.tel-` / `tel*`-Funktionen, View `#view-telefon`.
 Interaktive Demo des assistierten Anrufs (Spec/Plan: `2026-07-30-telefon-view-*`):
 Rückrufliste aus `faelle[]` (Nummern via `telAusText`, Sterne-Priorität), Live-Bühne mit
 Wellenform + Klassifikations-Chip (Wählt→Klingelt→Musik→Bandansage→Mensch/AB), drei
