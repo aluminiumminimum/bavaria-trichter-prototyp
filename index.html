@@ -3522,7 +3522,8 @@ details.fa-orig>div{padding:0 12px 12px}
 .tel-chip{display:inline-flex;align-items:center;gap:8px;font:600 11px "Fragment Mono",monospace;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--hair);border-radius:3px;padding:6px 11px;color:var(--ink-soft);background:var(--paper2)}
 .tel-chip.musik{color:var(--azzurro);border-color:var(--azzurro)}
 .tel-chip.ansage{color:var(--amber);border-color:var(--amber)}
-.tel-chip.alarm{background:var(--brass-soft);border-color:var(--brass-line);color:var(--brass-deep);animation:lxPulse 1.6s ease-in-out infinite}
+.tel-chip.alarm{background:var(--brass-soft);border-color:var(--brass-line);color:var(--brass-deep)}
+.tel-chip.alarm::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--brass-deep);animation:lxPulse 1.6s ease-in-out infinite;flex:none}
 .tel-raffer{font:600 9.5px "Fragment Mono",monospace;letter-spacing:.1em;text-transform:uppercase;background:var(--terra-soft);color:var(--terra);border-radius:3px;padding:3px 8px}
 .tel-ereignisse{list-style:none;margin:12px 0 0;padding:0;font-size:12.5px;color:var(--ink-soft)}
 .tel-ereignisse li{display:flex;gap:10px;padding:4px 0;border-top:1px dashed var(--hair2)}
@@ -8011,9 +8012,9 @@ var TEL_STATE={aktiv:null,min:0,ok:0,done:{}};
 var TEL_FALLBACK_NR="0176 4471 2280";
 var TEL_H=[38,62,45,70,52,80,40,66,55,74,48,60,42,72,58,66,36,64,50,76,44,68,54,62];
 var TEL_SZEN={
- mensch:[[0,"waehlt","Wählt …"],[1200,"klingelt","Klingelt …"],[4800,"analyse","Abgehoben — analysiere …"],[6300,"alarm","● Mensch in der Leitung — Überbrückungsansage läuft"]],
+ mensch:[[0,"waehlt","Wählt …"],[1200,"klingelt","Klingelt …"],[4800,"analyse","Abgehoben — analysiere …"],[6300,"alarm","Mensch in der Leitung — Überbrückungsansage läuft"]],
  ab:[[0,"waehlt","Wählt …"],[1200,"klingelt","Klingelt …"],[6000,"analyse","Abgehoben — analysiere …"],[7500,"ab","Anrufbeantworter erkannt"]],
- kasse:[[0,"waehlt","Wählt …"],[1200,"musik","Verbunden — Warteschleife · Musik erkannt"],[6000,"ansage","Bandansage erkannt — kein Mensch, weiter warten"],[9000,"musik","Warteschleife · Musik läuft weiter"],[14000,"analyse","Stimme erkannt — analysiere …"],[15500,"alarm","● Mitarbeiter:in der ARKADIA in der Leitung — Überbrückungsansage läuft"]]
+ kasse:[[0,"waehlt","Wählt …"],[1200,"musik","Verbunden — Warteschleife · Musik erkannt"],[6000,"ansage","Bandansage erkannt — kein Mensch, weiter warten"],[9000,"musik","Warteschleife · Musik läuft weiter"],[14000,"analyse","Stimme erkannt — analysiere …"],[15500,"alarm","Mitarbeiter:in der ARKADIA in der Leitung — Überbrückungsansage läuft"]]
 };
 function telNummer(f){
  let n=(typeof telAusText==="function"&&f.originalTxt)?telAusText(f.originalTxt):"";
