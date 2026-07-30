@@ -3560,6 +3560,19 @@ details.fa-orig>div{padding:0 12px 12px}
 .tel-kand b{display:block;font-size:13.5px;font-weight:600}
 .tel-kand-zitat{font-style:italic;color:var(--muted);font-size:11.5px;margin:4px 0 0}
 @media(max-width:700px){.tel-mit{grid-template-columns:1fr}.tel-mit-rechts{border-left:0;padding-left:0;border-top:1px dashed var(--hair2);padding-top:12px;margin-top:12px}}
+/* ===== TELEFON · NACHBEREITUNG (.tel-nach-Klassen) =====
+   Ersetzt den Platzhalter nach Gesprächsende: Notiz, erkannte Feld-Kandidaten, Ergebnis-Wahl.
+   Additiv zur Gesprächsphase oben, kein neuer Keyframe. */
+.tel-nach{margin-top:16px;padding-top:14px;border-top:1px dashed var(--hair2)}
+.tel-nach .rsz-textarea{width:100%}
+.tel-nach-alle{display:block;margin:2px 0 8px}
+.tel-nach-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px dashed var(--hair2);padding:8px 0}
+.tel-nach-row:first-of-type{border-top:0}
+.tel-nach-feld{font:600 10px "Fragment Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-deep);min-width:130px}
+.tel-nach-wert{flex:1;min-width:160px;font-size:13px}
+.tel-nach-ok{font-size:12px;color:var(--sage-deep);font-weight:600;white-space:nowrap}
+.tel-nach-ergebnis{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.tel-nach-gewaehlt{background:var(--sage-soft);border-color:var(--sage-deep);color:var(--sage-deep)}
 </style>
 </head>
 <body>
@@ -8042,9 +8055,9 @@ var TEL_SZEN={
  ab:[[0,"waehlt","Wählt …"],[1200,"klingelt","Klingelt …"],[6000,"analyse","Abgehoben — analysiere …"],[7500,"ab","Anrufbeantworter erkannt"]],
  kasse:[[0,"waehlt","Wählt …"],[1200,"musik","Verbunden — Warteschleife · Musik erkannt"],[6000,"ansage","Bandansage erkannt — kein Mensch, weiter warten"],[9000,"musik","Warteschleife · Musik läuft weiter"],[14000,"analyse","Stimme erkannt — analysiere …"],[15500,"alarm","Mitarbeiter:in der ARKADIA in der Leitung — Überbrückungsansage läuft"]]
 };
-/* Gesprächsphase: Dialog-Skript + abgeleitete Feld-Kandidaten je Szenario. Nur "mensch"
-   ist fuer diesen Task befuellt (Fall 3, Maria Probst) — "ab"/"kasse" folgen als Folge-Task,
-   bis dahin zeigt die Buehne bei leerem Skript die Leerzeile aus telRenderBuehne(). */
+/* Gesprächsphase: Dialog-Skript + abgeleitete Feld-Kandidaten je Szenario. "mensch" (Fall 3,
+   Maria Probst) und "kasse" (Fall 6, Heinz Vogel · ARKADIA) sind befuellt — "ab" bleibt leer
+   (kein Gespräch, nur Ansage), die Buehne zeigt dort die Leerzeile aus telRenderBuehne(). */
 var TEL_DIALOG={
  mensch:[
   [0,"klinik","Klinik Bavaria, Koordination — Sie hatten um einen Rückruf gebeten. Spreche ich mit Frau Probst?",null],
@@ -8059,7 +8072,17 @@ var TEL_DIALOG={
   [18000,"gast","Mein Mann würde mich hinbringen, der bleibt aber nicht über Nacht.",4]
  ],
  ab:[],
- kasse:[]
+ kasse:[
+  [0,    "gast",  "ARKADIA Leistungsabteilung, Sommer, guten Tag.", null],
+  [1800, "klinik","Klinik Bavaria, Kostenmanagement. Es geht um die Kostenzusage für Herrn Heinz Vogel — angefragt vor drei Tagen, inklusive Zuschlag für die Beatmungsentwöhnung.", null],
+  [5200, "gast",  "Einen Moment, ich schaue nach … ja, der Antrag liegt hier vor.", null],
+  [7600, "gast",  "Der Zuschlag für das Weaning ist genehmigt. Die Zusage geht heute raus.", 0],
+  [10400,"klinik","Ab welchem Datum gilt sie?", null],
+  [11800,"gast",  "Ab dem 4. August, zunächst für 21 Tage. Verlängerung nach Bericht ist möglich.", 1],
+  [15200,"gast",  "Was mir noch fehlt: die ärztliche Bestätigung der Übernahmefähigkeit. Ohne die kann ich den Vorgang nicht schließen.", 2],
+  [19000,"klinik","Die liegt uns intern vor, ich lasse sie heute rausgehen.", null],
+  [21000,"gast",  "Gut. Unser Aktenzeichen für Rückfragen ist AK-2026-88431.", 3]
+ ]
 };
 var TEL_KAND={
  mensch:[
@@ -8070,7 +8093,12 @@ var TEL_KAND={
   {feld:"Anreise",wert:"Ehemann bringt sie · keine Begleitperson-Übernachtung",zitat:"Mein Mann würde mich hinbringen"}
  ],
  ab:[],
- kasse:[]
+ kasse:[
+  {feld:"Kostenzusage", wert:"Zusage erteilt · Beatmungs-Zuschlag genehmigt", zitat:"Der Zuschlag für das Weaning ist genehmigt"},
+  {feld:"Gültigkeit",   wert:"ab 04.08. · zunächst 21 Tage · Verlängerung nach Bericht", zitat:"Ab dem 4. August, zunächst für 21 Tage"},
+  {feld:"Offener Punkt",wert:"Ärztliche Bestätigung der Übernahmefähigkeit nachsenden", zitat:"die ärztliche Bestätigung der Übernahmefähigkeit"},
+  {feld:"Aktenzeichen", wert:"AK-2026-88431", zitat:"Unser Aktenzeichen für Rückfragen ist AK-2026-88431"}
+ ]
 };
 function telNummer(f){
  let n=(typeof telAusText==="function"&&f.originalTxt)?telAusText(f.originalTxt):"";
@@ -8087,7 +8115,9 @@ function telQueue(){
  });
  q.sort((a,b)=>b.sterne-a.sterne||a.fallId-b.fallId);
  q.forEach((e,i)=>{e.szenario=(i%2===0)?"mensch":"ab";});
- const kf=faelle.find(f=>/angefragt/i.test(f.kosten||"")&&f.status!=="Verloren");
+ /* Selbstzahler ausschliessen: ein Selbstzahler hat keine Kasse, die eine Kostenzusage erteilen
+    koennte — sonst traf der Pick faelschlich einen Selbstzahler-Fall mit kosten:"angefragt". */
+ const kf=faelle.find(f=>/angefragt/i.test(f.kosten||"")&&f.status!=="Verloren"&&f.kt!=="Selbstzahler");
  if(kf)q.unshift({fallId:kf.id,typ:"kasse",name:"ARKADIA Versicherung",nummer:"0800 275 2342",
   anlass:"Kostenzusage nachfassen · "+kf.name,sterne:5,versuche:0,szenario:"kasse"});
  return q;
@@ -8140,11 +8170,17 @@ function telRenderBuehne(){
  if(a.phase==="nachricht")actions="";
  if(a.phase==="einwilligung")actions="<button class='tel-uebernehmen' type='button' onclick='telConsent(1)'>✓ Einwilligung erteilt · mitschreiben</button><button class='btn-ghost btn-sm' type='button' onclick='telConsent(0)'>Ohne Mitschrift</button>"+actions;
  if(a.phase==="gespraech")actions="<button class='tel-uebernehmen' type='button' onclick='telGespraechEnde()'>Gespräch beenden ›</button>"+actions;
- if(a.phase==="nachbereitung")actions="<button class='btn-ghost btn-sm' type='button' onclick='telAbschluss()'>Schließen</button>";
+ if(a.phase==="nachbereitung")actions="<button class='tel-uebernehmen' type='button' onclick='telAbschluss()'>In die Akte übernehmen ›</button>";
  let consentHtml="";
  if(a.phase==="einwilligung"){
+  /* Kassen-Szenario: der Gesprächspartner ist eine Versicherungsangestellte, nicht die
+     Familie — die Sprechzeile spricht sie entsprechend an ("unsere Dokumentation" statt
+     "die Dokumentation"), das Gate selbst bleibt identisch. */
+  const sayTxt=a.szenario==="kasse"
+   ?"Ich schreibe für unsere Dokumentation mit — ist das für Sie in Ordnung?"
+   :"Ich schreibe für die Dokumentation mit — das Tonsignal wird nicht gespeichert, nur der Text. Sind Sie damit einverstanden?";
   consentHtml="<div class='tel-consent'><b>Mitschrift?</b>"
-   +"<p class='tel-consent-say'>„Ich schreibe für die Dokumentation mit — das Tonsignal wird nicht gespeichert, nur der Text. Sind Sie damit einverstanden?\"</p>"
+   +"<p class='tel-consent-say'>„"+sayTxt+"\"</p>"
    +"<p class='au-micro'>Ohne Einwilligung keine Mitschrift — die Notiz wird dann von Hand erfasst.</p></div>";
  }
  let mitHtml="";
@@ -8163,7 +8199,29 @@ function telRenderBuehne(){
    +"<p class='au-micro'>Nichts davon ist gespeichert — Übernahme erst am Gesprächsende.</p>";
   mitHtml="<div class='tel-mit'><div class='tel-mit-links'>"+linksHtml+"</div><div class='tel-mit-rechts'>"+rechtsHtml+"</div></div>";
  }
- const nachHtml=a.phase==="nachbereitung"?"<p class='au-micro'>Nachbereitung folgt.</p>":"";
+ let nachHtml="";
+ if(a.phase==="nachbereitung"){
+  const ergebnisOpts=a.typ==="kasse"?["Zusage erteilt","Abgelehnt","Rückfrage offen"]:["Interesse bestätigt","Bedenkzeit","kein Interesse"];
+  const kandRows=a.kandidaten.length?a.kandidaten.map(function(k,i){
+    const done=a.uebernommen&&a.uebernommen.indexOf(i)>-1;
+    return "<div class='tel-nach-row'><span class='tel-nach-feld'>"+escapeHtml(k.feld)+"</span><span class='tel-nach-wert'>"+escapeHtml(k.wert)+"</span>"
+     +(done?"<span class='tel-nach-ok'>✓ übernommen</span>":"<button class='btn-ghost btn-sm' type='button' onclick='telKandUebernehmen("+i+")'>Übernehmen</button>")
+     +"</div>";
+   }).join("")
+   :"<p class='au-micro'>Nichts erkannt.</p>";
+  const ergebnisHtml=a.ergebnis
+   ?"<button class='btn-ghost btn-sm tel-nach-gewaehlt' type='button' disabled>✓ "+escapeHtml(a.ergebnis)+"</button>"
+   :ergebnisOpts.map(function(o){return "<button class='btn-ghost btn-sm' type='button' onclick=\"telErgebnisWaehlen('"+o+"')\">"+escapeHtml(o)+"</button>";}).join("");
+  nachHtml="<div class='tel-nach'>"
+   +"<div class='kicker' style='margin-top:0'>Gesprächsnotiz</div>"
+   +"<textarea id='telNotiz' class='rsz-textarea' rows='4' placeholder='Was wurde besprochen / vereinbart?' oninput='telNotizSync(this.value)'>"+escapeHtml(a.notiz||"")+"</textarea>"
+   +"<div class='kicker'>Erkannte Felder</div>"
+   +(a.kandidaten.length?"<button class='btn-ghost btn-sm tel-nach-alle' type='button' onclick='telKandAlle()'>Alles übernehmen</button>":"")
+   +kandRows
+   +"<div class='kicker'>Ergebnis</div><div class='tel-nach-ergebnis'>"+ergebnisHtml+"</div>"
+   +"<p class='au-micro'>Die Mitschrift wird dabei verworfen — in die Akte geht die Zusammenfassung.</p>"
+   +"</div>";
+ }
  el.innerHTML="<div class='tel-stage'>"
   +"<div style='display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center'>"
   +"<div><b>"+escapeHtml(a.name)+"</b> <span class='au-micro'>"+escapeHtml(a.nummer)+"</span></div>"
@@ -8192,7 +8250,7 @@ function telAnruf(fid,typ,szen){
  const f=faelle.find(x=>x.id===fid);if(!f)return;
  const e=telQueue().find(x=>x.fallId===fid&&x.typ===typ);
  TEL_STATE.aktiv={fallId:fid,typ:typ,szenario:szen,phase:"waehlt",name:e?e.name:f.name,nummer:e?e.nummer:telNummer(f),events:[],timer:[],
-  mitschrift:null,dialogIdx:0,zeilen:[],kandidaten:[],consentZeit:""};
+  mitschrift:null,dialogIdx:0,zeilen:[],kandidaten:[],consentZeit:"",uebernommen:[],ergebnis:null,notiz:null};
  (TEL_SZEN[szen]||[]).forEach(step=>{
   const id=setTimeout(function(){telPhase(step[1],step[2],step[0]);},step[0]*TEL_TEMPO);
   TEL_STATE.aktiv.timer.push(id);
@@ -8217,12 +8275,10 @@ function telUebernehmen(){
  if(a.szenario==="kasse"){TEL_STATE.min+=12;if(f)telLog(f,"✆ ARKADIA erreicht — Warteschleife (~12 Min) vom Assistenten übernommen");}
  else{TEL_STATE.ok++;if(f)telLog(f,"✆ Rückruf erreicht — Gespräch übernommen (Erkennung 1,5 s)");}
  a.events.push({s:"—",txt:"Gespräch übernommen — Assistent hat die Leitung freigegeben"});
- if(a.szenario==="kasse"){
-  a.mitschrift=true;a.consentZeit=logZeit();a.phase="gespraech";
-  telDialogStart(a);
- }else{
-  a.phase="einwilligung";
- }
+ /* Auch im Kassen-Szenario gilt das Einwilligungs-Gate: § 201 StGB knüpft an die Person am
+    anderen Ende der Leitung an, nicht an ihre Rolle — auch der Versicherungsmitarbeiter ist
+    Gesprächspartner mit eigenem Recht auf Kenntnis der Mitschrift. */
+ a.phase="einwilligung";
  telRenderBuehne();
 }
 function telDialogStart(a){
@@ -8252,17 +8308,113 @@ function telConsent(ok){
 }
 function telGespraechEnde(){
  const a=TEL_STATE.aktiv;if(!a||a.phase!=="gespraech")return;
+ a.notiz=telNotizVorschlag(a);
  a.phase="nachbereitung";
  a.timer.forEach(clearTimeout);
  telRenderBuehne();
 }
+/* Vorbefüllter Notiztext je Szenario (Muster "KI schlägt vor, Mensch übernimmt/bearbeitet") —
+   ohne Mitschrift-Einwilligung gibt es kein Skript zum Zusammenfassen, dort werden die von Hand
+   getippten Stichworte als Startwert übernommen. */
+function telNotizVorschlag(a){
+ if(a.mitschrift===false){
+  const sw=document.getElementById("telStichworte");
+  return (sw&&sw.value)?sw.value:"";
+ }
+ if(a.szenario==="kasse")return "ARKADIA erreicht (Frau Sommer). Kostenzusage für Herrn Vogel erteilt, Beatmungs-Zuschlag genehmigt, gültig ab 04.08. für zunächst 21 Tage, Verlängerung nach Bericht möglich. Ärztliche Bestätigung der Übernahmefähigkeit muss noch nachgesendet werden. Aktenzeichen AK-2026-88431.";
+ return "Rückruf erreicht. Frau Probst wünscht die Anschlussbehandlung nach Hüft-TEP (OP 14.07.), Aufnahme so früh wie möglich. Komfortzimmer als Selbstzahlerleistung, Rechnung privat. Entlassbrief kommt Freitag per Mail. Anreise durch den Ehemann, keine Begleitperson-Übernachtung.";
+}
+/* Tippen im Notizfeld haelt TEL_STATE.aktiv.notiz synchron, ohne bei jedem Zeichen neu zu rendern
+   — noetig, weil Kandidaten-/Ergebnis-Klicks die Buehne neu aufbauen und die Notiz sonst verloren ginge. */
+function telNotizSync(v){ if(TEL_STATE.aktiv)TEL_STATE.aktiv.notiz=v; }
+/* Wirkung eines erkannten Kandidaten auf die Fallakte (§3.5): Diagnose geht als Vorschlag in
+   f.medVorschlag (bestehendes Muster, Uebernahme bleibt der Bedarf-Knopf im Feld selbst — hier
+   NICHT direkt f.med schreiben), Rueckfragen werden dedupliziert angehaengt, alles andere ist
+   reine Protokollzeile. Kostenzusage selbst aendert f.kosten hier bewusst NICHT — das macht
+   ausschliesslich der Ergebnis-Knopf in telAbschluss(). */
+function telKandWirkung(f,k){
+ if(!f||!k)return;
+ if(k.feld==="Diagnose / Indikation"){
+  if(!f.medVorschlag)f.medVorschlag={diagnose:k.wert};
+ }else if(k.feld==="Offener Punkt"){
+  if(!f.rueckfragen)f.rueckfragen=[];
+  if(!f.rueckfragen.some(function(r){return r.frage===k.wert;}))f.rueckfragen.push({frage:k.wert,done:false});
+ }else{
+  telLog(f,"✎ "+k.feld+": "+k.wert);
+ }
+}
+function telKandUebernehmen(i){
+ const a=TEL_STATE.aktiv;if(!a||a.phase!=="nachbereitung")return;
+ const k=a.kandidaten[i];if(!k)return;
+ if(!a.uebernommen)a.uebernommen=[];
+ if(a.uebernommen.indexOf(i)>-1)return;
+ const f=faelle.find(function(x){return x.id===a.fallId;});
+ telKandWirkung(f,k);
+ a.uebernommen.push(i);
+ if(typeof demoSave==="function")demoSave();
+ telRenderBuehne();
+}
+function telKandAlle(){
+ const a=TEL_STATE.aktiv;if(!a||a.phase!=="nachbereitung")return;
+ if(!a.uebernommen)a.uebernommen=[];
+ const f=faelle.find(function(x){return x.id===a.fallId;});
+ a.kandidaten.forEach(function(k,i){
+  if(a.uebernommen.indexOf(i)>-1)return;
+  telKandWirkung(f,k);
+  a.uebernommen.push(i);
+ });
+ if(typeof demoSave==="function")demoSave();
+ telRenderBuehne();
+}
+function telErgebnisWaehlen(label){
+ const a=TEL_STATE.aktiv;if(!a||a.phase!=="nachbereitung")return;
+ a.ergebnis=label;
+ telRenderBuehne();
+}
+/* Zielfeld der Fallakte nach Abschluss: beim Kassen-Anruf immer die Kostenzusage (das war der
+   Anlass des Anrufs) — sonst das erste noch offene Klaerungsfeld, Fallback Kontakt. */
+function telZielFeld(a,f){
+ if(a.typ==="kasse")return "kosten";
+ if(!f||typeof kfFelder!=="function")return "kontakt";
+ const erste=kfFelder(f).find(function(k){return !k.ok;});
+ return erste?erste.key:"kontakt";
+}
 function telAbschluss(){
  const a=TEL_STATE.aktiv;if(!a||a.phase!=="nachbereitung")return;
- TEL_STATE.done[a.fallId+a.typ]=a.szenario==="kasse"?"Kasse erreicht":"erreicht";
- const name=a.name,fid=a.fallId;
- telEnde();
- if(typeof inbToast==="function")inbToast("done","<b>Gespräch dokumentiert</b>",escapeHtml(name),null);
- if(typeof openFallakte==="function")openFallakte(fid);
+ const f=faelle.find(function(x){return x.id===a.fallId;});
+ /* 1. Gesprächsnotiz protokollieren */
+ const notizEl=document.getElementById("telNotiz");
+ const notizTxt=notizEl?notizEl.value.trim():"";
+ if(f&&notizTxt)telLog(f,"✎ "+notizTxt);
+ /* 2. Ergebnis anwenden — nur wenn eines gewählt wurde, "kein Interesse" setzt bewusst KEINEN
+    Status "Verloren", das bleibt eine separate Entscheidung in der Akte. */
+ if(f&&a.ergebnis){
+  if(a.typ==="kasse"){
+   if(a.ergebnis==="Zusage erteilt")kostenSetzen(f,"Zusage liegt vor","Kostenzusage telefonisch erteilt — ARKADIA (Beatmungs-Zuschlag), Aktenzeichen AK-2026-88431");
+   else if(a.ergebnis==="Abgelehnt")kostenSetzen(f,"abgelehnt","Kostenzusage telefonisch abgelehnt — ARKADIA");
+   else if(a.ergebnis==="Rückfrage offen")telLog(f,"✆ ARKADIA: Rückfrage offen — Zusage weiter ausstehend");
+  }else{
+   if(a.ergebnis==="Interesse bestätigt")telLog(f,"✆ Interesse bestätigt");
+   else if(a.ergebnis==="Bedenkzeit")telLog(f,"✆ Patient bittet um Bedenkzeit");
+   else if(a.ergebnis==="kein Interesse")telLog(f,"✆ Kein Interesse — Fall nicht weiterverfolgt");
+  }
+ }
+ /* 3. */ TEL_STATE.done[a.fallId+a.typ]=a.szenario==="kasse"?"Kasse erreicht":"erreicht";
+ const name=a.name;
+ /* 4. */ const ziel=telZielFeld(a,f);
+ /* 5. */ if(f&&typeof kfSyncStatus==="function")kfSyncStatus(f);
+ if(typeof renderAll==="function")renderAll();
+ /* 6. */ if(f)kfMerkeOffen(f.id,ziel,true);
+ let zielLabel="";
+ if(f&&typeof kfFelder==="function"){
+  const treffer=kfFelder(f).find(function(k){return k.key===ziel;});
+  zielLabel=treffer?treffer.label:"";
+ }
+ /* 7. */ telEnde();
+ /* 8. */ if(typeof inbToast==="function")inbToast("done","<b>In die Akte übernommen</b>",escapeHtml(name)+" — "+escapeHtml(zielLabel),null);
+ /* 9. */ if(f&&typeof openFallakte==="function")openFallakte(f.id);
+ /* 10. go() ist asynchron (View-Transition) — unmittelbar danach existiert #dArbeit noch nicht. */
+ setTimeout(function(){ if(typeof lbOeffneFeld==="function")lbOeffneFeld(ziel); },260);
 }
 function telNachricht(){
  const a=TEL_STATE.aktiv;if(!a||a.phase!=="ab")return;
