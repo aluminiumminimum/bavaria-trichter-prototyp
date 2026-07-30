@@ -3499,8 +3499,10 @@ details.fa-orig>div{padding:0 12px 12px}
 /* ===== TELEFON · KI-ANRUF-ASSISTENT (.tel-Klassen) =====
    View #view-telefon. Additiv. Einziger neuer Keyframe: telWave (nur transform,
    reduced-motion-safe: Basis-Höhen statisch inline, Animation nur via Klasse .an). */
-#view-telefon .tel-hero{position:relative;background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;box-shadow:var(--shadow-soft);padding:24px 26px;margin-bottom:16px}
-#view-telefon .tel-hero::after{content:"";position:absolute;inset:5px;border:1px solid var(--gold-faint);border-radius:2px;pointer-events:none}
+#view-telefon .tel-hero{position:relative;background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;box-shadow:var(--shadow-soft);padding:24px 26px;margin-bottom:16px;outline:1px solid var(--gold-faint);outline-offset:-6px}
+#view-telefon .tel-hero::before,#view-telefon .tel-hero::after,.tel-stage::before,.tel-stage::after{content:"";position:absolute;width:9px;height:9px;pointer-events:none;z-index:2;opacity:.6}
+#view-telefon .tel-hero::before,.tel-stage::before{top:10px;left:10px;border-top:1px solid var(--brass);border-left:1px solid var(--brass)}
+#view-telefon .tel-hero::after,.tel-stage::after{bottom:10px;right:10px;border-bottom:1px solid var(--brass);border-right:1px solid var(--brass)}
 .tel-hero h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:29px;font-weight:600;margin:10px 0 6px}
 .tel-badge{display:inline-flex;align-items:center;gap:7px;font:600 10px "Fragment Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--sage-deep);background:var(--sage-soft);border:1px solid var(--jade-hair);border-radius:3px;padding:4px 9px}
 .tel-badge i{width:7px;height:7px;border-radius:50%;background:var(--sage-deep);animation:lxPulse 2.4s ease-in-out infinite}
@@ -3509,9 +3511,11 @@ details.fa-orig>div{padding:0 12px 12px}
 .tel-kpi span{display:block;font:600 9.5px "Fragment Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .tel-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
 .tel-row{display:flex;align-items:center;gap:12px;background:var(--paper);border:1px solid var(--hair);border-radius:4px;padding:12px 14px;flex-wrap:wrap}
+@media(hover:hover){.tel-row:hover{background:var(--paper2);border-color:var(--jade-hair)}}
+.tel-row .btn-ghost[disabled]{opacity:.45;pointer-events:none}
+@media(hover:hover){.tel-uebernehmen:hover{background:var(--sage)}}
 .tel-st{color:var(--brass-deep);font-size:12px;letter-spacing:2px;white-space:nowrap}
-.tel-stage{position:relative;background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;box-shadow:var(--shadow);padding:18px 20px;margin-top:16px}
-.tel-stage::after{content:"";position:absolute;inset:5px;border:1px solid var(--gold-faint);border-radius:2px;pointer-events:none}
+.tel-stage{position:relative;background:var(--paper);border:1px solid var(--jade-hair);border-radius:4px;box-shadow:var(--shadow);padding:18px 20px;margin-top:16px;outline:1px solid var(--gold-faint);outline-offset:-6px}
 .tel-wave{display:flex;align-items:center;gap:3px;height:56px;margin:14px 0 10px}
 .tel-wave i{flex:1;max-width:9px;border-radius:2px;background:var(--faint);transform-origin:center}
 .tel-wave.an i{animation:telWave 1.1s ease-in-out infinite alternate}
@@ -3524,15 +3528,17 @@ details.fa-orig>div{padding:0 12px 12px}
 .tel-chip.ansage{color:var(--amber);border-color:var(--amber)}
 .tel-chip.alarm{background:var(--brass-soft);border-color:var(--brass-line);color:var(--brass-deep)}
 .tel-chip.alarm::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--brass-deep);animation:lxPulse 1.6s ease-in-out infinite;flex:none}
-.tel-raffer{font:600 9.5px "Fragment Mono",monospace;letter-spacing:.1em;text-transform:uppercase;background:var(--terra-soft);color:var(--terra);border-radius:3px;padding:3px 8px}
+.tel-raffer{font:600 9.5px "Fragment Mono",monospace;letter-spacing:.1em;text-transform:uppercase;background:var(--brass-soft);color:var(--amber);border-radius:3px;padding:3px 8px}
 .tel-ereignisse{list-style:none;margin:12px 0 0;padding:0;font-size:12.5px;color:var(--ink-soft)}
 .tel-ereignisse li{display:flex;gap:10px;padding:4px 0;border-top:1px dashed var(--hair2)}
 .tel-ereignisse .t{font-family:"Fragment Mono",monospace;font-size:11px;color:var(--muted);min-width:48px}
 .tel-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
 .tel-uebernehmen{background:var(--sage-deep);color:var(--ivory-tx);border:0;border-radius:4px;padding:11px 18px;font-weight:600;cursor:pointer;font-family:inherit;font-size:14px}
-.tel-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
-.tel-step{background:var(--paper);border:1px solid var(--hair);border-radius:4px;padding:14px}
+.tel-steps{display:grid;grid-template-columns:1fr 1.55fr 1fr;gap:12px;margin-top:10px;align-items:start}
+.tel-step{background:transparent;border:1px solid var(--hair2);border-radius:4px;padding:13px 14px}
+.tel-step.dominant{background:var(--paper);border:1px solid var(--jade-hair);box-shadow:var(--shadow-soft);padding:16px 18px}
 .tel-step p{margin:6px 0 0;font-size:12.5px;color:var(--ink-soft)}
+.tel-step .au-micro{display:block;margin-top:10px;padding-top:8px;border-top:1px dashed var(--hair)}
 @media(max-width:700px){.tel-steps{grid-template-columns:1fr}.tel-kpis{gap:16px}}
 </style>
 </head>
@@ -8094,11 +8100,10 @@ function telRenderKonzept(){
  const el=document.getElementById("telKonzept");if(!el||el.innerHTML)return;
  el.innerHTML="<div class='kicker' style='margin-top:26px'>So funktioniert's</div>"
   +"<div class='tel-steps'>"
-  +"<div class='tel-step'><b>1 · Mensch wählt</b><p>Rückruf aus der Liste — per Klick. Das System wählt nie von selbst.</p></div>"
-  +"<div class='tel-step'><b>2 · Assistent hört zu</b><p>Klassifiziert lokal im Browser: Klingeln, Musik, Bandansage, Mensch, Anrufbeantworter. Keine Cloud, keine Aufzeichnung.</p></div>"
-  +"<div class='tel-step'><b>3 · Mensch übernimmt</b><p>Alarm im selben Fenster, Überbrückungsansage hält die Leitung, die Akte öffnet sich automatisch.</p></div>"
-  +"</div>"
-  +"<p class='au-micro' style='margin-top:10px'>Architektur: Browser ist Endpunkt der Verbindung · Erkennung ~1,5 s · Wiedervorlage-Automatik 5★ heute · 4★ morgen · 3★ +2 Tage</p>";
+  +"<div class='tel-step'><b>1 · Mensch wählt</b><p>Per Klick aus der Liste. Nie von selbst.</p></div>"
+  +"<div class='tel-step dominant'><b>2 · Assistent hört zu — lokal</b><p>Klassifiziert im Browser der Mitarbeiterin: Klingeln, Musik, Bandansage, Mensch, Anrufbeantworter. Keine Cloud, keine Aufzeichnung — das Audio verlässt das Haus nie.</p><span class='au-micro'>Browser ist Endpunkt · Erkennung ~1,5 s · Wiedervorlage 5★ heute · 4★ morgen · 3★ +2 Tage</span></div>"
+  +"<div class='tel-step'><b>3 · Mensch übernimmt</b><p>Alarm im selben Fenster, Ansage hält die Leitung, die Akte öffnet sich.</p></div>"
+  +"</div>";
 }
 function telAnruf(fid,typ,szen){
  if(TEL_STATE.aktiv)return;
