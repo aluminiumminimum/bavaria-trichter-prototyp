@@ -3540,6 +3540,26 @@ details.fa-orig>div{padding:0 12px 12px}
 .tel-step p{margin:6px 0 0;font-size:12.5px;color:var(--ink-soft)}
 .tel-step .au-micro{display:block;margin-top:10px;padding-top:8px;border-top:1px dashed var(--hair)}
 @media(max-width:700px){.tel-steps{grid-template-columns:1fr}.tel-kpis{gap:16px}}
+/* ===== TELEFON · GESPRÄCHSPHASE (.tel-consent/.tel-mit/.tel-kand-Klassen) =====
+   Additiv zur TELEFON-Bühne oben. Einwilligungs-Gate + zweispaltige Live-Mitschrift
+   nach dem Übernehmen. Kein neuer Keyframe — Zeilen erscheinen ungestaffelt-animiert,
+   ihre Staffelung kommt allein aus den Dialog-Timern (reduced-motion-safe by design). */
+.tel-consent{border:1px solid var(--jade-hair);border-radius:4px;background:var(--paper2);padding:14px 16px;margin-top:14px}
+.tel-consent b{font-family:"Cormorant Garamond",Georgia,serif;font-size:17px;font-weight:600}
+.tel-consent-say{font-style:italic;color:var(--ink-soft);margin:8px 0 6px;font-size:13.5px}
+.tel-mit{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-top:16px}
+.tel-mit-rechts{border-left:1px dashed var(--hair2);padding-left:16px}
+.tel-zeile{padding:7px 0;border-top:1px dashed var(--hair2);font-size:13px;line-height:1.5}
+.tel-zeile:first-child{border-top:0;padding-top:0}
+.tel-zeile .tel-wer{display:block;font:600 10px "Fragment Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.tel-zeile.klinik .tel-wer{color:var(--sage-deep)}
+.tel-zeile.gast .tel-wer{color:var(--brass-deep)}
+.tel-kand{border:1px solid var(--jade-hair);border-radius:4px;background:var(--paper);padding:10px 12px;margin-top:10px}
+.tel-kand:first-child{margin-top:0}
+.tel-kand-feld{font:600 10px "Fragment Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:4px}
+.tel-kand b{display:block;font-size:13.5px;font-weight:600}
+.tel-kand-zitat{font-style:italic;color:var(--muted);font-size:11.5px;margin:4px 0 0}
+@media(max-width:700px){.tel-mit{grid-template-columns:1fr}.tel-mit-rechts{border-left:0;padding-left:0;border-top:1px dashed var(--hair2);padding-top:12px;margin-top:12px}}
 </style>
 </head>
 <body>
@@ -8022,6 +8042,36 @@ var TEL_SZEN={
  ab:[[0,"waehlt","Wählt …"],[1200,"klingelt","Klingelt …"],[6000,"analyse","Abgehoben — analysiere …"],[7500,"ab","Anrufbeantworter erkannt"]],
  kasse:[[0,"waehlt","Wählt …"],[1200,"musik","Verbunden — Warteschleife · Musik erkannt"],[6000,"ansage","Bandansage erkannt — kein Mensch, weiter warten"],[9000,"musik","Warteschleife · Musik läuft weiter"],[14000,"analyse","Stimme erkannt — analysiere …"],[15500,"alarm","Mitarbeiter:in der ARKADIA in der Leitung — Überbrückungsansage läuft"]]
 };
+/* Gesprächsphase: Dialog-Skript + abgeleitete Feld-Kandidaten je Szenario. Nur "mensch"
+   ist fuer diesen Task befuellt (Fall 3, Maria Probst) — "ab"/"kasse" folgen als Folge-Task,
+   bis dahin zeigt die Buehne bei leerem Skript die Leerzeile aus telRenderBuehne(). */
+var TEL_DIALOG={
+ mensch:[
+  [0,"klinik","Klinik Bavaria, Koordination — Sie hatten um einen Rückruf gebeten. Spreche ich mit Frau Probst?",null],
+  [1600,"gast","Ja, hallo. Ich hatte über Ihre Website angefragt.",null],
+  [3400,"gast","Es geht um die Anschlussbehandlung. Die Hüft-TEP war am 14. Juli, ich komme zuhause schlecht zurecht.",0],
+  [6200,"klinik","Wie schnell bräuchten Sie den Platz?",null],
+  [7600,"gast","Am liebsten nächste Woche, sonst so früh wie möglich.",1],
+  [9800,"klinik","Und zur Abrechnung — Sie hatten Selbstzahlerin angegeben?",null],
+  [11200,"gast","Ja. Das Komfortzimmer zahle ich selbst, gern mit Blick ins Grüne. Die Rechnung bitte an mich privat.",2],
+  [14000,"klinik","Haben Sie den Entlassbrief der Akutklinik?",null],
+  [15400,"gast","Den bekomme ich Freitag von der Orthopädie, dann schicke ich ihn per Mail.",3],
+  [18000,"gast","Mein Mann würde mich hinbringen, der bleibt aber nicht über Nacht.",4]
+ ],
+ ab:[],
+ kasse:[]
+};
+var TEL_KAND={
+ mensch:[
+  {feld:"Diagnose / Indikation",wert:"Z. n. Hüft-TEP (OP 14.07.)",zitat:"Die Hüft-TEP war am 14. Juli"},
+  {feld:"Aufnahmewunsch",wert:"so früh wie möglich · Wunsch nächste Woche",zitat:"Am liebsten nächste Woche"},
+  {feld:"Kosten & Zimmer",wert:"Komfortzimmer als Selbstzahlerleistung · Rechnung privat",zitat:"Das Komfortzimmer zahle ich selbst"},
+  {feld:"Offener Punkt",wert:"Entlassbrief kommt Freitag per Mail",zitat:"Den bekomme ich Freitag von der Orthopädie"},
+  {feld:"Anreise",wert:"Ehemann bringt sie · keine Begleitperson-Übernachtung",zitat:"Mein Mann würde mich hinbringen"}
+ ],
+ ab:[],
+ kasse:[]
+};
 function telNummer(f){
  let n=(typeof telAusText==="function"&&f.originalTxt)?telAusText(f.originalTxt):"";
  if(!n&&f.personId&&typeof person==="function"){const p=person(f.personId);n=(p&&p.telefon)||"";}
@@ -8050,7 +8100,8 @@ function telLog(f,txt){
 function telWaveKlasse(ph){
  if(ph==="musik")return "musik an";
  if(ph==="ansage")return "ansage an";
- if(ph==="alarm")return "mensch an";
+ if(ph==="alarm"||ph==="einwilligung"||ph==="gespraech")return "mensch an";
+ if(ph==="nachbereitung")return "mensch";
  if(ph==="ab")return "ansage";
  if(ph==="analyse"||ph==="klingelt")return "an";
  return "";
@@ -8079,20 +8130,51 @@ function telRenderBuehne(){
  const el=document.getElementById("telBuehne");if(!el)return;
  const a=TEL_STATE.aktiv;
  if(!a){el.innerHTML="";return;}
- const chipCls=a.phase==="alarm"?"alarm":a.phase==="musik"?"musik":(a.phase==="ansage"||a.phase==="ab")?"ansage":"";
- const last=a.events.length?a.events[a.events.length-1].txt:"Wählt …";
+ let chipCls=a.phase==="alarm"?"alarm":a.phase==="musik"?"musik":(a.phase==="ansage"||a.phase==="ab")?"ansage":"";
+ let chipTxt=a.events.length?a.events[a.events.length-1].txt:"Wählt …";
+ if(a.phase==="gespraech"){chipCls=a.mitschrift?"alarm":"";chipTxt=a.mitschrift?"Gespräch läuft · Mitschrift aktiv":"Gespräch läuft · ohne Mitschrift";}
+ else if(a.phase==="nachbereitung"){chipCls="";chipTxt="Gespräch beendet";}
  let actions="<button class='btn-ghost btn-sm' type='button' onclick='telAuflegen()'>Auflegen</button>";
  if(a.phase==="alarm")actions="<button class='tel-uebernehmen' type='button' onclick='telUebernehmen()'>Gespräch übernehmen ›</button>"+actions;
  if(a.phase==="ab")actions="<button class='btn-ghost btn-sm' type='button' onclick='telNachricht()'>Neutrale Nachricht abspielen</button>"+actions;
  if(a.phase==="nachricht")actions="";
+ if(a.phase==="einwilligung")actions="<button class='tel-uebernehmen' type='button' onclick='telConsent(1)'>✓ Einwilligung erteilt · mitschreiben</button><button class='btn-ghost btn-sm' type='button' onclick='telConsent(0)'>Ohne Mitschrift</button>"+actions;
+ if(a.phase==="gespraech")actions="<button class='tel-uebernehmen' type='button' onclick='telGespraechEnde()'>Gespräch beenden ›</button>"+actions;
+ if(a.phase==="nachbereitung")actions="<button class='btn-ghost btn-sm' type='button' onclick='telAbschluss()'>Schließen</button>";
+ let consentHtml="";
+ if(a.phase==="einwilligung"){
+  consentHtml="<div class='tel-consent'><b>Mitschrift?</b>"
+   +"<p class='tel-consent-say'>„Ich schreibe für die Dokumentation mit — das Tonsignal wird nicht gespeichert, nur der Text. Sind Sie damit einverstanden?\"</p>"
+   +"<p class='au-micro'>Ohne Einwilligung keine Mitschrift — die Notiz wird dann von Hand erfasst.</p></div>";
+ }
+ let mitHtml="";
+ if(a.phase==="gespraech"||a.phase==="nachbereitung"){
+  let linksHtml;
+  if(a.mitschrift===false){
+   linksHtml="<div class='kicker' style='margin-top:0'>Stichworte</div><textarea id='telStichworte' class='rsz-textarea' placeholder='Stichworte zum Gespräch …'></textarea>";
+  }else{
+   linksHtml="<div class='kicker' style='margin-top:0'>Mitschrift</div>"
+    +(a.zeilen.length?a.zeilen.map(z=>"<div class='tel-zeile "+(z.wer==="klinik"?"klinik":"gast")+"'><span class='tel-wer'>"+(z.wer==="klinik"?"Klinik":escapeHtml(a.name))+"</span>"+escapeHtml(z.text)+"</div>").join("")
+             :"<p class='au-micro'>Die Mitschrift erscheint hier, sobald gesprochen wird.</p>");
+  }
+  const rechtsHtml="<div class='kicker' style='margin-top:0'>Der Assistent hat notiert</div>"
+   +(a.kandidaten.length?a.kandidaten.map(k=>"<div class='tel-kand'><div class='tel-kand-feld'>"+escapeHtml(k.feld)+"</div><b>"+escapeHtml(k.wert)+"</b><p class='tel-kand-zitat'>„"+escapeHtml(k.zitat)+"\"</p></div>").join("")
+             :"<p class='au-micro'>Noch nichts erkannt.</p>")
+   +"<p class='au-micro'>Nichts davon ist gespeichert — Übernahme erst am Gesprächsende.</p>";
+  mitHtml="<div class='tel-mit'><div class='tel-mit-links'>"+linksHtml+"</div><div class='tel-mit-rechts'>"+rechtsHtml+"</div></div>";
+ }
+ const nachHtml=a.phase==="nachbereitung"?"<p class='au-micro'>Nachbereitung folgt.</p>":"";
  el.innerHTML="<div class='tel-stage'>"
   +"<div style='display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center'>"
   +"<div><b>"+escapeHtml(a.name)+"</b> <span class='au-micro'>"+escapeHtml(a.nummer)+"</span></div>"
   +(a.szenario==="kasse"?"<span class='tel-raffer'>Zeitraffer — real ~12 Min</span>":"")
   +"</div>"
   +"<div class='tel-wave "+telWaveKlasse(a.phase)+"'>"+TEL_H.map((h,i)=>"<i style='height:"+h+"%;animation-delay:-"+(i*90)+"ms'></i>").join("")+"</div>"
-  +"<span class='tel-chip "+chipCls+"'>"+escapeHtml(last)+"</span>"
+  +"<span class='tel-chip "+chipCls+"'>"+escapeHtml(chipTxt)+"</span>"
   +"<ul class='tel-ereignisse'>"+a.events.map(ev=>"<li><span class='t'>"+(ev.s==="—"?"—":"+"+ev.s+" s")+"</span><span>"+escapeHtml(ev.txt)+"</span></li>").join("")+"</ul>"
+  +consentHtml
+  +mitHtml
+  +nachHtml
   +"<div class='tel-actions'>"+actions+"</div>"
   +"</div>";
 }
@@ -8109,7 +8191,8 @@ function telAnruf(fid,typ,szen){
  if(TEL_STATE.aktiv)return;
  const f=faelle.find(x=>x.id===fid);if(!f)return;
  const e=telQueue().find(x=>x.fallId===fid&&x.typ===typ);
- TEL_STATE.aktiv={fallId:fid,typ:typ,szenario:szen,phase:"waehlt",name:e?e.name:f.name,nummer:e?e.nummer:telNummer(f),events:[],timer:[]};
+ TEL_STATE.aktiv={fallId:fid,typ:typ,szenario:szen,phase:"waehlt",name:e?e.name:f.name,nummer:e?e.nummer:telNummer(f),events:[],timer:[],
+  mitschrift:null,dialogIdx:0,zeilen:[],kandidaten:[],consentZeit:""};
  (TEL_SZEN[szen]||[]).forEach(step=>{
   const id=setTimeout(function(){telPhase(step[1],step[2],step[0]);},step[0]*TEL_TEMPO);
   TEL_STATE.aktiv.timer.push(id);
@@ -8133,10 +8216,53 @@ function telUebernehmen(){
  const f=faelle.find(x=>x.id===a.fallId);
  if(a.szenario==="kasse"){TEL_STATE.min+=12;if(f)telLog(f,"✆ ARKADIA erreicht — Warteschleife (~12 Min) vom Assistenten übernommen");}
  else{TEL_STATE.ok++;if(f)telLog(f,"✆ Rückruf erreicht — Gespräch übernommen (Erkennung 1,5 s)");}
+ a.events.push({s:"—",txt:"Gespräch übernommen — Assistent hat die Leitung freigegeben"});
+ if(a.szenario==="kasse"){
+  a.mitschrift=true;a.consentZeit=logZeit();a.phase="gespraech";
+  telDialogStart(a);
+ }else{
+  a.phase="einwilligung";
+ }
+ telRenderBuehne();
+}
+function telDialogStart(a){
+ (TEL_DIALOG[a.szenario]||[]).forEach(function(step,idx){
+  const id=setTimeout(function(){
+   if(!TEL_STATE.aktiv||TEL_STATE.aktiv.phase!=="gespraech")return;
+   const cur=TEL_STATE.aktiv;
+   cur.zeilen.push({wer:step[1],text:step[2]});
+   cur.dialogIdx=idx+1;
+   if(step[3]!==null&&step[3]!==undefined){
+    const k=(TEL_KAND[cur.szenario]||[])[step[3]];
+    if(k)cur.kandidaten.push(k);
+   }
+   telRenderBuehne();
+  },step[0]*TEL_TEMPO);
+  a.timer.push(id);
+ });
+}
+function telConsent(ok){
+ const a=TEL_STATE.aktiv;if(!a||a.phase!=="einwilligung")return;
+ const f=faelle.find(x=>x.id===a.fallId);
+ a.mitschrift=!!ok;a.consentZeit=logZeit();a.phase="gespraech";
+ a.events.push({s:"—",txt:ok?"Einwilligung zur Mitschrift erteilt":"Ohne Mitschrift — Notiz von Hand"});
+ if(f)telLog(f,ok?"✆ Einwilligung zur Mitschrift erteilt (mündlich, "+a.consentZeit+")":"✆ Gespräch ohne Mitschrift geführt");
+ if(ok)telDialogStart(a);
+ telRenderBuehne();
+}
+function telGespraechEnde(){
+ const a=TEL_STATE.aktiv;if(!a||a.phase!=="gespraech")return;
+ a.phase="nachbereitung";
+ a.timer.forEach(clearTimeout);
+ telRenderBuehne();
+}
+function telAbschluss(){
+ const a=TEL_STATE.aktiv;if(!a||a.phase!=="nachbereitung")return;
  TEL_STATE.done[a.fallId+a.typ]=a.szenario==="kasse"?"Kasse erreicht":"erreicht";
+ const name=a.name,fid=a.fallId;
  telEnde();
- if(typeof inbToast==="function")inbToast("done","<b>Gespräch übernommen</b>",escapeHtml(a.name)+" — die Akte öffnet sich",null);
- if(f&&typeof openFallakte==="function")openFallakte(f.id);
+ if(typeof inbToast==="function")inbToast("done","<b>Gespräch dokumentiert</b>",escapeHtml(name),null);
+ if(typeof openFallakte==="function")openFallakte(fid);
 }
 function telNachricht(){
  const a=TEL_STATE.aktiv;if(!a||a.phase!=="ab")return;
@@ -8155,9 +8281,11 @@ function telAuflegen(){
  const f=faelle.find(x=>x.id===a.fallId);
  const vorAbheben=(a.phase==="waehlt"||a.phase==="klingelt");
  const nachAlarm=(a.phase==="alarm");
+ const nachGespraech=(a.phase==="einwilligung"||a.phase==="gespraech"||a.phase==="nachbereitung");
  telEnde();
  if(f){
   if(vorAbheben&&a.typ==="rueckruf"&&typeof wvNichtErreicht==="function"){wvNichtErreicht(f.id);}
+  else if(nachGespraech){telLog(f,"✆ Gespräch abgebrochen");}
   else if(nachAlarm){telLog(f,"✆ Anruf beendet ohne Übernahme");}
   else{telLog(f,"✆ Anruf abgebrochen");}
  }
