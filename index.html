@@ -3512,6 +3512,7 @@ details.fa-orig>div{padding:0 12px 12px}
   <nav class="ds-nav">
     <button data-nav="heute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.2 12 4l9 7.2"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M10 20v-5h4v5"/></svg><span>Heute</span></button>
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg><span>Fälle</span></button>
+    <button data-nav="telefon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span>Telefon</span></button>
     <button data-nav="inreha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M2 18h20"/><path d="M7 10h4v4H7z"/></svg><span>In Reha</span></button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg><span>Netzwerk</span></button>
     <button data-nav="auswertung"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Auswertung</span></button>
@@ -4499,6 +4500,7 @@ details.fa-orig>div{padding:0 12px 12px}
   <div class="tabbar-inner">
     <button data-nav="heute" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.2 12 4l9 7.2"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M10 20v-5h4v5"/></svg>Heute</button>
     <button data-nav="faelle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="17" rx="2.2"/><path d="M9 2.6h6v3.2H9z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5"/></svg>Fälle<span class="nbadge num" id="navBadgeFaelle"></span></button>
+    <button data-nav="telefon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Telefon</button>
     <button data-nav="inreha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M2 18h20"/><path d="M7 10h4v4H7z"/></svg>Reha</button>
     <button data-nav="netzwerk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.2 20.2c0-3.2 2.6-5.4 5.8-5.4s5.8 2.2 5.8 5.4"/><circle cx="17.2" cy="9.4" r="2.7"/><path d="M16.4 15.4c2.7.4 4.6 2.2 4.6 4.8"/></svg>Netzwerk</button>
     <button data-nav="auswertung"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Zahlen</button>
@@ -7433,7 +7435,7 @@ function renderInReha(){
    </button>`;
  }).join("").trim()||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
 }
-function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();if(typeof demoSave==="function")demoSave();}
+function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();if(typeof renderTelefon==="function")renderTelefon();if(typeof demoSave==="function")demoSave();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ----------
    R8.3: navigiert NICHT mehr (go("heute") riss den Mitarbeiter mitten aus der Akte, sobald der
@@ -8950,7 +8952,7 @@ function go(dest,seg){
     if(seg&&SEGS[dest]&&SEGS[dest].includes(seg))navState.segs[dest]=seg;
     document.querySelectorAll("main section.view").forEach(s=>s.classList.toggle("active",s.id==="view-"+dest));
     document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===dest));
-    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Patienten"],auswertung:["Auswertung","Quellen · Engpässe · Team · Fachbereiche"],konzept:["Konzept","Idee · Matrix · SOPs"],fallakte:["Fallakte","Arbeitsplatz je Fall"]};
+    const TITLES={heute:["Heute","Cockpit · Überblick"],faelle:["Fälle","Anfragen · Board · Team"],inreha:["In Reha","Erfolg · Wirtschaftlichkeit"],netzwerk:["Netzwerk","Zuweiser · Patienten"],auswertung:["Auswertung","Quellen · Engpässe · Team · Fachbereiche"],konzept:["Konzept","Idee · Matrix · SOPs"],telefon:["Telefon","KI-Anruf-Assistent · läuft lokal"],fallakte:["Fallakte","Arbeitsplatz je Fall"]};
     const _t=TITLES[dest]||TITLES.heute;
     const _tt=document.getElementById("dtopTitle");if(_tt)_tt.textContent=_t[0];
     const _ts=document.getElementById("dtopSub");if(_ts)_ts.textContent=_t[1];
