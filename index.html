@@ -8026,7 +8026,7 @@ function telQueue(){
  faelle.filter(f=>["Neu","Kontaktiert","Qualifizierung"].includes(f.status)&&f.status!=="Verloren").forEach(f=>{
   const p=(f.personId&&typeof person==="function")?person(f.personId):null;
   q.push({fallId:f.id,typ:"rueckruf",name:f.name,nummer:telNummer(f),
-   anlass:"Rückruf erbeten · "+(f.quelle||"Anfrage"),sterne:(p&&Number(p.sterne))||3,versuche:f.anrufe||0});
+   anlass:(f.quelle||"Anfrage"),sterne:(p&&Number(p.sterne))||3,versuche:f.anrufe||0});
  });
  q.sort((a,b)=>b.sterne-a.sterne||a.fallId-b.fallId);
  q.forEach((e,i)=>{e.szenario=(i%2===0)?"mensch":"ab";});
@@ -8059,7 +8059,7 @@ function renderTelefon(){
   return "<div class='tel-row'>"
    +"<span class='ava'>"+initialen(e.name)+"</span>"
    +"<div style='flex:1;min-width:150px'><b>"+escapeHtml(e.name)+"</b> <span class='au-micro'>"+escapeHtml(e.nummer)+"</span>"
-   +"<div class='au-micro'>"+escapeHtml(e.anlass)+" · ✓ Rückruf erbeten"+(e.versuche?" · Versuch "+(e.versuche+1):"")+"</div></div>"
+   +"<div class='au-micro'>"+escapeHtml(e.anlass)+(e.typ==="rueckruf"?" · ✓ Rückruf erbeten":"")+(e.versuche?" · Versuch "+(e.versuche+1):"")+"</div></div>"
    +"<span class='tel-st'>"+telSterne(e.sterne)+"</span>"
    +(done?"<span class='au-micro'>✓ "+escapeHtml(done)+"</span>"
         :"<button class='btn-ghost btn-sm' type='button' "+(busy?"disabled":"")+" onclick='telAnruf("+e.fallId+",\""+e.typ+"\",\""+e.szenario+"\")'>Anrufen ›</button>")
@@ -8083,7 +8083,7 @@ function telRenderBuehne(){
   +"<div><b>"+escapeHtml(a.name)+"</b> <span class='au-micro'>"+escapeHtml(a.nummer)+"</span></div>"
   +(a.szenario==="kasse"?"<span class='tel-raffer'>Zeitraffer — real ~12 Min</span>":"")
   +"</div>"
-  +"<div class='tel-wave "+telWaveKlasse(a.phase)+"'>"+TEL_H.map(h=>"<i style='height:"+h+"%'></i>").join("")+"</div>"
+  +"<div class='tel-wave "+telWaveKlasse(a.phase)+"'>"+TEL_H.map((h,i)=>"<i style='height:"+h+"%;animation-delay:-"+(i*90)+"ms'></i>").join("")+"</div>"
   +"<span class='tel-chip "+chipCls+"'>"+escapeHtml(last)+"</span>"
   +"<ul class='tel-ereignisse'>"+a.events.map(ev=>"<li><span class='t'>"+(ev.s==="—"?"—":"+"+ev.s+" s")+"</span><span>"+escapeHtml(ev.txt)+"</span></li>").join("")+"</ul>"
   +"<div class='tel-actions'>"+actions+"</div>"
