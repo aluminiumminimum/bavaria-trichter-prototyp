@@ -5398,13 +5398,14 @@ const INBOUND_POOL=[
  {kanal:"E-Mail",einzelperson:true,name:"Herr Reinhardt",alter:61,rolle:"Patient",achse:"SalutoCare",kt:"Selbstzahler",quelle:"klinik-bavaria.com",tit:"E-Mail: Selbstzahler (61) fragt Premium-Suite an",txt:"Sehr geehrte Damen und Herren, ich hatte kürzlich eine Operation und suche jetzt eine Anschluss-Reha mit etwas mehr Komfort, wenn möglich eine Ihrer Suiten. Ich bin 61 Jahre alt und zahle selbst, daher wäre mir wichtig, möglichst schnell einen Termin zu bekommen. Über eine Rückmeldung würde ich mich sehr freuen. Mit freundlichen Grüßen, Werner Reinhardt, Tel. 0171 2298034, w.reinhardt@demo-mail.local",wer:"Herr Reinhardt fragt selbst (61)",zusammenfassung:"Herr Reinhardt (61) fragt per E-Mail selbst nach der Premium-Suite — Komfort-Reha nach OP, möglichst kurzfristig."},
  {kanal:"Website",einzelperson:false,name:"Frau Dr. Kessler",alter:58,rolle:"Zuweiser",achse:"Orthopädie",kt:"Privat",quelle:"Privatpraxis",tit:"Website-Formular: Privatärztin meldet Patientin (58) nach Hüft-TEP",txt:"Guten Tag, ich bin niedergelassene Fachärztin in eigener Privatpraxis und möchte Ihnen meine Patientin Renate Hofstetter, geb. 19.02.1968 (58 J.), nach Hüft-TEP rechts zur AHB vorstellen. Sie ist privat versichert (Vollversicherung), Operation war vor neun Tagen, Mobilisation läuft gut. Eine möglichst kurzfristige Aufnahme wäre ihr wichtig. Arztbrief und OP-Bericht sende ich auf Ihre Rückmeldung sofort zu. Mit freundlichen Grüßen, Dr. med. S. Kessler, Privatpraxis Bad Kissingen, Tel. 09732 5510044, praxis.kessler@demo-privatpraxis.local",patient:{name:"Renate Hofstetter",alter:58},wer:"Privatärztin Dr. Kessler meldet Renate Hofstetter (58) nach Hüft-TEP an",zusammenfassung:"Privatärztin Dr. Kessler meldet ihre Patientin Renate Hofstetter (58) nach Hüft-TEP zur AHB an — PKV-Vollversicherung, kurzfristige Aufnahme gewünscht."}
 ];
-function inbToast(state,title,sub,fid){
+function inbToast(state,title,sub,fid,action){
  let el=document.getElementById("inbToast");
  if(!el){el=document.createElement("div");el.id="inbToast";document.body.appendChild(el);}
  el.className="inb-toast "+state+" show";
  el.innerHTML="<span class='inb-ic'>"+(state==="done"?"✓":"✉")+"</span>"
    +"<div class='inb-tx'><div class='inb-t'>"+title+"</div>"+(sub?"<div class='inb-s'>"+sub+"</div>":"")+"</div>"
-   +(fid!=null?"<button class='inb-open' onclick='hideInbToast();go(\"faelle\",\"board\");openDetail("+fid+")'>Fall öffnen ›</button>":"")
+   +(action?"<button class='inb-open' onclick='hideInbToast();"+action+"'>Zum Anruf ›</button>"
+           :(fid!=null?"<button class='inb-open' onclick='hideInbToast();go(\"faelle\",\"board\");openDetail("+fid+")'>Fall öffnen ›</button>":""))
    +"<button class='inb-x' onclick='hideInbToast()' aria-label='Schließen'>×</button>";
  clearTimeout(_inbToastTimer);
  if(state==="done")_inbToastTimer=setTimeout(hideInbToast,9000);
@@ -8051,9 +8052,9 @@ var TEL_STATE={aktiv:null,min:0,ok:0,done:{}};
 var TEL_FALLBACK_NR="0176 4471 2280";
 var TEL_H=[38,62,45,70,52,80,40,66,55,74,48,60,42,72,58,66,36,64,50,76,44,68,54,62];
 var TEL_SZEN={
- mensch:[[0,"waehlt","Wählt …"],[1200,"klingelt","Klingelt …"],[4800,"analyse","Abgehoben — analysiere …"],[6300,"alarm","Mensch in der Leitung — Überbrückungsansage läuft"]],
- ab:[[0,"waehlt","Wählt …"],[1200,"klingelt","Klingelt …"],[6000,"analyse","Abgehoben — analysiere …"],[7500,"ab","Anrufbeantworter erkannt"]],
- kasse:[[0,"waehlt","Wählt …"],[1200,"musik","Verbunden — Warteschleife · Musik erkannt"],[6000,"ansage","Bandansage erkannt — kein Mensch, weiter warten"],[9000,"musik","Warteschleife · Musik läuft weiter"],[14000,"analyse","Stimme erkannt — analysiere …"],[15500,"alarm","Mitarbeiter:in der ARKADIA in der Leitung — Überbrückungsansage läuft"]]
+ mensch:[[0,"waehlt","Wählt …"],[600,"klingelt","Klingelt …"],[1900,"analyse","Abgehoben — analysiere …"],[2700,"alarm","Mensch in der Leitung — Überbrückungsansage läuft"]],
+ ab:[[0,"waehlt","Wählt …"],[600,"klingelt","Klingelt …"],[2200,"analyse","Abgehoben — analysiere …"],[3000,"ab","Anrufbeantworter erkannt"]],
+ kasse:[[0,"waehlt","Wählt …"],[600,"musik","Verbunden — Warteschleife · Musik erkannt"],[2300,"ansage","Bandansage erkannt — kein Mensch, weiter warten"],[3300,"musik","Warteschleife · Musik läuft weiter"],[4800,"analyse","Stimme erkannt — analysiere …"],[5600,"alarm","Mitarbeiter:in der ARKADIA in der Leitung — Überbrückungsansage läuft"]]
 };
 /* Gesprächsphase: Dialog-Skript + abgeleitete Feld-Kandidaten je Szenario. "mensch" (Fall 3,
    Maria Probst) und "kasse" (Fall 6, Heinz Vogel · ARKADIA) sind befuellt — "ab" bleibt leer
@@ -8061,27 +8062,27 @@ var TEL_SZEN={
 var TEL_DIALOG={
  mensch:[
   [0,"klinik","Klinik Bavaria, Koordination — Sie hatten um einen Rückruf gebeten. Spreche ich mit Frau Probst?",null],
-  [1600,"gast","Ja, hallo. Ich hatte über Ihre Website angefragt.",null],
-  [3400,"gast","Es geht um die Anschlussbehandlung. Die Hüft-TEP war am 14. Juli, ich komme zuhause schlecht zurecht.",0],
-  [6200,"klinik","Wie schnell bräuchten Sie den Platz?",null],
-  [7600,"gast","Am liebsten nächste Woche, sonst so früh wie möglich.",1],
-  [9800,"klinik","Und zur Abrechnung — Sie hatten Selbstzahlerin angegeben?",null],
-  [11200,"gast","Ja. Das Komfortzimmer zahle ich selbst, gern mit Blick ins Grüne. Die Rechnung bitte an mich privat.",2],
-  [14000,"klinik","Haben Sie den Entlassbrief der Akutklinik?",null],
-  [15400,"gast","Den bekomme ich Freitag von der Orthopädie, dann schicke ich ihn per Mail.",3],
-  [18000,"gast","Mein Mann würde mich hinbringen, der bleibt aber nicht über Nacht.",4]
+  [850,"gast","Ja, hallo. Ich hatte über Ihre Website angefragt.",null],
+  [1700,"gast","Es geht um die Anschlussbehandlung. Die Hüft-TEP war am 14. Juli, ich komme zuhause schlecht zurecht.",0],
+  [2550,"klinik","Wie schnell bräuchten Sie den Platz?",null],
+  [3400,"gast","Am liebsten nächste Woche, sonst so früh wie möglich.",1],
+  [4250,"klinik","Und zur Abrechnung — Sie hatten Selbstzahlerin angegeben?",null],
+  [5100,"gast","Ja. Das Komfortzimmer zahle ich selbst, gern mit Blick ins Grüne. Die Rechnung bitte an mich privat.",2],
+  [5950,"klinik","Haben Sie den Entlassbrief der Akutklinik?",null],
+  [6800,"gast","Den bekomme ich Freitag von der Orthopädie, dann schicke ich ihn per Mail.",3],
+  [7650,"gast","Mein Mann würde mich hinbringen, der bleibt aber nicht über Nacht.",4]
  ],
  ab:[],
  kasse:[
   [0,    "gast",  "ARKADIA Leistungsabteilung, Sommer, guten Tag.", null],
-  [1800, "klinik","Klinik Bavaria, Kostenmanagement. Es geht um die Kostenzusage für Herrn Heinz Vogel — angefragt vor drei Tagen, inklusive Zuschlag für die Beatmungsentwöhnung.", null],
-  [5200, "gast",  "Einen Moment, ich schaue nach … ja, der Antrag liegt hier vor.", null],
-  [7600, "gast",  "Der Zuschlag für das Weaning ist genehmigt. Die Zusage geht heute raus.", 0],
-  [10400,"klinik","Ab welchem Datum gilt sie?", null],
-  [11800,"gast",  "Ab dem 4. August, zunächst für 21 Tage. Verlängerung nach Bericht ist möglich.", 1],
-  [15200,"gast",  "Was mir noch fehlt: die ärztliche Bestätigung der Übernahmefähigkeit. Ohne die kann ich den Vorgang nicht schließen.", 2],
-  [19000,"klinik","Die liegt uns intern vor, ich lasse sie heute rausgehen.", null],
-  [21000,"gast",  "Gut. Unser Aktenzeichen für Rückfragen ist AK-2026-88431.", 3]
+  [850, "klinik","Klinik Bavaria, Kostenmanagement. Es geht um die Kostenzusage für Herrn Heinz Vogel — angefragt vor drei Tagen, inklusive Zuschlag für die Beatmungsentwöhnung.", null],
+  [1700, "gast",  "Einen Moment, ich schaue nach … ja, der Antrag liegt hier vor.", null],
+  [2550, "gast",  "Der Zuschlag für das Weaning ist genehmigt. Die Zusage geht heute raus.", 0],
+  [3400,"klinik","Ab welchem Datum gilt sie?", null],
+  [4250,"gast",  "Ab dem 4. August, zunächst für 21 Tage. Verlängerung nach Bericht ist möglich.", 1],
+  [5100,"gast",  "Was mir noch fehlt: die ärztliche Bestätigung der Übernahmefähigkeit. Ohne die kann ich den Vorgang nicht schließen.", 2],
+  [5950,"klinik","Die liegt uns intern vor, ich lasse sie heute rausgehen.", null],
+  [6800,"gast",  "Gut. Unser Aktenzeichen für Rückfragen ist AK-2026-88431.", 3]
  ]
 };
 var TEL_KAND={
@@ -8171,6 +8172,8 @@ function telRenderBuehne(){
  if(a.phase==="einwilligung")actions="<button class='tel-uebernehmen' type='button' onclick='telConsent(1)'>✓ Einwilligung erteilt · mitschreiben</button><button class='btn-ghost btn-sm' type='button' onclick='telConsent(0)'>Ohne Mitschrift</button>"+actions;
  if(a.phase==="gespraech")actions="<button class='tel-uebernehmen' type='button' onclick='telGespraechEnde()'>Gespräch beenden ›</button>"+actions;
  if(a.phase==="nachbereitung")actions="<button class='tel-uebernehmen' type='button' onclick='telAbschluss()'>In die Akte übernehmen ›</button>";
+ if(["waehlt","klingelt","musik","ansage","analyse","gespraech"].indexOf(a.phase)>-1)
+  actions="<button class='btn-ghost btn-sm' type='button' onclick='telVorspulen()'>▸▸ Vorspulen</button>"+actions;
  let consentHtml="";
  if(a.phase==="einwilligung"){
   /* Kassen-Szenario: der Gesprächspartner ist eine Versicherungsangestellte, nicht die
@@ -8225,7 +8228,7 @@ function telRenderBuehne(){
  el.innerHTML="<div class='tel-stage'>"
   +"<div style='display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center'>"
   +"<div><b>"+escapeHtml(a.name)+"</b> <span class='au-micro'>"+escapeHtml(a.nummer)+"</span></div>"
-  +(a.szenario==="kasse"?"<span class='tel-raffer'>Zeitraffer — real ~12 Min</span>":"")
+  +(a.szenario==="kasse"?"<span class='tel-raffer' id='telRafferTxt'>"+telRafferLabel(a)+"</span>":"")
   +"</div>"
   +"<div class='tel-wave "+telWaveKlasse(a.phase)+"'>"+TEL_H.map((h,i)=>"<i style='height:"+h+"%;animation-delay:-"+(i*90)+"ms'></i>").join("")+"</div>"
   +"<span class='tel-chip "+chipCls+"'>"+escapeHtml(chipTxt)+"</span>"
@@ -8241,7 +8244,7 @@ function telRenderKonzept(){
  el.innerHTML="<div class='kicker' style='margin-top:26px'>So funktioniert's</div>"
   +"<div class='tel-steps'>"
   +"<div class='tel-step'><b>1 · Mensch wählt</b><p>Per Klick aus der Liste. Nie von selbst.</p></div>"
-  +"<div class='tel-step dominant'><b>2 · Assistent hört zu — lokal</b><p>Klassifiziert im Browser der Mitarbeiterin: Klingeln, Musik, Bandansage, Mensch, Anrufbeantworter. Keine Cloud, keine Aufzeichnung — das Audio verlässt das Haus nie.</p><span class='au-micro'>Browser ist Endpunkt · Erkennung ~1,5 s · Wiedervorlage 5★ heute · 4★ morgen · 3★ +2 Tage</span></div>"
+  +"<div class='tel-step dominant'><b>2 · Assistent hört zu — lokal</b><p>Klassifiziert im Browser der Mitarbeiterin: Klingeln, Musik, Bandansage, Mensch, Anrufbeantworter. Keine Cloud, keine Aufzeichnung — das Audio verlässt das Haus nie.</p><span class='au-micro'>Browser ist Endpunkt · Erkennung ~1,5 s · Wiedervorlage 5★ heute · 4★ morgen · 3★ +2 Tage · Demo im Zeitraffer — eine echte Warteschleife dauert ~12 Minuten</span></div>"
   +"<div class='tel-step'><b>3 · Mensch übernimmt</b><p>Alarm im selben Fenster, Ansage hält die Leitung, die Akte öffnet sich.</p></div>"
   +"</div>";
 }
@@ -8250,22 +8253,66 @@ function telAnruf(fid,typ,szen){
  const f=faelle.find(x=>x.id===fid);if(!f)return;
  const e=telQueue().find(x=>x.fallId===fid&&x.typ===typ);
  TEL_STATE.aktiv={fallId:fid,typ:typ,szenario:szen,phase:"waehlt",name:e?e.name:f.name,nummer:e?e.nummer:telNummer(f),events:[],timer:[],
-  mitschrift:null,dialogIdx:0,zeilen:[],kandidaten:[],consentZeit:"",uebernommen:[],ergebnis:null,notiz:null};
- (TEL_SZEN[szen]||[]).forEach(step=>{
-  const id=setTimeout(function(){telPhase(step[1],step[2],step[0]);},step[0]*TEL_TEMPO);
+  mitschrift:null,dialogIdx:0,zeilen:[],kandidaten:[],consentZeit:"",uebernommen:[],ergebnis:null,notiz:null,
+  warteSek:0,uhrTimer:null,szenIdx:0};
+ (TEL_SZEN[szen]||[]).forEach((step,idx)=>{
+  const id=setTimeout(function(){TEL_STATE.aktiv.szenIdx=idx+1;telPhase(step[1],step[2],step[0]);},step[0]*TEL_TEMPO);
   TEL_STATE.aktiv.timer.push(id);
  });
  renderTelefon();
  const b=document.getElementById("telBuehne");if(b)b.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
+/* Zeitraffer-Warteuhr (nur Szenario "kasse"): zaehlt Ticks, liest keine Uhrzeit. Start beim ersten
+   Eintritt in Phase "musik", Deckel bei 708 s (=11:48) — dort steht sie, bis Phase "alarm" den
+   Chip auf die Endmeldung umstellt und das Interval clearet. */
+function telMmSs(sek){
+ const m=Math.floor(sek/60),s=sek%60;
+ return (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+}
+function telRafferLabel(a){
+ if(a.phase==="alarm")return "Wartezeit 11:48 übernommen · Zeitraffer";
+ return "Warteschleife "+telMmSs(a.warteSek||0)+" · Zeitraffer";
+}
+function telAlarmCheck(a){
+ if(!a||(a.phase!=="alarm"&&a.phase!=="ab"))return;
+ const av=document.querySelector(".view.active");
+ if(av&&av.id==="view-telefon")return;
+ /* Zwei verschiedene Nachrichten: beim Anrufbeantworter ist gerade KEIN Mensch dran, da wartet
+    nur die Entscheidung "Nachricht hinterlassen oder auflegen". */
+ if(a.phase==="ab"){
+  inbToast("done","<b>Anrufbeantworter erkannt</b>",escapeHtml(a.name)+" — Nachricht hinterlassen?",null,"telZurueckZurLeitung()");
+  return;
+ }
+ inbToast("done","<b>● Mensch in der Leitung</b>",escapeHtml(a.name)+" — Gespräch übernehmen",null,"telZurueckZurLeitung()");
+}
+function telZurueckZurLeitung(){
+ go("telefon");
+ setTimeout(function(){
+  const b=document.getElementById("telBuehne");if(b)b.scrollIntoView({behavior:"smooth",block:"nearest"});
+ },250);
+}
 function telPhase(ph,txt,ms){
  const a=TEL_STATE.aktiv;if(!a)return;
  a.phase=ph;a.events.push({s:Math.round(ms/100)/10,txt:txt});
+ if(a.szenario==="kasse"&&ph==="musik"&&!a.uhrTimer){
+  a.uhrTimer=setInterval(function(){
+   const cur=TEL_STATE.aktiv;if(!cur||!cur.uhrTimer)return;
+   cur.warteSek=Math.min(708,cur.warteSek+18);
+   const el=document.getElementById("telRafferTxt");if(el)el.textContent=telRafferLabel(cur);
+   if(cur.warteSek>=708){clearInterval(cur.uhrTimer);cur.uhrTimer=null;}
+  },120);
+ }
+ if(ph==="alarm"){
+  a.warteSek=708;
+  if(a.uhrTimer){clearInterval(a.uhrTimer);a.uhrTimer=null;}
+ }
  telRenderBuehne();
+ telAlarmCheck(a);
 }
 function telEnde(){
  const a=TEL_STATE.aktiv;if(!a)return;
  a.timer.forEach(clearTimeout);
+ if(a.uhrTimer){clearInterval(a.uhrTimer);a.uhrTimer=null;}
  TEL_STATE.aktiv=null;
  renderTelefon();
 }
@@ -8442,6 +8489,39 @@ function telAuflegen(){
   else{telLog(f,"✆ Anruf abgebrochen");}
  }
  renderTelefon();
+}
+/* Vorspulen (§3.3): springt sofort zum naechsten Meilenstein. Vor der Einwilligung werden alle
+   noch offenen Phasen-Timer geclearet und die restlichen TEL_SZEN-Schritte sofort angewendet, bis
+   zur Endphase (alarm/ab) — die Uebernahme selbst bleibt ein Menschen-Klick. In Phase "gespraech"
+   werden stattdessen die restlichen Dialogzeilen sofort angehaengt. szenIdx/dialogIdx verhindern
+   Duplikate in der Ereignis-Zeitleiste bzw. Mitschrift. */
+function telVorspulen(){
+ const a=TEL_STATE.aktiv;if(!a)return;
+ if(a.phase==="gespraech"){
+  a.timer.forEach(clearTimeout);a.timer=[];
+  (TEL_DIALOG[a.szenario]||[]).slice(a.dialogIdx).forEach(function(step){
+   a.zeilen.push({wer:step[1],text:step[2]});
+   if(step[3]!==null&&step[3]!==undefined){
+    const k=(TEL_KAND[a.szenario]||[])[step[3]];
+    if(k)a.kandidaten.push(k);
+   }
+  });
+  a.dialogIdx=(TEL_DIALOG[a.szenario]||[]).length;
+  telRenderBuehne();
+  return;
+ }
+ if(["waehlt","klingelt","musik","ansage","analyse"].indexOf(a.phase)===-1)return;
+ a.timer.forEach(clearTimeout);a.timer=[];
+ (TEL_SZEN[a.szenario]||[]).slice(a.szenIdx).forEach(function(step){
+  a.phase=step[1];a.events.push({s:Math.round(step[0]/100)/10,txt:step[2]});
+ });
+ a.szenIdx=(TEL_SZEN[a.szenario]||[]).length;
+ if(a.szenario==="kasse"){
+  if(a.uhrTimer){clearInterval(a.uhrTimer);a.uhrTimer=null;}
+  a.warteSek=708;
+ }
+ telRenderBuehne();
+ telAlarmCheck(a);
 }
 function kfKontaktBody(f){
  const sop=sopChecklisteHtml(f,"rueckruf");
