@@ -8056,10 +8056,22 @@ var TEL_SZEN={
  ab:[[0,"waehlt","Wählt …"],[600,"klingelt","Klingelt …"],[2200,"analyse","Abgehoben — analysiere …"],[3000,"ab","Anrufbeantworter erkannt"]],
  kasse:[[0,"waehlt","Wählt …"],[600,"musik","Verbunden — Warteschleife · Musik erkannt"],[2300,"ansage","Bandansage erkannt — kein Mensch, weiter warten"],[3300,"musik","Warteschleife · Musik läuft weiter"],[4800,"analyse","Stimme erkannt — analysiere …"],[5600,"alarm","Mitarbeiter:in der ARKADIA in der Leitung — Überbrückungsansage läuft"]]
 };
-/* Gesprächsphase: Dialog-Skript + abgeleitete Feld-Kandidaten je Szenario. "mensch" (Fall 3,
-   Maria Probst) und "kasse" (Fall 6, Heinz Vogel · ARKADIA) sind befuellt — "ab" bleibt leer
-   (kein Gespräch, nur Ansage), die Buehne zeigt dort die Leerzeile aus telRenderBuehne(). */
+/* Gesprächsphase: Dialog-Skript + abgeleitete Feld-Kandidaten. Schluessel ist entweder das
+   Szenario ("mensch"/"ab"/"kasse") ODER "szenario:fallId" — der fallspezifische Schluessel
+   gewinnt (telSkriptKey). Ohne das redete jeder mensch-Rueckruf mit Maria Probsts Text, auch
+   Anna Muster. "ab" bleibt leer: dort gibt es kein Gespraech, nur die Ansage. */
 var TEL_DIALOG={
+ "mensch:1":[
+  [0,"klinik","Klinik Bavaria, Koordination — spreche ich mit der Tochter von Frau Muster?",null],
+  [850,"gast","Ja, hallo. Der Sozialdienst hat gesagt, Sie melden sich.",null],
+  [1700,"gast","Es geht um meine Mutter. Schlaganfall, vor zehn Tagen, sie liegt in Bad Neustadt und soll so schnell wie möglich in die Reha.",0],
+  [2550,"klinik","Wie ist sie im Moment mobil?",null],
+  [3400,"gast","Ein paar Schritte mit Hilfe. Der rechte Arm macht noch nicht mit, Sprechen geht wieder gut.",1],
+  [4250,"klinik","Wann könnte sie verlegt werden?",null],
+  [5100,"gast","Die Ärztin sagt, ab Montag ginge es.",2],
+  [5950,"gast","Die Unterlagen wollte die Station Ihnen faxen — ist das angekommen?",3],
+  [6800,"gast","Und eine Frage noch: Gibt es ein Zimmer, in dem ich auch mal übernachten könnte?",4]
+ ],
  mensch:[
   [0,"klinik","Klinik Bavaria, Koordination — Sie hatten um einen Rückruf gebeten. Spreche ich mit Frau Probst?",null],
   [850,"gast","Ja, hallo. Ich hatte über Ihre Website angefragt.",null],
@@ -8086,6 +8098,13 @@ var TEL_DIALOG={
  ]
 };
 var TEL_KAND={
+ "mensch:1":[
+  {feld:"Diagnose / Indikation",wert:"Z. n. Schlaganfall (vor 10 Tagen)",zitat:"Schlaganfall, vor zehn Tagen"},
+  {feld:"Funktionsstand",wert:"Gehen mit Hilfe · rechter Arm eingeschränkt · Sprache gut",zitat:"Ein paar Schritte mit Hilfe"},
+  {feld:"Aufnahmewunsch",wert:"ab Montag verlegbar · schnellstmöglich",zitat:"Die Ärztin sagt, ab Montag ginge es"},
+  {feld:"Offener Punkt",wert:"Unterlagen der Station per Fax prüfen",zitat:"Die Unterlagen wollte die Station Ihnen faxen"},
+  {feld:"Wunsch",wert:"Übernachtungsmöglichkeit für die Tochter prüfen",zitat:"Gibt es ein Zimmer, in dem ich auch mal übernachten könnte?"}
+ ],
  mensch:[
   {feld:"Diagnose / Indikation",wert:"Z. n. Hüft-TEP (OP 14.07.)",zitat:"Die Hüft-TEP war am 14. Juli"},
   {feld:"Aufnahmewunsch",wert:"so früh wie möglich · Wunsch nächste Woche",zitat:"Am liebsten nächste Woche"},
@@ -8100,6 +8119,12 @@ var TEL_KAND={
   {feld:"Offener Punkt",wert:"Ärztliche Bestätigung der Übernahmefähigkeit nachsenden", zitat:"die ärztliche Bestätigung der Übernahmefähigkeit"},
   {feld:"Aktenzeichen", wert:"AK-2026-88431", zitat:"Unser Aktenzeichen für Rückfragen ist AK-2026-88431"}
  ]
+};
+/* Vorbefuellte Gespraechsnotiz, gleiche Schluessel-Logik wie TEL_DIALOG (telSkriptKey). */
+var TEL_NOTIZ={
+ "mensch:1":"Rückruf erreicht — Tochter von Frau Muster (67). Anschlussreha nach Schlaganfall vor zehn Tagen, Verlegung laut Station ab Montag möglich. Gehen mit Hilfe, rechter Arm eingeschränkt, Sprache gut. Unterlagen kommen per Fax von der Station. Tochter fragt nach einer Übernachtungsmöglichkeit.",
+ mensch:"Rückruf erreicht. Frau Probst wünscht die Anschlussbehandlung nach Hüft-TEP (OP 14.07.), Aufnahme so früh wie möglich. Komfortzimmer als Selbstzahlerleistung, Rechnung privat. Entlassbrief kommt Freitag per Mail. Anreise durch den Ehemann, keine Begleitperson-Übernachtung.",
+ kasse:"ARKADIA erreicht (Frau Sommer). Kostenzusage für Herrn Vogel erteilt, Beatmungs-Zuschlag genehmigt, gültig ab 04.08. für zunächst 21 Tage, Verlängerung nach Bericht möglich. Ärztliche Bestätigung der Übernahmefähigkeit muss noch nachgesendet werden. Aktenzeichen AK-2026-88431."
 };
 function telNummer(f){
  let n=(typeof telAusText==="function"&&f.originalTxt)?telAusText(f.originalTxt):"";
@@ -8244,7 +8269,7 @@ function telRenderKonzept(){
  el.innerHTML="<div class='kicker' style='margin-top:26px'>So funktioniert's</div>"
   +"<div class='tel-steps'>"
   +"<div class='tel-step'><b>1 · Mensch wählt</b><p>Per Klick aus der Liste. Nie von selbst.</p></div>"
-  +"<div class='tel-step dominant'><b>2 · Assistent hört zu — lokal</b><p>Klassifiziert im Browser der Mitarbeiterin: Klingeln, Musik, Bandansage, Mensch, Anrufbeantworter. Keine Cloud, keine Aufzeichnung — das Audio verlässt das Haus nie.</p><span class='au-micro'>Browser ist Endpunkt · Erkennung ~1,5 s · Wiedervorlage 5★ heute · 4★ morgen · 3★ +2 Tage · Demo im Zeitraffer — eine echte Warteschleife dauert ~12 Minuten</span></div>"
+  +"<div class='tel-step dominant'><b>2 · Assistent hört zu — im Haus</b><p>Erkennung und Mitschrift laufen auf einem Server der Klinik: Klingeln, Musik, Bandansage, Mensch, Anrufbeantworter — und der Wortlaut. Keine Cloud, keine Tonaufnahme; das Audio verlässt das Haus nie.</p><span class='au-micro'>Server im Haus ist Endpunkt · Erkennung ~1,5 s · Wiedervorlage 5★ heute · 4★ morgen · 3★ +2 Tage · Demo im Zeitraffer — eine echte Warteschleife dauert ~12 Minuten</span></div>"
   +"<div class='tel-step'><b>3 · Mensch übernimmt</b><p>Alarm im selben Fenster, Ansage hält die Leitung, die Akte öffnet sich.</p></div>"
   +"</div>";
 }
@@ -8270,7 +8295,9 @@ function telMmSs(sek){
  return (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
 }
 function telRafferLabel(a){
- if(a.phase==="alarm")return "Wartezeit 11:48 übernommen · Zeitraffer";
+ /* Sobald die Uhr am Deckel steht, ist die Wartezeit uebernommen — das gilt auch fuer alle
+    Phasen NACH dem Alarm (Gespraech, Nachbereitung), sonst stand dort wieder "Warteschleife". */
+ if(a.phase==="alarm"||(a.warteSek||0)>=708)return "Wartezeit 11:48 übernommen · Zeitraffer";
  return "Warteschleife "+telMmSs(a.warteSek||0)+" · Zeitraffer";
 }
 function telAlarmCheck(a){
@@ -8328,15 +8355,22 @@ function telUebernehmen(){
  a.phase="einwilligung";
  telRenderBuehne();
 }
+/* Fallspezifischer Schluessel gewinnt vor dem Szenario-Standard — s. Kommentar an TEL_DIALOG. */
+function telSkriptKey(a){
+ const k=a.szenario+":"+a.fallId;
+ return TEL_DIALOG[k]?k:a.szenario;
+}
+function telSkript(a){return TEL_DIALOG[telSkriptKey(a)]||[];}
+function telKandListe(a){return TEL_KAND[telSkriptKey(a)]||[];}
 function telDialogStart(a){
- (TEL_DIALOG[a.szenario]||[]).forEach(function(step,idx){
+ telSkript(a).forEach(function(step,idx){
   const id=setTimeout(function(){
    if(!TEL_STATE.aktiv||TEL_STATE.aktiv.phase!=="gespraech")return;
    const cur=TEL_STATE.aktiv;
    cur.zeilen.push({wer:step[1],text:step[2]});
    cur.dialogIdx=idx+1;
    if(step[3]!==null&&step[3]!==undefined){
-    const k=(TEL_KAND[cur.szenario]||[])[step[3]];
+    const k=telKandListe(cur)[step[3]];
     if(k)cur.kandidaten.push(k);
    }
    telRenderBuehne();
@@ -8368,8 +8402,7 @@ function telNotizVorschlag(a){
   const sw=document.getElementById("telStichworte");
   return (sw&&sw.value)?sw.value:"";
  }
- if(a.szenario==="kasse")return "ARKADIA erreicht (Frau Sommer). Kostenzusage für Herrn Vogel erteilt, Beatmungs-Zuschlag genehmigt, gültig ab 04.08. für zunächst 21 Tage, Verlängerung nach Bericht möglich. Ärztliche Bestätigung der Übernahmefähigkeit muss noch nachgesendet werden. Aktenzeichen AK-2026-88431.";
- return "Rückruf erreicht. Frau Probst wünscht die Anschlussbehandlung nach Hüft-TEP (OP 14.07.), Aufnahme so früh wie möglich. Komfortzimmer als Selbstzahlerleistung, Rechnung privat. Entlassbrief kommt Freitag per Mail. Anreise durch den Ehemann, keine Begleitperson-Übernachtung.";
+ return TEL_NOTIZ[telSkriptKey(a)]||TEL_NOTIZ[a.szenario]||"";
 }
 /* Tippen im Notizfeld haelt TEL_STATE.aktiv.notiz synchron, ohne bei jedem Zeichen neu zu rendern
    — noetig, weil Kandidaten-/Ergebnis-Klicks die Buehne neu aufbauen und die Notiz sonst verloren ginge. */
@@ -8499,14 +8532,14 @@ function telVorspulen(){
  const a=TEL_STATE.aktiv;if(!a)return;
  if(a.phase==="gespraech"){
   a.timer.forEach(clearTimeout);a.timer=[];
-  (TEL_DIALOG[a.szenario]||[]).slice(a.dialogIdx).forEach(function(step){
+  telSkript(a).slice(a.dialogIdx).forEach(function(step){
    a.zeilen.push({wer:step[1],text:step[2]});
    if(step[3]!==null&&step[3]!==undefined){
-    const k=(TEL_KAND[a.szenario]||[])[step[3]];
+    const k=telKandListe(a)[step[3]];
     if(k)a.kandidaten.push(k);
    }
   });
-  a.dialogIdx=(TEL_DIALOG[a.szenario]||[]).length;
+  a.dialogIdx=telSkript(a).length;
   telRenderBuehne();
   return;
  }
