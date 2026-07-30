@@ -8002,6 +8002,161 @@ function wvNichtErreicht(fid){
  if(typeof renderMeinTag==="function")renderMeinTag();
  if(typeof mtSheetRender==="function")mtSheetRender();
 }
+/* ===== TELEFON · KI-ANRUF-ASSISTENT (tel-Funktionen) =====
+   Interaktive Demo des assistierten Anrufs. Deterministisch, offline, ohne Proxy.
+   Kein Selbst-Waehlen (Human-in-the-loop). Nach dem Alarm laeuft KEIN Timer mehr —
+   das Szenario wartet auf den Klick. Verboten hier: sendReply/kzNotizAdd/simTrigger. */
+var TEL_TEMPO=1;
+var TEL_STATE={aktiv:null,min:0,ok:0,done:{}};
+var TEL_FALLBACK_NR="0176 4471 2280";
+var TEL_H=[38,62,45,70,52,80,40,66,55,74,48,60,42,72,58,66,36,64,50,76,44,68,54,62];
+var TEL_SZEN={
+ mensch:[[0,"waehlt","Wählt …"],[1200,"klingelt","Klingelt …"],[4800,"analyse","Abgehoben — analysiere …"],[6300,"alarm","● Mensch in der Leitung — Überbrückungsansage läuft"]],
+ ab:[[0,"waehlt","Wählt …"],[1200,"klingelt","Klingelt …"],[6000,"analyse","Abgehoben — analysiere …"],[7500,"ab","Anrufbeantworter erkannt"]],
+ kasse:[[0,"waehlt","Wählt …"],[1200,"musik","Verbunden — Warteschleife · Musik erkannt"],[6000,"ansage","Bandansage erkannt — kein Mensch, weiter warten"],[9000,"musik","Warteschleife · Musik läuft weiter"],[14000,"analyse","Stimme erkannt — analysiere …"],[15500,"alarm","● Mitarbeiter:in der ARKADIA in der Leitung — Überbrückungsansage läuft"]]
+};
+function telNummer(f){
+ let n=(typeof telAusText==="function"&&f.originalTxt)?telAusText(f.originalTxt):"";
+ if(!n&&f.personId&&typeof person==="function"){const p=person(f.personId);n=(p&&p.telefon)||"";}
+ return n||TEL_FALLBACK_NR;
+}
+function telSterne(n){let s="";for(let i=1;i<=5;i++)s+=i<=n?"★":"☆";return s;}
+function telQueue(){
+ const q=[];
+ faelle.filter(f=>["Neu","Kontaktiert","Qualifizierung"].includes(f.status)&&f.status!=="Verloren").forEach(f=>{
+  const p=(f.personId&&typeof person==="function")?person(f.personId):null;
+  q.push({fallId:f.id,typ:"rueckruf",name:f.name,nummer:telNummer(f),
+   anlass:"Rückruf erbeten · "+(f.quelle||"Anfrage"),sterne:(p&&Number(p.sterne))||3,versuche:f.anrufe||0});
+ });
+ q.sort((a,b)=>b.sterne-a.sterne||a.fallId-b.fallId);
+ q.forEach((e,i)=>{e.szenario=(i%2===0)?"mensch":"ab";});
+ const kf=faelle.find(f=>/angefragt/i.test(f.kosten||"")&&f.status!=="Verloren");
+ if(kf)q.unshift({fallId:kf.id,typ:"kasse",name:"ARKADIA Versicherung",nummer:"0800 275 2342",
+  anlass:"Kostenzusage nachfassen · "+kf.name,sterne:5,versuche:0,szenario:"kasse"});
+ return q;
+}
+function telLog(f,txt){
+ if(!f||!f.log)return;
+ f.log.push([dstr(0),txt,typeof logZeit==="function"?logZeit():""]);
+ if(typeof demoSave==="function")demoSave();
+}
+function telWaveKlasse(ph){
+ if(ph==="musik")return "musik an";
+ if(ph==="ansage")return "ansage an";
+ if(ph==="alarm")return "mensch an";
+ if(ph==="ab")return "ansage";
+ if(ph==="analyse"||ph==="klingelt")return "an";
+ return "";
+}
+function renderTelefon(){
+ const list=document.getElementById("telListe");if(!list)return;
+ const kMin=document.getElementById("telKpiMin");if(kMin)kMin.textContent=TEL_STATE.min;
+ const kOk=document.getElementById("telKpiOk");if(kOk)kOk.textContent=TEL_STATE.ok;
+ const q=telQueue(),busy=!!TEL_STATE.aktiv;
+ if(!q.length){list.innerHTML="<div class='tel-row'><div><b>Alle Rückrufe erledigt.</b><div class='au-micro'>Neue Anfragen erscheinen hier automatisch · ↺ oben setzt die Demo zurück.</div></div></div>";}
+ else list.innerHTML=q.map(e=>{
+  const done=TEL_STATE.done[e.fallId+e.typ];
+  return "<div class='tel-row'>"
+   +"<span class='ava'>"+initialen(e.name)+"</span>"
+   +"<div style='flex:1;min-width:150px'><b>"+escapeHtml(e.name)+"</b> <span class='au-micro'>"+escapeHtml(e.nummer)+"</span>"
+   +"<div class='au-micro'>"+escapeHtml(e.anlass)+" · ✓ Rückruf erbeten"+(e.versuche?" · Versuch "+(e.versuche+1):"")+"</div></div>"
+   +"<span class='tel-st'>"+telSterne(e.sterne)+"</span>"
+   +(done?"<span class='au-micro'>✓ "+escapeHtml(done)+"</span>"
+        :"<button class='btn-ghost btn-sm' type='button' "+(busy?"disabled":"")+" onclick='telAnruf("+e.fallId+",\""+e.typ+"\",\""+e.szenario+"\")'>Anrufen ›</button>")
+   +"</div>";
+ }).join("");
+ telRenderBuehne();
+ telRenderKonzept();
+}
+function telRenderBuehne(){
+ const el=document.getElementById("telBuehne");if(!el)return;
+ const a=TEL_STATE.aktiv;
+ if(!a){el.innerHTML="";return;}
+ const chipCls=a.phase==="alarm"?"alarm":a.phase==="musik"?"musik":(a.phase==="ansage"||a.phase==="ab")?"ansage":"";
+ const last=a.events.length?a.events[a.events.length-1].txt:"Wählt …";
+ let actions="<button class='btn-ghost btn-sm' type='button' onclick='telAuflegen()'>Auflegen</button>";
+ if(a.phase==="alarm")actions="<button class='tel-uebernehmen' type='button' onclick='telUebernehmen()'>Gespräch übernehmen ›</button>"+actions;
+ if(a.phase==="ab")actions="<button class='btn-ghost btn-sm' type='button' onclick='telNachricht()'>Neutrale Nachricht abspielen</button>"+actions;
+ if(a.phase==="nachricht")actions="";
+ el.innerHTML="<div class='tel-stage'>"
+  +"<div style='display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center'>"
+  +"<div><b>"+escapeHtml(a.name)+"</b> <span class='au-micro'>"+escapeHtml(a.nummer)+"</span></div>"
+  +(a.szenario==="kasse"?"<span class='tel-raffer'>Zeitraffer — real ~12 Min</span>":"")
+  +"</div>"
+  +"<div class='tel-wave "+telWaveKlasse(a.phase)+"'>"+TEL_H.map(h=>"<i style='height:"+h+"%'></i>").join("")+"</div>"
+  +"<span class='tel-chip "+chipCls+"'>"+escapeHtml(last)+"</span>"
+  +"<ul class='tel-ereignisse'>"+a.events.map(ev=>"<li><span class='t'>"+(ev.s==="—"?"—":"+"+ev.s+" s")+"</span><span>"+escapeHtml(ev.txt)+"</span></li>").join("")+"</ul>"
+  +"<div class='tel-actions'>"+actions+"</div>"
+  +"</div>";
+}
+function telRenderKonzept(){
+ const el=document.getElementById("telKonzept");if(!el||el.innerHTML)return;
+ el.innerHTML="<div class='kicker' style='margin-top:26px'>So funktioniert's</div>"
+  +"<div class='tel-steps'>"
+  +"<div class='tel-step'><b>1 · Mensch wählt</b><p>Rückruf aus der Liste — per Klick. Das System wählt nie von selbst.</p></div>"
+  +"<div class='tel-step'><b>2 · Assistent hört zu</b><p>Klassifiziert lokal im Browser: Klingeln, Musik, Bandansage, Mensch, Anrufbeantworter. Keine Cloud, keine Aufzeichnung.</p></div>"
+  +"<div class='tel-step'><b>3 · Mensch übernimmt</b><p>Alarm im selben Fenster, Überbrückungsansage hält die Leitung, die Akte öffnet sich automatisch.</p></div>"
+  +"</div>"
+  +"<p class='au-micro' style='margin-top:10px'>Architektur: Browser ist Endpunkt der Verbindung · Erkennung ~1,5 s · Wiedervorlage-Automatik 5★ heute · 4★ morgen · 3★ +2 Tage</p>";
+}
+function telAnruf(fid,typ,szen){
+ if(TEL_STATE.aktiv)return;
+ const f=faelle.find(x=>x.id===fid);if(!f)return;
+ const e=telQueue().find(x=>x.fallId===fid&&x.typ===typ);
+ TEL_STATE.aktiv={fallId:fid,typ:typ,szenario:szen,phase:"waehlt",name:e?e.name:f.name,nummer:e?e.nummer:telNummer(f),events:[],timer:[]};
+ (TEL_SZEN[szen]||[]).forEach(step=>{
+  const id=setTimeout(function(){telPhase(step[1],step[2],step[0]);},step[0]*TEL_TEMPO);
+  TEL_STATE.aktiv.timer.push(id);
+ });
+ renderTelefon();
+ const b=document.getElementById("telBuehne");if(b)b.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function telPhase(ph,txt,ms){
+ const a=TEL_STATE.aktiv;if(!a)return;
+ a.phase=ph;a.events.push({s:Math.round(ms/100)/10,txt:txt});
+ telRenderBuehne();
+}
+function telEnde(){
+ const a=TEL_STATE.aktiv;if(!a)return;
+ a.timer.forEach(clearTimeout);
+ TEL_STATE.aktiv=null;
+ renderTelefon();
+}
+function telUebernehmen(){
+ const a=TEL_STATE.aktiv;if(!a||a.phase!=="alarm")return;
+ const f=faelle.find(x=>x.id===a.fallId);
+ if(a.szenario==="kasse"){TEL_STATE.min+=12;if(f)telLog(f,"✆ ARKADIA erreicht — Warteschleife (~12 Min) vom Assistenten übernommen");}
+ else{TEL_STATE.ok++;if(f)telLog(f,"✆ Rückruf erreicht — Gespräch übernommen (Erkennung 1,5 s)");}
+ TEL_STATE.done[a.fallId+a.typ]=a.szenario==="kasse"?"Kasse erreicht":"erreicht";
+ telEnde();
+ if(typeof inbToast==="function")inbToast("done","<b>Gespräch übernommen</b>",escapeHtml(a.name)+" — die Akte öffnet sich",null);
+ if(f&&typeof openFallakte==="function")openFallakte(f.id);
+}
+function telNachricht(){
+ const a=TEL_STATE.aktiv;if(!a||a.phase!=="ab")return;
+ a.phase="nachricht";a.events.push({s:"—",txt:"Neutrale Nachricht läuft — ohne Gesundheitsbezug"});
+ telRenderBuehne();
+ const id=setTimeout(function(){
+  const f=faelle.find(x=>x.id===a.fallId);
+  if(f&&typeof wvNichtErreicht==="function"){wvNichtErreicht(f.id);telLog(f,"✆ Neutrale Nachricht auf AB hinterlassen");}
+  TEL_STATE.done[a.fallId+a.typ]="AB · Nachricht + Wiedervorlage";
+  telEnde();
+ },2000*TEL_TEMPO);
+ a.timer.push(id);
+}
+function telAuflegen(){
+ const a=TEL_STATE.aktiv;if(!a)return;
+ const f=faelle.find(x=>x.id===a.fallId);
+ const vorAbheben=(a.phase==="waehlt"||a.phase==="klingelt");
+ const nachAlarm=(a.phase==="alarm");
+ telEnde();
+ if(f){
+  if(vorAbheben&&a.typ==="rueckruf"&&typeof wvNichtErreicht==="function"){wvNichtErreicht(f.id);}
+  else if(nachAlarm){telLog(f,"✆ Anruf beendet ohne Übernahme");}
+  else{telLog(f,"✆ Anruf abgebrochen");}
+ }
+ renderTelefon();
+}
 function kfKontaktBody(f){
  const sop=sopChecklisteHtml(f,"rueckruf");
  return kfKontaktHtml(f)+fkwStammHtml(f)+kfAnsprechHtml(f)+kfConsentHtml(f)+fkwOriginalHtml(f)
