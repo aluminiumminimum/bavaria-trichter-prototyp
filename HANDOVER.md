@@ -804,6 +804,22 @@ Cramer) wurden mit `bill` auf dem Datensatz nachgeseedet, damit sie ohne Bruch e
 
 ---
 
+## 4v. Telefon-View — KI-Anruf-Assistent als Demo (30.07., Branch feat/telefon)
+
+Neuer Top-Level-Nav-Punkt **„Telefon"** (nach „Fälle", Sidebar + Tabbar — 7 Tabbar-Einträge
+passen bei 390 px, gemessen). Namespace `.tel-` / `tel*`-Funktionen, View `#view-telefon`.
+Interaktive Demo des assistierten Anrufs (Spec/Plan: `2026-07-30-telefon-view-*`):
+Rückrufliste aus `faelle[]` (Nummern via `telAusText`, Sterne-Priorität), Live-Bühne mit
+Wellenform + Klassifikations-Chip (Wählt→Klingelt→Musik→Bandansage→Mensch/AB), drei
+gescriptete Szenarien — Mensch (Screen-Pop `openFallakte`), Anrufbeantworter (neutrale
+Nachricht + `wvNichtErreicht`-Kaskade), ARKADIA-Warteschleife (mit Zeitraffer-Chip).
+**Kein Selbst-Wählen** (Human-in-the-loop), nach dem Alarm läuft KEIN Timer. Logs 3-elementig
+in `f.log` (persistieren via demoSave), `TEL_STATE` ist Session-only. **+1 Keyframe `telWave`**
+(Bilanz jetzt 17). Kein DEMO_SCHEMA-Bump. `.kta-`-Pilot und alle Cofounder-Bereiche unangetastet
+(verifiziert: Matrix 6 Zellen, openReferrer, kta-Funktionen). LESSON: `lxPulse` skaliert
+per transform — nie auf breite Elemente legen, nur auf Punkte (7–8 px); Chip-Puls läuft
+über ein `::before`-Pseudo-Element.
+
 ## 5. Verifikation (Preview) — Pflicht vor jedem „fertig"
 - Server: `.claude/launch.json` → **`bavaria-proto`** (homebrew python3 `http.server`, Port 8765, `--directory` = Repo). Start via preview-Tool mit `{name:"bavaria-proto"}`.
 - Desktop braucht **≥1024px** (sonst sind `dbDetail` etc. gated). Preset „desktop" liefert teils <1024 → **eigene Größe 1440×900** setzen. Mobile-Preset 375/390 für die Mobil-QA.
