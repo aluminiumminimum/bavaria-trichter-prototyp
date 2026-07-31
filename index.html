@@ -3573,6 +3573,35 @@ details.fa-orig>div{padding:0 12px 12px}
 .tel-nach-ok{font-size:12px;color:var(--sage-deep);font-weight:600;white-space:nowrap}
 .tel-nach-ergebnis{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 .tel-nach-gewaehlt{background:var(--sage-soft);border-color:var(--sage-deep);color:var(--sage-deep)}
+/* ===== SERVICE-VERSPRECHEN (.sv-Klassen) — SLA-Uhr-Chips, Eskalations-Panel (Heute, Leitung),
+   Regelwerk-Tabelle (SOPs). Farbtriade der Welt: ruhig = Papier + Jade, Warnung = Gold-Familie
+   (Text brass-deep), Verstoß = Zinnober-Familie. Keine neuen Keyframes, Restzeit statisch je
+   Render. Spec 2026-07-31. */
+.sv-chip{display:inline-flex;align-items:center;gap:6px;font:600 10.5px/1.3 "Fragment Mono",monospace;letter-spacing:.02em;padding:3px 8px;border-radius:2px;border:1px solid var(--hair);background:var(--paper);color:var(--muted);max-width:100%}
+.sv-chip b{font:700 10.5px/1 Inter,sans-serif;flex:0 0 auto}
+.sv-chip.sv-ok{border-color:var(--jade-hair);color:var(--sage)}
+.sv-chip.sv-warn{border-color:var(--brass-line);background:var(--brass-soft);color:var(--brass-deep)}
+.sv-chip.sv-over{border-color:rgba(168,52,31,.4);background:var(--terra-soft);color:var(--terra)}
+.sv-kartechip{margin:6px 0 2px}
+.mmeta .sv-chip{padding:2px 6px}
+.sv-esk .kicker{color:var(--terra)}
+.sv-esk-count{display:inline-flex;min-width:18px;height:18px;align-items:center;justify-content:center;margin-left:6px;padding:0 5px;border-radius:9px;background:var(--terra);color:var(--paper);font:700 11px/1 Inter,sans-serif;letter-spacing:0}
+.sv-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 4px;border-bottom:1px solid var(--hair2)}
+.sv-row:last-child{border-bottom:none}
+.sv-row-txt{flex:1 1 260px;min-width:0}
+.sv-row-txt b{font-weight:650}
+.sv-verstoss{display:block;margin-top:3px;font:600 11px/1.5 "Fragment Mono",monospace;color:var(--terra)}
+.sv-sub{display:block;margin-top:2px;font-size:11.5px;color:var(--muted)}
+.sv-acts{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.sv-acts select{min-height:32px;padding:4px 8px;font-size:12px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
+.sv-frist{display:none;flex:1 1 100%;gap:6px;align-items:center}
+.sv-frist.open{display:flex;flex-wrap:wrap}
+.sv-frist input{flex:1 1 180px;min-width:0;min-height:32px;padding:4px 8px;font-size:12px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
+.sv-regeln{width:100%;border-collapse:collapse;margin:10px 0 14px;font-size:12.5px}
+.sv-regeln th,.sv-regeln td{padding:7px 8px;border-bottom:1px solid var(--hair2);text-align:left;vertical-align:top}
+.sv-regeln th{font:700 10px/1.3 "Fragment Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sv-regeln td b{font-family:"Cormorant Garamond",serif;font-size:16px}
+@media(max-width:480px){.sv-acts{flex:1 1 100%}}
 </style>
 </head>
 <body>
@@ -4146,6 +4175,12 @@ details.fa-orig>div{padding:0 12px 12px}
       <div class="lx-live" aria-live="polite"><i class="lx-pulse"></i><b><span data-sync="cvTotal">–</span> Anfragen heute</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.<span class="lx-rt">ECHTZEIT</span></div>
     </div>
 
+    <!-- Row B2 · Eskalationen · Service-Versprechen (sv-Präfix; nur sichtbar wenn n>0, ohne JS unsichtbar) -->
+    <div class="chap hb-12 sv-esk" id="svEskChap" style="display:none">
+      <div class="kicker">Eskalationen · Service-Versprechen <span class="sv-esk-count num" id="svEskCount">0</span></div>
+      <div class="card list-card" id="svEskList"></div>
+    </div>
+
     <!-- Row C · Heute wichtig (span 4) + Radar-Siegel-Zeile (span 8) -->
     <div class="chap hb-4">
       <div class="kicker">Heute wichtig</div>
@@ -4377,6 +4412,23 @@ details.fa-orig>div{padding:0 12px 12px}
           <div class="pstep"><b>1</b><div><span>Anfrage aufnehmen</span><small>Kanal, Quelle, Patient, Kostenträger und Kontaktstatus erfassen.</small></div></div>
           <div class="pstep"><b>2</b><div><span>Fall führen</span><small>Verantwortliche Person, nächste Aufgabe und Frist sind immer sichtbar.</small></div></div>
           <div class="pstep"><b>3</b><div><span>Aufnahme planen</span><small>Kosten, Unterlagen, Bett und Fachbereich werden in einem Status verdichtet.</small></div></div>
+        </div>
+      </div>
+      <div class="process-card">
+        <h3>Service-Versprechen · Reaktionszeiten &amp; Eskalation</h3>
+        <p>Jede Anfrage bekommt vom System eine Dringlichkeitsklasse und eine sichtbare Uhr — kein Zwang, aber ein klarer Rahmen. Läuft die Uhr ab, entscheidet die Leitung. Kein Fall bleibt still liegen.</p>
+        <table class="sv-regeln">
+          <thead><tr><th>Klasse</th><th>Wer</th><th>Erstkontakt</th></tr></thead>
+          <tbody>
+            <tr><td><b>A</b> · heiß</td><td>Zuweiser-Kanal (Fax, Recare, direkt, Portal) oder 4–5 Sterne</td><td class="num">2 Std.</td></tr>
+            <tr><td><b>B</b> · warm</td><td>Übrige qualifizierte Anfragen (Website, Telefon, E-Mail)</td><td class="num">4 Std.</td></tr>
+            <tr><td><b>C</b> · Lead</td><td>Passive Kontakte ohne konkrete Anfrage</td><td class="num">24 Std.</td></tr>
+          </tbody>
+        </table>
+        <div class="process-steps">
+          <div class="pstep"><b>1</b><div><span>Uhr sichtbar</span><small>Restzeit am Fall — Gold ab halber Restzeit, Zinnober bei Verstoß.</small></div></div>
+          <div class="pstep"><b>2</b><div><span>Eskalation an die Leitung</span><small>Verstoß erzeugt automatisch eine Entscheidung: neu zuweisen, selbst klären oder Frist mit Grund anpassen.</small></div></div>
+          <div class="pstep"><b>3</b><div><span>Alles dokumentiert</span><small>Jede Entscheidung landet im Fallverlauf — Reaktionszeiten fließen in die Auswertung.</small></div></div>
         </div>
       </div>
       <div class="process-card">
@@ -4730,7 +4782,7 @@ function initialen(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpp
 
 /* ---------- Daten (synthetisch, unverändert) ---------- */
 let faelle=[
- {id:1,personId:"P01",name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]],originalTxt:"Kurzanmeldung Sozialdienst RHÖN Campus Bad Neustadt, Station Neurologie, Az. N-1187/26. Patientin Anna Muster, 67 Jahre, Diagnose Schlaganfall, Kostenträger PKV. Aufnahme zur AHB möglichst schnell gewünscht, Tochter organisiert und bittet um Rückruf. Unterlagen folgen per Fax.",originalKanal:"Zuweiser direkt"},
+ {id:1,personId:"P01",name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",eingangZeit:"vor 3 Std.",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]],originalTxt:"Kurzanmeldung Sozialdienst RHÖN Campus Bad Neustadt, Station Neurologie, Az. N-1187/26. Patientin Anna Muster, 67 Jahre, Diagnose Schlaganfall, Kostenträger PKV. Aufnahme zur AHB möglichst schnell gewünscht, Tochter organisiert und bittet um Rückruf. Unterlagen folgen per Fax.",originalKanal:"Zuweiser direkt"},
  {id:3,personId:"P02",name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"]],originalTxt:"Hallo, ich hatte vor Kurzem eine Hüft-TEP und suche jetzt eine Reha-Klinik für die Anschlussbehandlung. Ich bin Selbstzahlerin, 58 Jahre alt, und hätte gerne ein Komfortzimmer, wenn das geht am liebsten mit Blick ins Grüne. Einen Termin bräuchte ich möglichst schnell, weil ich zuhause gerade nicht gut zurechtkomme. Viele Grüße, Maria Probst, 0170 4471182",originalKanal:"Website-Formular"},
  {id:6,personId:"P03",name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(-2),saluto:true,med:{diagnose:"Z. n. Langzeitbeatmung, Weaning laufend",neben:"Respiratorische Insuffizienz",isolation:"Nein",schwere:"hoch"},docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss: Thoraxzentrum fragt, ob Beatmungspatient (69, PKV) übernommen werden kann — Entwöhnung läuft, Entlassung geplant"],[dstr(-4),"↦ Rückfrage an Oberarzt Dr. Castelli: aktuelle Beatmungsparameter + Entwöhnungsstand erbeten"],[dstr(-3),"Antwort Thoraxzentrum: Parameter übermittelt, Spontanatmung bereits 8 Std./Tag"]],originalTxt:"Kurzanmeldung Thoraxzentrum Münnerstadt, Station Weaning, Az. TZ-0512/26. Oberarzt Dr. Castelli meldet Patient Heinz Vogel (69) zur Übernahme nach Langzeitbeatmung an, Kostenträger PKV. Frage: Ist eine Aufnahme als Beatmungspatient zur weiteren Entwöhnung bei Ihnen möglich? Um Rückruf wird gebeten unter 0971 0000-271, castelli@demo-thorax.local.",originalKanal:"Zuweiser direkt"},
  {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage: Entlassmanagement Klinikum Fulda meldet Patient (63, GKV) mit Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich"],[dstr(-4),"Entlassbrief liegt vor — von Entlassmanagement per Recare nachgereicht"],[dstr(-2),"↦ Rückfrage an Entlassmanagement: Komfort-Upgrade und Zusatzkosten angeboten, Rückmeldung ausstehend"]],originalTxt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · Patient Peter Hofmann (63), GKV, Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich. · Bitte um Rückmeldung zur Kapazität und zu den Komfort-Optionen.",originalKanal:"Recare"},
@@ -4762,7 +4814,7 @@ const passivLead={id:201,name:"Sabine Vogt",alter:54,rolle:"Patient selbst",kana
 
 let eingang=[
  {id:101,kanal:"Telefon",tit:"Anruf: Ehefrau fragt für Mann (72) nach Reha nach Herz-OP",txt:"Anruf Fr. Herrmann, 09:15 · Ehefrau ruft für ihren Mann Gerhard Herrmann (72) an, geb. 08.05.1954, liegt derzeit Station Innere 3 im Klinikum Coburg nach Herz-OP (Bypass) · sie ist unsicher beim Kostenträger, vermutet PKV, Unterlagen könne die Station schicken · möchte heute unbedingt zurückgerufen werden, Tel. 09561 0000-772",zeit:"vor 25 Min.",achse:"Innere",done:false,typ:"qualifiziert",wer:"Ehefrau Herrmann meldet Ehemann Gerhard (72) nach Herz-OP an",zusammenfassung:"Ehefrau meldet telefonisch ihren Mann Gerhard Herrmann (72) nach Herz-OP zur Reha an — Kostenträger unklar, Rückruf heute gewünscht.",gruppe:null,sterne:null,autoVerteilt:false,patient:{name:"Gerhard Herrmann",alter:72}},
- {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Kurzanmeldung Sozialdienst RHÖN Bad Neustadt, Station Neurologie 2, Az. N-0472/26.\nPatient: Friedrich Sander, geb. 14.03.1958 (68 J.), wohnhaft in Bad Kissingen.\nDiagnose: Z. n. Media-Infarkt links mit Hemiparese rechts; Nebendiagnose arterielle Hypertonie.\nKostenträger: PKV, Versichertennummer liegt der Station vor.\nEntlassung in 4 Tagen geplant, Verlegung direkt in die AHB gewünscht.\nBeigefügt: Entlassbrief, aktuelle Befunde, Pflegeüberleitungsbogen.\nRückfragen: Sozialdienst Fr. Bergmann, Tel. 09771 0000-318, sozialdienst@demo-rhoen.local. Um Rückmeldung zur Aufnahmefähigkeit wird gebeten.",zeit:"vor 1 Std.",achse:"Neurologie",done:false,typ:"qualifiziert",wer:"Sozialdienst RHÖN Bad Neustadt meldet Friedrich Sander (68) nach Schlaganfall an",zusammenfassung:"Sozialdienst RHÖN Bad Neustadt meldet Friedrich Sander (68) nach Media-Infarkt zur AHB an — PKV, Entlassung in 4 Tagen, Unterlagen beigefügt.",gruppe:"Neuro-Geri",sterne:null,autoVerteilt:true,saluto:false,hinweis:"",patient:{name:"Friedrich Sander",alter:68}},
+ {id:102,kanal:"Zuweiser-Fax",tit:"Fax: RHÖN Bad Neustadt, Anmeldung AHB nach Schlaganfall",txt:"Kurzanmeldung Sozialdienst RHÖN Bad Neustadt, Station Neurologie 2, Az. N-0472/26.\nPatient: Friedrich Sander, geb. 14.03.1958 (68 J.), wohnhaft in Bad Kissingen.\nDiagnose: Z. n. Media-Infarkt links mit Hemiparese rechts; Nebendiagnose arterielle Hypertonie.\nKostenträger: PKV, Versichertennummer liegt der Station vor.\nEntlassung in 4 Tagen geplant, Verlegung direkt in die AHB gewünscht.\nBeigefügt: Entlassbrief, aktuelle Befunde, Pflegeüberleitungsbogen.\nRückfragen: Sozialdienst Fr. Bergmann, Tel. 09771 0000-318, sozialdienst@demo-rhoen.local. Um Rückmeldung zur Aufnahmefähigkeit wird gebeten.",zeit:"vor 3 Std.",achse:"Neurologie",done:false,typ:"qualifiziert",wer:"Sozialdienst RHÖN Bad Neustadt meldet Friedrich Sander (68) nach Schlaganfall an",zusammenfassung:"Sozialdienst RHÖN Bad Neustadt meldet Friedrich Sander (68) nach Media-Infarkt zur AHB an — PKV, Entlassung in 4 Tagen, Unterlagen beigefügt.",gruppe:"Neuro-Geri",sterne:null,autoVerteilt:true,saluto:false,hinweis:"",patient:{name:"Friedrich Sander",alter:68}},
  {id:103,kanal:"Website",tit:"Website-Formular: Selbstzahlerin (55) fragt nach Premium-Reha",txt:"Hallo, ich bin auf der Suche nach einer Reha mit etwas mehr Komfort und habe auf Ihrer Seite die Suite entdeckt, die spricht mich sehr an. Ich bin 55 Jahre alt (geb. 27.06.1971) und zahle selbst. Können Sie mir sagen, was das kostet und ob da in nächster Zeit noch was frei ist? Über eine Rückmeldung würde ich mich freuen. Viele Grüße, Sandra Falk, 0170 2205567, s.falk@demo-mail.local",zeit:"vor 2 Std.",achse:"SalutoCare",done:false,typ:"qualifiziert",wer:"Sandra Falk fragt selbst nach Premium-Suite (55)",zusammenfassung:"Sandra Falk (55) fragt über die Website nach der Premium-Suite — Selbstzahlerin, interessiert an Preisen und freien Terminen.",gruppe:null,sterne:null,autoVerteilt:false,patient:{name:"Sandra Falk",alter:55}},
  {id:104,kanal:"E-Mail",tit:"E-Mail: Hausarzt Dr. Sommer empfiehlt Patientin (79)",txt:"Sehr geehrte Damen und Herren, ich möchte Ihnen meine Patientin zur geriatrischen Reha vorstellen. Sie ist bei mir in hausärztlicher Behandlung, Kostenträger ist die Beihilfe, ihre Tochter kümmert sich um die Organisation der Aufnahme. Über eine kurzfristige Rückmeldung wäre ich dankbar. Mit freundlichen Grüßen, Dr. med. Andreas Sommer, Hausarztpraxis Bad Neustadt, Tel. 09771 4471023, a.sommer@demo-praxis.local",zeit:"gestern",achse:"Geriatrie",done:true,typ:"qualifiziert",wer:"Hausarzt Dr. Sommer empfiehlt Patientin (79), Tochter koordiniert",zusammenfassung:"Hausarzt Dr. Sommer empfiehlt seine Patientin (79) für eine geriatrische Reha — Beihilfe, Tochter koordiniert die Aufnahme."},
  {id:105,kanal:"Recare",tit:"Recare: Klinikum Fulda sucht Neuro-Reha-Platz",txt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · GKV + Komfort-Wunsch, Übernahme in 6 Tagen möglich. · Patient wünscht nach Möglichkeit ein Komfortzimmer, bitte um Rückmeldung zur Kapazität.",zeit:"gestern",achse:"Neurologie",done:true,typ:"qualifiziert",wer:"Entlassmanagement Klinikum Fulda sucht Reha-Platz",zusammenfassung:"Entlassmanagement Klinikum Fulda sucht über Recare einen Neuro-Reha-Platz — GKV mit Komfort-Wunsch, Übernahme in 6 Tagen möglich."},
@@ -5592,11 +5644,13 @@ function renderEingang(){
       +"<span class='mhtxt'><span class='mtit'>"+escapeHtml(m.tit)+"</span>"
       +"<span class='mmeta'><span class='chtag'>"+escapeHtml(m.kanal)+"</span><span class='mtime'>"+escapeHtml(m.zeit)+"</span>"
       +"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span>"
+      +(m.done?"":svChipHtml(svEingangState(m)))
       +(m.done?"<span class='ok-chip mini'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall")+"</span>":"")+"</span></span>"
       +"<span class='mail-chev'>›</span></button>";
     return "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"+head+"</article>";
   }
   const entscheidung=eingang.filter(m=>!m.done&&m.typ!=="passiv"&&!m.gruppe);
+  entscheidung.sort((a,b)=>svEingangState(a).rest-svEingangState(b).rest); /* SV: knappste Uhr zuerst */
   const autoV=eingang.filter(m=>m.autoVerteilt);
   const rest=eingang.filter(m=>m.done||m.typ==="passiv");
   let html="<div class='egt-entscheidung'><div class='kicker'>Braucht Entscheidung ("+entscheidung.length+")</div>"
@@ -5715,6 +5769,132 @@ let boardStocktFilter=false;
 function openStockt(){boardStocktFilter=true;boardStageFilter=null;renderBoard();go("faelle","board");}
 function clearStockt(){boardStocktFilter=false;renderBoard();}
 function stocktFaelle(){return offeneFaelle().filter(f=>zoneOf(f.status)>=0&&stockt(f));}
+/* ===== SERVICE-VERSPRECHEN (sv-Präfix) — SLA-Uhren & Eskalation, 07/2026 (Spec 2026-07-31) =====
+   Festes Regelwerk SV_REGELN: Dringlichkeitsklasse A/B/C je Anfrage-Signal (Kanal/Sterne),
+   Erstkontakt-Budget in Stunden. Bewusst KEIN Zwang — nur Sichtbarkeit (Uhr-Chips) plus
+   automatische Eskalation an die Leitung, wenn das Versprechen reißt: Erstkontakt verpasst,
+   Folge-Frist überfällig oder Pool-Anfrage unbeansprucht. Alle sv-Berechnungen sind rein
+   lesend; erst die Leitungs-Aktion stempelt f.svAktion (plus Log-Eintrag + Toast).
+   Zeitbasis sind die Demo-Zeitstrings („vor 25 Min.") — keine tickende Uhr, statisch je Render. */
+const SV_REGELN={A:{h:2,label:"A · heiß"},B:{h:4,label:"B · warm"},C:{h:24,label:"C · Lead"}};
+function svElapsedMin(z){
+  z=String(z||"");let m;
+  if(m=/vor\s+(\d+)\s*Min/i.exec(z))return +m[1];
+  if(m=/vor\s+(\d+)\s*Std/i.exec(z))return +m[1]*60;
+  if(m=/vor\s+(\d+)\s*Tag/i.exec(z))return +m[1]*1440;
+  if(/gestern/i.test(z))return 1440;
+  return 0;
+}
+function svKlasseEingang(m){
+  if(m.typ==="passiv")return "C";
+  if(/fax|recare|zuweiser|primo/i.test(m.kanal||""))return "A";
+  const st=m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt||""));
+  return st>=4?"A":"B";
+}
+function svKlasseFall(f){
+  if(/fax|recare|zuweiser|primo/i.test((f.originalKanal||f.kanal)||""))return "A";
+  if((f.sterne||0)>=4)return "A";
+  return (f.kt==="PKV"||f.kt==="Selbstzahler"||f.kt==="Beihilfe")?"A":"B";
+}
+function svState(kl,elapsed){
+  const budget=SV_REGELN[kl].h*60,rest=budget-elapsed;
+  return {kl:kl,rest:rest,over:rest<0,warn:rest>=0&&rest<=budget/2};
+}
+function svEingangState(m){return svState(svKlasseEingang(m),svElapsedMin(m.zeit));}
+/* Erstkontakt-Uhr nur solange der Fall in „Neu" steht, noch keine Reaktion gestempelt ist und
+   eine Eingangszeit bekannt ist — danach übernimmt die bestehende Folge-Frist (fristKlasse). */
+function svFallState(f){
+  if(f.status!=="Neu"||f.reaktion!=null||!f.eingangZeit)return null;
+  return svState(svKlasseFall(f),svElapsedMin(f.eingangZeit));
+}
+function svUhrText(s){
+  const abs=Math.abs(s.rest),h=Math.floor(abs/60),mm=abs%60,t=h+":"+(mm<10?"0":"")+mm;
+  return s.over?"Erstkontakt überfällig · +"+t+" Std.":(s.rest===0?"Erstkontakt jetzt fällig":"Erstkontakt in "+t+" Std.");
+}
+function svChipHtml(s){
+  if(!s)return "";
+  const cls=s.over?"sv-over":((s.warn||s.rest===0)?"sv-warn":"sv-ok");
+  return "<span class='sv-chip "+cls+"'><b>"+s.kl+"</b>"+escapeHtml(svUhrText(s))+"</span>";
+}
+function svEskalationen(){
+  const list=[];
+  eingang.forEach(m=>{
+    if(m.done)return;
+    const s=svEingangState(m);
+    if(s.over)list.push({typ:"eingang",ref:m,state:s});
+  });
+  offeneFaelle().forEach(f=>{
+    if(f.svAktion)return;
+    const s=svFallState(f);
+    if(s&&s.over){list.push({typ:"fall",art:"erstkontakt",ref:f,state:s});return;}
+    if(f.frist&&f.frist<dstr(0))list.push({typ:"fall",art:"frist",ref:f});
+  });
+  return list;
+}
+function svEskZeile(e){
+  if(e.typ==="eingang"){
+    const m=e.ref;
+    const wo=m.gruppe?"unbeansprucht im Pool ("+m.gruppe+")":"ohne Übernahme im Eingang";
+    return "<div class='sv-row'><div class='sv-row-txt'><b>"+escapeHtml(m.wer||m.tit)+"</b>"
+      +"<span class='sv-verstoss'>Klasse "+e.state.kl+" · "+escapeHtml(svUhrText(e.state))+" — liegt "+escapeHtml(m.zeit)+" "+escapeHtml(wo)+"</span>"
+      +"<span class='sv-sub'>"+escapeHtml(m.kanal)+(m.zusammenfassung?" · "+escapeHtml(m.zusammenfassung):"")+"</span></div>"
+      +"<div class='sv-acts'><select id='svSelE"+m.id+"' aria-label='Zuweisen an'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
+      +"<button class='btn-brass btn-sm' type='button' onclick='svEingangZuweisen("+m.id+")'>Als Fall zuweisen ›</button></div></div>";
+  }
+  const f=e.ref;
+  const verstoss=e.art==="erstkontakt"?("Klasse "+e.state.kl+" · "+svUhrText(e.state)):("Folge-Schritt "+fristText(f.frist));
+  return "<div class='sv-row'><div class='sv-row-txt'><b>"+escapeHtml(f.name)+"</b>"
+    +"<span class='sv-verstoss'>"+escapeHtml(verstoss)+"</span>"
+    +"<span class='sv-sub'>"+escapeHtml(f.owner)+" · "+escapeHtml(f.aufgabe||f.status)+"</span></div>"
+    +"<div class='sv-acts'>"
+    +"<select id='svSel"+f.id+"' aria-label='Neu zuweisen an'>"+TEAM.filter(t=>t!==f.owner).map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
+    +"<button class='btn-brass btn-sm' type='button' onclick='svZuweisen("+f.id+")'>Neu zuweisen</button>"
+    +"<button class='btn-ghost btn-sm' type='button' onclick='svFristToggle("+f.id+")'>Frist neu…</button>"
+    +"<button class='btn-ghost btn-sm' type='button' onclick='openDetail("+f.id+")'>Akte ›</button>"
+    +"<div class='sv-frist' id='svFrist"+f.id+"'><input id='svGrund"+f.id+"' placeholder='Grund (Pflicht) — warum verschiebt sich das?'>"
+    +"<button class='btn-brass btn-sm' type='button' onclick='svFristSetzen("+f.id+")'>Frist morgen · Grund dokumentieren</button></div>"
+    +"</div></div>";
+}
+function renderSvEsk(){
+  const chap=document.getElementById("svEskChap"),el=document.getElementById("svEskList");
+  if(!chap||!el)return;
+  const list=svEskalationen();
+  chap.style.display=list.length?"":"none";
+  const cnt=document.getElementById("svEskCount");if(cnt)cnt.textContent=list.length;
+  el.innerHTML=list.map(svEskZeile).join("");
+}
+function svZuweisen(fid){
+  const f=faelle.find(x=>x.id===fid);if(!f)return;
+  const sel=document.getElementById("svSel"+fid);
+  const owner=sel?sel.value:TEAM[0];
+  f.owner=owner;
+  f.svAktion={was:"neu zugewiesen",am:dstr(0)};
+  f.log.push([dstr(0),"⚠ Eskalation (Service-Versprechen): durch Leitung neu zugewiesen an "+owner,logZeit()]);
+  rpToast("Eskalation entschieden — "+f.name+" neu zugewiesen an "+owner+".");
+  renderAll();
+}
+function svFristToggle(fid){const w=document.getElementById("svFrist"+fid);if(w)w.classList.toggle("open");}
+function svFristSetzen(fid){
+  const f=faelle.find(x=>x.id===fid);if(!f)return;
+  const inp=document.getElementById("svGrund"+fid);
+  const grund=inp?inp.value.trim():"";
+  if(!grund){if(inp)inp.focus();return;}
+  f.frist=dstr(1);
+  f.svAktion={was:"Frist angepasst",am:dstr(0)};
+  f.log.push([dstr(0),"⚠ Eskalation (Service-Versprechen): Frist durch Leitung auf morgen gesetzt — Grund: "+grund,logZeit()]);
+  rpToast("Frist neu gesetzt — Grund dokumentiert.");
+  renderAll();
+}
+function svEingangZuweisen(id){
+  const sel=document.getElementById("svSelE"+id);
+  uebernehmen(id,sel?sel.value:TEAM[0]);
+  rpToast("Anfrage aus der Eskalation zugewiesen — Fall angelegt.");
+}
+function svGoEsk(){
+  go("heute");
+  const el=document.getElementById("svEskChap");
+  if(el)setTimeout(function(){el.scrollIntoView({behavior:"smooth",block:"start"})},80);
+}
 function renderBoardFocus(){
   const el=document.getElementById("boardFocus");if(!el)return;
   const offen=offeneFaelle().length;
@@ -5737,11 +5917,13 @@ function renderBoardFocus(){
 function makeFallKarte(x){
   const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"");
   const fk=fristKlasse(x.frist);
+  const sv=svFallState(x); /* SV: Erstkontakt-Uhr nur in „Neu" ohne gestempelte Reaktion */
   k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter&&!/\(\d+\)/.test(x.name)?"("+x.alter+")":"")+"</span></span></div>"
     +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+escapeHtml(x.achse)+"</span><span class='pill-kt'>"+escapeHtml(x.kt)+"</span></div>"
     +(x.ungelesen?"<div class='karte-msg'>✉ Antwort eingetroffen</div>":"")
     +"<div class='kmeta'>"+escapeHtml(x.quelle)+"<br>"+escapeHtml(x.owner)+(x.aufgabe?" · "+escapeHtml(x.aufgabe):"")+"</div>"
     +"<div class='stagebar' title='Statusfortschritt'><span style='width:"+statusFortschritt(x.status)+"%'></span></div>"
+    +(sv?"<div class='sv-kartechip'>"+svChipHtml(sv)+"</div>":"")
     +(x.frist?"<span class='due "+fk+"'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(x.frist)+"</span>":"")
     +(x.saluto?"<br><span class='star'>★ SalutoCare</span>":"");
   k.onclick=()=>openDetail(x.id);
@@ -5760,6 +5942,7 @@ function makeBoardCol(st){
     k.innerHTML="<div class='krow'><span class='ava'>"+initialen(m.wer||m.tit)+"</span><span class='name'>"+escapeHtml(m.wer||m.tit)+"</span></div>"
       +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[m.achse]||"var(--unklar)")+"'>"+escapeHtml(m.achse)+"</span><span class='pill-kt'>"+escapeHtml(m.gruppe)+"</span></div>"
       +"<div class='kmeta'>Im Pool · wartet auf Übernahme</div>"
+      +"<div class='sv-kartechip'>"+svChipHtml(svEingangState(m))+"</div>"
       +"<button class='btn-brass btn-sm kpool-btn' type='button'>Übernehmen ›</button>";
     k.onclick=()=>openEgDetail(m.id);
     k.querySelector(".kpool-btn").onclick=(e)=>{e.stopPropagation();egUebernehmenAusPool(m.id);};
@@ -6693,6 +6876,8 @@ function kennzahlen(){
 }
 function renderWichtig(k){
   const items=[];const seen=new Set();
+  const esk=svEskalationen(); /* SV: Eskalationen ganz oben — Entscheidung der Leitung nötig */
+  if(esk.length)items.push({p:-120,ico:"alert",cls:"urgent",tit:esk.length+" "+(esk.length===1?"Eskalation":"Eskalationen")+" — Service-Versprechen verletzt",sub:"Erstkontakt oder Frist gerissen, Fall droht liegen zu bleiben — Entscheidung nötig",click:"svGoEsk()"});
   k.offen.forEach(f=>{
     if(!f.frist)return;
     const d=Math.round((new Date(f.frist)-heute)/86400000);
@@ -6759,6 +6944,7 @@ function renderHeute(){
   nsRing("nsRingConv",k.conv,100,"terra");
   // Heute wichtig
   renderWichtig(k);
+  renderSvEsk();
   // Quellen
   const hospitalRx=/(Klinik|Klinikum|Krankenhaus|Campus|Leopoldina|RHÖN|UKW|Fulda|Thoraxzentrum|Recare)/i;
   set("q1",faelle.filter(x=>hospitalRx.test(x.quelle)||x.kanal==="Recare").length);
@@ -7688,6 +7874,7 @@ function kfKontaktAbschliessen(){
  const f=aktuellerFall;if(!f)return;
  if(!f.stammOk){inbToast("done","<b>Bitte zuerst Stammdaten bestätigen</b>","Name/Alter oben im Feld prüfen",null);return;}
  f.kontaktOk=true;
+ if(f.reaktion==null&&f.eingangZeit)f.reaktion=Math.max(1,Math.round(svElapsedMin(f.eingangZeit)/60)); /* SV: Erstkontakt-Uhr stoppt, Reaktionszeit gestempelt */
  f.log.push([dstr(0),"Erstgespräch geführt und dokumentiert",logZeit()]);
  kfSyncStatus(f);
  renderAll();renderFallakte();
@@ -9323,6 +9510,7 @@ function renderEgtPool(){
   const meineGruppen=Array.from(new Set((TEAM_ACHSE["S. Koordination"]||[]).map(achseZuGruppe).filter(Boolean)));
   const karte=function(m){
     return "<article class='egt-pool-card'><p class='egt-pool-zsf'>"+escapeHtml(egZusammenfassung(m))+"</p>"
+      +"<div class='sv-kartechip'>"+svChipHtml(svEingangState(m))+"</div>"
       +"<details class='pa-fold'><summary class='rk'>Originalnachricht · "+escapeHtml(m.kanal)+"</summary>"
       +"<div class='eg-original'><div class='mtxt'>"+escapeHtml(m.txt)+"</div></div></details>"
       +sterneHtml(m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt)))
