@@ -37,6 +37,11 @@ Nach dem Erstkontakt übernimmt die bestehende **Folge-Frist** (`f.frist`, `fris
 3. **Board** (`makeFallKarte`): Fälle in „Neu" ohne Erstkontakt (`reaktion==null`) zeigen
    die Erstkontakt-Uhr statt nur der Tages-Frist. Neuer Seed-Anker: Anna Muster bekommt
    `eingangZeit:"vor 3 Std."` → A-Verstoß (+1:00) als Demo-Eskalation.
+   **Kontinuität (Review-Fix 31.07.):** Die Uhr reißt am Übergabepunkt Anfrage→Fall nicht ab —
+   `svFallState` liest `eingangZeit||originalZeit` (Letzteres stempelt `uebernehmen()` ohnehin),
+   manuell angelegte Fälle (Sheet „Neue Anfrage") starten mit `eingangZeit:"soeben"` = volles
+   Budget. Jeder Fall in „Neu" trägt damit die Mechanik; gestoppt wird sie nur durch das
+   dokumentierte Erstgespräch (`f.reaktion`).
 4. **Heute (Leitung)**: neues Panel **„Eskalationen · Service-Versprechen"** (Zinnober-Kicker,
    nur sichtbar wenn n>0) vor „Heute wichtig". Je Zeile: Fall/Anfrage, Verstoß, Owner,
    Pflicht-Aktionen: *Neu zuweisen* (Owner-Select) · *Frist neu mit Grund* (Pflichtfeld) ·

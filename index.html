@@ -5801,11 +5801,14 @@ function svState(kl,elapsed){
   return {kl:kl,rest:rest,over:rest<0,warn:rest>=0&&rest<=budget/2};
 }
 function svEingangState(m){return svState(svKlasseEingang(m),svElapsedMin(m.zeit));}
-/* Erstkontakt-Uhr nur solange der Fall in „Neu" steht, noch keine Reaktion gestempelt ist und
-   eine Eingangszeit bekannt ist — danach übernimmt die bestehende Folge-Frist (fristKlasse). */
+/* Erstkontakt-Uhr nur solange der Fall in „Neu" steht und noch keine Reaktion gestempelt ist —
+   danach übernimmt die bestehende Folge-Frist (fristKlasse). Die Eingangszeit läuft aus dem
+   Eingang mit (originalZeit wird bei der Übernahme gestempelt), damit die Uhr am Übergabepunkt
+   Anfrage→Fall nicht abreißt; eingangZeit ist der Seed-/Sonderfall-Override. */
 function svFallState(f){
-  if(f.status!=="Neu"||f.reaktion!=null||!f.eingangZeit)return null;
-  return svState(svKlasseFall(f),svElapsedMin(f.eingangZeit));
+  const z=f.eingangZeit||f.originalZeit;
+  if(f.status!=="Neu"||f.reaktion!=null||!z)return null;
+  return svState(svKlasseFall(f),svElapsedMin(z));
 }
 function svUhrText(s){
   const abs=Math.abs(s.rest),h=Math.floor(abs/60),mm=abs%60,t=h+":"+(mm<10?"0":"")+mm;
@@ -7874,7 +7877,7 @@ function kfKontaktAbschliessen(){
  const f=aktuellerFall;if(!f)return;
  if(!f.stammOk){inbToast("done","<b>Bitte zuerst Stammdaten bestätigen</b>","Name/Alter oben im Feld prüfen",null);return;}
  f.kontaktOk=true;
- if(f.reaktion==null&&f.eingangZeit)f.reaktion=Math.max(1,Math.round(svElapsedMin(f.eingangZeit)/60)); /* SV: Erstkontakt-Uhr stoppt, Reaktionszeit gestempelt */
+ if(f.reaktion==null&&(f.eingangZeit||f.originalZeit))f.reaktion=Math.max(1,Math.round(svElapsedMin(f.eingangZeit||f.originalZeit)/60)); /* SV: Erstkontakt-Uhr stoppt, Reaktionszeit gestempelt */
  f.log.push([dstr(0),"Erstgespräch geführt und dokumentiert",logZeit()]);
  kfSyncStatus(f);
  renderAll();renderFallakte();
@@ -9270,6 +9273,7 @@ document.getElementById("formNeu").addEventListener("submit",e=>{
     achse:document.getElementById("fAchse").value,
     kt:document.getElementById("fKT").value,
     status:"Neu",owner:document.getElementById("fOwner").value,
+    eingangZeit:"soeben", /* SV: Uhr startet mit vollem Budget (svElapsedMin liefert 0) */
     aufgabe:STATUS_AUFGABE["Neu"],frist:document.getElementById("fFrist").value||dstr(1),
     saluto:document.getElementById("fAchse").value==="SalutoCare",
     docs:[false,false,false,false],kosten:"offen",
