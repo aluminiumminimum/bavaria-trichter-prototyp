@@ -3592,19 +3592,23 @@ details.fa-orig>div{padding:0 12px 12px}
 .tce-zr{min-height:28px;padding:4px 10px;font:600 10px/1 "Fragment Mono",monospace;letter-spacing:.05em;color:var(--faint);background:transparent;border:1px dashed var(--hair);border-radius:3px;cursor:pointer}
 .tce-zr:hover{color:var(--brass-deep);border-color:var(--brass-line)}
 .tce-lead{margin:0 0 12px;font-size:12.5px;line-height:1.55;color:var(--muted);max-width:72ch}
-.tce-row{display:flex;flex-wrap:wrap;gap:10px 13px;align-items:flex-start;padding:14px 4px;border-bottom:1px solid var(--hair2)}
+.tce-row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:13px 6px;border-bottom:1px solid var(--hair2)}
 .tce-row:last-child{border-bottom:none}
-.tce-badge{flex:0 0 34px;width:34px;height:34px;margin-top:2px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",Georgia,serif;font-size:17px;font-weight:700;color:var(--terra);border:1px solid rgba(168,52,31,.35);background:var(--terra-soft)}
-.tce-txt{flex:1 1 250px;min-width:0}
+.tce-badge{flex:0 0 34px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",Georgia,serif;font-size:17px;font-weight:700;color:var(--terra);border:1px solid rgba(168,52,31,.35);background:var(--terra-soft)}
+.tce-txt{flex:1 1 260px;min-width:0}
 .tce-txt b{display:block;font-size:14.5px;font-weight:650;color:var(--ink);line-height:1.35}
 .tce-what{display:block;margin-top:2px;font-size:12.5px;font-weight:600;color:var(--terra);line-height:1.5}
 .tce-sub{display:block;margin-top:2px;font-size:12px;color:var(--muted);line-height:1.55}
-.tce-acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end;flex:0 1 auto;max-width:100%}
-.tce-acts select{min-height:34px;padding:5px 9px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
+/* Aktionsspalte: EIN einzeiliges Raster, rechtsbündig, vertikal zentriert — Select mit fester
+   Breite (überschreibt globales select{width:100%}), Buttons ohne Umbruch. */
+.tce-acts{display:flex;flex-wrap:nowrap;gap:8px;align-items:center;justify-content:flex-end;flex:0 0 auto;margin-left:auto}
+.tce-acts select{width:180px;flex:0 0 auto;min-height:36px;margin:0;padding:6px 9px;font:500 12.5px/1.2 Inter,sans-serif;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
+.tce-acts .btn-brass,.tce-acts .btn-ghost{white-space:nowrap;flex:0 0 auto}
 .tce-frist{display:none;flex:1 1 100%;gap:8px;align-items:center}
 .tce-frist.open{display:flex;flex-wrap:wrap}
-.tce-frist input{flex:1 1 200px;min-width:0;min-height:34px;padding:5px 9px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
-@media(max-width:640px){.tce-acts{flex:1 1 100%;justify-content:flex-start}.tce-badge{display:none}}
+.tce-frist input{flex:1 1 240px;min-width:0;width:auto;min-height:36px;margin:0;padding:6px 10px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
+@media(max-width:920px){.tce-acts{flex:1 1 100%;flex-wrap:wrap;justify-content:flex-start;margin-left:0}.tce-acts select{flex:1 1 160px;width:auto;max-width:240px}}
+@media(max-width:640px){.tce-badge{display:none}}
 .sv-regeln{width:100%;border-collapse:collapse;margin:10px 0 14px;font-size:12.5px}
 .sv-regeln th,.sv-regeln td{padding:7px 8px;border-bottom:1px solid var(--hair2);text-align:left;vertical-align:top}
 .sv-regeln th{font:700 10px/1.3 "Fragment Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -5912,15 +5916,18 @@ function tcEskZeile(e){
     acts="<select id='svSel"+f.id+"' aria-label='Neu zuweisen an'>"+TEAM.filter(t=>t!==f.owner).map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
       +"<button class='btn-brass btn-sm' type='button' onclick='svZuweisen("+f.id+")'>Neu zuweisen</button>"
       +"<button class='btn-ghost btn-sm' type='button' onclick='svFristToggle("+f.id+")'>Frist neu…</button>"
-      +"<button class='btn-ghost btn-sm' type='button' onclick='openDetail("+f.id+")'>Akte ›</button>"
-      +"<div class='tce-frist' id='svFrist"+f.id+"'><input id='svGrund"+f.id+"' placeholder='Grund (Pflicht) — warum verschiebt sich das?'>"
-      +"<button class='btn-brass btn-sm' type='button' onclick='svFristSetzen("+f.id+")'>Frist morgen · Grund dokumentieren</button></div>";
+      +"<button class='btn-ghost btn-sm' type='button' onclick='openDetail("+f.id+")'>Akte ›</button>";
   }
+  /* Frist-Begründung als eigene, volle Zeile UNTER der Aktionsgruppe — nie im einzeiligen Aktionsraster */
+  const frist=(e.typ==="fall")
+    ?"<div class='tce-frist' id='svFrist"+e.ref.id+"'><input id='svGrund"+e.ref.id+"' placeholder='Grund (Pflicht) — warum verschiebt sich das?'>"
+      +"<button class='btn-brass btn-sm' type='button' onclick='svFristSetzen("+e.ref.id+")'>Frist morgen · Grund dokumentieren</button></div>"
+    :"";
   return "<div class='tce-row'><span class='tce-badge'>"+badge+"</span>"
     +"<div class='tce-txt'><b>"+escapeHtml(name)+"</b>"
     +"<span class='tce-what'>"+escapeHtml(was)+"</span>"
     +"<span class='tce-sub'>"+escapeHtml(sub)+"</span></div>"
-    +"<div class='tce-acts'>"+acts+"</div></div>";
+    +"<div class='tce-acts'>"+acts+"</div>"+frist+"</div>";
 }
 function tcEskHtml(){
   const list=svEskalationen();
