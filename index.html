@@ -3592,23 +3592,28 @@ details.fa-orig>div{padding:0 12px 12px}
 .tce-zr{min-height:28px;padding:4px 10px;font:600 10px/1 "Fragment Mono",monospace;letter-spacing:.05em;color:var(--faint);background:transparent;border:1px dashed var(--hair);border-radius:3px;cursor:pointer}
 .tce-zr:hover{color:var(--brass-deep);border-color:var(--brass-line)}
 .tce-lead{margin:0 0 12px;font-size:12.5px;line-height:1.55;color:var(--muted);max-width:72ch}
-.tce-row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:13px 6px;border-bottom:1px solid var(--hair2)}
+/* Stille Zeilen (Idiom „Heute wichtig"/Team-Listen): Badge + Text + EIN Gold-Hinweis rechts.
+   Werkzeuge erst im aufgeklappten Entscheidungs-Panel — eine Zeile zur Zeit. */
+.tce-row{border-bottom:1px solid var(--hair2)}
 .tce-row:last-child{border-bottom:none}
+.tce-main{display:flex;gap:13px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:13px 6px;cursor:pointer;font:inherit;color:inherit}
+.tce-main:hover .tce-cta{color:var(--ink);border-color:var(--brass)}
 .tce-badge{flex:0 0 34px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",Georgia,serif;font-size:17px;font-weight:700;color:var(--terra);border:1px solid rgba(168,52,31,.35);background:var(--terra-soft)}
-.tce-txt{flex:1 1 260px;min-width:0}
+.tce-txt{flex:1 1 auto;min-width:0}
 .tce-txt b{display:block;font-size:14.5px;font-weight:650;color:var(--ink);line-height:1.35}
 .tce-what{display:block;margin-top:2px;font-size:12.5px;font-weight:600;color:var(--terra);line-height:1.5}
 .tce-sub{display:block;margin-top:2px;font-size:12px;color:var(--muted);line-height:1.55}
-/* Aktionsspalte: EIN einzeiliges Raster, rechtsbündig, vertikal zentriert — Select mit fester
-   Breite (überschreibt globales select{width:100%}), Buttons ohne Umbruch. */
-.tce-acts{display:flex;flex-wrap:nowrap;gap:8px;align-items:center;justify-content:flex-end;flex:0 0 auto;margin-left:auto}
-.tce-acts select{width:180px;flex:0 0 auto;min-height:36px;margin:0;padding:6px 9px;font:500 12.5px/1.2 Inter,sans-serif;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
-.tce-acts .btn-brass,.tce-acts .btn-ghost{white-space:nowrap;flex:0 0 auto}
+.tce-cta{flex:0 0 auto;margin-left:auto;padding:6px 12px;border:1px solid var(--brass-line);border-radius:3px;font:600 12px/1 Inter,sans-serif;color:var(--brass-deep);white-space:nowrap}
+/* Entscheidungs-Panel: links unter dem Text ausgerichtet, ruhige einzeilige Werkzeuggruppe */
+.tce-panel{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:0 6px 14px 53px;padding:12px 14px;border:1px solid var(--jade-hair);border-radius:4px;background:var(--cream2)}
+.tce-lbl{font:600 10.5px/1 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep)}
+.tce-oder{font:600 11px/1 Inter,sans-serif;color:var(--faint);margin:0 2px}
+.tce-panel select{width:190px;flex:0 0 auto;min-height:36px;margin:0;padding:6px 9px;font:500 12.5px/1.2 Inter,sans-serif;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
+.tce-panel .btn-brass,.tce-panel .btn-ghost{white-space:nowrap;flex:0 0 auto}
 .tce-frist{display:none;flex:1 1 100%;gap:8px;align-items:center}
 .tce-frist.open{display:flex;flex-wrap:wrap}
 .tce-frist input{flex:1 1 240px;min-width:0;width:auto;min-height:36px;margin:0;padding:6px 10px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
-@media(max-width:920px){.tce-acts{flex:1 1 100%;flex-wrap:wrap;justify-content:flex-start;margin-left:0}.tce-acts select{flex:1 1 160px;width:auto;max-width:240px}}
-@media(max-width:640px){.tce-badge{display:none}}
+@media(max-width:640px){.tce-badge{display:none}.tce-panel{margin-left:6px}.tce-panel select{flex:1 1 160px;width:auto;max-width:240px}.tce-cta{padding:6px 8px}}
 .sv-regeln{width:100%;border-collapse:collapse;margin:10px 0 14px;font-size:12.5px}
 .sv-regeln th,.sv-regeln td{padding:7px 8px;border-bottom:1px solid var(--hair2);text-align:left;vertical-align:top}
 .sv-regeln th{font:700 10px/1.3 "Fragment Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -5890,44 +5895,59 @@ function svEskalationen(){
 /* Eskalations-Leitstand — lebt seit Redesign 04.08. in Fälle→Team (tcEskHtml, aus renderTeam
    aufgebaut), NICHT mehr auf Heute: das Cockpit bleibt ruhig, „Heute wichtig" verlinkt hierher.
    Zeilen im Welt-Idiom der Team-Ansicht (34px-Badge wie .wico, Inter-Text, Mono nur im Chip). */
+/* Zeilen sind STILL (Badge + Text + ein Gold-Chevron, wie jede Liste der App) — die
+   Entscheidungs-Werkzeuge erscheinen erst beim Aufklappen, eine Zeile zur Zeit. */
+let _tcEskOpen=null;
+function tcEskToggle(k){_tcEskOpen=(_tcEskOpen===k?null:k);renderTeam();
+  if(_tcEskOpen){const el=document.getElementById("tcEskChap");if(el&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:"start"});}}
 function tcEskZeile(e){
-  let badge,name,was,sub,acts;
+  let key,badge,name,was,sub,acts;
   if(e.typ==="anlass"){
     const a=e.ref,k=a.key.replace(/"/g,"&quot;");
+    key="anlass:"+a.key;
     badge=a.typ==="wiederbedarf"?"R":"Z";
     name=a.titel;was=e.verstoss;
     sub=(a.typ==="wiederbedarf"?"Netzwerk · Patienten-Radar":"Netzwerk · Zuweiser")+(a.sub?" · "+a.sub:"");
-    acts="<button class='btn-brass btn-sm' type='button' onclick='akOpen(\""+k+"\")'>Bearbeiten ›</button>"
+    acts="<button class='btn-brass btn-sm' type='button' onclick='akOpen(\""+k+"\")'>Kontakt vorbereiten ›</button>"
       +(a.typ==="wiederbedarf"?"<button class='btn-ghost btn-sm' type='button' onclick='svAnlassSpaeter(\""+k+"\")'>Wiedervorlage +7 Tage</button>":"");
   }else if(e.typ==="eingang"){
     const m=e.ref;
+    key="eingang:"+m.id;
     badge=e.state.kl;
     name=m.wer||m.tit;
     was=svUhrText(e.state)+" — liegt "+m.zeit+" "+(m.gruppe?"unbeansprucht im Pool "+m.gruppe:"ohne Übernahme im Eingang");
     sub=m.kanal+(m.zusammenfassung?" · "+m.zusammenfassung:"");
-    acts="<select id='svSelE"+m.id+"' aria-label='Zuweisen an'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
-      +"<button class='btn-brass btn-sm' type='button' onclick='svEingangZuweisen("+m.id+")'>Als Fall zuweisen ›</button>";
+    acts="<label class='tce-lbl' for='svSelE"+m.id+"'>Zuweisen an</label>"
+      +"<select id='svSelE"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
+      +"<button class='btn-brass btn-sm' type='button' onclick='svEingangZuweisen("+m.id+")'>Als Fall anlegen ›</button>";
   }else{
     const f=e.ref;
+    key="fall:"+f.id;
     badge=e.art==="erstkontakt"?e.state.kl:"!";
     name=f.name;
     was=e.art==="erstkontakt"?svUhrText(e.state):"Folge-Schritt "+fristText(f.frist);
     sub=f.owner+" · "+(f.aufgabe||f.status);
-    acts="<select id='svSel"+f.id+"' aria-label='Neu zuweisen an'>"+TEAM.filter(t=>t!==f.owner).map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
-      +"<button class='btn-brass btn-sm' type='button' onclick='svZuweisen("+f.id+")'>Neu zuweisen</button>"
-      +"<button class='btn-ghost btn-sm' type='button' onclick='svFristToggle("+f.id+")'>Frist neu…</button>"
-      +"<button class='btn-ghost btn-sm' type='button' onclick='openDetail("+f.id+")'>Akte ›</button>";
+    acts="<label class='tce-lbl' for='svSel"+f.id+"'>Neu zuweisen an</label>"
+      +"<select id='svSel"+f.id+"'>"+TEAM.filter(t=>t!==f.owner).map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
+      +"<button class='btn-brass btn-sm' type='button' onclick='svZuweisen("+f.id+")'>Zuweisen</button>"
+      +"<span class='tce-oder'>oder</span>"
+      +"<button class='btn-ghost btn-sm' type='button' onclick='svFristToggle("+f.id+")'>Frist neu mit Grund…</button>"
+      +"<button class='btn-ghost btn-sm' type='button' onclick='openDetail("+f.id+")'>Akte öffnen ›</button>"
+      +"<div class='tce-frist' id='svFrist"+f.id+"'><input id='svGrund"+f.id+"' placeholder='Grund (Pflicht) — warum verschiebt sich das?'>"
+      +"<button class='btn-brass btn-sm' type='button' onclick='svFristSetzen("+f.id+")'>Frist morgen · Grund dokumentieren</button></div>";
   }
-  /* Frist-Begründung als eigene, volle Zeile UNTER der Aktionsgruppe — nie im einzeiligen Aktionsraster */
-  const frist=(e.typ==="fall")
-    ?"<div class='tce-frist' id='svFrist"+e.ref.id+"'><input id='svGrund"+e.ref.id+"' placeholder='Grund (Pflicht) — warum verschiebt sich das?'>"
-      +"<button class='btn-brass btn-sm' type='button' onclick='svFristSetzen("+e.ref.id+")'>Frist morgen · Grund dokumentieren</button></div>"
-    :"";
-  return "<div class='tce-row'><span class='tce-badge'>"+badge+"</span>"
-    +"<div class='tce-txt'><b>"+escapeHtml(name)+"</b>"
+  const open=_tcEskOpen===key;
+  const kq=key.replace(/"/g,"&quot;");
+  return "<div class='tce-row"+(open?" open":"")+"'>"
+    +"<button class='tce-main' type='button' onclick='tcEskToggle(\""+kq+"\")'>"
+    +"<span class='tce-badge'>"+badge+"</span>"
+    +"<span class='tce-txt'><b>"+escapeHtml(name)+"</b>"
     +"<span class='tce-what'>"+escapeHtml(was)+"</span>"
-    +"<span class='tce-sub'>"+escapeHtml(sub)+"</span></div>"
-    +"<div class='tce-acts'>"+acts+"</div>"+frist+"</div>";
+    +"<span class='tce-sub'>"+escapeHtml(sub)+"</span></span>"
+    +"<span class='tce-cta'>"+(open?"Schließen":"Entscheiden ›")+"</span>"
+    +"</button>"
+    +(open?"<div class='tce-panel'>"+acts+"</div>":"")
+    +"</div>";
 }
 function tcEskHtml(){
   const list=svEskalationen();
