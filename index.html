@@ -3671,6 +3671,15 @@ button.kap-w:hover{border-color:var(--sage-deep)}
 .tmi-neu{display:flex;gap:8px}
 .tmi-neu input{flex:1 1 auto;width:auto;min-width:0;min-height:38px;margin:0;padding:7px 11px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
 .tmi-neu .btn-brass{white-space:nowrap;flex:0 0 auto}
+.tmi-mention{color:var(--brass-deep);font-weight:700}
+/* Nachrichten-Eingang (Mein Tag): stille Zeilen im wrow-Idiom, Ungelesen-Badge in Zinnober */
+.tmi-row{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--hair2);padding:12px 6px;cursor:pointer;font:inherit;color:inherit}
+.tmi-row:last-child{border-bottom:none}
+.tmi-row-txt{flex:1 1 auto;min-width:0}
+.tmi-row-txt>b{display:block;font-size:14px;font-weight:650;color:var(--ink);line-height:1.35}
+.tmi-row-snip{display:block;margin-top:2px;font-size:12px;color:var(--muted);line-height:1.5;overflow:hidden;text-overflow:ellipsis}
+.tmi-neu-badge{flex:0 0 auto;display:inline-flex;align-items:center;padding:4px 9px;border-radius:11px;background:var(--terra);color:var(--paper);font:700 11.5px/1 Inter,sans-serif;white-space:nowrap}
+h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
 </style>
 </head>
 <body>
@@ -4598,6 +4607,12 @@ button.kap-w:hover{border-color:var(--sage-deep)}
 
     <figure class="au-photo au-photo--gold"><img src="assets/kb-komfort-wall.webp" alt="" loading="lazy"><figcaption>Komfort · Klinik Bavaria</figcaption></figure>
 
+    <div class="chap tmi-inbox" id="mtNachrichtenChap" style="display:none">
+      <div class="kicker">Team intern</div>
+      <h2 class="chap-h2">Nachrichten <span class="tmi-neu-badge num" id="mtNachrichtenCount" style="display:none">0</span></h2>
+      <div class="card list-card" id="mtNachrichtenList"></div>
+    </div>
+
     <div class="chap egt-pool" id="egtPoolChap">
       <div class="kicker">Pool</div>
       <h2 class="chap-h2">Offene Anfragen deiner Gruppe(n)</h2>
@@ -4852,7 +4867,7 @@ function initialen(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpp
 /* ---------- Daten (synthetisch, unverändert) ---------- */
 let faelle=[
  {id:1,personId:"P01",name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",eingangZeit:"vor 3 Std.",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]],originalTxt:"Kurzanmeldung Sozialdienst RHÖN Campus Bad Neustadt, Station Neurologie, Az. N-1187/26. Patientin Anna Muster, 67 Jahre, Diagnose Schlaganfall, Kostenträger PKV. Aufnahme zur AHB möglichst schnell gewünscht, Tochter organisiert und bittet um Rückruf. Unterlagen folgen per Fax.",originalKanal:"Zuweiser direkt"},
- {id:3,personId:"P02",name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"]],originalTxt:"Hallo, ich hatte vor Kurzem eine Hüft-TEP und suche jetzt eine Reha-Klinik für die Anschlussbehandlung. Ich bin Selbstzahlerin, 58 Jahre alt, und hätte gerne ein Komfortzimmer, wenn das geht am liebsten mit Blick ins Grüne. Einen Termin bräuchte ich möglichst schnell, weil ich zuhause gerade nicht gut zurechtkomme. Viele Grüße, Maria Probst, 0170 4471182",originalKanal:"Website-Formular"},
+ {id:3,personId:"P02",name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,chat:[{von:"M. Belegung",txt:"@S. Koordination Komfortzimmer für Frau Probst ist ab KW 33 machbar — reicht dir das fürs Angebot, oder braucht sie früher?",ts:"08:40",an:["S. Koordination"],gelesenVon:["M. Belegung"]}],log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"],[dstr(0),"💬 intern · M. Belegung: @S. Koordination Komfortzimmer für Frau Probst ist ab KW 33 machbar — reicht dir das fürs Angebot, oder braucht sie früher?"]],originalTxt:"Hallo, ich hatte vor Kurzem eine Hüft-TEP und suche jetzt eine Reha-Klinik für die Anschlussbehandlung. Ich bin Selbstzahlerin, 58 Jahre alt, und hätte gerne ein Komfortzimmer, wenn das geht am liebsten mit Blick ins Grüne. Einen Termin bräuchte ich möglichst schnell, weil ich zuhause gerade nicht gut zurechtkomme. Viele Grüße, Maria Probst, 0170 4471182",originalKanal:"Website-Formular"},
  {id:6,personId:"P03",name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(-2),saluto:true,med:{diagnose:"Z. n. Langzeitbeatmung, Weaning laufend",neben:"Respiratorische Insuffizienz",isolation:"Nein",schwere:"hoch"},docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss: Thoraxzentrum fragt, ob Beatmungspatient (69, PKV) übernommen werden kann — Entwöhnung läuft, Entlassung geplant"],[dstr(-4),"↦ Rückfrage an Oberarzt Dr. Castelli: aktuelle Beatmungsparameter + Entwöhnungsstand erbeten"],[dstr(-3),"Antwort Thoraxzentrum: Parameter übermittelt, Spontanatmung bereits 8 Std./Tag"]],originalTxt:"Kurzanmeldung Thoraxzentrum Münnerstadt, Station Weaning, Az. TZ-0512/26. Oberarzt Dr. Castelli meldet Patient Heinz Vogel (69) zur Übernahme nach Langzeitbeatmung an, Kostenträger PKV. Frage: Ist eine Aufnahme als Beatmungspatient zur weiteren Entwöhnung bei Ihnen möglich? Um Rückruf wird gebeten unter 0971 0000-271, castelli@demo-thorax.local.",originalKanal:"Zuweiser direkt"},
  {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:1,log:[[dstr(-6),"Recare-Anfrage: Entlassmanagement Klinikum Fulda meldet Patient (63, GKV) mit Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich"],[dstr(-4),"Entlassbrief liegt vor — von Entlassmanagement per Recare nachgereicht"],[dstr(-2),"↦ Rückfrage an Entlassmanagement: Komfort-Upgrade und Zusatzkosten angeboten, Rückmeldung ausstehend"]],originalTxt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · Patient Peter Hofmann (63), GKV, Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich. · Bitte um Rückmeldung zur Kapazität und zu den Komfort-Optionen.",originalKanal:"Recare"},
  {id:9,personId:"P05",name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"Arterielle Hypertonie",isolation:"Nein",schwere:"mittel"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]],originalTxt:"Anruf Tochter Winkler, 11:40 · ruft für ihre Mutter Ruth (77) an, liegt Station 2 Nord UKW Würzburg · Diagnose Schlaganfall, PKV-versichert · möchte möglichst schnell einen Platz in der Neuro-Reha, am liebsten Privatzimmer · Rückrufnummer hinterlegt",originalKanal:"Telefon"},
@@ -6077,8 +6092,40 @@ function svOwnerChip(t){
 function tmiWer(){return document.body.classList.contains("ma-mode")?"S. Koordination":"Leitung";}
 function tmiSenden(fid,txt,von){
   const f=faelle.find(x=>x.id===fid);if(!f||!txt)return;
-  (f.chat=f.chat||[]).push({von:von,txt:txt,ts:logZeit()});
+  const an=TEAM.filter(t=>txt.indexOf("@"+t)>=0); /* @-Erwähnungen: „@M. Belegung" holt Kollegen in den Fall */
+  (f.chat=f.chat||[]).push({von:von,txt:txt,ts:logZeit(),an:an,gelesenVon:[von]});
   f.log.push([dstr(0),"💬 intern · "+von+": "+txt,logZeit()]);
+}
+function tmiUnread(f,wer){return (f.chat||[]).filter(m=>m.von!==wer&&!(m.gelesenVon||[]).includes(wer)).length;}
+function tmiMarkRead(f,wer){(f.chat||[]).forEach(m=>{m.gelesenVon=m.gelesenVon||[m.von];if(!m.gelesenVon.includes(wer))m.gelesenVon.push(wer);});}
+function tmiRelevant(f,wer){
+  const c=f.chat||[];if(!c.length)return false;
+  return wer==="Leitung"||f.owner===wer||c.some(m=>m.von===wer||(m.an||[]).includes(wer));
+}
+function tmiMentionHtml(txt){
+  let h=escapeHtml(txt);
+  TEAM.forEach(t=>{h=h.split("@"+t).join("<b class='tmi-mention'>@"+t+"</b>");});
+  return h;
+}
+/* Nachrichten-Eingang in „Mein Tag": alle Fälle mit für mich relevantem Thread, Ungelesene zuerst */
+function renderMtNachrichten(){
+  const chap=document.getElementById("mtNachrichtenChap"),el=document.getElementById("mtNachrichtenList");
+  if(!chap||!el)return;
+  const wer="S. Koordination"; /* Mein Tag = Koordinations-Persona (mtGreet) */
+  const rows=faelle.filter(f=>tmiRelevant(f,wer))
+    .map(f=>({f:f,neu:tmiUnread(f,wer),letzte:f.chat[f.chat.length-1]}))
+    .sort((a,b)=>b.neu-a.neu);
+  chap.style.display=rows.length?"":"none";
+  const neuGesamt=rows.reduce((s,r)=>s+r.neu,0);
+  const cnt=document.getElementById("mtNachrichtenCount");
+  if(cnt){cnt.style.display=neuGesamt?"":"none";cnt.textContent=neuGesamt+" neu";}
+  el.innerHTML=rows.map(r=>
+    "<button type='button' class='tmi-row' onclick='openFallakte("+r.f.id+")'>"
+    +"<span class='ava sm'>"+initialen(r.f.name)+"</span>"
+    +"<span class='tmi-row-txt'><b>"+escapeHtml(r.f.name)+"</b>"
+    +"<span class='tmi-row-snip'>"+escapeHtml(r.letzte.von)+": "+tmiMentionHtml(r.letzte.txt.length>90?r.letzte.txt.slice(0,90)+"…":r.letzte.txt)+"</span></span>"
+    +(r.neu?"<span class='tmi-neu-badge num'>"+r.neu+" neu</span>":"<span class='chev'>›</span>")
+    +"</button>").join("");
 }
 function tmiAutoAntwort(f){
   if((f.anrufe||0)>0)return "Schon "+f.anrufe+"× versucht, nicht erreicht — Wiedervorlage läuft, nächster Versuch heute Nachmittag.";
@@ -6092,6 +6139,7 @@ function svNachfrage(fid){
   const inp=document.getElementById("tmiFrage"+fid);
   const txt=(inp&&inp.value.trim())||"Kurzer Zwischenstand bitte — die Anfrage liegt über dem Service-Ziel.";
   tmiSenden(fid,txt,"Leitung");
+  if(typeof renderMeinTag==="function")renderMeinTag();
   rpToast("Nachfrage an "+f.owner+" gesendet — die Antwort erscheint hier und in der Akte.");
   if(!_tmiPending.has(fid)){
     _tmiPending.add(fid);
@@ -6100,6 +6148,7 @@ function svNachfrage(fid){
       tmiSenden(fid,tmiAutoAntwort(f),f.owner);
       if(typeof inbToast==="function")inbToast("done","<b>Antwort von "+escapeHtml(f.owner)+"</b>",escapeHtml(f.name)+" · Team intern",null);
       renderAll();
+      if(typeof renderMeinTag==="function")renderMeinTag();
       if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id)renderFallakte();
     },7000);
   }
@@ -6110,7 +6159,7 @@ function tmiThreadHtml(f){
   const c=f.chat||[],wer=tmiWer();
   const rows=c.length?c.map(m=>
     "<div class='tmi-msg"+(m.von===wer?" eigen":"")+"'><span class='tmi-von'>"+escapeHtml(m.von)+" · "+escapeHtml(m.ts||"heute")+"</span>"
-    +"<p>"+escapeHtml(m.txt)+"</p></div>").join("")
+    +"<p>"+tmiMentionHtml(m.txt)+"</p></div>").join("")
    :"<p class='empty'>Noch keine internen Nachrichten zu diesem Fall — hier schreibt das Team fallbezogen miteinander, nichts verlässt das Haus.</p>";
   return "<div class='tmi-thread'>"+rows+"</div>"
    +"<div class='tmi-neu'><input id='tmiAkte"+f.id+"' placeholder='Interne Nachricht als "+escapeHtml(wer)+"…' onkeydown='if(event.key===\"Enter\")tmiAkteSenden("+f.id+")'>"
@@ -6121,6 +6170,7 @@ function tmiAkteSenden(fid){
   const txt=inp?inp.value.trim():"";if(!txt)return;
   tmiSenden(fid,txt,tmiWer());
   renderAll();
+  if(typeof renderMeinTag==="function")renderMeinTag();
   if(typeof renderFallakte==="function")renderFallakte();
 }
 /* Netzwerk-Fällige: Leitungs-Aktion „Wiedervorlage +7 Tage" für überfällige Radar-Einträge */
@@ -9844,6 +9894,7 @@ function renderMeinTag(){
  document.getElementById("mtGutList").innerHTML=gut.length?gut.map(mtInfoCard).join(""):"<p class='empty'>Nichts Besonderes vorgemerkt.</p>";
  renderMtProtokolle();
  renderEgtPool();
+ renderMtNachrichten(); /* Team intern (tmi): Nachrichten-Eingang */
 }
 /* Task 6.1 (Punkt 6+7): Segment-Toggle Mein Tag ⇄ Protokolle — reines classList-Toggle,
    kein Routing/Hash, kein neuer Top-Level-View, ma-mode-Gate bleibt unangetastet. */
@@ -10220,7 +10271,7 @@ function renderFallakte(){
     +"</div>"+faOriginalHtml(f)
     +"<div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
   lgZumEnde();
-  const _ft=document.getElementById("faTeam");if(_ft)_ft.innerHTML=tmiThreadHtml(f); /* Team intern (tmi) */
+  const _ft=document.getElementById("faTeam");if(_ft){if(fallImBlick(f)){tmiMarkRead(f,tmiWer());renderMtNachrichten();}_ft.innerHTML=tmiThreadHtml(f);} /* Team intern (tmi): Öffnen markiert gelesen, Eingang zählt sofort runter */
   const med=inReha.find(p=>p.personId===f.personId);
   const _medHerkunft=med
    ?("<p class='fa-med-src'>"+(rehaAssessOffen(med)
@@ -10561,7 +10612,7 @@ function ktaUebernehmen(){
 
 /* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
    strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
-const DEMO_SCHEMA=8; /* 7→8: Team erweitert (K. Aufnahme, J. Nachsorge) + Owner-Seeds umverteilt (Redesign 04.08.) */
+const DEMO_SCHEMA=9; /* 8→9: Team-intern-Chat-Seed (Maria Probst) für den Mein-Tag-Nachrichten-Eingang */
 const DEMO_KEY="kbDemoState";
 let _demoSaveT=null;
 function demoSave(){
