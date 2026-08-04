@@ -3640,6 +3640,12 @@ button.kap-w:hover{border-color:var(--sage-deep)}
 .kap-alarm{color:var(--terra);font-weight:600}
 .kap-done{margin-top:6px;font-size:11.5px;color:var(--sage)}
 .kap-done b{color:var(--ink)}
+/* Verlust-Analyse (.vl-*) — Ableitung unter „Warum gehen Fälle verloren?" (Auswertung) */
+.vl-fazit{margin-top:10px;padding-top:8px;border-top:1px solid var(--hair2);font-size:11.5px;line-height:1.55;color:var(--muted)}
+.vl-fazit:empty{display:none}
+.vl-top b{color:var(--ink)}
+.vl-eur{margin-top:4px;color:var(--terra)}
+.vl-eur b{color:var(--terra)}
 </style>
 </head>
 <body>
@@ -4376,7 +4382,7 @@ button.kap-w:hover{border-color:var(--sage-deep)}
       <div class="chart"><h3>Von Anfrage zu Aufnahme</h3><div class="donut-wrap"><svg id="donut" width="116" height="116" viewBox="0 0 120 120"></svg><div class="donut-leg" id="donutLeg"></div></div></div>
       <div class="chart" id="svPromise"><h3>Wird das Versprechen gehalten?</h3><div id="svPromiseBody"></div></div>
       <div class="chart"><h3>Woher kommen Patienten?</h3><div id="chartQuelle"></div></div>
-      <div class="chart"><h3>Warum gehen Fälle verloren?</h3><div id="chartVerlust"></div></div>
+      <div class="chart"><h3>Warum gehen Fälle verloren?</h3><div id="chartVerlust"></div><div class="vl-fazit" id="vlFazit"></div></div>
       <div class="chart"><h3>Wer führt wie viele Fälle?</h3><div id="chartTeam"></div></div>
       <div class="chart"><h3>Wo stockt es?</h3><div id="chartEngpass"></div></div>
       <div class="chart"><h3>Welche Fachbereiche?</h3><div id="chartAchse"></div></div>
@@ -4463,7 +4469,7 @@ button.kap-w:hover{border-color:var(--sage-deep)}
       </div>
       <div class="process-card">
         <h3>Service-Versprechen · Reaktionszeiten &amp; Eskalation</h3>
-        <p>Jede Anfrage bekommt vom System eine Dringlichkeitsklasse und eine sichtbare Uhr — kein Zwang, aber ein klarer Rahmen. Läuft die Uhr ab, entscheidet die Leitung. Kein Fall bleibt still liegen.</p>
+        <p>Jede Anfrage bekommt vom System eine Dringlichkeitsklasse und eine sichtbare Uhr — kein Zwang, aber ein klarer Rahmen. Läuft die Uhr ab, entscheidet die Leitung. Kein Fall bleibt still liegen — und auch Fälliges im Netzwerk (Wiederbedarf, Zuweiser-Kadenz) eskaliert, statt liegen zu bleiben.</p>
         <table class="sv-regeln">
           <thead><tr><th>Klasse</th><th>Wer</th><th>Erstkontakt</th></tr></thead>
           <tbody>
@@ -4891,7 +4897,7 @@ let bestand=[
 /* Altpatienten-Radar — ehemalige Patienten mit Einwilligung und absehbarem Wiederbedarf (proaktiv, ausgehend) */
 let radar=[
  {personId:"P21",name:"Margarete Wirth",alter:73,achse:"Orthopädie",consent:"ja",letzte:"Knie-TEP links · Reha vor 11 Monaten",prognose:"Gegenseite (Knie-TEP rechts) absehbar — zweite Seite meist nach ~12 Monaten fällig",faelligInTagen:30,owner:"S. Koordination"},
- {personId:"P22",name:"Christa Mohr",alter:58,achse:"SalutoCare",consent:"ja",letzte:"Premium-Reha · vor 5 Monaten",prognose:"Halbjährliche Premium-Nachsorge · Recovery Manager kennt den Fall",faelligInTagen:25,owner:"Recovery Manager"},
+ {personId:"P22",name:"Christa Mohr",alter:58,achse:"SalutoCare",consent:"ja",letzte:"Premium-Reha · vor 5 Monaten",prognose:"Halbjährliche Premium-Nachsorge · Recovery Manager kennt den Fall",faelligInTagen:-5,owner:"Recovery Manager"},
  {personId:"P23",name:"Otto Brenner",alter:68,achse:"Neurologie",consent:"ja",letzte:"Schlaganfall-Reha · entlassen vor 14 Monaten",prognose:"Jährliche Sekundärprävention / Nachsorge-Reha empfohlen",faelligInTagen:95,owner:"M. Belegung"},
  {personId:"P24",name:"Friedrich Berg",alter:71,achse:"Orthopädie",consent:"ja",letzte:"Hüft-TEP links · Reha vor 8 Monaten",prognose:"Hüft-TEP rechts mittelfristig wahrscheinlich (Gegenseite)",faelligInTagen:240,owner:"M. Belegung"},
  {personId:"P25",name:"Walter Simon",alter:80,achse:"Innere",consent:"nein",letzte:"Kardio-Reha · vor 23 Monaten",prognose:"Intervall-Nachsorge sinnvoll — aber keine Kontakteinwilligung",faelligInTagen:60,owner:"—"}
@@ -5879,9 +5885,26 @@ function svEskalationen(){
     if(s&&s.over){list.push({typ:"fall",art:"erstkontakt",ref:f,state:s});return;}
     if(f.frist&&f.frist<dstr(0))list.push({typ:"fall",art:"frist",ref:f});
   });
+  /* Netzwerk-Fällige (Ausbau 04.08.): Wiederbedarf über Termin bzw. Zuweiser-Kadenz deutlich
+     gerissen eskalieren mit — Beziehungs-Anlässe (Geburtstag/Jubiläum/Nachsorge-Fenster)
+     bewusst nicht: Pflege ist kein Verstoß. Erledigen/Verschieben lässt die Zeile verschwinden. */
+  anlaesse().forEach(a=>{
+    if(a.typ==="wiederbedarf"&&a.tage<0)list.push({typ:"anlass",ref:a,verstoss:"Wiederbedarf seit "+Math.abs(a.tage)+" Tag"+(Math.abs(a.tage)===1?"":"en")+" überfällig — liegt im Radar"});
+    else if(a.typ==="zuweiser-rhythmus"&&a.urg==="jetzt")list.push({typ:"anlass",ref:a,verstoss:"Zuweiser-Kadenz deutlich gerissen — der Draht droht abzureißen"});
+  });
   return list;
 }
 function svEskZeile(e){
+  if(e.typ==="anlass"){
+    const a=e.ref,k=a.key.replace(/"/g,"&quot;");
+    return "<div class='sv-row'><div class='sv-row-txt'><b>"+escapeHtml(a.titel)+"</b>"
+      +"<span class='sv-verstoss'>"+escapeHtml(e.verstoss)+"</span>"
+      +"<span class='sv-sub'>"+escapeHtml((a.typ==="wiederbedarf"?"Netzwerk · Patienten-Radar":"Netzwerk · Zuweiser")+(a.sub?" · "+a.sub:""))+"</span></div>"
+      +"<div class='sv-acts'>"
+      +"<button class='btn-brass btn-sm' type='button' onclick='akOpen(\""+k+"\")'>Bearbeiten ›</button>"
+      +(a.typ==="wiederbedarf"?"<button class='btn-ghost btn-sm' type='button' onclick='svAnlassSpaeter(\""+k+"\")'>Wiedervorlage +7 Tage</button>":"")
+      +"</div></div>";
+  }
   if(e.typ==="eingang"){
     const m=e.ref;
     const wo=m.gruppe?"unbeansprucht im Pool ("+m.gruppe+")":"ohne Übernahme im Eingang";
@@ -6004,6 +6027,30 @@ function svOwnerChip(t){
   const cls=s.akut?" bad":(s.ok<s.tot?" warn":"");
   const txt=(s.tot?s.ok+"/"+s.tot:"")+(s.akut?(s.tot?" · ":"")+s.akut+" akut":"");
   return "<span class='tc-ma-sla"+cls+"' title='Service-Versprechen: "+s.ok+" von "+s.tot+" Erstkontakten im Ziel"+(s.akut?", "+s.akut+" laufende Eskalation(en)":"")+"'>SV "+txt+"</span>";
+}
+/* Netzwerk-Fällige: Leitungs-Aktion „Wiedervorlage +7 Tage" für überfällige Radar-Einträge */
+function svAnlassSpaeter(key){
+  const m=/^radar:(.+)$/.exec(key);if(!m)return;
+  const r=radar.find(x=>String(x.personId||x.name)===m[1]);if(!r)return;
+  r.faelligInTagen=7;
+  rpToast("Wiedervorlage gesetzt — "+r.name+" in 7 Tagen wieder fällig.");
+  renderAll();
+}
+/* Verlust-Analyse (.vl-*): aus dem häufigsten Verlust-/Blocker-Grund wird die Gegenmaßnahme —
+   jede zeigt auf ein existierendes Feature der Maschine; die €-Zeile rechnet mit SV_FALLWERT. */
+const VL_HEBEL={
+ "Zu lange Wartezeit":"Kapazitäts-Abgleich am Fall — Bett früh vormerken, Warteliste aktiv führen.",
+ "Keine Rückmeldung":"Service-Uhren + Eskalation greifen ab Tag 1 — Wiedervorlage statt Warten.",
+ "Fehlende Dokumente":"Unterlagen früh anfordern — Checkliste am Fall, Upload direkt im Zuweiserportal.",
+ "Kostenklärung offen":"Kosten-Kette sofort starten — der Warteschleifen-Agent übernimmt die PKV-Hotline.",
+ "Kapazität fehlte":"Belegungs-Forecast schaut 8 Wochen voraus — Engpass sichtbar, bevor er Fälle kostet."
+};
+function vlFazitHtml(reasons,verl){
+  if(!reasons||!reasons.length)return "";
+  const top=[...reasons].sort((a,b)=>b[1]-a[1])[0];
+  const hebel=VL_HEBEL[top[0]]||"Prozess-Hebel definieren.";
+  return "<div class='vl-top'>Größter Hebel: <b>"+escapeHtml(top[0])+"</b> ("+top[1]+"×) — "+escapeHtml(hebel)+"</div>"
+   +(verl?"<div class='vl-eur'>"+verl+" verlorene"+(verl===1?"r":"")+" Demo-Fall"+(verl===1?"":"e")+" ≈ <b>"+(verl*SV_FALLWERT).toLocaleString("de-DE")+" €</b> — jeder Grund ist ein Prozess-Hebel, kein Schicksal.</div>":"");
 }
 function renderBoardFocus(){
   const el=document.getElementById("boardFocus");if(!el)return;
@@ -7025,7 +7072,7 @@ function kennzahlen(){
 function renderWichtig(k){
   const items=[];const seen=new Set();
   const esk=svEskalationen(); /* SV: Eskalationen ganz oben — Entscheidung der Leitung nötig */
-  if(esk.length)items.push({p:-120,ico:"alert",cls:"urgent",tit:esk.length+" "+(esk.length===1?"Eskalation":"Eskalationen")+" — Service-Versprechen verletzt",sub:"Erstkontakt oder Frist gerissen, Fall droht liegen zu bleiben — Entscheidung nötig",click:"svGoEsk()"});
+  if(esk.length)items.push({p:-120,ico:"alert",cls:"urgent",tit:esk.length+" "+(esk.length===1?"Eskalation":"Eskalationen")+" — Service-Versprechen verletzt",sub:"Erstkontakt, Frist oder Netzwerk-Fälligkeit gerissen — Entscheidung der Leitung nötig",click:"svGoEsk()"});
   k.offen.forEach(f=>{
     if(!f.frist)return;
     const d=Math.round((new Date(f.frist)-heute)/86400000);
@@ -7319,6 +7366,7 @@ function renderCharts(){
   document.getElementById("autoConsent").textContent=k.kontaktf;
   document.getElementById("commConsent").textContent=k.kontaktf;
   const svEl=document.getElementById("svPromiseBody");if(svEl)svEl.innerHTML=svPromiseHtml(); /* SV-Sprint: KPI „Versprechen gehalten" */
+  const vlEl=document.getElementById("vlFazit");if(vlEl)vlEl.innerHTML=vlFazitHtml(lossReasons,k.verl); /* SV-Sprint: Verlust-Ableitung */
 }
 function mxMetric(id){
  switch(id){
