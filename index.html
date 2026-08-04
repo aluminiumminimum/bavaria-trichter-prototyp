@@ -3602,6 +3602,27 @@ details.fa-orig>div{padding:0 12px 12px}
 .sv-regeln th{font:700 10px/1.3 "Fragment Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .sv-regeln td b{font-family:"Cormorant Garamond",serif;font-size:16px}
 @media(max-width:480px){.sv-acts{flex:1 1 100%}}
+
+/* ===== SV-AUSBAU (Sprint 08/2026) — Zeitraffer-Demo-Leiste (Heute), KPI-Karte
+   „Wird das Versprechen gehalten?" (Auswertung), Team-SLA-Ampel (.tc-ma-sla).
+   Additiv, nur sv-/tc-ma-sla-Namespace, Farben strikt Welt-Token. ===== */
+.sv-zr{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+.sv-zr-lbl{font:700 9.5px/1 "Fragment Mono",monospace;letter-spacing:.08em;color:var(--faint)}
+.sv-zr button{min-height:26px;padding:3px 10px;font:600 10.5px/1 "Fragment Mono",monospace;letter-spacing:.03em;color:var(--muted);background:var(--paper);border:1px solid var(--hair);border-radius:2px;cursor:pointer}
+.sv-zr button:hover{border-color:var(--brass-line);color:var(--brass-deep)}
+.sv-zr-state{font:700 10.5px/1 "Fragment Mono",monospace;color:var(--brass-deep)}
+.sv-kpi-hero{display:flex;align-items:baseline;gap:8px;margin:6px 0 2px;flex-wrap:wrap}
+.sv-kpi-hero .num{font-family:"Cormorant Garamond",Georgia,serif;font-size:34px;font-weight:700;color:var(--ink);line-height:1}
+.sv-kpi-hero span:last-child{font-size:12px;color:var(--muted)}
+.sv-kpi-track{height:6px;border-radius:2px;background:var(--cream2);overflow:hidden;margin:8px 0 10px}
+.sv-kpi-fill{height:100%;border-radius:1px;background:linear-gradient(90deg,var(--sage),var(--sage-deep))}
+.sv-kpi-row{font-size:11.5px;line-height:1.55;color:var(--muted);padding:6px 0;border-top:1px solid var(--hair2)}
+.sv-kpi-row b{color:var(--ink);font-weight:650}
+.sv-kpi-row.terra{color:var(--terra)}
+.sv-kpi-row.terra b{color:var(--terra)}
+.tc-ma-sla{flex:0 0 auto;font:700 9.5px/1 "Fragment Mono",monospace;letter-spacing:.03em;padding:3px 6px;border-radius:2px;border:1px solid var(--jade-hair);color:var(--sage);white-space:nowrap}
+.tc-ma-sla.warn{border-color:var(--brass-line);background:var(--brass-soft);color:var(--brass-deep)}
+.tc-ma-sla.bad{border-color:rgba(168,52,31,.4);background:var(--terra-soft);color:var(--terra)}
 </style>
 </head>
 <body>
@@ -4181,6 +4202,14 @@ details.fa-orig>div{padding:0 12px 12px}
       <div class="card list-card" id="svEskList"></div>
     </div>
 
+    <!-- Row B3 · Zeitraffer-Demo-Leiste (sv-Präfix) — spult NUR die Service-Uhren vor, reine Pitch-Demo -->
+    <div class="chap hb-12 sv-zr" id="svZrChap">
+      <span class="sv-zr-lbl">DEMO · ZEITRAFFER</span>
+      <button type="button" onclick="svZeitraffer(60)">Service-Uhren +1 Std. ›</button>
+      <button type="button" id="svZrReset" onclick="svZeitrafferReset()" style="display:none">zurücksetzen</button>
+      <span class="sv-zr-state num" id="svZrState"></span>
+    </div>
+
     <!-- Row C · Heute wichtig (span 4) + Radar-Siegel-Zeile (span 8) -->
     <div class="chap hb-4">
       <div class="kicker">Heute wichtig</div>
@@ -4328,6 +4357,7 @@ details.fa-orig>div{padding:0 12px 12px}
       <p class="lblline">Auswertung · Quellen, Engpässe, Team und Fachbereiche.</p>
     </header>
       <div class="chart"><h3>Von Anfrage zu Aufnahme</h3><div class="donut-wrap"><svg id="donut" width="116" height="116" viewBox="0 0 120 120"></svg><div class="donut-leg" id="donutLeg"></div></div></div>
+      <div class="chart" id="svPromise"><h3>Wird das Versprechen gehalten?</h3><div id="svPromiseBody"></div></div>
       <div class="chart"><h3>Woher kommen Patienten?</h3><div id="chartQuelle"></div></div>
       <div class="chart"><h3>Warum gehen Fälle verloren?</h3><div id="chartVerlust"></div></div>
       <div class="chart"><h3>Wer führt wie viele Fälle?</h3><div id="chartTeam"></div></div>
@@ -4785,13 +4815,13 @@ let faelle=[
  {id:1,personId:"P01",name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",eingangZeit:"vor 3 Std.",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]],originalTxt:"Kurzanmeldung Sozialdienst RHÖN Campus Bad Neustadt, Station Neurologie, Az. N-1187/26. Patientin Anna Muster, 67 Jahre, Diagnose Schlaganfall, Kostenträger PKV. Aufnahme zur AHB möglichst schnell gewünscht, Tochter organisiert und bittet um Rückruf. Unterlagen folgen per Fax.",originalKanal:"Zuweiser direkt"},
  {id:3,personId:"P02",name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"]],originalTxt:"Hallo, ich hatte vor Kurzem eine Hüft-TEP und suche jetzt eine Reha-Klinik für die Anschlussbehandlung. Ich bin Selbstzahlerin, 58 Jahre alt, und hätte gerne ein Komfortzimmer, wenn das geht am liebsten mit Blick ins Grüne. Einen Termin bräuchte ich möglichst schnell, weil ich zuhause gerade nicht gut zurechtkomme. Viele Grüße, Maria Probst, 0170 4471182",originalKanal:"Website-Formular"},
  {id:6,personId:"P03",name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(-2),saluto:true,med:{diagnose:"Z. n. Langzeitbeatmung, Weaning laufend",neben:"Respiratorische Insuffizienz",isolation:"Nein",schwere:"hoch"},docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss: Thoraxzentrum fragt, ob Beatmungspatient (69, PKV) übernommen werden kann — Entwöhnung läuft, Entlassung geplant"],[dstr(-4),"↦ Rückfrage an Oberarzt Dr. Castelli: aktuelle Beatmungsparameter + Entwöhnungsstand erbeten"],[dstr(-3),"Antwort Thoraxzentrum: Parameter übermittelt, Spontanatmung bereits 8 Std./Tag"]],originalTxt:"Kurzanmeldung Thoraxzentrum Münnerstadt, Station Weaning, Az. TZ-0512/26. Oberarzt Dr. Castelli meldet Patient Heinz Vogel (69) zur Übernahme nach Langzeitbeatmung an, Kostenträger PKV. Frage: Ist eine Aufnahme als Beatmungspatient zur weiteren Entwöhnung bei Ihnen möglich? Um Rückruf wird gebeten unter 0971 0000-271, castelli@demo-thorax.local.",originalKanal:"Zuweiser direkt"},
- {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:6,log:[[dstr(-6),"Recare-Anfrage: Entlassmanagement Klinikum Fulda meldet Patient (63, GKV) mit Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich"],[dstr(-4),"Entlassbrief liegt vor — von Entlassmanagement per Recare nachgereicht"],[dstr(-2),"↦ Rückfrage an Entlassmanagement: Komfort-Upgrade und Zusatzkosten angeboten, Rückmeldung ausstehend"]],originalTxt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · Patient Peter Hofmann (63), GKV, Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich. · Bitte um Rückmeldung zur Kapazität und zu den Komfort-Optionen.",originalKanal:"Recare"},
+ {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:1,log:[[dstr(-6),"Recare-Anfrage: Entlassmanagement Klinikum Fulda meldet Patient (63, GKV) mit Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich"],[dstr(-4),"Entlassbrief liegt vor — von Entlassmanagement per Recare nachgereicht"],[dstr(-2),"↦ Rückfrage an Entlassmanagement: Komfort-Upgrade und Zusatzkosten angeboten, Rückmeldung ausstehend"]],originalTxt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · Patient Peter Hofmann (63), GKV, Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich. · Bitte um Rückmeldung zur Kapazität und zu den Komfort-Optionen.",originalKanal:"Recare"},
  {id:9,personId:"P05",name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"Arterielle Hypertonie",isolation:"Nein",schwere:"mittel"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]],originalTxt:"Anruf Tochter Winkler, 11:40 · ruft für ihre Mutter Ruth (77) an, liegt Station 2 Nord UKW Würzburg · Diagnose Schlaganfall, PKV-versichert · möchte möglichst schnell einen Platz in der Neuro-Reha, am liebsten Privatzimmer · Rückrufnummer hinterlegt",originalKanal:"Telefon"},
  {id:12,personId:"P06",name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage: Sohn ruft für Hrn. Keller (70) an, Empfehlung, Beihilfe, sucht schnellen Termin"],[dstr(-11),"↦ Rückruf erst nach 26 Std. — Verzögerung durch hohes Anfrageaufkommen"],[dstr(-8),"Familie hat anderes Haus gewählt — zu lange Wartezeit"]],originalTxt:"Anruf Sohn Keller, 14:20 · ruft für seinen Vater Hans (70) an · sucht Reha-Platz nach Empfehlung, orthopädische Diagnose, Kostenträger Beihilfe · möchte schnellstmöglich einen Termin, Rückrufnummer hinterlegt",originalKanal:"Telefon"},
- {id:10,personId:"P07",name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,med:{diagnose:"Z. n. Hüft-TEP links",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:4,log:[[dstr(-12),"Anfrage nach Hüft-TEP: Sozialdienst Leopoldina meldet Patienten (71, PKV) zur AHB an, Az. O-0847/26"],[dstr(-9),"Kostenzusage PKV eingegangen — vom Sozialdienst übermittelt"],[dstr(-2),"Aufgenommen — Privatzimmer, Sozialdienst per Telefon informiert"]],originalTxt:"Kurzanmeldung Sozialdienst Leopoldina-Krankenhaus Schweinfurt, Station Orthopädie, Az. O-0847/26. Patient Ludwig Bauer, 71 Jahre, Diagnose Hüft-TEP links, Kostenträger PKV. Aufnahme zur Anschlussheilbehandlung gewünscht, Unterlagen folgen. Rückmeldung zur Aufnahmefähigkeit erbeten.",originalKanal:"Zuweiser direkt"},
- {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"leicht"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:8,log:[[dstr(-15),"Website-Anfrage Neuro-Reha: Patientin fragt selbst nach Platz nach Schlaganfall, PKV"],[dstr(-10),"Beratung geführt, Zusage erhalten — Rückruf, Fragen zur Station beantwortet"],[dstr(-3),"Aufgenommen"]],originalTxt:"Guten Tag, ich hatte vor einigen Wochen einen Schlaganfall und bin jetzt auf der Suche nach einer Reha-Klinik mit Schwerpunkt Neurologie. Ich bin 66 Jahre alt und privat versichert. Können Sie mir sagen, ob und wann bei Ihnen ein Platz frei wäre? Über eine Rückmeldung würde ich mich sehr freuen. Viele Grüße, Elisabeth Cramer, 0171 5583421",originalKanal:"Website-Formular"},
+ {id:10,personId:"P07",name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,med:{diagnose:"Z. n. Hüft-TEP links",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-12),"Anfrage nach Hüft-TEP: Sozialdienst Leopoldina meldet Patienten (71, PKV) zur AHB an, Az. O-0847/26"],[dstr(-9),"Kostenzusage PKV eingegangen — vom Sozialdienst übermittelt"],[dstr(-2),"Aufgenommen — Privatzimmer, Sozialdienst per Telefon informiert"]],originalTxt:"Kurzanmeldung Sozialdienst Leopoldina-Krankenhaus Schweinfurt, Station Orthopädie, Az. O-0847/26. Patient Ludwig Bauer, 71 Jahre, Diagnose Hüft-TEP links, Kostenträger PKV. Aufnahme zur Anschlussheilbehandlung gewünscht, Unterlagen folgen. Rückmeldung zur Aufnahmefähigkeit erbeten.",originalKanal:"Zuweiser direkt"},
+ {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"leicht"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-15),"Website-Anfrage Neuro-Reha: Patientin fragt selbst nach Platz nach Schlaganfall, PKV"],[dstr(-10),"Beratung geführt, Zusage erhalten — Rückruf, Fragen zur Station beantwortet"],[dstr(-3),"Aufgenommen"]],originalTxt:"Guten Tag, ich hatte vor einigen Wochen einen Schlaganfall und bin jetzt auf der Suche nach einer Reha-Klinik mit Schwerpunkt Neurologie. Ich bin 66 Jahre alt und privat versichert. Können Sie mir sagen, ob und wann bei Ihnen ein Platz frei wäre? Über eine Rückmeldung würde ich mich sehr freuen. Viele Grüße, Elisabeth Cramer, 0171 5583421",originalKanal:"Website-Formular"},
  /* Seed-Ergänzung Mein Tag (Baustein Mitarbeiter-Dashboard): Kostenklärung ohne eigene Frist, additiv am Muster der Nachbarn */
- {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"S. Koordination",aufgabe:"Kostenzusage anfragen",frist:dstr(0),saluto:false,med:{diagnose:"Z. n. Knie-TEP rechts",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:5,log:[[dstr(-4),"Anfrage über Empfehlung: Anruf Hr. Aumann, 10:05, Knie-TEP, AHB gesucht, PKV"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend — telefonisch nachgefragt"],[dstr(0),"↦ Erinnerung an fehlende Kostenzusage verschickt"]],originalTxt:"Anruf Hr. Aumann, 10:05 · ruft selbst an, wurde von Bekannten empfohlen · sucht AHB nach Knie-TEP, 72 Jahre, privat versichert · bittet um Information zu Ablauf und Kosten, Rückrufnummer hinterlegt",originalKanal:"Telefon"}
+ {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"S. Koordination",aufgabe:"Kostenzusage anfragen",frist:dstr(0),saluto:false,med:{diagnose:"Z. n. Knie-TEP rechts",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-4),"Anfrage über Empfehlung: Anruf Hr. Aumann, 10:05, Knie-TEP, AHB gesucht, PKV"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend — telefonisch nachgefragt"],[dstr(0),"↦ Erinnerung an fehlende Kostenzusage verschickt"]],originalTxt:"Anruf Hr. Aumann, 10:05 · ruft selbst an, wurde von Bekannten empfohlen · sucht AHB nach Knie-TEP, 72 Jahre, privat versichert · bittet um Information zu Ablauf und Kosten, Rückrufnummer hinterlegt",originalKanal:"Telefon"}
 ];
 
 /* Werdegang-Beispielschritte (nur für Demo-Fälle gesetzt; Rest wird generisch abgeleitet) */
@@ -5800,7 +5830,7 @@ function svState(kl,elapsed){
   const budget=SV_REGELN[kl].h*60,rest=budget-elapsed;
   return {kl:kl,rest:rest,over:rest<0,warn:rest>=0&&rest<=budget/2};
 }
-function svEingangState(m){return svState(svKlasseEingang(m),svElapsedMin(m.zeit));}
+function svEingangState(m){return svState(svKlasseEingang(m),svElapsedEff(m.zeit));}
 /* Erstkontakt-Uhr nur solange der Fall in „Neu" steht und noch keine Reaktion gestempelt ist —
    danach übernimmt die bestehende Folge-Frist (fristKlasse). Die Eingangszeit läuft aus dem
    Eingang mit (originalZeit wird bei der Übernahme gestempelt), damit die Uhr am Übergabepunkt
@@ -5808,7 +5838,7 @@ function svEingangState(m){return svState(svKlasseEingang(m),svElapsedMin(m.zeit
 function svFallState(f){
   const z=f.eingangZeit||f.originalZeit;
   if(f.status!=="Neu"||f.reaktion!=null||!z)return null;
-  return svState(svKlasseFall(f),svElapsedMin(z));
+  return svState(svKlasseFall(f),svElapsedEff(z));
 }
 function svUhrText(s){
   const abs=Math.abs(s.rest),h=Math.floor(abs/60),mm=abs%60,t=h+":"+(mm<10?"0":"")+mm;
@@ -5865,6 +5895,7 @@ function renderSvEsk(){
   chap.style.display=list.length?"":"none";
   const cnt=document.getElementById("svEskCount");if(cnt)cnt.textContent=list.length;
   el.innerHTML=list.map(svEskZeile).join("");
+  svZrSync(); /* SV-Sprint: Zeitraffer-Leiste (Stand + Reset) läuft im Heute-Renderpfad mit */
 }
 function svZuweisen(fid){
   const f=faelle.find(x=>x.id===fid);if(!f)return;
@@ -5897,6 +5928,65 @@ function svGoEsk(){
   go("heute");
   const el=document.getElementById("svEskChap");
   if(el)setTimeout(function(){el.scrollIntoView({behavior:"smooth",block:"start"})},80);
+}
+/* --- SV-Ausbau (Sprint 08/2026): Zeitraffer-Demo, Rückschau-KPI, Team-Ampel --- */
+let svOffsetMin=0; /* Demo-Verschiebung NUR der Service-Uhren; bewusst nicht persistiert — Reload = reale Uhren */
+function svElapsedEff(z){return svElapsedMin(z)+svOffsetMin;}
+function svZeitraffer(min){
+  svOffsetMin+=min;
+  rpToast("Zeitraffer: Service-Uhren +"+Math.round(min/60)+" Std. vorgespult (Demo).");
+  renderAll();
+}
+function svZeitrafferReset(){svOffsetMin=0;rpToast("Zeitraffer zurückgesetzt — Uhren laufen wieder real.");renderAll();}
+function svZrSync(){
+  const st=document.getElementById("svZrState"),rs=document.getElementById("svZrReset");
+  if(!st)return;
+  const h=Math.floor(svOffsetMin/60),mm=svOffsetMin%60;
+  st.textContent=svOffsetMin?("+"+h+":"+(mm<10?"0":"")+mm+" Std."):"";
+  if(rs)rs.style.display=svOffsetMin?"":"none";
+}
+/* Rückschau auf dokumentierte Erstkontakte (f.reaktion in Std.): wurde das Klassen-Ziel gehalten?
+   Gleiche Klassenlogik wie live (svKlasseFall) — eine Quelle, kein zweites Regelwerk. */
+const SV_FALLWERT=18800; /* Demo-Kalkulation: 18 Tage × 1.045 € Tagessatz (synthetisch, an satz-Seeds angelehnt) */
+function svRetro(){
+  const rows=faelle.filter(f=>f.reaktion!=null).map(f=>{
+    const ziel=SV_REGELN[svKlasseFall(f)].h;
+    return {f:f,ziel:ziel,ok:f.reaktion<=ziel,over:f.reaktion-ziel};
+  });
+  const ok=rows.filter(r=>r.ok).length;
+  const avg=rows.length?rows.reduce((s,r)=>s+r.f.reaktion,0)/rows.length:0;
+  const aktiv=rows.filter(r=>r.f.status!=="Verloren");
+  const avgAktiv=aktiv.length?aktiv.reduce((s,r)=>s+r.f.reaktion,0)/aktiv.length:0;
+  return {rows:rows,ok:ok,avg:avg,avgAktiv:avgAktiv};
+}
+function svH(x){return (Math.round(x*10)/10).toLocaleString("de-DE");}
+function svPromiseHtml(){
+  const r=svRetro();if(!r.rows.length)return "<p class='empty'>Noch keine dokumentierten Erstkontakte.</p>";
+  const q=Math.round(r.ok/r.rows.length*100);
+  const miss=r.rows.filter(x=>!x.ok).sort((a,b)=>b.over-a.over);
+  const verlust=miss.filter(x=>x.f.status==="Verloren");
+  const esk=svEskalationen().length;
+  return "<div class='sv-kpi-hero'><span class='num'>"+r.ok+" / "+r.rows.length+"</span><span>Erstkontakte im Klassen-Ziel · "+q+" %</span></div>"
+   +"<div class='sv-kpi-track'><div class='sv-kpi-fill' style='width:"+q+"%'></div></div>"
+   +"<div class='sv-kpi-row'>⌀ Erstkontakt <b>"+svH(r.avg)+" Std.</b>"+(r.avgAktiv!==r.avg?" · ohne Verlustfälle <b>"+svH(r.avgAktiv)+" Std.</b>":"")+" · Ziel: A 2 · B 4 · C 24 Std.</div>"
+   +(miss.length?"<div class='sv-kpi-row'>Ziel verfehlt: "+miss.map(x=>"<b>"+escapeHtml(x.f.name)+"</b> +"+svH(x.over)+" Std.").join(" · ")+"</div>":"")
+   +(verlust.length?"<div class='sv-kpi-row terra'>"+verlust.map(x=>"<b>"+escapeHtml(x.f.name)+"</b>: "+x.f.reaktion+" Std. bis zum Rückruf → Fall verloren ≈ <b>"+SV_FALLWERT.toLocaleString("de-DE")+" €</b> entgangener Erlös (Demo-Kalkulation)").join("<br>")+"</div>":"")
+   +(esk?"<div class='sv-kpi-row'><button class='btn-ghost btn-sm' type='button' onclick='svGoEsk()'>Aktuell "+esk+" offene "+(esk===1?"Eskalation":"Eskalationen")+" ›</button></div>":"");
+}
+/* Team-Ampel: Rückschau je Mitarbeiter + akut gerissene Erstkontakt-Uhren (ohne Leitungs-Aktion).
+   Folgefrist-Überfälligkeit zeigt weiterhin .tc-ma-ueb — hier bewusst kein Doppel. */
+function svOwnerStat(t){
+  const retro=svRetro().rows.filter(r=>r.f.owner===t);
+  const ok=retro.filter(r=>r.ok).length;
+  const akut=offeneFaelle().filter(f=>f.owner===t&&!f.svAktion&&(svFallState(f)||{}).over).length;
+  return {ok:ok,tot:retro.length,akut:akut};
+}
+function svOwnerChip(t){
+  const s=svOwnerStat(t);
+  if(!s.tot&&!s.akut)return "";
+  const cls=s.akut?" bad":(s.ok<s.tot?" warn":"");
+  const txt=(s.tot?s.ok+"/"+s.tot:"")+(s.akut?(s.tot?" · ":"")+s.akut+" akut":"");
+  return "<span class='tc-ma-sla"+cls+"' title='Service-Versprechen: "+s.ok+" von "+s.tot+" Erstkontakten im Ziel"+(s.akut?", "+s.akut+" laufende Eskalation(en)":"")+"'>SV "+txt+"</span>";
 }
 function renderBoardFocus(){
   const el=document.getElementById("boardFocus");if(!el)return;
@@ -7014,7 +7104,7 @@ function kpiCountUp(){
 const TC_WOCHE={
  aufnahmen:   [0,1,1,1,2,2,2],   // endet bei live Aufnahmen(7T)=2
  conversion:  [58,60,62,64,65,66,67], // endet bei live Conversion=67
- reaktion:    [9,9,8,8,8,7,7],   // endet bei live Ø Reaktionszeit=7
+ reaktion:    [9,8,8,7,7,6,5],   // endet bei live Ø Reaktionszeit=5 (SV-Sprint: Seeds ans Regelwerk angepasst)
  ueberfaellig:[3,3,2,2,1,1,1]    // Review-Fix 2: endet bei live Überfällig=1 (Heinz-Vogel-Seed, §4.4), Delta=1-3=-2
 };
 function tcDelta(arr){ return arr[6]-arr[0]; } // Delta-Pfeil: ausschließlich Seed[6]-Seed[0], unabhängig vom Live-Hero-Wert
@@ -7067,6 +7157,7 @@ function tcMitarbeiterZeile(t,openCases,maxN){
   +"<div class='tc-ma-track'><div class='tc-ma-fill' style='width:"+(mine.length/maxN*100)+"%'></div></div>"
   +"<span class='tc-ma-n num'>"+mine.length+"</span>"
   +(ueb?"<span class='tc-ma-ueb'>"+ueb+" überfällig</span>":"")
+  +svOwnerChip(t) /* SV-Sprint: Team-Ampel Service-Versprechen */
   +"<span class='tc-ma-erl'>"+erledigt+" diese Woche</span>"
   +"</button>";
 }
@@ -7172,6 +7263,7 @@ function renderCharts(){
   document.getElementById("autoLoss").textContent=k.verl;
   document.getElementById("autoConsent").textContent=k.kontaktf;
   document.getElementById("commConsent").textContent=k.kontaktf;
+  const svEl=document.getElementById("svPromiseBody");if(svEl)svEl.innerHTML=svPromiseHtml(); /* SV-Sprint: KPI „Versprechen gehalten" */
 }
 function mxMetric(id){
  switch(id){
@@ -7877,7 +7969,7 @@ function kfKontaktAbschliessen(){
  const f=aktuellerFall;if(!f)return;
  if(!f.stammOk){inbToast("done","<b>Bitte zuerst Stammdaten bestätigen</b>","Name/Alter oben im Feld prüfen",null);return;}
  f.kontaktOk=true;
- if(f.reaktion==null&&(f.eingangZeit||f.originalZeit))f.reaktion=Math.max(1,Math.round(svElapsedMin(f.eingangZeit||f.originalZeit)/60)); /* SV: Erstkontakt-Uhr stoppt, Reaktionszeit gestempelt */
+ if(f.reaktion==null&&(f.eingangZeit||f.originalZeit))f.reaktion=Math.max(1,Math.round(svElapsedEff(f.eingangZeit||f.originalZeit)/60)); /* SV: Erstkontakt-Uhr stoppt, Reaktionszeit gestempelt (inkl. Zeitraffer — konsistent zur angezeigten Uhr) */
  f.log.push([dstr(0),"Erstgespräch geführt und dokumentiert",logZeit()]);
  kfSyncStatus(f);
  renderAll();renderFallakte();
@@ -10271,7 +10363,7 @@ function ktaUebernehmen(){
 
 /* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
    strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
-const DEMO_SCHEMA=6;
+const DEMO_SCHEMA=7; /* 6→7: Reaktions-Seeds ans Service-Versprechen angepasst (SV-Sprint 08/2026) */
 const DEMO_KEY="kbDemoState";
 let _demoSaveT=null;
 function demoSave(){
