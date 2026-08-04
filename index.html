@@ -3623,6 +3623,23 @@ details.fa-orig>div{padding:0 12px 12px}
 .tc-ma-sla{flex:0 0 auto;font:700 9.5px/1 "Fragment Mono",monospace;letter-spacing:.03em;padding:3px 6px;border-radius:2px;border:1px solid var(--jade-hair);color:var(--sage);white-space:nowrap}
 .tc-ma-sla.warn{border-color:var(--brass-line);background:var(--brass-soft);color:var(--brass-deep)}
 .tc-ma-sla.bad{border-color:rgba(168,52,31,.4);background:var(--terra-soft);color:var(--terra)}
+/* Kapazitäts-Abgleich am Fall (.kap-*) — Fallakte-Übersicht, gleiche Quelle wie Portal-„Freie Plätze" */
+.kap-box{margin:0 0 12px;padding:10px 12px;border:1px solid var(--jade-hair);border-radius:4px;background:var(--paper)}
+.kap-k{display:block;font:700 9.5px/1.5 "Fragment Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.kap-k em{font-style:normal;text-transform:none;letter-spacing:.02em;color:var(--faint)}
+.kap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
+.kap-w{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px;border:1px solid var(--hair);border-radius:3px;background:var(--cream2);font:600 12px/1 Inter,sans-serif;color:var(--faint)}
+button.kap-w{cursor:pointer}
+.kap-w .kap-kw{font:600 9px/1 "Fragment Mono",monospace;letter-spacing:.05em;color:var(--faint)}
+.kap-w b{font-weight:700}
+.kap-w.free{border-color:var(--jade-hair);background:var(--paper);color:var(--sage)}
+.kap-w.tight{border-color:var(--brass-line);background:var(--brass-soft);color:var(--brass-deep)}
+button.kap-w:hover{border-color:var(--sage-deep)}
+.kap-fazit{font-size:11.5px;line-height:1.5;color:var(--muted)}
+.kap-fazit b{color:var(--ink)}
+.kap-alarm{color:var(--terra);font-weight:600}
+.kap-done{margin-top:6px;font-size:11.5px;color:var(--sage)}
+.kap-done b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -6695,6 +6712,44 @@ function parKarte(regel){
   +"<p class='zwa-text'>Zielgruppe: "+escapeHtml(regel.zielLabel)+" · Aktion: "+escapeHtml(regel.aktion)+" ("+escapeHtml(regel.rhythmus)+")</p>"
   +"<div class='par-foot"+(an?"":" muted")+"'>"+laufTxt+"</div>"
   +"</div>";
+}
+/* ---------- Kapazitäts-Abgleich am Fall (.kap-*) — „Anfrage trifft Bett" (Sprint 08/2026).
+   Liest denselben belegung[]-Seed wie das Zuweiserportal („Freie Plätze") — eine Quelle;
+   Vormerken dekrementiert den gemeinsamen Bestand, Portal und Fallakte zeigen denselben Stand. */
+function kapKwLabel(i){
+ const d=new Date(heute.getFullYear(),heute.getMonth(),heute.getDate());
+ const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow+2+i*7); /* Mittwochs-Anker wie fcWochen() */
+ return fcIsoWeek(d);
+}
+function kapFallHtml(f){
+ if(["Aufnahme geplant","Aufgenommen","Verloren"].includes(f.status))return ""; /* dort antwortet die Aufnahme-Zeile */
+ const b=belegung.find(x=>x.achse===f.achse);if(!b)return "";
+ if(f.bettKw)return "<div class='kap-box'><span class='kap-k'>Kapazität · "+escapeHtml(f.achse)+"</span>"
+  +"<div class='kap-done'>Komfortbett vorgemerkt · <b>KW "+f.bettKw+"</b> — zählt in Portal und Belegung mit.</div></div>";
+ const wochen=b.frei.map((n,i)=>({n:n,i:i,kw:kapKwLabel(i)}));
+ const first=wochen.find(w=>w.n>0);
+ const zellen=wochen.map(w=>{
+  const inner="<span class='kap-kw'>KW "+w.kw+"</span><b>"+(w.n>0?w.n+" frei":"–")+"</b>";
+  return w.n>0
+   ?"<button type='button' class='kap-w "+(w.n<=1?"tight":"free")+"' onclick='kapVormerken("+f.id+","+w.i+")' title='Komfortbett in KW "+w.kw+" vormerken'>"+inner+"</button>"
+   :"<span class='kap-w'>"+inner+"</span>";
+ }).join("");
+ const fazit=first
+  ?"Nächstes freies Komfortbett: <b>KW "+first.kw+"</b>"+(first.i===0?" — diese Woche":" — in "+first.i+" Woche"+(first.i>1?"n":""))+". Tippen merkt vor."
+  :"<span class='kap-alarm'>Kein Komfortbett in 4 Wochen frei — Alternativ-Achse oder Warteliste klären, bevor die Anfrage kippt.</span>";
+ return "<div class='kap-box'><span class='kap-k'>Kapazität · "+escapeHtml(f.achse)+" <em>· gleicher Stand wie Portal „Freie Plätze“</em></span>"
+  +"<div class='kap-grid'>"+zellen+"</div><div class='kap-fazit'>"+fazit+"</div></div>";
+}
+function kapVormerken(fid,i){
+ const f=faelle.find(x=>x.id===fid);if(!f||f.bettKw)return;
+ const b=belegung.find(x=>x.achse===f.achse);
+ if(!b||b.frei[i]<=0)return;
+ b.frei[i]--;
+ f.bettKw=kapKwLabel(i);
+ f.log.push([dstr(0),"Komfortbett vorgemerkt: KW "+f.bettKw+" ("+f.achse+") — Kapazitäts-Abgleich am Fall",logZeit()]);
+ rpToast("Bett vorgemerkt — KW "+f.bettKw+" · "+f.achse+". Portal-Belegung zählt mit (Demo).");
+ renderAll();
+ if(typeof _fallakteId!=="undefined"&&_fallakteId===fid)renderFallakte();
 }
 function renderPatRegelnHtml(){
  return "<div class='ar-feedhead'>Automatik-Regeln</div>"
@@ -10014,7 +10069,7 @@ function renderFallakte(){
         ?(f.aufnahmeTermin?"Patient wird zum "+paDate(f.aufnahmeTermin)+" aufgenommen":"Patient ist aufgenommen")
         :(f.aufnahmeTermin?"geplant zum "+paDate(f.aufnahmeTermin):"geplant — Termin noch offen"))
       +"</span></div></div>":"";
-  document.getElementById("faUebersicht").innerHTML=_aufnZeile+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId,{verlauf:false})+"</details>";
+  document.getElementById("faUebersicht").innerHTML=_aufnZeile+kapFallHtml(f)+"<details class='pa-fold'><summary class='rk'>Stammdaten-Akte</summary>"+paAkteSlot(f.personId,{verlauf:false})+"</details>";
   document.getElementById("faWerdegang").innerHTML=
     kommPartnerHtml(f)
     +"<div class='lg-tabs'>"
@@ -10372,7 +10427,7 @@ function demoSave(){
   try{
    localStorage.setItem(DEMO_KEY,JSON.stringify({v:DEMO_SCHEMA,saved:dstr(0),
     faelle:faelle,eingang:eingang,personen:personen,inReha:inReha,
-    zuweiser:zuweiser,zuweiserEvents:zuweiserEvents,bestand:bestand,radar:radar,inbN:_inbN,inbId:_inbId,pidN:_pidN}));
+    zuweiser:zuweiser,zuweiserEvents:zuweiserEvents,bestand:bestand,radar:radar,belegung:belegung,inbN:_inbN,inbId:_inbId,pidN:_pidN}));
   }catch(e){/* Quota/Privacy-Mode: Persistenz still deaktiviert */}
  },400);
 }
@@ -10407,7 +10462,7 @@ function demoRestore(){
   const raw=localStorage.getItem(DEMO_KEY); if(!raw)return false;
   const s=JSON.parse(raw); if(!s||s.v!==DEMO_SCHEMA)return false;
   [["faelle",faelle],["eingang",eingang],["personen",personen],["inReha",inReha],
-   ["zuweiser",zuweiser],["zuweiserEvents",zuweiserEvents],["bestand",bestand],["radar",radar]].forEach(function(p){
+   ["zuweiser",zuweiser],["zuweiserEvents",zuweiserEvents],["bestand",bestand],["radar",radar],["belegung",belegung]].forEach(function(p){
    if(Array.isArray(s[p[0]])){p[1].length=0;Array.prototype.push.apply(p[1],s[p[0]]);}
   });
   /* Sim-Zähler wiederherstellen — sonst beginnt der Anfragen-Pool nach jedem Reload wieder
