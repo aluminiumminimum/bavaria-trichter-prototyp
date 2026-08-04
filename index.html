@@ -3584,67 +3584,69 @@ details.fa-orig>div{padding:0 12px 12px}
 .sv-chip.sv-over{border-color:rgba(168,52,31,.4);background:var(--terra-soft);color:var(--terra)}
 .sv-kartechip{margin:6px 0 2px}
 .mmeta .sv-chip{padding:2px 6px}
-.sv-esk .kicker{color:var(--terra)}
-.sv-esk-count{display:inline-flex;min-width:18px;height:18px;align-items:center;justify-content:center;margin-left:6px;padding:0 5px;border-radius:9px;background:var(--terra);color:var(--paper);font:700 11px/1 Inter,sans-serif;letter-spacing:0}
-.sv-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 4px;border-bottom:1px solid var(--hair2)}
-.sv-row:last-child{border-bottom:none}
-.sv-row-txt{flex:1 1 260px;min-width:0}
-.sv-row-txt b{font-weight:650}
-.sv-verstoss{display:block;margin-top:3px;font:600 11px/1.5 "Fragment Mono",monospace;color:var(--terra)}
-.sv-sub{display:block;margin-top:2px;font-size:11.5px;color:var(--muted)}
-.sv-acts{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.sv-acts select{min-height:32px;padding:4px 8px;font-size:12px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
-.sv-frist{display:none;flex:1 1 100%;gap:6px;align-items:center}
-.sv-frist.open{display:flex;flex-wrap:wrap}
-.sv-frist input{flex:1 1 180px;min-width:0;min-height:32px;padding:4px 8px;font-size:12px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
+/* Eskalations-Leitstand (Fälle→Team, seit Redesign 04.08.) — Zeilen im Idiom der Team-Ansicht */
+.tc-esk{margin:18px 0 22px}
+.tce-head{display:flex;align-items:baseline;gap:12px;justify-content:space-between;flex-wrap:wrap}
+.tce-head .chap-h2{margin-bottom:2px}
+.tce-count{display:inline-flex;min-width:22px;height:22px;padding:0 7px;margin-left:10px;align-items:center;justify-content:center;border-radius:11px;background:var(--terra);color:var(--paper);font:700 12.5px/1 Inter,sans-serif;vertical-align:5px}
+.tce-zr{min-height:28px;padding:4px 10px;font:600 10px/1 "Fragment Mono",monospace;letter-spacing:.05em;color:var(--faint);background:transparent;border:1px dashed var(--hair);border-radius:3px;cursor:pointer}
+.tce-zr:hover{color:var(--brass-deep);border-color:var(--brass-line)}
+.tce-lead{margin:0 0 12px;font-size:12.5px;line-height:1.55;color:var(--muted);max-width:72ch}
+.tce-row{display:flex;flex-wrap:wrap;gap:10px 13px;align-items:flex-start;padding:14px 4px;border-bottom:1px solid var(--hair2)}
+.tce-row:last-child{border-bottom:none}
+.tce-badge{flex:0 0 34px;width:34px;height:34px;margin-top:2px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",Georgia,serif;font-size:17px;font-weight:700;color:var(--terra);border:1px solid rgba(168,52,31,.35);background:var(--terra-soft)}
+.tce-txt{flex:1 1 250px;min-width:0}
+.tce-txt b{display:block;font-size:14.5px;font-weight:650;color:var(--ink);line-height:1.35}
+.tce-what{display:block;margin-top:2px;font-size:12.5px;font-weight:600;color:var(--terra);line-height:1.5}
+.tce-sub{display:block;margin-top:2px;font-size:12px;color:var(--muted);line-height:1.55}
+.tce-acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end;flex:0 1 auto;max-width:100%}
+.tce-acts select{min-height:34px;padding:5px 9px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
+.tce-frist{display:none;flex:1 1 100%;gap:8px;align-items:center}
+.tce-frist.open{display:flex;flex-wrap:wrap}
+.tce-frist input{flex:1 1 200px;min-width:0;min-height:34px;padding:5px 9px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
+@media(max-width:640px){.tce-acts{flex:1 1 100%;justify-content:flex-start}.tce-badge{display:none}}
 .sv-regeln{width:100%;border-collapse:collapse;margin:10px 0 14px;font-size:12.5px}
 .sv-regeln th,.sv-regeln td{padding:7px 8px;border-bottom:1px solid var(--hair2);text-align:left;vertical-align:top}
 .sv-regeln th{font:700 10px/1.3 "Fragment Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .sv-regeln td b{font-family:"Cormorant Garamond",serif;font-size:16px}
-@media(max-width:480px){.sv-acts{flex:1 1 100%}}
-
-/* ===== SV-AUSBAU (Sprint 08/2026) — Zeitraffer-Demo-Leiste (Heute), KPI-Karte
-   „Wird das Versprechen gehalten?" (Auswertung), Team-SLA-Ampel (.tc-ma-sla).
-   Additiv, nur sv-/tc-ma-sla-Namespace, Farben strikt Welt-Token. ===== */
-.sv-zr{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
-.sv-zr-lbl{font:700 9.5px/1 "Fragment Mono",monospace;letter-spacing:.08em;color:var(--faint)}
-.sv-zr button{min-height:26px;padding:3px 10px;font:600 10.5px/1 "Fragment Mono",monospace;letter-spacing:.03em;color:var(--muted);background:var(--paper);border:1px solid var(--hair);border-radius:2px;cursor:pointer}
-.sv-zr button:hover{border-color:var(--brass-line);color:var(--brass-deep)}
-.sv-zr-state{font:700 10.5px/1 "Fragment Mono",monospace;color:var(--brass-deep)}
-.sv-kpi-hero{display:flex;align-items:baseline;gap:8px;margin:6px 0 2px;flex-wrap:wrap}
-.sv-kpi-hero .num{font-family:"Cormorant Garamond",Georgia,serif;font-size:34px;font-weight:700;color:var(--ink);line-height:1}
-.sv-kpi-hero span:last-child{font-size:12px;color:var(--muted)}
-.sv-kpi-track{height:6px;border-radius:2px;background:var(--cream2);overflow:hidden;margin:8px 0 10px}
+/* ===== SV-AUSBAU (Sprint 08/2026, Redesign 04.08.) — KPI-Karte „Wird das Versprechen
+   gehalten?" (Auswertung), Team-SLA-Ampel (.tc-ma-sla). Farben strikt Welt-Token. ===== */
+.sv-kpi-hero{display:flex;align-items:baseline;gap:10px;margin:8px 0 4px;flex-wrap:wrap}
+.sv-kpi-hero .num{font-family:"Cormorant Garamond",Georgia,serif;font-size:38px;font-weight:700;color:var(--ink);line-height:1}
+.sv-kpi-hero span:last-child{font:600 10.5px/1.5 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep)}
+.sv-kpi-track{height:6px;border-radius:2px;background:var(--cream2);overflow:hidden;margin:10px 0 12px}
 .sv-kpi-fill{height:100%;border-radius:1px;background:linear-gradient(90deg,var(--sage),var(--sage-deep))}
-.sv-kpi-row{font-size:11.5px;line-height:1.55;color:var(--muted);padding:6px 0;border-top:1px solid var(--hair2)}
+.sv-kpi-row{font-size:12.5px;line-height:1.6;color:var(--muted);padding:8px 0;border-top:1px solid var(--hair2)}
 .sv-kpi-row b{color:var(--ink);font-weight:650}
-.sv-kpi-row.terra{color:var(--terra)}
+.sv-kpi-row.terra{margin-top:8px;padding:9px 12px;border:1px solid rgba(168,52,31,.22);border-radius:3px;background:var(--terra-soft);color:var(--terra)}
 .sv-kpi-row.terra b{color:var(--terra)}
-.tc-ma-sla{flex:0 0 auto;font:700 9.5px/1 "Fragment Mono",monospace;letter-spacing:.03em;padding:3px 6px;border-radius:2px;border:1px solid var(--jade-hair);color:var(--sage);white-space:nowrap}
+.tc-ma-sla{flex:0 0 auto;font:700 10.5px/1 "Fragment Mono",monospace;letter-spacing:.03em;padding:4px 7px;border-radius:2px;border:1px solid var(--jade-hair);color:var(--sage);white-space:nowrap}
 .tc-ma-sla.warn{border-color:var(--brass-line);background:var(--brass-soft);color:var(--brass-deep)}
 .tc-ma-sla.bad{border-color:rgba(168,52,31,.4);background:var(--terra-soft);color:var(--terra)}
-/* Kapazitäts-Abgleich am Fall (.kap-*) — Fallakte-Übersicht, gleiche Quelle wie Portal-„Freie Plätze" */
-.kap-box{margin:0 0 12px;padding:10px 12px;border:1px solid var(--jade-hair);border-radius:4px;background:var(--paper)}
-.kap-k{display:block;font:700 9.5px/1.5 "Fragment Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.kap-k em{font-style:normal;text-transform:none;letter-spacing:.02em;color:var(--faint)}
-.kap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
-.kap-w{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px;border:1px solid var(--hair);border-radius:3px;background:var(--cream2);font:600 12px/1 Inter,sans-serif;color:var(--faint)}
+/* Kapazitäts-Abgleich am Fall (.kap-*) — Fallakte-Übersicht, gleiche Quelle wie Portal-„Freie Plätze".
+   Redesign 04.08.: Numerale in Cormorant, Label im Welt-Micro-Idiom (Inter uppercase, brass-deep). */
+.kap-box{margin:0 0 14px;padding:12px 14px;border:1px solid var(--jade-hair);border-radius:4px;background:var(--paper)}
+.kap-k{display:block;font:700 10px/1.6 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep)}
+.kap-k em{font-style:normal;font-weight:600;text-transform:none;letter-spacing:.02em;color:var(--faint)}
+.kap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}
+.kap-w{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px 7px;border:1px solid var(--hair);border-radius:3px;background:var(--cream2);color:var(--faint)}
 button.kap-w{cursor:pointer}
-.kap-w .kap-kw{font:600 9px/1 "Fragment Mono",monospace;letter-spacing:.05em;color:var(--faint)}
-.kap-w b{font-weight:700}
+.kap-w .kap-kw{font:600 9.5px/1 "Fragment Mono",monospace;letter-spacing:.05em;color:var(--faint)}
+.kap-w b{font-family:"Cormorant Garamond",Georgia,serif;font-size:20px;font-weight:700;line-height:1}
+.kap-w small{font:600 9.5px/1 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase}
 .kap-w.free{border-color:var(--jade-hair);background:var(--paper);color:var(--sage)}
 .kap-w.tight{border-color:var(--brass-line);background:var(--brass-soft);color:var(--brass-deep)}
 button.kap-w:hover{border-color:var(--sage-deep)}
-.kap-fazit{font-size:11.5px;line-height:1.5;color:var(--muted)}
+.kap-fazit{font-size:12.5px;line-height:1.55;color:var(--muted)}
 .kap-fazit b{color:var(--ink)}
 .kap-alarm{color:var(--terra);font-weight:600}
-.kap-done{margin-top:6px;font-size:11.5px;color:var(--sage)}
+.kap-done{margin-top:8px;font-size:12.5px;color:var(--sage)}
 .kap-done b{color:var(--ink)}
 /* Verlust-Analyse (.vl-*) — Ableitung unter „Warum gehen Fälle verloren?" (Auswertung) */
-.vl-fazit{margin-top:10px;padding-top:8px;border-top:1px solid var(--hair2);font-size:11.5px;line-height:1.55;color:var(--muted)}
+.vl-fazit{margin-top:12px;padding-top:10px;border-top:1px solid var(--hair2);font-size:12.5px;line-height:1.6;color:var(--muted)}
 .vl-fazit:empty{display:none}
 .vl-top b{color:var(--ink)}
-.vl-eur{margin-top:4px;color:var(--terra)}
+.vl-eur{margin-top:8px;padding:9px 12px;border:1px solid rgba(168,52,31,.22);border-radius:3px;background:var(--terra-soft);color:var(--terra)}
 .vl-eur b{color:var(--terra)}
 </style>
 </head>
@@ -4219,19 +4221,6 @@ button.kap-w:hover{border-color:var(--sage-deep)}
       <div class="lx-live" aria-live="polite"><i class="lx-pulse"></i><b><span data-sync="cvTotal">–</span> Anfragen heute</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.<span class="lx-rt">ECHTZEIT</span></div>
     </div>
 
-    <!-- Row B2 · Eskalationen · Service-Versprechen (sv-Präfix; nur sichtbar wenn n>0, ohne JS unsichtbar) -->
-    <div class="chap hb-12 sv-esk" id="svEskChap" style="display:none">
-      <div class="kicker">Eskalationen · Service-Versprechen <span class="sv-esk-count num" id="svEskCount">0</span></div>
-      <div class="card list-card" id="svEskList"></div>
-    </div>
-
-    <!-- Row B3 · Zeitraffer-Demo-Leiste (sv-Präfix) — spult NUR die Service-Uhren vor, reine Pitch-Demo -->
-    <div class="chap hb-12 sv-zr" id="svZrChap">
-      <span class="sv-zr-lbl">DEMO · ZEITRAFFER</span>
-      <button type="button" onclick="svZeitraffer(60)">Service-Uhren +1 Std. ›</button>
-      <button type="button" id="svZrReset" onclick="svZeitrafferReset()" style="display:none">zurücksetzen</button>
-      <span class="sv-zr-state num" id="svZrState"></span>
-    </div>
 
     <!-- Row C · Heute wichtig (span 4) + Radar-Siegel-Zeile (span 8) -->
     <div class="chap hb-4">
@@ -4842,9 +4831,9 @@ let faelle=[
  {id:9,personId:"P05",name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"Arterielle Hypertonie",isolation:"Nein",schwere:"mittel"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]],originalTxt:"Anruf Tochter Winkler, 11:40 · ruft für ihre Mutter Ruth (77) an, liegt Station 2 Nord UKW Würzburg · Diagnose Schlaganfall, PKV-versichert · möchte möglichst schnell einen Platz in der Neuro-Reha, am liebsten Privatzimmer · Rückrufnummer hinterlegt",originalKanal:"Telefon"},
  {id:12,personId:"P06",name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage: Sohn ruft für Hrn. Keller (70) an, Empfehlung, Beihilfe, sucht schnellen Termin"],[dstr(-11),"↦ Rückruf erst nach 26 Std. — Verzögerung durch hohes Anfrageaufkommen"],[dstr(-8),"Familie hat anderes Haus gewählt — zu lange Wartezeit"]],originalTxt:"Anruf Sohn Keller, 14:20 · ruft für seinen Vater Hans (70) an · sucht Reha-Platz nach Empfehlung, orthopädische Diagnose, Kostenträger Beihilfe · möchte schnellstmöglich einen Termin, Rückrufnummer hinterlegt",originalKanal:"Telefon"},
  {id:10,personId:"P07",name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,med:{diagnose:"Z. n. Hüft-TEP links",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-12),"Anfrage nach Hüft-TEP: Sozialdienst Leopoldina meldet Patienten (71, PKV) zur AHB an, Az. O-0847/26"],[dstr(-9),"Kostenzusage PKV eingegangen — vom Sozialdienst übermittelt"],[dstr(-2),"Aufgenommen — Privatzimmer, Sozialdienst per Telefon informiert"]],originalTxt:"Kurzanmeldung Sozialdienst Leopoldina-Krankenhaus Schweinfurt, Station Orthopädie, Az. O-0847/26. Patient Ludwig Bauer, 71 Jahre, Diagnose Hüft-TEP links, Kostenträger PKV. Aufnahme zur Anschlussheilbehandlung gewünscht, Unterlagen folgen. Rückmeldung zur Aufnahmefähigkeit erbeten.",originalKanal:"Zuweiser direkt"},
- {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"S. Koordination",aufgabe:"",frist:"",saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"leicht"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-15),"Website-Anfrage Neuro-Reha: Patientin fragt selbst nach Platz nach Schlaganfall, PKV"],[dstr(-10),"Beratung geführt, Zusage erhalten — Rückruf, Fragen zur Station beantwortet"],[dstr(-3),"Aufgenommen"]],originalTxt:"Guten Tag, ich hatte vor einigen Wochen einen Schlaganfall und bin jetzt auf der Suche nach einer Reha-Klinik mit Schwerpunkt Neurologie. Ich bin 66 Jahre alt und privat versichert. Können Sie mir sagen, ob und wann bei Ihnen ein Platz frei wäre? Über eine Rückmeldung würde ich mich sehr freuen. Viele Grüße, Elisabeth Cramer, 0171 5583421",originalKanal:"Website-Formular"},
+ {id:11,personId:"P08",name:"Elisabeth Cramer",alter:66,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Neurologie",kt:"PKV",status:"Aufgenommen",owner:"J. Nachsorge",aufgabe:"",frist:"",saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"leicht"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-15),"Website-Anfrage Neuro-Reha: Patientin fragt selbst nach Platz nach Schlaganfall, PKV"],[dstr(-10),"Beratung geführt, Zusage erhalten — Rückruf, Fragen zur Station beantwortet"],[dstr(-3),"Aufgenommen"]],originalTxt:"Guten Tag, ich hatte vor einigen Wochen einen Schlaganfall und bin jetzt auf der Suche nach einer Reha-Klinik mit Schwerpunkt Neurologie. Ich bin 66 Jahre alt und privat versichert. Können Sie mir sagen, ob und wann bei Ihnen ein Platz frei wäre? Über eine Rückmeldung würde ich mich sehr freuen. Viele Grüße, Elisabeth Cramer, 0171 5583421",originalKanal:"Website-Formular"},
  /* Seed-Ergänzung Mein Tag (Baustein Mitarbeiter-Dashboard): Kostenklärung ohne eigene Frist, additiv am Muster der Nachbarn */
- {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"S. Koordination",aufgabe:"Kostenzusage anfragen",frist:dstr(0),saluto:false,med:{diagnose:"Z. n. Knie-TEP rechts",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-4),"Anfrage über Empfehlung: Anruf Hr. Aumann, 10:05, Knie-TEP, AHB gesucht, PKV"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend — telefonisch nachgefragt"],[dstr(0),"↦ Erinnerung an fehlende Kostenzusage verschickt"]],originalTxt:"Anruf Hr. Aumann, 10:05 · ruft selbst an, wurde von Bekannten empfohlen · sucht AHB nach Knie-TEP, 72 Jahre, privat versichert · bittet um Information zu Ablauf und Kosten, Rückrufnummer hinterlegt",originalKanal:"Telefon"}
+ {id:13,personId:"P26",name:"Werner Aumann",alter:72,rolle:"Patient selbst",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"PKV",status:"Unterlagen",owner:"K. Aufnahme",aufgabe:"Kostenzusage anfragen",frist:dstr(0),saluto:false,med:{diagnose:"Z. n. Knie-TEP rechts",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,true,false,false],kosten:"offen",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-4),"Anfrage über Empfehlung: Anruf Hr. Aumann, 10:05, Knie-TEP, AHB gesucht, PKV"],[dstr(-1),"Unterlagen teilweise eingegangen, Kostenzusage noch ausstehend — telefonisch nachgefragt"],[dstr(0),"↦ Erinnerung an fehlende Kostenzusage verschickt"]],originalTxt:"Anruf Hr. Aumann, 10:05 · ruft selbst an, wurde von Bekannten empfohlen · sucht AHB nach Knie-TEP, 72 Jahre, privat versichert · bittet um Information zu Ablauf und Kosten, Rückrufnummer hinterlegt",originalKanal:"Telefon"}
 ];
 
 /* Werdegang-Beispielschritte (nur für Demo-Fälle gesetzt; Rest wird generisch abgeleitet) */
@@ -4954,10 +4943,10 @@ const entlassDoc={pat:"Werner Adler",achse:"Geriatrie",entlassen:dstr(-3),aufent
  epikrise:"Die stationäre geriatrische Komplexrehabilitation nach Beckenringfraktur verlief komplikationslos. Unter intensiver Physio- und Ergotherapie erreichte der Patient eine sichere, selbstständige Mobilität am Rollator; Transfers gelingen ohne personelle Hilfe. Die Belastungsschmerzen sind unter bedarfsgerechter Analgesie rückläufig (NRS 1–2).",
  prozeduren:["Physiotherapie einzeln, 5 ×/Woche · Gangschule und Kraftaufbau","Ergotherapie inkl. Hilfsmittel- und Wohnraumberatung","Geriatrische Komplexbehandlung (OPS 8-550)"]};
 
-const TEAM=["S. Koordination","M. Belegung","T. Abrechnung","Recovery Manager"];
+const TEAM=["S. Koordination","M. Belegung","K. Aufnahme","J. Nachsorge","T. Abrechnung","Recovery Manager"];
 
 /* §3.1 Achse↔Team-Zuordnung + Owner-Routing-Vorschlag — Bereich C */
-const TEAM_ACHSE={"S. Koordination":["Orthopädie","Innere"],"M. Belegung":["Neurologie","Geriatrie"],"Recovery Manager":["SalutoCare"],"T. Abrechnung":[]};
+const TEAM_ACHSE={"S. Koordination":["Orthopädie","Innere"],"M. Belegung":["Neurologie","Geriatrie"],"K. Aufnahme":["Orthopädie"],"J. Nachsorge":["Neurologie","Geriatrie"],"Recovery Manager":["SalutoCare"],"T. Abrechnung":["Orthopädie"]};
 /* Runde 6 Punkt 1, Nachfix 1 (Nutzerfeedback): zwei Belegungs-Teams statt fünf Achsen-Gruppen.
    GRUPPEN ist jetzt eine feste Team-Liste; achseZuGruppe() bildet Achsen auf Teams ab. SalutoCare
    liefert bewusst kein Team (null) — immer Entscheidungsfall beim Leiter, nie automatisch verteilt,
@@ -5894,48 +5883,56 @@ function svEskalationen(){
   });
   return list;
 }
-function svEskZeile(e){
+/* Eskalations-Leitstand — lebt seit Redesign 04.08. in Fälle→Team (tcEskHtml, aus renderTeam
+   aufgebaut), NICHT mehr auf Heute: das Cockpit bleibt ruhig, „Heute wichtig" verlinkt hierher.
+   Zeilen im Welt-Idiom der Team-Ansicht (34px-Badge wie .wico, Inter-Text, Mono nur im Chip). */
+function tcEskZeile(e){
+  let badge,name,was,sub,acts;
   if(e.typ==="anlass"){
     const a=e.ref,k=a.key.replace(/"/g,"&quot;");
-    return "<div class='sv-row'><div class='sv-row-txt'><b>"+escapeHtml(a.titel)+"</b>"
-      +"<span class='sv-verstoss'>"+escapeHtml(e.verstoss)+"</span>"
-      +"<span class='sv-sub'>"+escapeHtml((a.typ==="wiederbedarf"?"Netzwerk · Patienten-Radar":"Netzwerk · Zuweiser")+(a.sub?" · "+a.sub:""))+"</span></div>"
-      +"<div class='sv-acts'>"
-      +"<button class='btn-brass btn-sm' type='button' onclick='akOpen(\""+k+"\")'>Bearbeiten ›</button>"
-      +(a.typ==="wiederbedarf"?"<button class='btn-ghost btn-sm' type='button' onclick='svAnlassSpaeter(\""+k+"\")'>Wiedervorlage +7 Tage</button>":"")
-      +"</div></div>";
-  }
-  if(e.typ==="eingang"){
+    badge=a.typ==="wiederbedarf"?"R":"Z";
+    name=a.titel;was=e.verstoss;
+    sub=(a.typ==="wiederbedarf"?"Netzwerk · Patienten-Radar":"Netzwerk · Zuweiser")+(a.sub?" · "+a.sub:"");
+    acts="<button class='btn-brass btn-sm' type='button' onclick='akOpen(\""+k+"\")'>Bearbeiten ›</button>"
+      +(a.typ==="wiederbedarf"?"<button class='btn-ghost btn-sm' type='button' onclick='svAnlassSpaeter(\""+k+"\")'>Wiedervorlage +7 Tage</button>":"");
+  }else if(e.typ==="eingang"){
     const m=e.ref;
-    const wo=m.gruppe?"unbeansprucht im Pool ("+m.gruppe+")":"ohne Übernahme im Eingang";
-    return "<div class='sv-row'><div class='sv-row-txt'><b>"+escapeHtml(m.wer||m.tit)+"</b>"
-      +"<span class='sv-verstoss'>Klasse "+e.state.kl+" · "+escapeHtml(svUhrText(e.state))+" — liegt "+escapeHtml(m.zeit)+" "+escapeHtml(wo)+"</span>"
-      +"<span class='sv-sub'>"+escapeHtml(m.kanal)+(m.zusammenfassung?" · "+escapeHtml(m.zusammenfassung):"")+"</span></div>"
-      +"<div class='sv-acts'><select id='svSelE"+m.id+"' aria-label='Zuweisen an'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
-      +"<button class='btn-brass btn-sm' type='button' onclick='svEingangZuweisen("+m.id+")'>Als Fall zuweisen ›</button></div></div>";
+    badge=e.state.kl;
+    name=m.wer||m.tit;
+    was=svUhrText(e.state)+" — liegt "+m.zeit+" "+(m.gruppe?"unbeansprucht im Pool "+m.gruppe:"ohne Übernahme im Eingang");
+    sub=m.kanal+(m.zusammenfassung?" · "+m.zusammenfassung:"");
+    acts="<select id='svSelE"+m.id+"' aria-label='Zuweisen an'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
+      +"<button class='btn-brass btn-sm' type='button' onclick='svEingangZuweisen("+m.id+")'>Als Fall zuweisen ›</button>";
+  }else{
+    const f=e.ref;
+    badge=e.art==="erstkontakt"?e.state.kl:"!";
+    name=f.name;
+    was=e.art==="erstkontakt"?svUhrText(e.state):"Folge-Schritt "+fristText(f.frist);
+    sub=f.owner+" · "+(f.aufgabe||f.status);
+    acts="<select id='svSel"+f.id+"' aria-label='Neu zuweisen an'>"+TEAM.filter(t=>t!==f.owner).map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
+      +"<button class='btn-brass btn-sm' type='button' onclick='svZuweisen("+f.id+")'>Neu zuweisen</button>"
+      +"<button class='btn-ghost btn-sm' type='button' onclick='svFristToggle("+f.id+")'>Frist neu…</button>"
+      +"<button class='btn-ghost btn-sm' type='button' onclick='openDetail("+f.id+")'>Akte ›</button>"
+      +"<div class='tce-frist' id='svFrist"+f.id+"'><input id='svGrund"+f.id+"' placeholder='Grund (Pflicht) — warum verschiebt sich das?'>"
+      +"<button class='btn-brass btn-sm' type='button' onclick='svFristSetzen("+f.id+")'>Frist morgen · Grund dokumentieren</button></div>";
   }
-  const f=e.ref;
-  const verstoss=e.art==="erstkontakt"?("Klasse "+e.state.kl+" · "+svUhrText(e.state)):("Folge-Schritt "+fristText(f.frist));
-  return "<div class='sv-row'><div class='sv-row-txt'><b>"+escapeHtml(f.name)+"</b>"
-    +"<span class='sv-verstoss'>"+escapeHtml(verstoss)+"</span>"
-    +"<span class='sv-sub'>"+escapeHtml(f.owner)+" · "+escapeHtml(f.aufgabe||f.status)+"</span></div>"
-    +"<div class='sv-acts'>"
-    +"<select id='svSel"+f.id+"' aria-label='Neu zuweisen an'>"+TEAM.filter(t=>t!==f.owner).map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
-    +"<button class='btn-brass btn-sm' type='button' onclick='svZuweisen("+f.id+")'>Neu zuweisen</button>"
-    +"<button class='btn-ghost btn-sm' type='button' onclick='svFristToggle("+f.id+")'>Frist neu…</button>"
-    +"<button class='btn-ghost btn-sm' type='button' onclick='openDetail("+f.id+")'>Akte ›</button>"
-    +"<div class='sv-frist' id='svFrist"+f.id+"'><input id='svGrund"+f.id+"' placeholder='Grund (Pflicht) — warum verschiebt sich das?'>"
-    +"<button class='btn-brass btn-sm' type='button' onclick='svFristSetzen("+f.id+")'>Frist morgen · Grund dokumentieren</button></div>"
-    +"</div></div>";
+  return "<div class='tce-row'><span class='tce-badge'>"+badge+"</span>"
+    +"<div class='tce-txt'><b>"+escapeHtml(name)+"</b>"
+    +"<span class='tce-what'>"+escapeHtml(was)+"</span>"
+    +"<span class='tce-sub'>"+escapeHtml(sub)+"</span></div>"
+    +"<div class='tce-acts'>"+acts+"</div></div>";
 }
-function renderSvEsk(){
-  const chap=document.getElementById("svEskChap"),el=document.getElementById("svEskList");
-  if(!chap||!el)return;
+function tcEskHtml(){
   const list=svEskalationen();
-  chap.style.display=list.length?"":"none";
-  const cnt=document.getElementById("svEskCount");if(cnt)cnt.textContent=list.length;
-  el.innerHTML=list.map(svEskZeile).join("");
-  svZrSync(); /* SV-Sprint: Zeitraffer-Leiste (Stand + Reset) läuft im Heute-Renderpfad mit */
+  if(!list.length)return "";
+  const h=Math.floor(svOffsetMin/60),mm=svOffsetMin%60;
+  const zr=svOffsetMin
+    ?"<button class='tce-zr' type='button' onclick='svZeitrafferReset()' title='Demo-Zeitraffer zurücksetzen — Uhren laufen wieder real'>Demo +"+h+":"+(mm<10?"0":"")+mm+" Std. · zurücksetzen</button>"
+    :"<button class='tce-zr' type='button' onclick='svZeitraffer(60)' title='Nur für die Vorführung: alle Service-Uhren 1 Stunde vorspulen'>Demo · Uhren +1 Std.</button>";
+  return "<div class='chap tc-esk' id='tcEskChap'>"
+    +"<div class='tce-head'><h2 class='chap-h2'>Eskalationen<span class='tce-count num'>"+list.length+"</span></h2>"+zr+"</div>"
+    +"<p class='tce-lead'>Service-Versprechen verletzt — hier entscheidet die Leitung: neu zuweisen, Frist begründet anpassen oder selbst klären. Nichts davon verschwindet undokumentiert.</p>"
+    +"<div class='card list-card'>"+list.map(tcEskZeile).join("")+"</div></div>";
 }
 function svZuweisen(fid){
   const f=faelle.find(x=>x.id===fid);if(!f)return;
@@ -5965,8 +5962,8 @@ function svEingangZuweisen(id){
   rpToast("Anfrage aus der Eskalation zugewiesen — Fall angelegt.");
 }
 function svGoEsk(){
-  go("heute");
-  const el=document.getElementById("svEskChap");
+  go("faelle","team");
+  const el=document.getElementById("tcEskChap");
   if(el)setTimeout(function(){el.scrollIntoView({behavior:"smooth",block:"start"})},80);
 }
 /* --- SV-Ausbau (Sprint 08/2026): Zeitraffer-Demo, Rückschau-KPI, Team-Ampel --- */
@@ -5978,13 +5975,6 @@ function svZeitraffer(min){
   renderAll();
 }
 function svZeitrafferReset(){svOffsetMin=0;rpToast("Zeitraffer zurückgesetzt — Uhren laufen wieder real.");renderAll();}
-function svZrSync(){
-  const st=document.getElementById("svZrState"),rs=document.getElementById("svZrReset");
-  if(!st)return;
-  const h=Math.floor(svOffsetMin/60),mm=svOffsetMin%60;
-  st.textContent=svOffsetMin?("+"+h+":"+(mm<10?"0":"")+mm+" Std."):"";
-  if(rs)rs.style.display=svOffsetMin?"":"none";
-}
 /* Rückschau auf dokumentierte Erstkontakte (f.reaktion in Std.): wurde das Klassen-Ziel gehalten?
    Gleiche Klassenlogik wie live (svKlasseFall) — eine Quelle, kein zweites Regelwerk. */
 const SV_FALLWERT=18800; /* Demo-Kalkulation: 18 Tage × 1.045 € Tagessatz (synthetisch, an satz-Seeds angelehnt) */
@@ -6776,7 +6766,7 @@ function kapFallHtml(f){
  const wochen=b.frei.map((n,i)=>({n:n,i:i,kw:kapKwLabel(i)}));
  const first=wochen.find(w=>w.n>0);
  const zellen=wochen.map(w=>{
-  const inner="<span class='kap-kw'>KW "+w.kw+"</span><b>"+(w.n>0?w.n+" frei":"–")+"</b>";
+  const inner="<span class='kap-kw'>KW "+w.kw+"</span><b>"+(w.n>0?w.n:"–")+"</b><small>"+(w.n>0?"frei":"belegt")+"</small>";
   return w.n>0
    ?"<button type='button' class='kap-w "+(w.n<=1?"tight":"free")+"' onclick='kapVormerken("+f.id+","+w.i+")' title='Komfortbett in KW "+w.kw+" vormerken'>"+inner+"</button>"
    :"<span class='kap-w'>"+inner+"</span>";
@@ -7139,7 +7129,6 @@ function renderHeute(){
   nsRing("nsRingConv",k.conv,100,"terra");
   // Heute wichtig
   renderWichtig(k);
-  renderSvEsk();
   // Quellen
   const hospitalRx=/(Klinik|Klinikum|Krankenhaus|Campus|Leopoldina|RHÖN|UKW|Fulda|Thoraxzentrum|Recare)/i;
   set("q1",faelle.filter(x=>hospitalRx.test(x.quelle)||x.kanal==="Recare").length);
@@ -7211,7 +7200,7 @@ const TC_WOCHE={
 };
 function tcDelta(arr){ return arr[6]-arr[0]; } // Delta-Pfeil: ausschließlich Seed[6]-Seed[0], unabhängig vom Live-Hero-Wert
 // Demo-Seed, keine Live-Ableitung möglich (Begründung: Spec §4.6) — "diese Woche erledigt" je TEAM-Mitglied.
-const TC_ERLEDIGT={"S. Koordination":4,"M. Belegung":3,"Recovery Manager":2,"T. Abrechnung":1};
+const TC_ERLEDIGT={"S. Koordination":4,"M. Belegung":3,"K. Aufnahme":3,"J. Nachsorge":2,"Recovery Manager":2,"T. Abrechnung":1};
 
 /* ---------- Render: Auswertung ---------- */
 /* Runde 6 Punkt 3 (§6.1–§6.3): .tc-*-Bausteinfunktionen für das neue Team-Führungs-Cockpit.
@@ -7327,7 +7316,7 @@ function renderTeam(){
  const el=document.getElementById("teamGrid"); if(!el)return;
  const offen=f=>!["Aufgenommen","Verloren"].includes(f.status);
  const openCases=faelle.filter(offen);
- el.innerHTML = tcKpiRowHtml() + tcPanelsHtml(openCases) + tcAufmerksamkeitHtml();
+ el.innerHTML = tcKpiRowHtml() + tcEskHtml() + tcPanelsHtml(openCases) + tcAufmerksamkeitHtml();
 }
 function renderCharts(){
   const k=kennzahlen();
@@ -10466,7 +10455,7 @@ function ktaUebernehmen(){
 
 /* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
    strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
-const DEMO_SCHEMA=7; /* 6→7: Reaktions-Seeds ans Service-Versprechen angepasst (SV-Sprint 08/2026) */
+const DEMO_SCHEMA=8; /* 7→8: Team erweitert (K. Aufnahme, J. Nachsorge) + Owner-Seeds umverteilt (Redesign 04.08.) */
 const DEMO_KEY="kbDemoState";
 let _demoSaveT=null;
 function demoSave(){

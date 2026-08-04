@@ -56,6 +56,24 @@ JS additiv nach dem bestehenden sv-Block. Fremdcode-Berührung: je 1 Zeile in
 `tcMitarbeiterZeile` (Chip) und `renderCharts` (KPI-Body). Farben strikt Welt-Token.
 Beide Breiten (390/1440), 0 Console-Errors, Seite rendert ohne JS (Leiste statisch, Karte leer).
 
+## 4b. Redesign 04.08. (Nutzer-Feedback nach Live-Test)
+
+Feedback: Heute war überladen („bei Heute sollten nicht tausend Dinge stehen"), Typo zu klein/
+Mono-lastig, Zeitraffer-Leiste unverständlich. Konsequenz:
+- **Eskalations-Panel + Zeitraffer sind von Heute nach Fälle→Team gezogen** (Leitstand
+  `tcEskHtml`/`tcEskZeile`, `.tce-*`): Zeilen im Idiom der Team-Ansicht — 34px-Kreis-Badge
+  (Klassen-Letter Cormorant), Name 14.5px Inter, Verstoß 12.5px Terra, Sub 12px; Aktionen
+  rechts, mobil (<640px) volle Breite unter dem Text. Heute behält nur die
+  „Heute wichtig"-Zeile (Klick → Team-Leitstand, `svGoEsk`).
+- **Zeitraffer** ist jetzt ein einzelner, klar beschrifteter Demo-Knopf im Panel-Kopf
+  („Demo · Uhren +1 Std." / „Demo +1:00 Std. · zurücksetzen"), gestrichelter Rahmen = Demo-Werkzeug.
+- **KPI-Karte/Verlust-Fazit/Kapazitätsblock** auf Welt-Typo gehoben: Micro-Labels Inter
+  uppercase `--brass-deep` statt Mono, Fließtext 12.5px, €-Zeilen als Terra-Band, Numerale
+  im Kapazitätsblock in Cormorant 20px.
+- **Team erweitert** (Ampeln nachvollziehbar): TEAM + „K. Aufnahme" (Orthopädie, Werner Aumann)
+  und „J. Nachsorge" (Neuro/Geriatrie, Elisabeth Cramer); T. Abrechnung dem Ortho-Panel
+  zugeordnet (Keller 0/1 sichtbar). `DEMO_SCHEMA` 7→8.
+
 ## 5. Nicht in diesem Schritt (bewusst)
 
 Kapazitäts-Abgleich am Fall · Verlust-Analyse-Ableitungen · Netzwerk-Fällige an der
