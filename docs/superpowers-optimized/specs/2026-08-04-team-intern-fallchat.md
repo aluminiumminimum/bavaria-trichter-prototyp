@@ -41,7 +41,19 @@ CSS additiv im SV-AUSBAU-Block; Welt-Token (Bubbles Papier/Cream2, Radius 4/1px-
 Micro-Label Inter uppercase brass-deep). Fremdcode-Berührung: 1 HTML-chap in der Fallakte,
 1 Render-Zeile in `renderFallakte`. Beide Breiten + 1920, Screenshots gesichtet, 0 Errors.
 
-## 4. Nicht in diesem Schritt (bewusst)
+## 4. Ausbaustufe 2 (noch 04.08., Nutzer: „mach das dann bitte")
 
-Fallübergreifender Posteingang je Mitarbeiter (Mein-Tag-Badge „2 neue Nachrichten") ·
-@-Erwähnungen · Ungelesen-Zähler · echte Mehrbenutzer-Sync. Folge-Iterationen.
+- **Ungelesen-Modell:** Nachrichten tragen `gelesenVon:[…]` (Absender initial); Öffnen der
+  Fallakte (`fallImBlick`-Gate wie beim Board-Chip) markiert für die aktuelle Rolle gelesen.
+- **@-Erwähnungen:** `@<TEAM-Name>` im Text wird geparst (`an:[…]`), im Thread und Eingang
+  gold hervorgehoben und holt Kollegen in den Fall (Relevanz auch ohne Ownership).
+- **Mein Tag · „Nachrichten"** (vor dem Pool, nur sichtbar wenn Threads existieren):
+  je Fall eine stille Zeile (Ava · Name · letzter Absender + Snippet), Ungelesene zuerst,
+  Zinnober-Badge „n neu" je Zeile + Summe im Titel; Klick öffnet die Fallakte (= gelesen).
+  Relevanz für die Koordinations-Persona: eigener Fall, selbst geschrieben oder erwähnt.
+- **Seed** (DEMO_SCHEMA 8→9): Maria Probst trägt eine ungelesene Frage von M. Belegung mit
+  @-Erwähnung — der Eingang ist beim ersten Rollenwechsel sofort erlebbar.
+
+## 5. Nicht in diesem Schritt (bewusst)
+
+Echte Mehrbenutzer-Sync · Push/Benachrichtigung außerhalb der App · Threads je Nachricht.
