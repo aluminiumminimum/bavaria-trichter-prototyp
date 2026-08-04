@@ -3605,7 +3605,12 @@ details.fa-orig>div{padding:0 12px 12px}
 .tce-sub{display:block;margin-top:2px;font-size:12px;color:var(--muted);line-height:1.55}
 .tce-cta{flex:0 0 auto;margin-left:auto;padding:6px 12px;border:1px solid var(--brass-line);border-radius:3px;font:600 12px/1 Inter,sans-serif;color:var(--brass-deep);white-space:nowrap}
 /* Entscheidungs-Panel: links unter dem Text ausgerichtet, ruhige einzeilige Werkzeuggruppe */
-.tce-panel{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:0 6px 14px 53px;padding:12px 14px;border:1px solid var(--jade-hair);border-radius:4px;background:var(--cream2)}
+.tce-panel{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 6px 14px 53px;padding:12px 14px;border:1px solid var(--jade-hair);border-radius:4px;background:var(--cream2)}
+.tce-pgrp{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;flex:1 1 100%}
+.tce-pgrp+.tce-pgrp{border-top:1px dashed var(--hair);padding-top:10px}
+.tce-chat{display:block;margin-top:4px;font-size:12px;font-weight:600;line-height:1.5;color:var(--sage)}
+.tce-chat.wartet{color:var(--brass-deep)}
+.tmi-inp{flex:1 1 220px;max-width:440px;width:auto;min-width:0;min-height:36px;margin:0;padding:6px 10px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
 .tce-lbl{font:600 10.5px/1 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep)}
 .tce-oder{font:600 11px/1 Inter,sans-serif;color:var(--faint);margin:0 2px}
 .tce-panel select{width:190px;flex:0 0 auto;min-height:36px;margin:0;padding:6px 9px;font:500 12.5px/1.2 Inter,sans-serif;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
@@ -3657,6 +3662,15 @@ button.kap-w:hover{border-color:var(--sage-deep)}
 .vl-top b{color:var(--ink)}
 .vl-eur{margin-top:8px;padding:9px 12px;border:1px solid rgba(168,52,31,.22);border-radius:3px;background:var(--terra-soft);color:var(--terra)}
 .vl-eur b{color:var(--terra)}
+/* Team intern (.tmi-*) — fallbezogener interner Thread in der Fallakte */
+.tmi-thread{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.tmi-msg{max-width:88%;align-self:flex-start;padding:8px 11px;border:1px solid var(--hair);border-radius:4px 4px 4px 1px;background:var(--paper)}
+.tmi-msg.eigen{align-self:flex-end;border-color:var(--jade-hair);border-radius:4px 4px 1px 4px;background:var(--cream2)}
+.tmi-von{display:block;font:700 9.5px/1.4 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:2px}
+.tmi-msg p{margin:0;font-size:12.5px;line-height:1.55;color:var(--ink)}
+.tmi-neu{display:flex;gap:8px}
+.tmi-neu input{flex:1 1 auto;width:auto;min-width:0;min-height:38px;margin:0;padding:7px 11px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
+.tmi-neu .btn-brass{white-space:nowrap;flex:0 0 auto}
 </style>
 </head>
 <body>
@@ -4669,6 +4683,10 @@ button.kap-w:hover{border-color:var(--sage-deep)}
         <div class="chap fk-komm">
           <h2 class="chap-h2">Kommunikation &amp; Verlauf</h2>
           <div id="faWerdegang"></div>
+        </div>
+        <div class="chap tmi-chap">
+          <h2 class="chap-h2">Team intern</h2>
+          <div id="faTeam"></div>
         </div>
         <div class="chap">
           <h2 class="chap-h2">Übersicht</h2>
@@ -5901,7 +5919,7 @@ let _tcEskOpen=null;
 function tcEskToggle(k){_tcEskOpen=(_tcEskOpen===k?null:k);renderTeam();
   if(_tcEskOpen){const el=document.getElementById("tcEskChap");if(el&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:"start"});}}
 function tcEskZeile(e){
-  let key,badge,name,was,sub,acts;
+  let key,badge,name,was,sub,acts,dialog="";
   if(e.typ==="anlass"){
     const a=e.ref,k=a.key.replace(/"/g,"&quot;");
     key="anlass:"+a.key;
@@ -5927,14 +5945,21 @@ function tcEskZeile(e){
     name=f.name;
     was=e.art==="erstkontakt"?svUhrText(e.state):"Folge-Schritt "+fristText(f.frist);
     sub=f.owner+" · "+(f.aufgabe||f.status);
-    acts="<label class='tce-lbl' for='svSel"+f.id+"'>Neu zuweisen an</label>"
+    const c=f.chat||[],letzte=c.length?c[c.length-1]:null;
+    if(letzte)dialog=letzte.von==="Leitung"
+      ?"<span class='tce-chat wartet'>Nachfrage gestellt — Antwort ausstehend</span>"
+      :"<span class='tce-chat'>💬 "+escapeHtml(letzte.von)+": „"+escapeHtml(letzte.txt)+"“</span>";
+    acts="<div class='tce-pgrp'><label class='tce-lbl' for='tmiFrage"+f.id+"'>Nachfragen bei "+escapeHtml(f.owner)+"</label>"
+      +"<input class='tmi-inp' id='tmiFrage"+f.id+"' placeholder='Was ist hier los? Kurzer Zwischenstand…' onkeydown='if(event.key===\"Enter\")svNachfrage("+f.id+")'>"
+      +"<button class='btn-brass btn-sm' type='button' onclick='svNachfrage("+f.id+")'>Senden ›</button></div>"
+      +"<div class='tce-pgrp'><label class='tce-lbl' for='svSel"+f.id+"'>Oder neu zuweisen an</label>"
       +"<select id='svSel"+f.id+"'>"+TEAM.filter(t=>t!==f.owner).map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
       +"<button class='btn-brass btn-sm' type='button' onclick='svZuweisen("+f.id+")'>Zuweisen</button>"
       +"<span class='tce-oder'>oder</span>"
       +"<button class='btn-ghost btn-sm' type='button' onclick='svFristToggle("+f.id+")'>Frist neu mit Grund…</button>"
       +"<button class='btn-ghost btn-sm' type='button' onclick='openDetail("+f.id+")'>Akte öffnen ›</button>"
       +"<div class='tce-frist' id='svFrist"+f.id+"'><input id='svGrund"+f.id+"' placeholder='Grund (Pflicht) — warum verschiebt sich das?'>"
-      +"<button class='btn-brass btn-sm' type='button' onclick='svFristSetzen("+f.id+")'>Frist morgen · Grund dokumentieren</button></div>";
+      +"<button class='btn-brass btn-sm' type='button' onclick='svFristSetzen("+f.id+")'>Frist morgen · Grund dokumentieren</button></div></div>";
   }
   const open=_tcEskOpen===key;
   const kq=key.replace(/"/g,"&quot;");
@@ -5943,7 +5968,7 @@ function tcEskZeile(e){
     +"<span class='tce-badge'>"+badge+"</span>"
     +"<span class='tce-txt'><b>"+escapeHtml(name)+"</b>"
     +"<span class='tce-what'>"+escapeHtml(was)+"</span>"
-    +"<span class='tce-sub'>"+escapeHtml(sub)+"</span></span>"
+    +"<span class='tce-sub'>"+escapeHtml(sub)+"</span>"+dialog+"</span>"
     +"<span class='tce-cta'>"+(open?"Schließen":"Entscheiden ›")+"</span>"
     +"</button>"
     +(open?"<div class='tce-panel'>"+acts+"</div>":"")
@@ -6044,6 +6069,59 @@ function svOwnerChip(t){
   const cls=s.akut?" bad":(s.ok<s.tot?" warn":"");
   const txt=(s.tot?s.ok+"/"+s.tot:"")+(s.akut?(s.tot?" · ":"")+s.akut+" akut":"");
   return "<span class='tc-ma-sla"+cls+"' title='Service-Versprechen: "+s.ok+" von "+s.tot+" Erstkontakten im Ziel"+(s.akut?", "+s.akut+" laufende Eskalation(en)":"")+"'>SV "+txt+"</span>";
+}
+/* ---------- Team intern (.tmi-*) — fallbezogene interne Nachrichten (04.08.).
+   f.chat=[{von,txt,ts}], lazy angelegt, persistiert über faelle in demoSave. Jede Nachricht
+   wird zusätzlich in f.log gespiegelt (Doku-Prinzip). Mitarbeiter-Antworten sind im Prototyp
+   gescriptet (tmiAutoAntwort) und kommen nur auf die Eskalations-Nachfrage — nie ungefragt. */
+function tmiWer(){return document.body.classList.contains("ma-mode")?"S. Koordination":"Leitung";}
+function tmiSenden(fid,txt,von){
+  const f=faelle.find(x=>x.id===fid);if(!f||!txt)return;
+  (f.chat=f.chat||[]).push({von:von,txt:txt,ts:logZeit()});
+  f.log.push([dstr(0),"💬 intern · "+von+": "+txt,logZeit()]);
+}
+function tmiAutoAntwort(f){
+  if((f.anrufe||0)>0)return "Schon "+f.anrufe+"× versucht, nicht erreicht — Wiedervorlage läuft, nächster Versuch heute Nachmittag.";
+  if(f.kosten==="offen")return "Kostenzusage hängt bei der Kasse — ich hänge seit heute früh in der Warteschleife, eskaliere es jetzt über den Telefon-Agenten.";
+  if(f.docs&&f.docs.some(d=>!d))return "Unterlagen noch nicht vollständig, der Arztbrief fehlt — ich erinnere den Zuweiser heute noch per Fax.";
+  return "Liegt auf meinem Tisch — Rückruf ist für heute fest eingeplant, Rückmeldung bis 16 Uhr.";
+}
+const _tmiPending=new Set();
+function svNachfrage(fid){
+  const f=faelle.find(x=>x.id===fid);if(!f)return;
+  const inp=document.getElementById("tmiFrage"+fid);
+  const txt=(inp&&inp.value.trim())||"Kurzer Zwischenstand bitte — die Anfrage liegt über dem Service-Ziel.";
+  tmiSenden(fid,txt,"Leitung");
+  rpToast("Nachfrage an "+f.owner+" gesendet — die Antwort erscheint hier und in der Akte.");
+  if(!_tmiPending.has(fid)){
+    _tmiPending.add(fid);
+    setTimeout(function(){
+      _tmiPending.delete(fid);
+      tmiSenden(fid,tmiAutoAntwort(f),f.owner);
+      if(typeof inbToast==="function")inbToast("done","<b>Antwort von "+escapeHtml(f.owner)+"</b>",escapeHtml(f.name)+" · Team intern",null);
+      renderAll();
+      if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id)renderFallakte();
+    },7000);
+  }
+  renderAll();
+  if(typeof _fallakteId!=="undefined"&&_fallakteId===f.id)renderFallakte();
+}
+function tmiThreadHtml(f){
+  const c=f.chat||[],wer=tmiWer();
+  const rows=c.length?c.map(m=>
+    "<div class='tmi-msg"+(m.von===wer?" eigen":"")+"'><span class='tmi-von'>"+escapeHtml(m.von)+" · "+escapeHtml(m.ts||"heute")+"</span>"
+    +"<p>"+escapeHtml(m.txt)+"</p></div>").join("")
+   :"<p class='empty'>Noch keine internen Nachrichten zu diesem Fall — hier schreibt das Team fallbezogen miteinander, nichts verlässt das Haus.</p>";
+  return "<div class='tmi-thread'>"+rows+"</div>"
+   +"<div class='tmi-neu'><input id='tmiAkte"+f.id+"' placeholder='Interne Nachricht als "+escapeHtml(wer)+"…' onkeydown='if(event.key===\"Enter\")tmiAkteSenden("+f.id+")'>"
+   +"<button class='btn-brass btn-sm' type='button' onclick='tmiAkteSenden("+f.id+")'>Senden</button></div>";
+}
+function tmiAkteSenden(fid){
+  const inp=document.getElementById("tmiAkte"+fid);
+  const txt=inp?inp.value.trim():"";if(!txt)return;
+  tmiSenden(fid,txt,tmiWer());
+  renderAll();
+  if(typeof renderFallakte==="function")renderFallakte();
 }
 /* Netzwerk-Fällige: Leitungs-Aktion „Wiedervorlage +7 Tage" für überfällige Radar-Einträge */
 function svAnlassSpaeter(key){
@@ -10142,6 +10220,7 @@ function renderFallakte(){
     +"</div>"+faOriginalHtml(f)
     +"<div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
   lgZumEnde();
+  const _ft=document.getElementById("faTeam");if(_ft)_ft.innerHTML=tmiThreadHtml(f); /* Team intern (tmi) */
   const med=inReha.find(p=>p.personId===f.personId);
   const _medHerkunft=med
    ?("<p class='fa-med-src'>"+(rehaAssessOffen(med)
