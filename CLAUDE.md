@@ -9,6 +9,13 @@ Interaktiver Produkt-Prototyp („Privatpatienten-Maschine") für einen Investor
 `funnel*.html`, `v1–v5.html`, `varianten.html` sind **veraltete** Explorationen — nicht anfassen.
 
 ## Harte Regeln
+- **OPTISCH HOCHWERTIG IST NICHT VERHANDELBAR (Nutzer-Auflage, mehrfach eingeschärft 08/2026).**
+  KEIN Feature als nackter Text/nackte Liste abliefern — jedes UI-Element bekommt die volle
+  Etiketten-Sprache: Avatare/Initialen, Pills, Ampel-/Status-Punkte, Cormorant-Numerale,
+  Inter-Uppercase-Micro-Labels, Hairlines, Karten mit Doppelrahmen. Grafiken/Schaubilder sind
+  erwünscht, aber hochwertig — „nicht Grafik durch Text ersetzen, eher andersherum."
+  Vor JEDEM Push: Screenshots (390 + 1440) selbst ansehen und fragen: „Würde das im
+  Investor-Pitch bestehen?" Erst dann pushen. Plain-Text-UI = Fehler, kein Zwischenstand.
 - **Nur synthetische Demo-Daten.** Namen/Kontakte/Zahlen frei erfunden, Mails auf `@demo-*.local`.
   Kein echtes Backend, kein Absenden — Aktionen geben Demo-Feedback (`rpToast`/`refToast`).
 - **KI (einzige Netz-Ausnahme, 07/2026):** `.ki-*`-Features rufen NUR den Proxy `ai.quintia.de`

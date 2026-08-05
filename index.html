@@ -3769,6 +3769,30 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
    drei dieselbe Spaltenbreite. */
 @media(min-width:900px){.tc-panels{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:560px){.tc-panels{grid-template-columns:1fr}}
+/* ===== ARBEITSLISTE (.tcw-*) — Mitarbeiter-Drill-down in Etiketten-Sprache (05.08.) ===== */
+.tcw-kick{display:block;margin-bottom:10px}
+.tcw-who{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.tcw-h2{margin:0}
+.tcw-n{font:700 26px/1 "Cormorant Garamond",Georgia,serif;font-variant-numeric:lining-nums tabular-nums;color:var(--ink);margin-left:8px}
+.tcw-nl{font:600 9.5px/1.2 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.tcw-clear{margin-left:auto;flex:0 0 auto}
+.tcw-list{border:1px solid var(--jade-line);border-radius:4px;overflow:hidden;background:var(--paper)}
+.tcw-list .empty{padding:16px 14px;margin:0}
+.tcw-row{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:12px 14px;background:transparent;border:0;border-top:1px solid var(--hair2);cursor:pointer;font:inherit;color:inherit}
+.tcw-row:first-child{border-top:0}
+@media(hover:hover){.tcw-row:hover{background:var(--cream2)}}
+.tcw-dot{flex:0 0 auto;width:11px;height:11px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(34,30,21,.12)}
+.tcw-dot.ok{background:var(--sage)}
+.tcw-dot.warn{background:var(--brass)}
+.tcw-dot.bad{background:var(--terra);box-shadow:0 0 0 3px rgba(168,52,31,.14)}
+.tcw-dot.leer{background:transparent;box-shadow:none;border:1px dashed var(--hair)}
+.tcw-txt{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tcw-txt b{font:600 13.5px/1.3 Inter,sans-serif;color:var(--ink)}
+.tcw-auf{font:400 12px/1.45 Inter,sans-serif;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tcw-achse,.tcw-due{flex:0 0 auto}
+.tcw-due.leer{font:500 10.5px "Fragment Mono",monospace;color:var(--faint)}
+.tcw-row .chev{color:var(--brass-deep);font-size:17px}
+@media(max-width:600px){.tcw-achse{display:none}.tcw-auf{white-space:normal}.tcw-row{flex-wrap:wrap}.tcw-txt{flex:1 1 60%}}
 </style>
 </head>
 <body>
@@ -7594,7 +7618,12 @@ function tcPanelsHtml(openCases){ // openCases = offeneFaelle()-Ergebnis aus ren
   +"</div>";
 }
 let tcFilter="alle"; // ersetzt teamFilter (entfernt in Task 4)
-function tcSetFilter(t){ tcFilter=(tcFilter===t?"alle":t); renderTeam(); }
+function tcSetFilter(t){
+ tcFilter=(tcFilter===t?"alle":t);
+ renderTeam();
+ /* Die Arbeitsliste rendert unter den Panels — ohne Scroll wirkt der Klick folgenlos. */
+ if(tcFilter!=="alle"){const el=document.querySelector(".tcw-chap");if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}
+}
 function tcFristSort(a,b){ // Review-Fix Sortierung: leere Fristen IMMER ans Ende, unabhängig von der anderen Seite
  if(!a.frist&&!b.frist)return 0;
  if(!a.frist)return 1;
@@ -7604,10 +7633,16 @@ function tcFristSort(a,b){ // Review-Fix Sortierung: leere Fristen IMMER ans End
 function tcAufmerksamkeitHtml(){
  const offen=offeneFaelle();
  if(tcFilter!=="alle"){
+   /* Arbeitsliste (.tcw-*, 05.08.): Drill-down in voller Etiketten-Sprache — Avatar-Kopf,
+      Cormorant-Zähler, Ampel-Punkt + Achse-Pill + Frist-Chip je Zeile statt nacktem Text. */
    const mine=offen.filter(f=>f.owner===tcFilter).sort(tcFristSort);
-   return "<div class='chap tc-attn'><h2 class='chap-h2'>Offene Fälle · "+escapeHtml(tcFilter)+"</h2>"
-    +"<button class='tc-clear' onclick='tcSetFilter(\""+tcFilter+"\")'>alle zeigen</button>"
-    +"<div class='tc-attn-list'>"+(mine.length?mine.map(tcFallZeile).join(""):"<p class='empty'>Keine offenen Fälle.</p>")+"</div></div>";
+   return "<div class='chap tc-attn tcw-chap'>"
+    +"<span class='kicker tcw-kick'>Arbeitsliste · alle offenen Fälle dieser Person</span>"
+    +"<div class='tcw-who'><span class='ava sm'>"+initialen(tcFilter)+"</span>"
+    +"<h2 class='chap-h2 tcw-h2'>"+escapeHtml(tcFilter)+"</h2>"
+    +"<span class='tcw-n num'>"+mine.length+"</span><span class='tcw-nl'>offene"+(mine.length===1?"r Fall":" Fälle")+"</span>"
+    +"<button type='button' class='btn-ghost btn-sm tcw-clear' onclick='tcSetFilter(\""+tcFilter.replace(/"/g,"&quot;")+"\")'>‹ alle zeigen</button></div>"
+    +"<div class='tcw-list'>"+(mine.length?mine.map(tcFallZeile).join(""):"<p class='empty'>Keine offenen Fälle — alles im Fluss.</p>")+"</div></div>";
  }
  /* Design-Pass 04.08. (Punkt 3): Standard-Liste „Braucht Aufmerksamkeit" entfällt — überfällige
     Folge-Fristen eskalieren ohnehin in den Leitstand (Redundanz). Nur der Drill-down oben bleibt. */
@@ -7622,17 +7657,19 @@ function tcAttnZeile(f){ // NUR für die überfällig-Liste — durch den Filter
   +"<span class='tc-attn-tage bad'>"+tage+" "+(tage===1?"Tag":"Tage")+" überfällig</span>"
   +"</button>";
 }
-function tcFallZeile(f){ // generische Zeile für den Mitarbeiter-Filter-Zweig — Fälle in JEDEM Frist-Zustand
- // (überfällig/heute/zukünftig/keine Frist), deshalb NICHT tcAttnZeile() wiederverwendet: die hätte
- // hier für nicht-überfällige Fälle Unsinn gezeigt ("2 Tage überfällig" für eine Frist in 2 Tagen,
- // "NaN Tage überfällig" ohne Frist). fristKlasse()/fristText() (zeitstabil, Task 1) decken alle
- // vier Zustände bereits korrekt ab — hier reuse statt eigener Tage-Rechnung.
- return "<button type='button' class='tc-attn-row' onclick='openFallakte("+f.id+")'>"
-  +"<span class='tc-attn-name'>"+escapeHtml(f.name)+"</span>"
-  +"<span class='tc-attn-aufg'>"+escapeHtml(f.aufgabe||"—")+"</span>"
-  +"<span class='tc-attn-owner'>"+escapeHtml(f.owner)+"</span>"
-  +"<span class='tc-attn-tage "+fristKlasse(f.frist)+"'>"+escapeHtml(f.frist?fristText(f.frist):"—")+"</span>"
-  +"</button>";
+function tcFallZeile(f){ // Arbeitslisten-Zeile (.tcw-*): Fälle in JEDEM Frist-Zustand —
+ // fristKlasse()/fristText() decken alle vier Zustände ab; Ampel-Punkt = kombinierter
+ // Zustand wie auf der Board-Karte (SLA-Uhr vor Frist).
+ const sv=svFallState(f),fk=fristKlasse(f.frist);
+ const amp=sv?(sv.over?"bad":(sv.warn?"warn":"ok")):(fk||"");
+ const AMP_T={ok:"Im Plan",warn:"Service-Ziel oder Frist knapp",bad:"überfällig / Ziel gerissen"};
+ return "<button type='button' class='tcw-row' onclick='openFallakte("+f.id+")'>"
+  +"<span class='tcw-dot "+(amp||"leer")+"' title='"+(AMP_T[amp]||"Keine Frist gesetzt")+"'></span>"
+  +"<span class='ava sm'>"+initialen(f.name)+"</span>"
+  +"<span class='tcw-txt'><b>"+escapeHtml(f.name)+"</b><span class='tcw-auf'>"+escapeHtml(f.aufgabe||f.status)+"</span></span>"
+  +"<span class='pill-a tcw-achse' style='background:"+(ACHSE_COL[f.achse]||"var(--unklar)")+"'>"+escapeHtml(f.achse)+"</span>"
+  +(f.frist?"<span class='due "+fk+" tcw-due'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(f.frist)+"</span>":"<span class='tcw-due leer'>keine Frist</span>")
+  +"<span class='chev'>›</span></button>";
 }
 function renderTeam(){
  const el=document.getElementById("teamGrid"); if(!el)return;
