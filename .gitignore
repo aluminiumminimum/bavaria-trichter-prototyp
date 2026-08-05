@@ -6,5 +6,8 @@ session-log.md
 
 # OS / local tooling
 .DS_Store
-.claude/
+# .claude lokal ignorieren, ABER die Projekt-Skills versionieren —
+# sie sind Teil des Arbeits-Workflows (laden in jeder Session, für alle).
+.claude/*
+!.claude/skills/
 .superpowers/
