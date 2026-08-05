@@ -3722,11 +3722,15 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
 /* ===== DESIGN-PASS 05.08. · Board-Ampel-Punkt (.fk-dot) + Verlauf v2 (.lgx-*) =====
    fk-dot: sichtbarer Ampel-Punkt in der Karten-Kopfzeile (Streifen bleibt als zweiter Träger).
    lgx: „Kommunikation & Verlauf" in der Bubble-Sprache von „Team intern" — nur in #dLog. */
-.fk-dot{flex:0 0 auto;width:11px;height:11px;margin-left:auto;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(34,30,21,.1)}
+.karte:has(.fk-dot){position:relative}
+.karte:has(.fk-dot) .krow{padding-right:26px}
+.karte:has(.fk-dot) .krow .name{hyphens:auto;overflow-wrap:break-word;min-width:0}
+.fk-dot{position:absolute;top:12px;right:12px;width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(34,30,21,.12),0 0 0 2.5px var(--paper),0 0 0 3.5px var(--hair2)}
 .fk-dot.ok{background:var(--sage)}
 .fk-dot.warn{background:var(--brass)}
-.fk-dot.bad{background:var(--terra);box-shadow:0 0 0 3px rgba(168,52,31,.16)}
+.fk-dot.bad{background:var(--terra);box-shadow:inset 0 0 0 1px rgba(34,30,21,.12),0 0 0 2.5px var(--paper),0 0 0 3.5px rgba(168,52,31,.45)}
 .fk-dot.leer{background:transparent;box-shadow:none;border:1px dashed var(--hair)}
+.karte.kpool .fk-dot{box-shadow:inset 0 0 0 1px rgba(34,30,21,.12),0 0 0 2.5px var(--cream,#F6F2E6),0 0 0 3.5px var(--hair2)}
 #view-fallakte #dLog.lgx{border-left:none;margin-left:0;padding:2px 4px 2px 0}
 #view-fallakte #dLog.lgx div::before{content:none}
 .lgx-sep{display:flex;align-items:center;gap:10px;margin:16px 0 10px}
