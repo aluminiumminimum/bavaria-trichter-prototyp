@@ -45,6 +45,18 @@ Der Mitarbeiter-Drill-down (Klick auf Person ⇒ „Offene Fälle · X") bleibt.
   (Antippen fügt „@Name " ein).
 - Bug-Fix (bereits deployt): keine f.log-Spiegelung — intern und extern strikt getrennt.
 
+## 6. Nachschärfung 05.08. (Nutzer-Review Runde 2)
+
+- **Board-Ampel v2:** Der 3px-Streifen allein war zu leise („kaum zu sehen"). Zusätzlich ein
+  **11px-Ampel-Punkt** (`.fk-dot`) oben rechts in der Kopfzeile jeder Karte — Jade/Gold/Zinnober
+  mit Tooltip, Zinnober mit weichem Glow; Karten ohne Frist tragen einen gestrichelten Leer-Ring.
+  Auch Pool-Karten (Neu-Spalte) zeigen den Punkt aus ihrer Service-Uhr. Streifen bleibt.
+- **„Kommunikation & Verlauf" v2** (`.lgx-*`, nur `#dLog`): dieselbe Bubble-Sprache wie
+  „Team intern" — Absender-Avatar an jeder Nachricht (Klinik = Jade-Monogramm „KB", rechts),
+  Kopfzeile Absender + Zeit rechts, zentrierte Datums-Trenner („Heute"), Absender-Präfix und
+  „↦" nicht mehr doppelt im Text; ✎-Notizen als gestrichelte Papier-Karte „Gesprächsnotiz",
+  Systemzeilen eingerückt an Hairline. Timeline-Punkte-Optik im Verlauf abgelöst.
+
 ## Regeln
 
 Welt-Token strikt; Screenshots 390/1440/1920 vor jedem Push gesichtet; 0 Console-Errors;
