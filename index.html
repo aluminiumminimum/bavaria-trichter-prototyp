@@ -3719,6 +3719,34 @@ button.kap-w:hover{border-color:var(--sage-deep)}
 .tmi-row-snip{display:block;margin-top:2px;font-size:12px;color:var(--muted);line-height:1.5;overflow:hidden;text-overflow:ellipsis}
 .tmi-neu-badge{flex:0 0 auto;display:inline-flex;align-items:center;padding:4px 9px;border-radius:11px;background:var(--terra);color:var(--paper);font:700 11.5px/1 Inter,sans-serif;white-space:nowrap}
 h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
+/* ===== DESIGN-PASS 05.08. · Board-Ampel-Punkt (.fk-dot) + Verlauf v2 (.lgx-*) =====
+   fk-dot: sichtbarer Ampel-Punkt in der Karten-Kopfzeile (Streifen bleibt als zweiter Träger).
+   lgx: „Kommunikation & Verlauf" in der Bubble-Sprache von „Team intern" — nur in #dLog. */
+.fk-dot{flex:0 0 auto;width:11px;height:11px;margin-left:auto;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(34,30,21,.1)}
+.fk-dot.ok{background:var(--sage)}
+.fk-dot.warn{background:var(--brass)}
+.fk-dot.bad{background:var(--terra);box-shadow:0 0 0 3px rgba(168,52,31,.16)}
+.fk-dot.leer{background:transparent;box-shadow:none;border:1px dashed var(--hair)}
+#view-fallakte #dLog.lgx{border-left:none;margin-left:0;padding:2px 4px 2px 0}
+#view-fallakte #dLog.lgx div::before{content:none}
+.lgx-sep{display:flex;align-items:center;gap:10px;margin:16px 0 10px}
+.lgx-sep:first-child{margin-top:2px}
+.lgx-sep::before,.lgx-sep::after{content:"";flex:1;height:1px;background:var(--hair2)}
+.lgx-sep span{font:700 9.5px/1 Inter,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:var(--faint)}
+.lgx-item{display:flex;gap:9px;align-items:flex-start;margin:10px 0}
+.lgx-item.eigen{flex-direction:row-reverse}
+.lgx-ava{flex:0 0 auto;margin-top:3px}
+.lgx-ava.kb{background:var(--sage-deep);color:var(--cream)}
+.lgx-bub{max-width:86%;min-width:0;flex:0 1 auto;padding:8px 12px 9px;background:var(--paper);border:1px solid var(--hair);border-radius:4px 4px 4px 1px}
+.lgx-bub.eigen{background:var(--cream2);border-color:var(--jade-hair);border-radius:4px 4px 1px 4px}
+.lgx-von{display:flex;justify-content:space-between;align-items:baseline;gap:14px;font:700 9.5px/1.4 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:3px}
+.lgx-von time{font:600 9.5px/1.4 "Fragment Mono",monospace;letter-spacing:.02em;color:var(--faint);text-transform:none}
+.lgx-bub p,.lgx-note p{margin:0;font-size:13px;line-height:1.6;color:var(--ink)}
+.lgx-note{margin:10px 0 10px 33px;max-width:86%;padding:8px 12px 9px;background:var(--cream2);border:1px dashed var(--hair);border-radius:4px}
+.lgx-sys{position:relative;margin:7px 0 7px 33px;padding-left:11px;font-size:11px;line-height:1.55;color:var(--faint)}
+.lgx-sys::after{content:"";position:absolute;left:0;top:3px;bottom:3px;width:2px;background:var(--hair)}
+.lgx-sys time{float:right;margin-left:12px;font:500 10px "Fragment Mono",monospace;color:var(--faint)}
+@media(max-width:1023px){.lgx-bub,.lgx-note{max-width:none}.lgx-note,.lgx-sys{margin-left:0}}
 </style>
 </head>
 <body>
@@ -5499,8 +5527,12 @@ function lgTyp(txt){
  return "in";
 }
 let _lgTab="nachrichten"; /* Verlauf-Reiter: "nachrichten" (nur Kommunikation) | "alles" */
+/* Verlauf v2 (.lgx-*, Design-Pass 05.08.): dieselbe Bubble-Sprache wie „Team intern" — Avatar an
+   jeder Nachricht, Absender-Kopfzeile mit Zeit rechts, zentrierte Datums-Trenner („Heute"),
+   Absender-Präfix/„↦" nicht mehr doppelt im Text. Nur #dLog nutzt diese Funktion. */
 function logHtml(f){
  if(!f||!Array.isArray(f.log))return "";
+ const heuteIso=dstr(0);
  let letztesDatum=null,html="",n=0;
  f.log.forEach(function(l){
   const iso=l[0],txt=String(l[1]||""),zeit=l[2];
@@ -5509,18 +5541,21 @@ function logHtml(f){
      Kommunikations-Reiter — sonst wirkt eine gerade gespeicherte Notiz verschwunden. */
   if(_lgTab==="nachrichten"&&typ!=="in"&&typ!=="out"&&typ!=="note")return;
   n++;
-  if(iso!==letztesDatum){ html+="<div class='lg-date'>"+lgDatumHtml(iso)+"</div>"; letztesDatum=iso; }
-  const zeitHtml=zeit?"<span class='lg-zeit'>"+escapeHtml(zeit)+"</span>":"";
+  if(iso!==letztesDatum){ html+="<div class='lgx-sep'><span>"+(iso===heuteIso?"Heute":lgDatumHtml(iso))+"</span></div>"; letztesDatum=iso; }
+  const t=zeit?"<time>"+escapeHtml(zeit)+"</time>":"";
   if(typ==="sys"){
-   html+="<div class='lg-sys'>"+zeitHtml+escapeHtml(txt)+"</div>";
+   html+="<div class='lgx-sys'>"+escapeHtml(txt)+t+"</div>";
   }else if(typ==="note"){
-   html+="<div class='lg-sys lg-note'>"+zeitHtml+escapeHtml(txt)+"</div>";
+   html+="<div class='lgx-note'><span class='lgx-von'>✎ Gesprächsnotiz"+t+"</span><p>"+escapeHtml(txt.replace(/^✎\s*/,""))+"</p></div>";
   }else if(typ==="out"){
-   html+="<div class='log-out lgm lgm-out'>"+zeitHtml+"<span class='lg-who'>Klinik Bavaria</span>"+escapeHtml(txt)+"</div>";
+   html+="<div class='lgx-item eigen'><span class='ava sm lgx-ava kb' title='Klinik Bavaria'>KB</span>"
+    +"<div class='lgx-bub eigen'><span class='lgx-von'>Klinik Bavaria"+t+"</span><p>"+escapeHtml(txt.replace(/^↦\s*/,""))+"</p></div></div>";
   }else{
    const ci=txt.indexOf(":");
    const wer=(ci>0&&ci<40)?txt.slice(0,ci):"Eingang";
-   html+="<div class='log-in lgm lgm-in'>"+zeitHtml+"<span class='lg-who'>"+escapeHtml(wer)+"</span>"+escapeHtml(txt)+"</div>";
+   const rest=(ci>0&&ci<40)?txt.slice(ci+1).trim():txt;
+   html+="<div class='lgx-item'><span class='ava sm lgx-ava'>"+initialen(wer.replace(/\(.*\)/,"").trim()||"E")+"</span>"
+    +"<div class='lgx-bub'><span class='lgx-von'>"+escapeHtml(wer)+t+"</span><p>"+escapeHtml(rest)+"</p></div></div>";
   }
  });
  if(_lgTab==="nachrichten"&&n===0)html="<p class='empty'>Noch keine Gespräche oder Nachrichten — hier erscheint die Kommunikation mit Patient und Angehörigen.</p>";
@@ -6290,8 +6325,12 @@ function makeFallKarte(x){
   /* Board-Ampel (Design-Pass 04.08.): kombinierter Zustand als linker 3px-Akzentstreifen —
      Farbe trägt die Information; SLA-Chip und ⚠-Frist-Pille nur noch bei Gold/Zinnober. */
   const amp=sv?(sv.over?"bad":(sv.warn?"warn":"ok")):(fk||"");
+  /* Ampel v2 (Nutzer-Befund 05.08.): der 3px-Streifen allein war zu leise — zusätzlich ein
+     deutlicher Ampel-Punkt oben rechts in der Kopfzeile jeder Karte. */
+  const AMP_TITEL={ok:"Im Plan — Service-Ziel und Frist gehalten",warn:"Knapp — Service-Ziel oder Frist läuft zu",bad:"Überfällig — Service-Ziel gerissen oder Frist verletzt"};
+  const ampDot=amp?"<span class='fk-dot "+amp+"' title='"+AMP_TITEL[amp]+"'></span>":"<span class='fk-dot leer' title='Keine Frist gesetzt'></span>";
   const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"")+(amp?" fk-amp fk-amp-"+amp:"");
-  k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter&&!/\(\d+\)/.test(x.name)?"("+x.alter+")":"")+"</span></span></div>"
+  k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter&&!/\(\d+\)/.test(x.name)?"("+x.alter+")":"")+"</span></span>"+ampDot+"</div>"
     +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+escapeHtml(x.achse)+"</span><span class='pill-kt'>"+escapeHtml(x.kt)+"</span></div>"
     +(x.ungelesen?"<div class='karte-msg'>✉ Antwort eingetroffen</div>":"")
     +"<div class='kmeta'>"+escapeHtml(x.quelle)+"<br>"+escapeHtml(x.owner)+(x.aufgabe?" · "+escapeHtml(x.aufgabe):"")+"</div>"
@@ -6312,7 +6351,8 @@ function makeBoardCol(st){
   col.innerHTML="<h3><span class='cdot' style='background:"+STATUS_COL[st]+"'></span>"+st+"<span class='cnt num'>"+f.length+"</span>"+(pool.length?"<span class='cnt num kpool-cnt' title='im Pool, wartet auf Übernahme'>+"+pool.length+"</span>":"")+"</h3>";
   pool.forEach(m=>{
     const k=document.createElement("div");k.className="karte kpool";
-    k.innerHTML="<div class='krow'><span class='ava'>"+initialen(m.wer||m.tit)+"</span><span class='name'>"+escapeHtml(m.wer||m.tit)+"</span></div>"
+    const _ps=svEingangState(m),_pa=_ps.over?"bad":(_ps.warn?"warn":"ok");
+    k.innerHTML="<div class='krow'><span class='ava'>"+initialen(m.wer||m.tit)+"</span><span class='name'>"+escapeHtml(m.wer||m.tit)+"</span><span class='fk-dot "+_pa+"' title='Service-Uhr der unbeanspruchten Anfrage'></span></div>"
       +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[m.achse]||"var(--unklar)")+"'>"+escapeHtml(m.achse)+"</span><span class='pill-kt'>"+escapeHtml(m.gruppe)+"</span></div>"
       +"<div class='kmeta'>Im Pool · wartet auf Übernahme</div>"
       +(function(){const s=svEingangState(m);return (s.warn||s.over)?"<div class='sv-kartechip'>"+svChipHtml(s)+"</div>":"";})()
@@ -10361,7 +10401,7 @@ function renderFallakte(){
     +"<button type='button' class='lg-tab"+(_lgTab==="nachrichten"?" active":"")+"' data-lg='nachrichten' onclick=\"lgTabSet('nachrichten')\">Gespräche</button>"
     +"<button type='button' class='lg-tab"+(_lgTab==="alles"?" active":"")+"' data-lg='alles' onclick=\"lgTabSet('alles')\">Alles</button>"
     +"</div>"+faOriginalHtml(f)
-    +"<div class='timeline' id='dLog'>"+logHtml(f)+"</div>";
+    +"<div class='lgx' id='dLog'>"+logHtml(f)+"</div>";
   lgZumEnde();
   const _ft=document.getElementById("faTeam");if(_ft){if(fallImBlick(f)){tmiMarkRead(f,tmiWer());renderMtNachrichten();}_ft.innerHTML=tmiThreadHtml(f);} /* Team intern (tmi): Öffnen markiert gelesen, Eingang zählt sofort runter */
   const med=inReha.find(p=>p.personId===f.personId);
