@@ -1324,8 +1324,11 @@ label{font-size:12px;letter-spacing:.08em}
 .cv-path:nth-of-type(4){stroke-opacity:.48}
 .cv-path:nth-of-type(5){stroke-opacity:.42}
 .cv-path:nth-of-type(6){stroke-opacity:.36}
-.cv-dot{fill:var(--brass);opacity:0;offset-rotate:0deg;filter:drop-shadow(0 0 5px rgba(185,145,73,.55));
+.cv-dot{fill:var(--brass);offset-rotate:0deg;filter:drop-shadow(0 0 5px rgba(185,145,73,.55));
   animation:cv-travel 3s cubic-bezier(.45,.1,.55,.9) infinite}
+  /* Start-opacity lebt NUR im Keyframe (reduced-motion-Regel); ohne Animation: Partikel aus,
+     wie .p-dot/.fn-dot — die Gravur-Pfade tragen das Bild allein. */
+  @media (prefers-reduced-motion: reduce){.cv-dot{display:none}}
 .cv-t2{animation-delay:-.5s}.cv-t3{animation-delay:-1s}.cv-t4{animation-delay:-1.5s}
 .cv-t5{animation-delay:-2s}.cv-t6{animation-delay:-2.5s}
 @keyframes cv-travel{
@@ -3751,6 +3754,21 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
 .lgx-sys::after{content:"";position:absolute;left:0;top:3px;bottom:3px;width:2px;background:var(--hair)}
 .lgx-sys time{float:right;margin-left:12px;font:500 10px "Fragment Mono",monospace;color:var(--faint)}
 @media(max-width:1023px){.lgx-bub,.lgx-note{max-width:none}.lgx-note,.lgx-sys{margin-left:0}}
+/* ===== AUDIT 05.08. — Korrekturen aus dem System-Audit (Design/UI) =====
+   1) In-Reha-Kacheln: Werte („42 %") brechen nicht mehr um.
+   2) Auswertung: Balken-Labels („Fehlende Dokumente") nicht mehr ellipsiert.
+   3) Eskalations-Meta: Segmente mit gebundenem Trennpunkt — kein „·" am Zeilenanfang. */
+.irb-bv{white-space:nowrap}
+.irb-bl{overflow-wrap:break-word}
+#view-auswertung .bar .blbl{width:158px}
+@media(max-width:480px){#view-auswertung .bar .blbl{width:134px;font-size:12.5px}}
+.tce-seg::after{content:"\00a0·";color:var(--faint);font-weight:400}
+.tce-seg:last-child::after{content:none}
+/* 4) Team-Panels gleich breit — das „auto"-Panel (Direkt/Premium) quetschte seinen
+   Trichter-Chart auf ~22px je Stufe; seit die Panels Mini-Charts tragen, brauchen alle
+   drei dieselbe Spaltenbreite. */
+@media(min-width:900px){.tc-panels{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.tc-panels{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -4056,7 +4074,7 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
             <text class="fn-lab" x="948" y="100">Aufnahmen</text>
             <text class="fn-num" x="1156" y="104" text-anchor="end" font-size="31" id="r1"></text>
             <line class="fn-hair" x1="948" y1="118" x2="1156" y2="118"/>
-            <text class="fn-lab" x="948" y="194">Privatauslastung</text>
+            <text class="fn-lab" x="948" y="194" font-size="16">Privatauslastung</text>
             <text class="fn-num" x="1156" y="200" text-anchor="end" font-size="31">78 %</text>
             <line class="fn-hair" x1="948" y1="214" x2="1156" y2="214"/>
             <text class="fn-lab" x="948" y="286">Verloren</text>
@@ -5806,7 +5824,7 @@ function renderEingang(){
       +"<span class='mhtxt'><span class='mtit'>"+escapeHtml(m.tit)+"</span>"
       +"<span class='mmeta'><span class='chtag'>"+escapeHtml(m.kanal)+"</span><span class='mtime'>"+escapeHtml(m.zeit)+"</span>"
       +"<span class='typ-chip "+(m.typ==="passiv"?"passiv":"qual")+"'>"+(m.typ==="passiv"?"passiv":"qualifiziert")+"</span>"
-      +(m.done?"":svChipHtml(svEingangState(m)))
+      +((m.done||m.typ==="passiv")?"":svChipHtml(svEingangState(m))) /* Audit 05.08.: passive Kontakte haben kein Service-Versprechen — keine laufende Uhr */
       +(m.done?"<span class='ok-chip mini'>✓ "+(m.typ==="passiv"?"in Datenbank":"als Fall")+"</span>":"")+"</span></span>"
       +"<span class='mail-chev'>›</span></button>";
     return "<article class='mail"+(m.done?" done":"")+(m._neu?" neu":"")+"'>"+head+"</article>";
@@ -6021,6 +6039,11 @@ function tceUeberZiel(state){
   const abs=Math.abs(state.rest),h=Math.floor(abs/60),mm=abs%60;
   return "Erstkontakt +"+h+":"+(mm<10?"0":"")+mm+" Std. über Ziel";
 }
+/* Audit 05.08.: Meta-Teile als Segmente statt literaler „ · "-Joins — beim Umbruch hängt der
+   Trennpunkt am Vorgänger-Segment und landet nie am Zeilenanfang (CSS .tce-seg::after). */
+function tceSeg(){
+  return Array.from(arguments).filter(Boolean).map(p=>"<span class='tce-seg'>"+p+"</span>").join(" ");
+}
 function tcEskZeile(e){
   let key,ico,name,meta,ctx,acts,dialog="";
   const kl=s=>"<i class='tce-kl'>Klasse "+s.kl+"</i>";
@@ -6030,8 +6053,8 @@ function tcEskZeile(e){
     ico=TCE_ICON.netz;
     name=a.titel.replace(/ — Wiederbedarf absehbar$/,"");
     meta=a.typ==="wiederbedarf"
-      ?"<em class='tce-alarm'>Wiederbedarf seit "+Math.abs(a.tage)+" Tag"+(Math.abs(a.tage)===1?"":"en")+" fällig</em> · Patienten-Radar"
-      :"<em class='tce-alarm'>Kontakt-Kadenz deutlich gerissen</em> · Zuweiser-Pflege";
+      ?tceSeg("<em class='tce-alarm'>Wiederbedarf seit "+Math.abs(a.tage)+" Tag"+(Math.abs(a.tage)===1?"":"en")+" fällig</em>","Patienten-Radar")
+      :tceSeg("<em class='tce-alarm'>Kontakt-Kadenz deutlich gerissen</em>","Zuweiser-Pflege");
     ctx=a.sub||"";
     acts="<button class='btn-brass btn-sm' type='button' onclick='akOpen(\""+k+"\")'>Kontakt vorbereiten ›</button>"
       +(a.typ==="wiederbedarf"?"<button class='btn-ghost btn-sm' type='button' onclick='svAnlassSpaeter(\""+k+"\")'>Wiedervorlage +7 Tage</button>":"");
@@ -6040,7 +6063,7 @@ function tcEskZeile(e){
     key="eingang:"+m.id;
     ico=TCE_ICON.eingang;
     name=m.wer||m.tit;
-    meta="<em class='tce-alarm'>"+escapeHtml(tceUeberZiel(e.state))+"</em> · "+kl(e.state)+" · "+escapeHtml(m.gruppe?"unbeansprucht im Pool "+m.gruppe:"ohne Übernahme im Eingang");
+    meta=tceSeg("<em class='tce-alarm'>"+escapeHtml(tceUeberZiel(e.state))+"</em>",kl(e.state),escapeHtml(m.gruppe?"unbeansprucht im Pool "+m.gruppe:"ohne Übernahme im Eingang"));
     ctx=m.kanal+(m.zusammenfassung?" · "+m.zusammenfassung:"");
     acts="<label class='tce-lbl' for='svSelE"+m.id+"'>Zuweisen an</label>"
       +"<select id='svSelE"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
@@ -6051,8 +6074,8 @@ function tcEskZeile(e){
     ico=e.art==="erstkontakt"?TCE_ICON.uhr:TCE_ICON.frist;
     name=f.name;
     meta=e.art==="erstkontakt"
-      ?"<em class='tce-alarm'>"+escapeHtml(tceUeberZiel(e.state))+"</em> · "+kl(e.state)+" · "+escapeHtml(f.owner)
-      :"<em class='tce-alarm'>Folge-Schritt "+escapeHtml(fristText(f.frist))+"</em> · "+escapeHtml(f.owner);
+      ?tceSeg("<em class='tce-alarm'>"+escapeHtml(tceUeberZiel(e.state))+"</em>",kl(e.state),escapeHtml(f.owner))
+      :tceSeg("<em class='tce-alarm'>Folge-Schritt "+escapeHtml(fristText(f.frist))+"</em>",escapeHtml(f.owner));
     ctx=f.aufgabe||f.status;
     const c=f.chat||[],letzte=c.length?c[c.length-1]:null;
     if(letzte)dialog=letzte.von==="Leitung"
@@ -6541,7 +6564,10 @@ function anlaesse(scope){
   if(tage<42||tage>56)return;
   const key="nach:"+p.pid;if(_arDone.has(key))return;
   const premium=p.sterne>=5;
-  out.push({key,typ:"nachsorge",urg:tage<=45?"jetzt":"bald",tage,titel:p.name,
+  /* Audit 05.08.: tage trug die Tage SEIT Entlassung — die Karte zeigte „in 45 Tagen" für einen
+     seit Tag 42 fälligen Kontakt und sortierte die ältesten nach „Demnächst". Jetzt: tage =
+     Tage bis/seit Fälligkeit (42-Tage-Marke, negativ = fällig), urg im Fenster immer „jetzt". */
+  out.push({key,typ:"nachsorge",urg:"jetzt",tage:42-tage,titel:p.name,
    sub:"Reha vor "+tage+" Tagen abgeschlossen — "+(premium
     ?"Persönlicher Nachsorge-Anruf durch Bezugstherapeutin anbieten."
     :"Nachsorge-Check anbieten (6-Wochen-Kontakt)."),
@@ -6585,7 +6611,8 @@ function anlaesse(scope){
   if(diff===null||Math.abs(diff)>14)return;
   const key="zuw-jub:"+z.name;if(_arDone.has(key))return;
   const jahre=Math.round(partnerTage/365.25);
-  out.push({key:key,typ:"zuweiser-jubilaeum",urg:Math.abs(diff)<=7?"jetzt":"bald",tage:diff,titel:z.name,sub:jahre+". Jahrestag der Partnerschaft (seit "+z.seit.slice(0,4)+") — Jahres-Kooperationsgespräch mit Chefarzt/Leitung anbieten.",sterne:null,geste:{label:"Kooperationsgespräch anbieten",cta:"Termin anbieten"},zName:z.name});
+  /* Audit 05.08.: verpasster Jahrestag (diff<0) ist „jetzt" (nachholen), nicht „Demnächst". */
+  out.push({key:key,typ:"zuweiser-jubilaeum",urg:diff<=7?"jetzt":"bald",tage:diff,titel:z.name,sub:jahre+". Jahrestag der Partnerschaft (seit "+z.seit.slice(0,4)+") — Jahres-Kooperationsgespräch mit Chefarzt/Leitung anbieten.",sterne:null,geste:{label:"Kooperationsgespräch anbieten",cta:"Termin anbieten"},zName:z.name});
  });
  /* Runde 6 Punkt 5 (§3.4): zuweiser-bericht — wichtigster After-Sales-Moment. Additives, optionales
     Feld z.letzterAbschluss (nur bei RHÖN-KLINIKUM Campus gesetzt, s. Task 1/Spec §7). */
@@ -6662,7 +6689,8 @@ const ZWA_TYP={
 };
 function zwaKarte(a){
  const t=ZWA_TYP[a.typ]||{ico:"•",label:""};
- const dueTxt=a.urg==="jetzt"?"überfällig":"in "+a.tage+" Tagen";
+ /* Audit 05.08.: nie rohe negative Tage („in -13 Tagen") — überfällig/heute/in N Tagen. */
+ const dueTxt=(a.urg==="jetzt"||a.tage<0)?"überfällig":(a.tage===0?"heute":"in "+a.tage+" Tagen");
  return "<div class='zwa-card'>"
   +"<div class='zwa-head'><span class='zwa-ico'>"+t.ico+"</span><span class='zwa-typ'>"+t.label+"</span>"
   +"<span class='radar-due "+a.urg+"' style='margin-left:auto'>"+dueTxt+"</span></div>"
@@ -6688,7 +6716,8 @@ const PAA_TYP={geburtstag:{ico:"✦",label:"Geburtstag"},jubilaeum:{ico:"❖",la
  nachsorge:{ico:"✚",label:"Nachsorge"}};
 function paaKarte(a){
  const t=PAA_TYP[a.typ]||{ico:"•",label:""};
- const dueTxt=a.tage===0?"heute":"in "+a.tage+" Tagen";
+ /* Audit 05.08.: Nachsorge trägt tage relativ zur Fälligkeit — negativ heißt „seit N Tagen fällig". */
+ const dueTxt=a.tage<0?"seit "+(-a.tage)+" Tag"+(a.tage===-1?"":"en")+" fällig":(a.tage===0?"heute":"in "+a.tage+" Tagen");
  return "<div class='zwa-card'>"
   +"<div class='zwa-head'><span class='zwa-ico'>"+t.ico+"</span><span class='zwa-typ'>"+t.label+"</span>"
   +"<span class='radar-due "+a.urg+"' style='margin-left:auto'>"+dueTxt+"</span></div>"
@@ -6752,7 +6781,8 @@ function akOpen(key){
    name=a.titel;
  }
  const t=ZWA_TYP[a.typ]||PAA_TYP[a.typ]||{ico:"•",label:""};
- const dueTxt=a.zName?(a.urg==="jetzt"?"überfällig":"in "+a.tage+" Tagen"):(a.tage===0?"heute":"in "+a.tage+" Tagen");
+ const dueTxt=a.zName?((a.urg==="jetzt"||a.tage<0)?"überfällig":(a.tage===0?"heute":"in "+a.tage+" Tagen"))
+  :(a.tage<0?"seit "+(-a.tage)+" Tag"+(a.tage===-1?"":"en")+" fällig":(a.tage===0?"heute":"in "+a.tage+" Tagen"));
  const keyEsc=key.replace(/"/g,"&quot;");
  document.getElementById("akdBody").innerHTML=
    "<div style='padding:16px 20px'>"
@@ -7498,7 +7528,9 @@ function tcKpiRowHtml(){
 }
 /* Trichter-Mini-Chart (Design-Pass 04.08.): kleine Säulen in Status-Welt-Farben, Cormorant-
    Numerale darüber, Micro-Label auf Hairline-Achse — selbsterklärend statt Legende. */
-const TCP_KURZ={"Neu":"Neu","Kontaktiert":"Kontakt","Qualifizierung":"Qualif.","Unterlagen":"Unterl.","Aufnahme geplant":"Geplant","Aufgenommen":"Im Haus"};
+/* Audit 05.08.: Kürzel so kurz, dass sie auch im schmalen dritten Panel und mobil nie
+   ellipsieren — der volle Stufenname steht im title-Tooltip der Säule. */
+const TCP_KURZ={"Neu":"Neu","Kontaktiert":"Kon.","Qualifizierung":"Qua.","Unterlagen":"Unt.","Aufnahme geplant":"Gep.","Aufgenommen":"Haus"};
 function tcPipelineHtml(cases){
  const verl=cases.filter(f=>f.status==="Verloren").length;
  const aktiv=cases.filter(f=>f.status!=="Verloren");
@@ -8155,7 +8187,7 @@ function irbAmpel(bill,p){
 }
 function irbMeilenstein(p){
  const rest=p.verweildauer.plan-p.verweildauer.ist;
- if(rest<=3)return{label:"Entlassgespräch",detail:p.entlassungGeplant?"am "+p.entlassungGeplant:"Termin abstimmen"};
+ if(rest<=3)return{label:"Entlassgespräch",detail:p.entlassungGeplant?"am "+paDate(p.entlassungGeplant):"Termin abstimmen"};
  if(rest<=10)return{label:"Verlängerungsentscheid",detail:"spätestens in "+(rest-3)+" Tagen"};
  const zbTag=14;
  return{label:"Zwischenbericht fällig",detail:p.verweildauer.ist<zbTag?"in "+(zbTag-p.verweildauer.ist)+" Tagen (Tag 14)":"jetzt (Tag 14 erreicht)"};
@@ -8180,7 +8212,7 @@ function renderInReha(){
       <div class="irb-tags">${sterneHtml(sterne)}<span class="irb-achse">${escapeHtml(p.achse)}</span><span class="irb-zimmer">${escapeHtml(bill.zimmer||"—")}</span></div></div>
      <span class="ir-chev">›</span></div>
     <div class="ir-stay irb-stay"><div class="lbl"><span>Tag ${p.verweildauer.ist} von ${p.verweildauer.plan}</span>
-      <span>${p.entlassungGeplant?escapeHtml(p.entlassungGeplant):"Entlassung offen"}${bill.verlaengerung?"<span class='irb-gold-dot' title='Verlängerung möglich'></span>":""}</span></div>
+      <span>${p.entlassungGeplant?"Entlassung "+escapeHtml(paDate(p.entlassungGeplant)):"Entlassung offen"}${bill.verlaengerung?"<span class='irb-gold-dot' title='Verlängerung möglich'></span>":""}</span></div>
       <div class="track"><div class="fill" style="width:${stayPct}%"></div></div></div>
     <div class="irb-bwl">
       <div class="irb-b"><div class="irb-bv num">${ts.toLocaleString('de-DE')} €</div><div class="irb-bl">Erlös/Tag</div></div>
