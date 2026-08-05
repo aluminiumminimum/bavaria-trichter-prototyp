@@ -3598,11 +3598,16 @@ details.fa-orig>div{padding:0 12px 12px}
 .tce-row:last-child{border-bottom:none}
 .tce-main{display:flex;gap:13px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:13px 6px;cursor:pointer;font:inherit;color:inherit}
 .tce-main:hover .tce-cta{color:var(--ink);border-color:var(--brass)}
-.tce-badge{flex:0 0 34px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",Georgia,serif;font-size:17px;font-weight:700;color:var(--terra);border:1px solid rgba(168,52,31,.35);background:var(--terra-soft)}
+.tce-badge{flex:0 0 34px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--terra);border:1px solid rgba(168,52,31,.35);background:var(--terra-soft)}
+.tce-badge svg{width:16px;height:16px}
 .tce-txt{flex:1 1 auto;min-width:0}
 .tce-txt b{display:block;font-size:14.5px;font-weight:650;color:var(--ink);line-height:1.35}
-.tce-what{display:block;margin-top:2px;font-size:12.5px;font-weight:600;color:var(--terra);line-height:1.5}
-.tce-sub{display:block;margin-top:2px;font-size:12px;color:var(--muted);line-height:1.55}
+.tce-what{display:block;margin-top:3px;font-size:12.5px;font-weight:500;color:var(--muted);line-height:1.55}
+.tce-alarm{font-style:normal;font-weight:650;color:var(--terra)}
+.tce-kl{font:700 9.5px/1 "Fragment Mono",monospace;font-style:normal;letter-spacing:.04em;padding:2px 5px;border:1px solid var(--hair);border-radius:2px;color:var(--muted);vertical-align:1px}
+.tce-ctx{flex:1 1 100%;margin:0;font-size:12px;line-height:1.55;color:var(--muted)}
+.tce-mini{display:inline-block;margin-top:6px;max-width:64ch;padding:7px 11px;border:1px solid var(--jade-hair);border-radius:4px 4px 4px 1px;background:var(--paper);font-size:12px;line-height:1.5;color:var(--ink)}
+.tce-mini .tmi-von{margin-bottom:1px}
 .tce-cta{flex:0 0 auto;margin-left:auto;padding:6px 12px;border:1px solid var(--brass-line);border-radius:3px;font:600 12px/1 Inter,sans-serif;color:var(--brass-deep);white-space:nowrap}
 /* Entscheidungs-Panel: links unter dem Text ausgerichtet, ruhige einzeilige Werkzeuggruppe */
 .tce-panel{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 6px 14px 53px;padding:12px 14px;border:1px solid var(--jade-hair);border-radius:4px;background:var(--cream2)}
@@ -3662,12 +3667,46 @@ button.kap-w:hover{border-color:var(--sage-deep)}
 .vl-top b{color:var(--ink)}
 .vl-eur{margin-top:8px;padding:9px 12px;border:1px solid rgba(168,52,31,.22);border-radius:3px;background:var(--terra-soft);color:var(--terra)}
 .vl-eur b{color:var(--terra)}
-/* Team intern (.tmi-*) — fallbezogener interner Thread in der Fallakte */
-.tmi-thread{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
-.tmi-msg{max-width:88%;align-self:flex-start;padding:8px 11px;border:1px solid var(--hair);border-radius:4px 4px 4px 1px;background:var(--paper)}
-.tmi-msg.eigen{align-self:flex-end;border-color:var(--jade-hair);border-radius:4px 4px 1px 4px;background:var(--cream2)}
-.tmi-von{display:block;font:700 9.5px/1.4 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:2px}
+/* Team intern (.tmi-*) — fallbezogener interner Thread in der Fallakte (Design-Pass: Avatar,
+   Heute-Trenner, Zeit rechts, Gelesen-Häkchen, @-Chips) */
+.tmi-thread{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.tmi-sep{display:flex;align-items:center;gap:10px;margin:2px 0}
+.tmi-sep::before,.tmi-sep::after{content:"";flex:1;height:1px;background:var(--hair2)}
+.tmi-sep span{font:700 9px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.tmi-item{display:flex;gap:8px;align-items:flex-end;max-width:92%;align-self:flex-start}
+.tmi-item.eigen{align-self:flex-end;flex-direction:row-reverse}
+.tmi-ava{flex:0 0 auto}
+.tmi-msg{position:relative;padding:8px 11px 9px;border:1px solid var(--hair);border-radius:4px 4px 4px 1px;background:var(--paper)}
+.tmi-msg.eigen{border-color:var(--jade-hair);border-radius:4px 4px 1px 4px;background:var(--cream2)}
+.tmi-von{display:flex;justify-content:space-between;gap:14px;font:700 9.5px/1.4 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:2px}
+.tmi-von time{font:600 9.5px/1.4 "Fragment Mono",monospace;letter-spacing:.02em;color:var(--faint);text-transform:none}
 .tmi-msg p{margin:0;font-size:12.5px;line-height:1.55;color:var(--ink)}
+.tmi-haken{position:absolute;right:9px;bottom:3px;font-style:normal;font-size:9px;color:var(--faint)}
+.tmi-haken.gelesen{color:var(--sage)}
+.tmi-msg.eigen p{padding-right:20px}
+.tmi-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tmi-chip{padding:4px 9px;font:600 10.5px/1 Inter,sans-serif;color:var(--brass-deep);background:var(--paper);border:1px solid var(--brass-line);border-radius:11px;cursor:pointer}
+.tmi-chip:hover{background:var(--brass-soft)}
+/* Team-Panels (Design-Pass): Trichter-Mini-Chart, SLA-Ring, Fall-Perlen, Board-Ampel */
+.tcp-sub{margin:-4px 0 10px;font-size:11.5px;line-height:1.5;color:var(--faint)}
+.tcp-chart{display:flex;gap:8px;align-items:flex-end;margin:2px 0 12px}
+.tcp-st{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+.tcp-st b{font-family:"Cormorant Garamond",Georgia,serif;font-size:17px;font-weight:700;line-height:1;color:var(--ink)}
+.tcp-st b.leer{color:var(--faint);font-size:13px}
+.tcp-st i{display:block;width:100%;max-width:36px;border-radius:2px 2px 0 0}
+.tcp-st span{width:100%;padding-top:4px;border-top:1px solid var(--hair);text-align:center;font:600 8.5px/1.3 Inter,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-ma-ava{position:relative;flex:0 0 40px;width:40px;height:40px}
+.tc-ma-ava svg{position:absolute;inset:0;width:40px;height:40px}
+.tc-ma-ava .ava{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.tc-ma-perlen{flex:1 1 auto;display:flex;flex-wrap:wrap;gap:3px;align-items:center;min-width:0}
+.tc-ma-perlen em{font:500 11px/1 Inter,sans-serif;font-style:normal;color:var(--faint)}
+.tc-perle{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--sage)}
+.tc-perle.warn{background:var(--brass)}
+.tc-perle.bad{background:var(--terra)}
+.karte.fk-amp,#board .karte.fk-amp{border-left:3px solid var(--hair)}
+.karte.fk-amp-ok,#board .karte.fk-amp-ok{border-left-color:var(--sage)}
+.karte.fk-amp-warn,#board .karte.fk-amp-warn{border-left-color:var(--brass)}
+.karte.fk-amp-bad,#board .karte.fk-amp-bad{border-left-color:var(--terra)}
 .tmi-neu{display:flex;gap:8px}
 .tmi-neu input{flex:1 1 auto;width:auto;min-width:0;min-height:38px;margin:0;padding:7px 11px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink)}
 .tmi-neu .btn-brass{white-space:nowrap;flex:0 0 auto}
@@ -5933,37 +5972,53 @@ function svEskalationen(){
 let _tcEskOpen=null;
 function tcEskToggle(k){_tcEskOpen=(_tcEskOpen===k?null:k);renderTeam();
   if(_tcEskOpen){const el=document.getElementById("tcEskChap");if(el&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:"start"});}}
+/* Zeilen-Anatomie (Design-Pass 04.08.): EIN Zinnober-Symbol · Titel · EINE Meta-Zeile.
+   Der Kontext (Kanal/Zusammenfassung/Aufgabe/Prognose) wandert ins aufgeklappte Panel. */
+const TCE_ICON={
+  uhr:W_ICON.clock, frist:W_ICON.alert, eingang:W_ICON.inbox,
+  netz:"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><circle cx='12' cy='12' r='9'/><circle cx='12' cy='12' r='3.5'/><path d='M12 12 18.4 5.6'/></svg>"
+};
+function tceUeberZiel(state){
+  const abs=Math.abs(state.rest),h=Math.floor(abs/60),mm=abs%60;
+  return "Erstkontakt +"+h+":"+(mm<10?"0":"")+mm+" Std. über Ziel";
+}
 function tcEskZeile(e){
-  let key,badge,name,was,sub,acts,dialog="";
+  let key,ico,name,meta,ctx,acts,dialog="";
+  const kl=s=>"<i class='tce-kl'>Klasse "+s.kl+"</i>";
   if(e.typ==="anlass"){
     const a=e.ref,k=a.key.replace(/"/g,"&quot;");
     key="anlass:"+a.key;
-    badge=a.typ==="wiederbedarf"?"R":"Z";
-    name=a.titel;was=e.verstoss;
-    sub=(a.typ==="wiederbedarf"?"Netzwerk · Patienten-Radar":"Netzwerk · Zuweiser")+(a.sub?" · "+a.sub:"");
+    ico=TCE_ICON.netz;
+    name=a.titel.replace(/ — Wiederbedarf absehbar$/,"");
+    meta=a.typ==="wiederbedarf"
+      ?"<em class='tce-alarm'>Wiederbedarf seit "+Math.abs(a.tage)+" Tag"+(Math.abs(a.tage)===1?"":"en")+" fällig</em> · Patienten-Radar"
+      :"<em class='tce-alarm'>Kontakt-Kadenz deutlich gerissen</em> · Zuweiser-Pflege";
+    ctx=a.sub||"";
     acts="<button class='btn-brass btn-sm' type='button' onclick='akOpen(\""+k+"\")'>Kontakt vorbereiten ›</button>"
       +(a.typ==="wiederbedarf"?"<button class='btn-ghost btn-sm' type='button' onclick='svAnlassSpaeter(\""+k+"\")'>Wiedervorlage +7 Tage</button>":"");
   }else if(e.typ==="eingang"){
     const m=e.ref;
     key="eingang:"+m.id;
-    badge=e.state.kl;
+    ico=TCE_ICON.eingang;
     name=m.wer||m.tit;
-    was=svUhrText(e.state)+" — liegt "+m.zeit+" "+(m.gruppe?"unbeansprucht im Pool "+m.gruppe:"ohne Übernahme im Eingang");
-    sub=m.kanal+(m.zusammenfassung?" · "+m.zusammenfassung:"");
+    meta="<em class='tce-alarm'>"+escapeHtml(tceUeberZiel(e.state))+"</em> · "+kl(e.state)+" · "+escapeHtml(m.gruppe?"unbeansprucht im Pool "+m.gruppe:"ohne Übernahme im Eingang");
+    ctx=m.kanal+(m.zusammenfassung?" · "+m.zusammenfassung:"");
     acts="<label class='tce-lbl' for='svSelE"+m.id+"'>Zuweisen an</label>"
       +"<select id='svSelE"+m.id+"'>"+TEAM.map(t=>"<option>"+escapeHtml(t)+"</option>").join("")+"</select>"
       +"<button class='btn-brass btn-sm' type='button' onclick='svEingangZuweisen("+m.id+")'>Als Fall anlegen ›</button>";
   }else{
     const f=e.ref;
     key="fall:"+f.id;
-    badge=e.art==="erstkontakt"?e.state.kl:"!";
+    ico=e.art==="erstkontakt"?TCE_ICON.uhr:TCE_ICON.frist;
     name=f.name;
-    was=e.art==="erstkontakt"?svUhrText(e.state):"Folge-Schritt "+fristText(f.frist);
-    sub=f.owner+" · "+(f.aufgabe||f.status);
+    meta=e.art==="erstkontakt"
+      ?"<em class='tce-alarm'>"+escapeHtml(tceUeberZiel(e.state))+"</em> · "+kl(e.state)+" · "+escapeHtml(f.owner)
+      :"<em class='tce-alarm'>Folge-Schritt "+escapeHtml(fristText(f.frist))+"</em> · "+escapeHtml(f.owner);
+    ctx=f.aufgabe||f.status;
     const c=f.chat||[],letzte=c.length?c[c.length-1]:null;
     if(letzte)dialog=letzte.von==="Leitung"
       ?"<span class='tce-chat wartet'>Nachfrage gestellt — Antwort ausstehend</span>"
-      :"<span class='tce-chat'>💬 "+escapeHtml(letzte.von)+": „"+escapeHtml(letzte.txt)+"“</span>";
+      :"<span class='tce-mini'><i class='tmi-von'>"+escapeHtml(letzte.von)+"</i>"+escapeHtml(letzte.txt)+"</span>";
     acts="<div class='tce-pgrp'><label class='tce-lbl' for='tmiFrage"+f.id+"'>Nachfragen bei "+escapeHtml(f.owner)+"</label>"
       +"<input class='tmi-inp' id='tmiFrage"+f.id+"' placeholder='Was ist hier los? Kurzer Zwischenstand…' onkeydown='if(event.key===\"Enter\")svNachfrage("+f.id+")'>"
       +"<button class='btn-brass btn-sm' type='button' onclick='svNachfrage("+f.id+")'>Senden ›</button></div>"
@@ -5980,13 +6035,12 @@ function tcEskZeile(e){
   const kq=key.replace(/"/g,"&quot;");
   return "<div class='tce-row"+(open?" open":"")+"'>"
     +"<button class='tce-main' type='button' onclick='tcEskToggle(\""+kq+"\")'>"
-    +"<span class='tce-badge'>"+badge+"</span>"
+    +"<span class='tce-badge'>"+ico+"</span>"
     +"<span class='tce-txt'><b>"+escapeHtml(name)+"</b>"
-    +"<span class='tce-what'>"+escapeHtml(was)+"</span>"
-    +"<span class='tce-sub'>"+escapeHtml(sub)+"</span>"+dialog+"</span>"
+    +"<span class='tce-what'>"+meta+"</span>"+dialog+"</span>"
     +"<span class='tce-cta'>"+(open?"Schließen":"Entscheiden ›")+"</span>"
     +"</button>"
-    +(open?"<div class='tce-panel'>"+acts+"</div>":"")
+    +(open?"<div class='tce-panel'>"+(ctx?"<p class='tce-ctx'>"+escapeHtml(ctx)+"</p>":"")+acts+"</div>":"")
     +"</div>";
 }
 function tcEskHtml(){
@@ -6158,13 +6212,26 @@ function svNachfrage(fid){
 }
 function tmiThreadHtml(f){
   const c=f.chat||[],wer=tmiWer();
-  const rows=c.length?c.map(m=>
-    "<div class='tmi-msg"+(m.von===wer?" eigen":"")+"'><span class='tmi-von'>"+escapeHtml(m.von)+" · "+escapeHtml(m.ts||"heute")+"</span>"
-    +"<p>"+tmiMentionHtml(m.txt)+"</p></div>").join("")
+  const rows=c.length
+   ?"<div class='tmi-sep'><span>Heute</span></div>"+c.map(m=>{
+      const eigen=m.von===wer;
+      const haken=eigen?"<i class='tmi-haken"+((m.gelesenVon||[]).length>1?" gelesen":"")+"'>"+((m.gelesenVon||[]).length>1?"✓✓":"✓")+"</i>":"";
+      return "<div class='tmi-item"+(eigen?" eigen":"")+"'>"
+       +"<span class='ava sm tmi-ava'>"+initialen(m.von)+"</span>"
+       +"<div class='tmi-msg"+(eigen?" eigen":"")+"'><span class='tmi-von'>"+escapeHtml(m.von)+"<time>"+escapeHtml(m.ts||"heute")+"</time></span>"
+       +"<p>"+tmiMentionHtml(m.txt)+"</p>"+haken+"</div></div>";
+     }).join("")
    :"<p class='empty'>Noch keine internen Nachrichten zu diesem Fall — hier schreibt das Team fallbezogen miteinander, nichts verlässt das Haus.</p>";
+  const chips=TEAM.filter(t=>t!==wer).map(t=>"<button type='button' class='tmi-chip' onclick='tmiChip("+f.id+",\""+t.replace(/"/g,"&quot;")+"\")'>@"+escapeHtml(t)+"</button>").join("");
   return "<div class='tmi-thread'>"+rows+"</div>"
+   +"<div class='tmi-chips'>"+chips+"</div>"
    +"<div class='tmi-neu'><input id='tmiAkte"+f.id+"' placeholder='Interne Nachricht als "+escapeHtml(wer)+"…' onkeydown='if(event.key===\"Enter\")tmiAkteSenden("+f.id+")'>"
    +"<button class='btn-brass btn-sm' type='button' onclick='tmiAkteSenden("+f.id+")'>Senden</button></div>";
+}
+function tmiChip(fid,name){
+  const inp=document.getElementById("tmiAkte"+fid);if(!inp)return;
+  inp.value=(inp.value?inp.value.replace(/\s*$/," "):"")+"@"+name+" ";
+  inp.focus();
 }
 function tmiAkteSenden(fid){
   const inp=document.getElementById("tmiAkte"+fid);
@@ -6218,16 +6285,19 @@ function renderBoardFocus(){
 /* Kartenoptik einer Fall-Karte (Board-Spalte) — ausgelagert aus makeBoardCol(), damit der
    stockt-Filter (R16) dieselbe Optik ohne Dopplung wiederverwenden kann. */
 function makeFallKarte(x){
-  const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"");
   const fk=fristKlasse(x.frist);
   const sv=svFallState(x); /* SV: Erstkontakt-Uhr nur in „Neu" ohne gestempelte Reaktion */
+  /* Board-Ampel (Design-Pass 04.08.): kombinierter Zustand als linker 3px-Akzentstreifen —
+     Farbe trägt die Information; SLA-Chip und ⚠-Frist-Pille nur noch bei Gold/Zinnober. */
+  const amp=sv?(sv.over?"bad":(sv.warn?"warn":"ok")):(fk||"");
+  const k=document.createElement("div");k.className="karte"+(x.saluto?" saluto":"")+(amp?" fk-amp fk-amp-"+amp:"");
   k.innerHTML="<div class='krow'><span class='ava'>"+initialen(x.name)+"</span><span class='name'>"+escapeHtml(x.name)+" <span class='alter'>"+(x.alter&&!/\(\d+\)/.test(x.name)?"("+x.alter+")":"")+"</span></span></div>"
     +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[x.achse]||"var(--unklar)")+"'>"+escapeHtml(x.achse)+"</span><span class='pill-kt'>"+escapeHtml(x.kt)+"</span></div>"
     +(x.ungelesen?"<div class='karte-msg'>✉ Antwort eingetroffen</div>":"")
     +"<div class='kmeta'>"+escapeHtml(x.quelle)+"<br>"+escapeHtml(x.owner)+(x.aufgabe?" · "+escapeHtml(x.aufgabe):"")+"</div>"
     +"<div class='stagebar' title='Statusfortschritt'><span style='width:"+statusFortschritt(x.status)+"%'></span></div>"
-    +(sv?"<div class='sv-kartechip'>"+svChipHtml(sv)+"</div>":"")
-    +(x.frist?"<span class='due "+fk+"'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(x.frist)+"</span>":"")
+    +(sv&&(sv.warn||sv.over)?"<div class='sv-kartechip'>"+svChipHtml(sv)+"</div>":"")
+    +(x.frist&&fk!=="ok"?"<span class='due "+fk+"'>"+(fk==="bad"?"⚠ ":"")+"Frist "+fristText(x.frist)+"</span>":"")
     +(x.saluto?"<br><span class='star'>★ SalutoCare</span>":"");
   k.onclick=()=>openDetail(x.id);
   return k;
@@ -6245,7 +6315,7 @@ function makeBoardCol(st){
     k.innerHTML="<div class='krow'><span class='ava'>"+initialen(m.wer||m.tit)+"</span><span class='name'>"+escapeHtml(m.wer||m.tit)+"</span></div>"
       +"<div class='pills'><span class='pill-a' style='background:"+(ACHSE_COL[m.achse]||"var(--unklar)")+"'>"+escapeHtml(m.achse)+"</span><span class='pill-kt'>"+escapeHtml(m.gruppe)+"</span></div>"
       +"<div class='kmeta'>Im Pool · wartet auf Übernahme</div>"
-      +"<div class='sv-kartechip'>"+svChipHtml(svEingangState(m))+"</div>"
+      +(function(){const s=svEingangState(m);return (s.warn||s.over)?"<div class='sv-kartechip'>"+svChipHtml(s)+"</div>":"";})()
       +"<button class='btn-brass btn-sm kpool-btn' type='button'>Übernehmen ›</button>";
     k.onclick=()=>openEgDetail(m.id);
     k.querySelector(".kpool-btn").onclick=(e)=>{e.stopPropagation();egUebernehmenAusPool(m.id);};
@@ -7382,34 +7452,54 @@ function tcKpiRowHtml(){
   +tcKpiKarte("Überfällige Aufgaben",k.ueberf,"",TC_WOCHE.ueberfaellig,false)
   +"</div>";
 }
+/* Trichter-Mini-Chart (Design-Pass 04.08.): kleine Säulen in Status-Welt-Farben, Cormorant-
+   Numerale darüber, Micro-Label auf Hairline-Achse — selbsterklärend statt Legende. */
+const TCP_KURZ={"Neu":"Neu","Kontaktiert":"Kontakt","Qualifizierung":"Qualif.","Unterlagen":"Unterl.","Aufnahme geplant":"Geplant","Aufgenommen":"Im Haus"};
 function tcPipelineHtml(cases){
  const verl=cases.filter(f=>f.status==="Verloren").length;
  const aktiv=cases.filter(f=>f.status!=="Verloren");
  const stufen=STATUS.slice(0,6); // Neu…Aufgenommen, Verloren separat
- return "<div class='tc-pipe'>"+stufen.map(s=>{
+ const max=Math.max(1,...stufen.map(s=>aktiv.filter(f=>f.status===s).length));
+ return "<div class='tcp-chart'>"+stufen.map(s=>{
    const n=aktiv.filter(f=>f.status===s).length;
-   return "<div class='tc-pipe-seg' style='flex:"+n+" "+n+" 0;background:"+(STATUS_COL[s]||"var(--hair)")+"' title='"+escapeHtml(s)+": "+n+"'>"
-    +(n?"<span class='tc-pipe-n'>"+n+"</span>":"")+"</div>";
+   const h=n?Math.round(8+n/max*32):3;
+   return "<div class='tcp-st' title='"+escapeHtml(s)+": "+n+"'>"
+    +"<b class='num"+(n?"":" leer")+"'>"+(n||"–")+"</b>"
+    +"<i style='height:"+h+"px;background:"+(STATUS_COL[s]||"var(--hair)")+";opacity:"+(n?"1":".22")+"'></i>"
+    +"<span>"+escapeHtml(TCP_KURZ[s]||s)+"</span></div>";
  }).join("")+"</div>"
- +"<div class='tc-pipe-legend'>"+stufen.map(s=>"<span>"+escapeHtml(s)+"</span>").join("")+"</div>"
  +(verl?"<div class='tc-pipe-verl'>"+verl+" verloren (nicht im Trichter)</div>":"");
 }
-function tcMitarbeiterZeile(t,openCases,maxN){
+/* Mitarbeiter-Zeile: SLA-Quoten-Ring um den Avatar (Jade/Gold/Zinnober) + Fall-Perlen
+   (ein Punkt je offenem Fall, gefärbt nach Zustand) — die Grafik ersetzt Last-Balken,
+   Überfällig-Text und SLA-Chip. */
+function tcMitarbeiterZeile(t,openCases){
  const mine=openCases.filter(f=>f.owner===t);
- const ueb=mine.filter(f=>f.frist&&f.frist<dstr(0)).length; // zeitstabil, s. Task 1
- const erledigt=TC_ERLEDIGT[t]||0;
+ const s=svOwnerStat(t);
+ const q=s.tot?s.ok/s.tot:1;
+ const ringCol=s.akut?"var(--terra)":(s.tot&&q<1?"var(--brass)":"var(--sage)");
+ const R=17,U=2*Math.PI*R;
+ const ring="<span class='tc-ma-ava' title='Service-Versprechen: "+s.ok+" von "+s.tot+" Erstkontakten im Ziel"+(s.akut?" · "+s.akut+" akut":"")+"'>"
+  +"<svg viewBox='0 0 40 40' aria-hidden='true'><circle cx='20' cy='20' r='"+R+"' fill='none' stroke='var(--hair2)' stroke-width='2.5'/>"
+  +"<circle cx='20' cy='20' r='"+R+"' fill='none' stroke='"+ringCol+"' stroke-width='2.5' stroke-linecap='round' stroke-dasharray='"+U.toFixed(1)+"' stroke-dashoffset='"+(U*(1-q)).toFixed(1)+"' transform='rotate(-90 20 20)'/></svg>"
+  +"<i class='ava sm'>"+initialen(t)+"</i></span>";
+ const perlen=mine.map(f=>{
+   const sv=svFallState(f),fk=fristKlasse(f.frist);
+   const z=(sv&&sv.over)||fk==="bad"?"bad":((sv&&sv.warn)||fk==="warn"?"warn":"ok");
+   return "<i class='tc-perle "+z+"' title='"+escapeHtml(f.name)+(f.aufgabe?" · "+escapeHtml(f.aufgabe):"")+"'></i>";
+ }).join("");
  return "<button type='button' class='tc-ma-row"+(tcFilter===t?" on":"")+"' onclick='tcSetFilter(\""+t+"\")'>"
-  +"<span class='ava sm'>"+initialen(t)+"</span>"
+  +ring
   +"<span class='tc-ma-name'>"+escapeHtml(t)+"</span>"
-  +"<div class='tc-ma-track'><div class='tc-ma-fill' style='width:"+(mine.length/maxN*100)+"%'></div></div>"
+  +"<span class='tc-ma-perlen'>"+(perlen||"<em>keine offenen Fälle</em>")+"</span>"
   +"<span class='tc-ma-n num'>"+mine.length+"</span>"
-  +(ueb?"<span class='tc-ma-ueb'>"+ueb+" überfällig</span>":"")
-  +svOwnerChip(t) /* SV-Sprint: Team-Ampel Service-Versprechen */
-  +"<span class='tc-ma-erl'>"+erledigt+" diese Woche</span>"
+  +"<span class='tc-ma-erl'>"+(TC_ERLEDIGT[t]||0)+" erledigt</span>"
   +"</button>";
 }
 function tcPanel(titel,cases,mitglieder,openCases,maxN,schmal){
+ const aktiv=cases.filter(f=>f.status!=="Verloren").length;
  return "<div class='card tc-panel"+(schmal?" schmal":"")+"'><h3 class='tc-panel-h'>"+escapeHtml(titel)+"</h3>"
+  +"<p class='tcp-sub'>"+aktiv+" "+(aktiv===1?"Fall":"Fälle")+" im Trichter"+(schmal?"":" · Ring = Service-Quote je Person · Punkt = offener Fall")+"</p>"
   +tcPipelineHtml(cases)
   +(schmal?"":"<div class='tc-ma-list'>"+mitglieder.map(t=>tcMitarbeiterZeile(t,openCases,maxN)).join("")+"</div>")
   +"</div>";
@@ -7443,9 +7533,9 @@ function tcAufmerksamkeitHtml(){
     +"<button class='tc-clear' onclick='tcSetFilter(\""+tcFilter+"\")'>alle zeigen</button>"
     +"<div class='tc-attn-list'>"+(mine.length?mine.map(tcFallZeile).join(""):"<p class='empty'>Keine offenen Fälle.</p>")+"</div></div>";
  }
- const ueberfaellig=offen.filter(f=>f.frist&&f.frist<dstr(0)).sort(tcFristSort); // zeitstabil (Task 1) — frist garantiert gesetzt, tcFristSort trotzdem wiederverwendet statt Duplikat
- return "<div class='chap tc-attn'><h2 class='chap-h2'>Braucht Aufmerksamkeit</h2>"
-  +"<div class='tc-attn-list'>"+(ueberfaellig.length?ueberfaellig.map(tcAttnZeile).join(""):"<p class='empty'>Keine überfälligen Aufgaben — alles im grünen Bereich.</p>")+"</div></div>";
+ /* Design-Pass 04.08. (Punkt 3): Standard-Liste „Braucht Aufmerksamkeit" entfällt — überfällige
+    Folge-Fristen eskalieren ohnehin in den Leitstand (Redundanz). Nur der Drill-down oben bleibt. */
+ return "";
 }
 function tcAttnZeile(f){ // NUR für die überfällig-Liste — durch den Filter oben garantiert f.frist<dstr(0)
  const tage=Math.round((new Date(dstr(0))-new Date(f.frist))/86400000); // beide Operanden reine Datumsstrings (Mitternacht UTC) — exakter Tageswert, immer positiv
@@ -9853,8 +9943,9 @@ function mtTermineHtml(){
 function renderEgtPool(){
   const meineGruppen=Array.from(new Set((TEAM_ACHSE["S. Koordination"]||[]).map(achseZuGruppe).filter(Boolean)));
   const karte=function(m){
+    const s=svEingangState(m);
     return "<article class='egt-pool-card'><p class='egt-pool-zsf'>"+escapeHtml(egZusammenfassung(m))+"</p>"
-      +"<div class='sv-kartechip'>"+svChipHtml(svEingangState(m))+"</div>"
+      +((s.warn||s.over)?"<div class='sv-kartechip'>"+svChipHtml(s)+"</div>":"")
       +"<details class='pa-fold'><summary class='rk'>Originalnachricht · "+escapeHtml(m.kanal)+"</summary>"
       +"<div class='eg-original'><div class='mtxt'>"+escapeHtml(m.txt)+"</div></div></details>"
       +sterneHtml(m.sterne!=null?m.sterne:sterneAusSignal(erkenneSignale(m.txt)))
