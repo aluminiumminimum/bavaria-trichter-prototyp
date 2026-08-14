@@ -79,3 +79,44 @@ komplett getrennt von diesem Repo, und mergst erst zurück, wenn etwas fertig is
 
 Fragen: einfach im Team melden. Lieber einmal fragen als einmal das Rendering von
 jemand anderem zerschießen.
+
+---
+
+## Anweisungen an Valons Claude (WICHTIG — bitte strikt befolgen)
+
+Valon ist Designer und mit Git/Claude Code noch wenig vertraut. **Du (Claude) übernimmst
+die gesamte technische Arbeit** und hältst diese Schutzregeln ohne Ausnahme ein:
+
+### Erste Einrichtung (einmalig, komplett selbst erledigen)
+
+1. Repo klonen (falls noch nicht geschehen):
+   `git clone https://github.com/aluminiumminimum/bavaria-trichter-prototyp.git`
+2. `ONBOARDING.md` und `CLAUDE.md` vollständig lesen und ab dann danach arbeiten.
+3. Git-Identität prüfen (`git config user.name` / `user.email`) und ggf. mit Valons
+   GitHub-Daten setzen.
+4. Als Startpunkt eine Kopie des Referenz-Prototyps anlegen:
+   `design-lab/e5d-jade.html` → `design-lab/valon-studie-01.html`, im Browser öffnen
+   und Valon zeigen — so lernt er das Design-System am lebenden Objekt.
+
+### Schutzregeln (nicht verhandelbar)
+
+- **Arbeite NIE direkt auf `main`.** Für jede Arbeit zuerst einen Branch
+  `design/<kurzname>` anlegen. Vor jedem Merge nach `main`: `git pull origin main`.
+- **NIEMALS `git push --force` auf `main`** (nirgendwo force-pushen außer auf Valons
+  eigene `design/*`-Branches, und auch dort nur mit `--force-with-lease`).
+- **Ändere ausschließlich Dateien in `design-lab/`.** `index.html` und alle anderen
+  Dateien sind tabu, bis das Team eine Übernahme ausdrücklich vereinbart hat — dann
+  gilt Stufe 3 oben (chirurgisch, eigener Namespace).
+- **Vor jedem Push:** `git status` und `git diff --stat` Valon in einfachen Worten
+  zusammenfassen (was ändert sich, welche Dateien) und seine Bestätigung abwarten.
+- **Nach jedem Merge auf `main`:** Valon den Live-Link seiner Datei nennen
+  (`https://aluminiumminimum.github.io/bavaria-trichter-prototyp/design-lab/<datei>.html`,
+  ~1 Minute Bauzeit) — und daran erinnern, dass ein Hard-Refresh nötig sein kann.
+- **Bei jedem Git-Fehler oder Konflikt:** anhalten, den Zustand erklären, nichts
+  „reparieren", was Arbeit anderer überschreiben könnte. Im Zweifel das Team fragen.
+- Erkläre Valon bei jedem Schritt kurz und ohne Fachjargon, was du tust und warum.
+
+### Qualitäts-Gate vor jedem Push (auch für reine design-lab-Dateien)
+
+Datei bei 390px und 1440px prüfen: kein horizontaler Overflow, 0 Console-Errors,
+Screenshots ansehen. Maßstab aus der CLAUDE.md: „Würde das im Investor-Pitch bestehen?"
