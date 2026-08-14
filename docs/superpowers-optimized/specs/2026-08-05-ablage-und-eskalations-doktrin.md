@@ -1,6 +1,7 @@
 # Design-Spec: Ablage-Fächer & Eskalations-Doktrin — Verschulden vs. Umstand
 
-**Datum:** 2026-08-05 · **Status:** Entwurf, wartet auf Freigabe
+**Datum:** 2026-08-05 · **Status:** umgesetzt (05.08., inkl. Integration von „Nicht erreicht"
+in die Ablage — beantwortet das offene Feedback „Wo landet der Fall nach Nicht erreicht?")
 **Grundlage:** GF-Feedback (via Nutzer, 05.08.): Eskalation nur bei Nicht-Einhaltung des
 Service-Versprechens durch Mitarbeiter; externe Blocker brauchen stattdessen eine Ablage mit
 Notiz + Automatisierung. Nutzer-Leitplanke: Die Ablage darf sich nicht zu einem

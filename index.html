@@ -3769,6 +3769,42 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
    drei dieselbe Spaltenbreite. */
 @media(min-width:900px){.tc-panels{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:560px){.tc-panels{grid-template-columns:1fr}}
+/* ===== ABLAGE (.abl-*) — Doktrin 05.08.: Fächer, Band, Formular. KEIN Zinnober hier —
+   die Ablage ist bewusst der ruhige Gegenpol zum Leitstand; „fällig" spricht Gold. ===== */
+.abl-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:26px 0 12px}
+.abl-note{font:400 12px/1.5 Inter,sans-serif;color:var(--muted);font-style:italic}
+.abl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.abl-fach{background:var(--paper);border:1px solid var(--jade-line);border-radius:4px;box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--brass-line)}
+.abl-fach-h{display:flex;align-items:baseline;gap:10px;padding:12px 14px 8px;border-bottom:1px solid var(--hair2)}
+.abl-fach-t{font:700 10px/1.3 Inter,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:var(--brass-deep)}
+.abl-fach-n{margin-left:auto;font:700 22px/1 "Cormorant Garamond",Georgia,serif;font-variant-numeric:lining-nums tabular-nums;color:var(--ink)}
+.abl-fach-list{padding:2px 6px 6px}
+.abl-row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 8px;background:transparent;border:0;border-top:1px solid var(--hair2);cursor:pointer;font:inherit;color:inherit}
+.abl-row:first-child{border-top:0}
+@media(hover:hover){.abl-row:hover{background:var(--cream2)}}
+.abl-txt{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.abl-txt b{font:600 13px/1.3 Inter,sans-serif;color:var(--ink)}
+.abl-txt span{font:400 11.5px/1.4 Inter,sans-serif;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.abl-badge{flex:0 0 auto;font:600 9.5px/1 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--sage-deep);border:1px solid var(--jade-line);border-radius:10px;padding:4px 8px;background:var(--sage-soft)}
+.abl-wecker{flex:0 0 auto;font:500 10.5px/1 "Fragment Mono",monospace;color:var(--muted);border:1px solid var(--hair);border-radius:3px;padding:4px 7px;background:var(--paper2)}
+.abl-wecker.faellig{color:var(--brass-deep);border-color:var(--brass);background:var(--brass-soft);font-weight:700}
+.abl-row .chev{font-size:16px;color:var(--brass-deep)}
+.abl-cnt{opacity:.75;font-family:"Fragment Mono",ui-monospace,monospace}
+.abl-toggle{display:block;width:100%;margin-top:12px;padding:8px 10px;background:transparent;border:1px dashed var(--hair);border-radius:4px;font:500 12px/1.3 Inter,sans-serif;color:var(--muted);cursor:pointer;text-align:left}
+@media(hover:hover){.abl-toggle:hover{color:var(--brass-deep);border-color:var(--brass)}}
+.abl-form{margin-top:12px;padding:12px;border:1px solid var(--jade-line);border-radius:4px;background:var(--cream2)}
+.abl-form .kicker{display:block;margin-bottom:8px}
+.abl-form select,.abl-form input{margin:0 0 8px;min-height:36px;font-size:12.5px;border:1px solid var(--hair);border-radius:3px;background:var(--paper);color:var(--ink);padding:6px 9px;width:100%}
+.abl-info{margin:0 0 4px;font:400 11px/1.5 Inter,sans-serif;color:var(--muted)}
+.abl-form-act{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.abl-band{margin-top:12px;padding:12px;border:1px solid var(--jade-line);border-left:3px solid var(--sage-deep);border-radius:4px;background:var(--paper)}
+.abl-band.faellig{border-left-color:var(--brass);background:var(--brass-soft)}
+.abl-band .kicker{display:block;margin-bottom:6px}
+.abl-notiz{margin:0 0 6px;font:400 12.5px/1.5 Inter,sans-serif;color:var(--ink-soft);font-style:italic}
+.abl-band-act{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.abl-demo{border-style:dashed}
+.abl-arch-empf{color:var(--brass-deep);border-color:var(--brass);font-weight:700}
+.chart-sub{font:600 9.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-left:8px;vertical-align:2px}
 /* ===== ARBEITSLISTE (.tcw-*) — Mitarbeiter-Drill-down in Etiketten-Sprache (05.08.) ===== */
 .tcw-kick{display:block;margin-bottom:10px}
 .tcw-who{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
@@ -4414,6 +4450,7 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
       <p class="lblline">Fall-Board · Karte antippen zum Öffnen.</p>
       <div class="bf" id="boardFocus"></div>
       <div class="board" id="board"></div>
+      <div id="ablFaecher"></div>
     </div>
     <div class="sub" id="sub-faelle-team">
       <p class="lblline">Alle Anfragen aus allen Kanälen — an einem Ort gebündelt, klar zugeteilt, zügig beantwortet.</p>
@@ -4519,6 +4556,7 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
       <div class="chart"><h3>Warum gehen Fälle verloren?</h3><div id="chartVerlust"></div><div class="vl-fazit" id="vlFazit"></div></div>
       <div class="chart"><h3>Wer führt wie viele Fälle?</h3><div id="chartTeam"></div></div>
       <div class="chart"><h3>Wo stockt es?</h3><div id="chartEngpass"></div></div>
+      <div class="chart"><h3>Woran hängen Fälle? <span class="chart-sub">Ablage-Gründe</span></h3><div id="chartAblage"></div><div id="ablFazit"></div></div>
       <div class="chart"><h3>Welche Fachbereiche?</h3><div id="chartAchse"></div></div>
       <div class="chap">
         <div class="kicker">Was die Maschine daraus macht</div>
@@ -4971,7 +5009,7 @@ const STATUS_AUFGABE={
   "Unterlagen":"Kostenzusage anfragen",
   "Aufnahme geplant":"Anreise & Zimmer organisieren"
 };
-const STATUS_COL={"Neu":"#7A7265","Kontaktiert":"#5E7B8C","Qualifizierung":"#B99149","Unterlagen":"#7E6230","Aufnahme geplant":"#2E5C4F","Aufgenommen":"#123B33","Verloren":"#A8341F"}; /* J7: Welt-Token-Hexes (slate/azzurro/gold/brass-deep/jade/lack-jade/zinnober) */
+const STATUS_COL={"Neu":"#7A7265","Kontaktiert":"#5E7B8C","Qualifizierung":"#B99149","Unterlagen":"#7E6230","Aufnahme geplant":"#2E5C4F","Aufgenommen":"#123B33","Verloren":"#A8341F","Archiviert":"#7A7265"}; /* J7: Welt-Token-Hexes (slate/azzurro/gold/brass-deep/jade/lack-jade/zinnober); Archiviert = slate (kein Alarm, Radar übernimmt) */
 const ACHSE_COL={"Orthopädie":"var(--ortho)","Neurologie":"var(--neuro)","Geriatrie":"var(--geri)","Innere":"var(--innere)","SalutoCare":"var(--saluto)","Unklar":"var(--unklar)"};
 const heute=new Date();
 function dstr(o){const d=new Date(heute);d.setDate(d.getDate()+o);return d.toISOString().slice(0,10);}
@@ -4982,7 +5020,11 @@ let faelle=[
  {id:1,personId:"P01",name:"Anna Muster",alter:67,rolle:"Angehörige",kanal:"Zuweiser direkt",eingangZeit:"vor 3 Std.",quelle:"RHÖN Campus Bad Neustadt, Sozialdienst",achse:"Neurologie",kt:"PKV",status:"Neu",owner:"S. Koordination",aufgabe:"Rückruf Angehörige",frist:dstr(0),saluto:false,docs:[false,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:null,log:[[dstr(0),"Anfrage eingegangen (Sozialdienst, Schlaganfall, AHB gesucht)"]],originalTxt:"Kurzanmeldung Sozialdienst RHÖN Campus Bad Neustadt, Station Neurologie, Az. N-1187/26. Patientin Anna Muster, 67 Jahre, Diagnose Schlaganfall, Kostenträger PKV. Aufnahme zur AHB möglichst schnell gewünscht, Tochter organisiert und bittet um Rückruf. Unterlagen folgen per Fax.",originalKanal:"Zuweiser direkt"},
  {id:3,personId:"P02",name:"Maria Probst",alter:58,rolle:"Patient selbst",kanal:"Website-Formular",quelle:"Website",achse:"Orthopädie",kt:"Selbstzahler",status:"Kontaktiert",owner:"S. Koordination",aufgabe:"Angebot Komfortpaket senden",frist:dstr(2),saluto:false,docs:[false,false,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:3,chat:[{von:"M. Belegung",txt:"@S. Koordination Komfortzimmer für Frau Probst ist ab KW 33 machbar — reicht dir das fürs Angebot, oder braucht sie früher?",ts:"08:40",an:["S. Koordination"],gelesenVon:["M. Belegung"]}],log:[[dstr(-2),"Website-Anfrage"],[dstr(-2),"Rückruf nach 3 Std., Beratung geführt"]],originalTxt:"Hallo, ich hatte vor Kurzem eine Hüft-TEP und suche jetzt eine Reha-Klinik für die Anschlussbehandlung. Ich bin Selbstzahlerin, 58 Jahre alt, und hätte gerne ein Komfortzimmer, wenn das geht am liebsten mit Blick ins Grüne. Einen Termin bräuchte ich möglichst schnell, weil ich zuhause gerade nicht gut zurechtkomme. Viele Grüße, Maria Probst, 0170 4471182",originalKanal:"Website-Formular"},
  {id:6,personId:"P03",name:"Heinz Vogel",alter:69,rolle:"Zuweiser",kanal:"Zuweiser direkt",quelle:"Thoraxzentrum Münnerstadt",achse:"SalutoCare",kt:"PKV",status:"Qualifizierung",owner:"Recovery Manager",aufgabe:"Übernahmefähigkeit Beatmung klären",frist:dstr(-2),saluto:true,med:{diagnose:"Z. n. Langzeitbeatmung, Weaning laufend",neben:"Respiratorische Insuffizienz",isolation:"Nein",schwere:"hoch"},docs:[true,true,true,false],kosten:"angefragt",consent:"schriftlich liegt vor",verlust:"",reaktion:1,log:[[dstr(-5),"Anfrage Weaning-Anschluss: Thoraxzentrum fragt, ob Beatmungspatient (69, PKV) übernommen werden kann — Entwöhnung läuft, Entlassung geplant"],[dstr(-4),"↦ Rückfrage an Oberarzt Dr. Castelli: aktuelle Beatmungsparameter + Entwöhnungsstand erbeten"],[dstr(-3),"Antwort Thoraxzentrum: Parameter übermittelt, Spontanatmung bereits 8 Std./Tag"]],originalTxt:"Kurzanmeldung Thoraxzentrum Münnerstadt, Station Weaning, Az. TZ-0512/26. Oberarzt Dr. Castelli meldet Patient Heinz Vogel (69) zur Übernahme nach Langzeitbeatmung an, Kostenträger PKV. Frage: Ist eine Aufnahme als Beatmungspatient zur weiteren Entwöhnung bei Ihnen möglich? Um Rückruf wird gebeten unter 0971 0000-271, castelli@demo-thorax.local.",originalKanal:"Zuweiser direkt"},
- {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:1,log:[[dstr(-6),"Recare-Anfrage: Entlassmanagement Klinikum Fulda meldet Patient (63, GKV) mit Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich"],[dstr(-4),"Entlassbrief liegt vor — von Entlassmanagement per Recare nachgereicht"],[dstr(-2),"↦ Rückfrage an Entlassmanagement: Komfort-Upgrade und Zusatzkosten angeboten, Rückmeldung ausstehend"]],originalTxt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · Patient Peter Hofmann (63), GKV, Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich. · Bitte um Rückmeldung zur Kapazität und zu den Komfort-Optionen.",originalKanal:"Recare"},
+ {id:8,personId:"P04",name:"Peter Hofmann",alter:63,rolle:"Zuweiser",kanal:"Recare",quelle:"Klinikum Fulda, Entlassmanagement",achse:"Neurologie",kt:"GKV + Komfort",status:"Unterlagen",owner:"M. Belegung",aufgabe:"Komfort-Upgrade anbieten",frist:dstr(1),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,false,true,false],kosten:"offen",consent:"mündlich erteilt",verlust:"",reaktion:1,
+  /* Ablage-Seed (Doktrin 05.08.): Ereignis-Ablage mit HEUTE fälligem Sicherheits-Wecker und
+     Zyklus 2 — demonstriert Fach, fällige Wiedervorlage, Archiv-Vorschlag und Demo-Antwort
+     an einem Fall, ohne die Leitfälle zu berühren. */
+  ablage:{grund:"Unterlagen ausstehend",notiz:"Entlassmanagement: Rückmeldung zum Komfort-Upgrade steht aus",seit:dstr(-7),art:"ereignis",weckerTage:7,maxTage:14,zyklen:2},ablZyklen:2,ablHist:["Unterlagen ausstehend","Unterlagen ausstehend"],log:[[dstr(-6),"Recare-Anfrage: Entlassmanagement Klinikum Fulda meldet Patient (63, GKV) mit Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich"],[dstr(-4),"Entlassbrief liegt vor — von Entlassmanagement per Recare nachgereicht"],[dstr(-2),"↦ Rückfrage an Entlassmanagement: Komfort-Upgrade und Zusatzkosten angeboten, Rückmeldung ausstehend"]],originalTxt:"Anmeldung über Recare, Entlassmanagement Klinikum Fulda, Station Neurologie · Patient Peter Hofmann (63), GKV, Komfortzimmer-Wunsch, Übernahme in 5 Tagen möglich. · Bitte um Rückmeldung zur Kapazität und zu den Komfort-Optionen.",originalKanal:"Recare"},
  {id:9,personId:"P05",name:"Ruth Winkler",alter:77,rolle:"Angehörige",kanal:"Telefon",quelle:"UKW Würzburg, Station 2 Nord",achse:"Neurologie",kt:"PKV",status:"Aufnahme geplant",owner:"M. Belegung",aufgabe:"Zimmer + Transport bestätigen",frist:dstr(2),saluto:false,med:{diagnose:"Z. n. Schlaganfall",neben:"Arterielle Hypertonie",isolation:"Nein",schwere:"mittel"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-10),"Anfrage Privatstation UKW"],[dstr(-6),"Kostenzusage PKV"],[dstr(-1),"Aufnahme für nächste Woche geplant"]],originalTxt:"Anruf Tochter Winkler, 11:40 · ruft für ihre Mutter Ruth (77) an, liegt Station 2 Nord UKW Würzburg · Diagnose Schlaganfall, PKV-versichert · möchte möglichst schnell einen Platz in der Neuro-Reha, am liebsten Privatzimmer · Rückrufnummer hinterlegt",originalKanal:"Telefon"},
  {id:12,personId:"P06",name:"Hans Keller",alter:70,rolle:"Angehörige",kanal:"Telefon",quelle:"Empfehlung",achse:"Orthopädie",kt:"Beihilfe",status:"Verloren",owner:"T. Abrechnung",aufgabe:"",frist:"",saluto:false,docs:[true,false,false,false],kosten:"offen",consent:"mündlich erteilt",verlust:"Zu lange Wartezeit",reaktion:26,log:[[dstr(-14),"Anfrage: Sohn ruft für Hrn. Keller (70) an, Empfehlung, Beihilfe, sucht schnellen Termin"],[dstr(-11),"↦ Rückruf erst nach 26 Std. — Verzögerung durch hohes Anfrageaufkommen"],[dstr(-8),"Familie hat anderes Haus gewählt — zu lange Wartezeit"]],originalTxt:"Anruf Sohn Keller, 14:20 · ruft für seinen Vater Hans (70) an · sucht Reha-Platz nach Empfehlung, orthopädische Diagnose, Kostenträger Beihilfe · möchte schnellstmöglich einen Termin, Rückrufnummer hinterlegt",originalKanal:"Telefon"},
  {id:10,personId:"P07",name:"Ludwig Bauer",alter:71,rolle:"Angehörige",kanal:"Zuweiser direkt",quelle:"Leopoldina Schweinfurt, Sozialdienst",achse:"Orthopädie",kt:"PKV",status:"Aufgenommen",owner:"M. Belegung",aufgabe:"",frist:"",saluto:false,med:{diagnose:"Z. n. Hüft-TEP links",neben:"",isolation:"Nein",schwere:"mittel"},docs:[true,true,true,true],kosten:"Zusage liegt vor",consent:"schriftlich liegt vor",verlust:"",reaktion:2,log:[[dstr(-12),"Anfrage nach Hüft-TEP: Sozialdienst Leopoldina meldet Patienten (71, PKV) zur AHB an, Az. O-0847/26"],[dstr(-9),"Kostenzusage PKV eingegangen — vom Sozialdienst übermittelt"],[dstr(-2),"Aufgenommen — Privatzimmer, Sozialdienst per Telefon informiert"]],originalTxt:"Kurzanmeldung Sozialdienst Leopoldina-Krankenhaus Schweinfurt, Station Orthopädie, Az. O-0847/26. Patient Ludwig Bauer, 71 Jahre, Diagnose Hüft-TEP links, Kostenträger PKV. Aufnahme zur Anschlussheilbehandlung gewünscht, Unterlagen folgen. Rückmeldung zur Aufnahmefähigkeit erbeten.",originalKanal:"Zuweiser direkt"},
@@ -5624,11 +5666,12 @@ function bar(el,daten,warm){const max=Math.max(1,...daten.map(d=>d[1]));
   el.innerHTML=daten.map(d=>"<div class='bar"+(warm?" warm":"")+"'><span class='blbl'>"+escapeHtml(d[0])+"</span><span class='track'><span class='fill' style='width:"+(d[1]/max*100)+"%'></span></span><span class='bnum num'>"+d[1]+"</span></div>").join("")||"<p class='empty'>noch keine Daten</p>";}
 function zoneOf(s){if(s==="Neu"||s==="Kontaktiert")return 0;if(s==="Qualifizierung"||s==="Unterlagen")return 1;if(s==="Aufnahme geplant")return 2;return -1;}
 function stockt(f){
+  if(f.ablage)return false; /* Ablage-Doktrin 05.08.: dokumentierter Blocker stockt nicht */
   const fr=f.frist&&new Date(f.frist)<new Date(dstr(0));
   const blk=["Unterlagen","Aufnahme geplant"].includes(f.status)&&(f.kosten==="offen"||f.kosten==="abgelehnt");
   return fr||blk;
 }
-function offeneFaelle(){return faelle.filter(x=>!["Aufgenommen","Verloren"].includes(x.status));}
+function offeneFaelle(){return faelle.filter(x=>!["Aufgenommen","Verloren","Archiviert"].includes(x.status));}
 
 const CHAN_ICON={
  "Telefon":"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2'/></svg>",
@@ -6010,6 +6053,7 @@ function svEingangState(m){return svState(svKlasseEingang(m),svElapsedEff(m.zeit
    Eingang mit (originalZeit wird bei der Übernahme gestempelt), damit die Uhr am Übergabepunkt
    Anfrage→Fall nicht abreißt; eingangZeit ist der Seed-/Sonderfall-Override. */
 function svFallState(f){
+  if(f.ablage)return null; /* Ablage-Doktrin 05.08.: externer Blocker pausiert die Uhr */
   const z=f.eingangZeit||f.originalZeit;
   if(f.status!=="Neu"||f.reaktion!=null||!z)return null;
   return svState(svKlasseFall(f),svElapsedEff(z));
@@ -6032,6 +6076,7 @@ function svEskalationen(){
   });
   offeneFaelle().forEach(f=>{
     if(f.svAktion)return;
+    if(f.ablage)return; /* Ablage-Doktrin 05.08.: geordnet geparkt ist kein Verstoß */
     const s=svFallState(f);
     if(s&&s.over){list.push({typ:"fall",art:"erstkontakt",ref:f,state:s});return;}
     if(f.frist&&f.frist<dstr(0))list.push({typ:"fall",art:"frist",ref:f});
@@ -6044,6 +6089,91 @@ function svEskalationen(){
     else if(a.typ==="zuweiser-rhythmus"&&a.urg==="jetzt")list.push({typ:"anlass",ref:a,verstoss:"Zuweiser-Kadenz deutlich gerissen — der Draht droht abzureißen"});
   });
   return list;
+}
+/* ===== ABLAGE (abl*) — Eskalations-Doktrin 05.08.: Verschulden vs. Umstand =====
+   Externe Blocker sind KEINE Eskalation: Der Fall wird mit Pflicht-Grund + Automatik
+   geordnet geparkt (f.ablage), verlässt Board-Spalten und Eskalations-Rechnung (SLA
+   pausiert — das Versprechen misst UNSERE Reaktion) und kann nicht liegen bleiben:
+   jede Ablage hat einen Wecker (Wiedervorlage) und eine Max-Dauer als Sicherheitsnetz.
+   Ab dem 3. erfolglosen Zyklus schlägt das System die Archivierung vor — Archiviert
+   ≠ Verloren: der Patient wandert in den Radar zur späteren Wiederansprache. */
+const ABL_GRUENDE={
+ "Unterlagen ausstehend":{art:"ereignis",wecker:7,max:14,hebel:"Upload-Link im Zuweiserportal + automatische Erinnerung nach 3 Tagen."},
+ "Nicht erreicht":{art:"zeit",wecker:3,max:21,hebel:"Anrufzeiten variieren, ab Versuch 3 Kanalwechsel (schriftlich)."},
+ "Kostenklärung läuft":{art:"ereignis",wecker:7,max:21,hebel:"Kostenzusage-Vorlagen je Kasse + fester Nachfass-Rhythmus."},
+ "Rückruf zugesagt":{art:"zeit",wecker:1,max:7,hebel:"Konkreten Termin statt vagem Rückruf vereinbaren."},
+ "Sonstiges":{art:"zeit",wecker:7,max:30,hebel:"Grund präzisieren — Sonstiges ist kein Prozess-Hebel."}
+};
+function ablAktiv(f){return !!f.ablage&&!["Aufgenommen","Verloren","Archiviert"].includes(f.status);}
+function ablTage(iso){return Math.round((new Date(dstr(0))-new Date(iso))/86400000);} /* Tage seit iso (Datumsstrings, kein TZ-Drift) */
+function ablWeckerInfo(f){
+ const a=f.ablage;if(!a)return null;
+ const seit=ablTage(a.seit);
+ return {seit:seit,restWecker:a.weckerTage-seit,restMax:a.maxTage-seit,faellig:seit>=a.weckerTage,zwang:seit>=a.maxTage};
+}
+function ablAutoText(g){
+ const k=ABL_GRUENDE[g]||ABL_GRUENDE["Sonstiges"];
+ return (k.art==="ereignis"?"Eingehende Antwort reaktiviert sofort · Sicherheits-Wecker in "+k.wecker+" Tagen":"Wiedervorlage in "+k.wecker+" Tag"+(k.wecker===1?"":"en"))+" · spätestens nach "+k.max+" Tagen zurück";
+}
+let _ablFormOffen=false;
+function ablFormToggle(){_ablFormOffen=!_ablFormOffen;renderFallakte();}
+function ablFormInfo(){
+ const sel=document.getElementById("ablGrund");const info=document.getElementById("ablAutoInfo");
+ if(sel&&info)info.textContent="Automatik: "+ablAutoText(sel.value);
+}
+function ablAblegen(fid){
+ const f=faelle.find(x=>x.id===fid);if(!f||f.ablage)return;
+ const grund=(document.getElementById("ablGrund")||{}).value||"Sonstiges";
+ const notiz=((document.getElementById("ablNotiz")||{}).value||"").trim();
+ const k=ABL_GRUENDE[grund]||ABL_GRUENDE["Sonstiges"];
+ f.ablage={grund:grund,notiz:notiz,seit:dstr(0),art:k.art,weckerTage:k.wecker,maxTage:k.max,zyklen:(f.ablZyklen||0)+1};
+ f.ablZyklen=f.ablage.zyklen;
+ f.ablHist=(f.ablHist||[]).concat(grund);
+ f.log.push([dstr(0),"Fall abgelegt: "+grund+(notiz?" — „"+notiz+"“":"")+" · "+ablAutoText(grund),logZeit()]);
+ _ablFormOffen=false;
+ rpToast("Abgelegt — "+grund+". "+(k.art==="ereignis"?"Eine Antwort holt den Fall automatisch zurück.":"Wiedervorlage in "+k.wecker+" Tag"+(k.wecker===1?"":"en")+"."));
+ renderAll();
+ if(typeof _fallakteId!=="undefined"&&_fallakteId===fid)renderFallakte();
+}
+function ablReaktivieren(fid,quelle){
+ const f=faelle.find(x=>x.id===fid);if(!f||!f.ablage)return;
+ f.ablage=null;
+ f.frist=dstr(1);
+ f.log.push([dstr(0),"Fall wieder aufgenommen ("+(quelle||"manuell")+") — Reaktionsfrist morgen",logZeit()]);
+ rpToast("Wieder aufgenommen — "+f.name+". Reaktionsfrist: morgen.");
+ renderAll();
+ if(typeof _fallakteId!=="undefined"&&_fallakteId===fid)renderFallakte();
+ if(typeof renderMeinTag==="function")renderMeinTag();
+}
+function ablSpaeter(fid){
+ const f=faelle.find(x=>x.id===fid);if(!f||!f.ablage)return;
+ f.ablage.seit=dstr(0);f.ablage.weckerTage=3;f.ablage.zyklen++;f.ablZyklen=f.ablage.zyklen;
+ f.log.push([dstr(0),"Wiedervorlage verschoben: +3 Tage (Zyklus "+f.ablage.zyklen+") · Grund bleibt: "+f.ablage.grund,logZeit()]);
+ rpToast("Wiedervorlage +3 Tage — Zyklus "+f.ablage.zyklen+(f.ablage.zyklen>=3?" · Archivierung wird empfohlen":""));
+ renderAll();
+ if(typeof _fallakteId!=="undefined"&&_fallakteId===fid)renderFallakte();
+ if(typeof renderMeinTag==="function")renderMeinTag();
+}
+function ablArchivieren(fid){
+ const f=faelle.find(x=>x.id===fid);if(!f)return;
+ const grund=(f.ablage&&f.ablage.grund)||"extern blockiert";
+ if(!confirm("Fall „"+f.name+"“ archivieren?\n\nDer Fall wird geschlossen, "+f.name+" wandert in den Patienten-Radar und wird später mit Anlass wieder angesprochen."))return;
+ f.ablage=null;f.status="Archiviert";f.frist="";f.aufgabe="";
+ f.log.push([dstr(0),"Archiviert nach externem Blocker ("+grund+") — Übergabe an den Patienten-Radar",logZeit()]);
+ if(f.personId&&typeof pHist==="function")pHist(f.personId,"fall","Fall archiviert: "+grund+" — Radar-Wiedervorlage");
+ radar.push({personId:f.personId||("A"+f.id),name:f.name,alter:f.alter,achse:f.achse,consent:"ja",
+  letzte:"Anfrage archiviert · "+grund,prognose:"Archiviert nach externem Blocker ("+grund+") — Wiederansprache mit Anlass sinnvoll",faelligInTagen:30,owner:f.owner});
+ rpToast("Archiviert — "+f.name+" liegt jetzt im Patienten-Radar (Wiedervorlage in 30 Tagen).");
+ renderAll();
+ if(typeof _fallakteId!=="undefined"&&_fallakteId===fid)renderFallakte();
+}
+function ablDemoAntwort(fid){
+ const f=faelle.find(x=>x.id===fid);if(!f||!f.ablage)return;
+ const wer=/Kosten/.test(f.ablage.grund)?(f.kt||"Kostenträger")+" (Sachbearbeitung)":(f.quelle||"Absender");
+ f.log.push([dstr(0),wer+": Die angefragten Unterlagen bzw. die Rückmeldung liegen jetzt vor — vielen Dank für Ihre Geduld.",logZeit()]);
+ if(!fallImBlick(f))f.ungelesen=(f.ungelesen||0)+1;
+ inbToast("done","<b>Antwort eingetroffen</b> · "+escapeHtml(f.name),"Fall kommt automatisch aus der Ablage zurück",null);
+ ablReaktivieren(fid,"Antwort eingegangen");
 }
 /* Eskalations-Leitstand — lebt seit Redesign 04.08. in Fälle→Team (tcEskHtml, aus renderTeam
    aufgebaut), NICHT mehr auf Heute: das Cockpit bleibt ruhig, „Heute wichtig" verlinkt hierher.
@@ -6393,13 +6523,16 @@ function makeFallKarte(x){
   return k;
 }
 function makeBoardCol(st){
-  const f=faelle.filter(x=>x.status===st);
+  /* Ablage-Doktrin 05.08.: abgelegte Fälle verlassen die Spalte (Board = aktiv Bearbeitbares),
+     der Spaltenkopf behält sie als stillen "+n"-Hinweis — sie liegen in den Fächern darunter. */
+  const f=faelle.filter(x=>x.status===st&&!ablAktiv(x));
+  const ablN=faelle.filter(x=>x.status===st&&ablAktiv(x)).length;
   f.sort((a,b)=>sterneVon({personId:b.personId})-sterneVon({personId:a.personId}));
   const col=document.createElement("div");col.className="col";
   /* Freigegebene, noch nicht übernommene Anfragen (Gruppen-Pool) sichtbar in der Neu-Spalte —
      sonst wirkt "Gruppe zuweisen & freigeben" wie ein schwarzes Loch (Beta-Feedback). */
   const pool=st==="Neu"?eingang.filter(m=>!m.done&&m.gruppe):[];
-  col.innerHTML="<h3><span class='cdot' style='background:"+STATUS_COL[st]+"'></span>"+st+"<span class='cnt num'>"+f.length+"</span>"+(pool.length?"<span class='cnt num kpool-cnt' title='im Pool, wartet auf Übernahme'>+"+pool.length+"</span>":"")+"</h3>";
+  col.innerHTML="<h3><span class='cdot' style='background:"+STATUS_COL[st]+"'></span>"+st+"<span class='cnt num'>"+f.length+"</span>"+(pool.length?"<span class='cnt num kpool-cnt' title='im Pool, wartet auf Übernahme'>+"+pool.length+"</span>":"")+(ablN?"<span class='cnt num abl-cnt' title='abgelegt — wartet auf Extern, siehe Ablage unter dem Board'>⏸"+ablN+"</span>":"")+"</h3>";
   pool.forEach(m=>{
     const k=document.createElement("div");k.className="karte kpool";
     const _ps=svEingangState(m),_pa=_ps.over?"bad":(_ps.warn?"warn":"ok");
@@ -6488,6 +6621,7 @@ function boardZoneGroup(z){
 function renderBoard(){
   const b=document.getElementById("board");b.innerHTML="";
   renderBoardFocus();
+  renderAblage(); /* Ablage-Fächer unter dem Board (eigenes Element, filtert nicht mit) */
   if(boardStocktFilter){
     const g=document.createElement("div");g.className="zone-group";
     const list=stocktFaelle();
@@ -6510,13 +6644,43 @@ function renderBoard(){
   const hcols=document.createElement("div");hcols.className="zone-cols";
   hcols.appendChild(makeHausCol());
   haus.appendChild(hcols);b.appendChild(haus);
-  const dn=entlassenFaelle().length+faelle.filter(x=>x.status==="Verloren").length;
+  const archivN=faelle.filter(x=>x.status==="Archiviert").length;
+  const dn=entlassenFaelle().length+faelle.filter(x=>x.status==="Verloren").length+archivN;
   const g=document.createElement("div");g.className="zone-group done-rail";
   g.innerHTML="<div class='zone-head static'><span class='zone-t'>Abgeschlossen</span><span class='zone-cnt num'>"+dn+"</span></div>";
   const cols=document.createElement("div");cols.className="zone-cols";
   cols.appendChild(makeEntlassenCol());
   cols.appendChild(makeBoardCol("Verloren"));
+  if(archivN)cols.appendChild(makeBoardCol("Archiviert")); /* Ablage-Doktrin: Archiviert = Radar übernimmt */
   g.appendChild(cols);b.appendChild(g);
+}
+/* Ablage-Fächer (.abl-*): je Grund ein eigenes Schubfach unterm Board — kein Sammelbecken
+   (Nutzer-Leitplanke), leere Fächer rendern nicht, die Automatik leert von selbst. */
+function ablFachZeile(f){
+ const a=f.ablage,w=ablWeckerInfo(f);
+ const chip=(w.faellig||w.zwang)
+  ?"<span class='abl-wecker faellig'>"+(w.zwang?"Max-Wartezeit erreicht":"Wiedervorlage heute")+"</span>"
+  :(a.art==="ereignis"
+    ?"<span class='abl-badge'>wartet auf Antwort</span>"
+    :"<span class='abl-wecker'>⏰ "+paDate(dstr(a.weckerTage-w.seit))+"</span>");
+ return "<button type='button' class='abl-row' onclick='openFallakte("+f.id+")'>"
+  +"<span class='ava sm'>"+initialen(f.name)+"</span>"
+  +"<span class='abl-txt'><b>"+escapeHtml(f.name)+"</b><span>"+escapeHtml(a.notiz||f.aufgabe||f.status)+"</span></span>"
+  +chip+"<span class='chev'>›</span></button>";
+}
+function renderAblage(){
+ const el=document.getElementById("ablFaecher");if(!el)return;
+ const list=faelle.filter(ablAktiv);
+ if(!list.length){el.innerHTML="";return;}
+ const gruppen={};
+ list.forEach(f=>{(gruppen[f.ablage.grund]=gruppen[f.ablage.grund]||[]).push(f);});
+ el.innerHTML="<div class='abl-head'><span class='kicker'>Ablage · wartet auf Extern</span>"
+  +"<span class='abl-note'>Kein Alarm — jede Ablage hat Grund, Notiz und Wecker; die Fächer leeren sich von selbst.</span></div>"
+  +"<div class='abl-grid'>"+Object.keys(gruppen).map(g=>{
+    const fs=gruppen[g];
+    return "<div class='abl-fach'><div class='abl-fach-h'><span class='abl-fach-t'>"+escapeHtml(g)+"</span><span class='abl-fach-n num'>"+fs.length+"</span></div>"
+     +"<div class='abl-fach-list'>"+fs.map(ablFachZeile).join("")+"</div></div>";
+  }).join("")+"</div>";
 }
 
 /* ---------- Render: Altpatienten (Bestand) ---------- */
@@ -7707,6 +7871,18 @@ function renderCharts(){
   bar(document.getElementById("chartVerlust"),lossReasons,true);
   bar(document.getElementById("chartTeam"),zaehle(k.offen,x=>x.owner));
   bar(document.getElementById("chartEngpass"),engpass,true);
+  /* Ablage-Doktrin 05.08.: Blocker-Gründe über die Ablage-Historie aller Fälle — dieselbe
+     Hebel-Logik wie bei den Verlustgründen, nur für externe Wartezustände. */
+  const ablC={};faelle.forEach(f=>(f.ablHist||[]).forEach(g=>ablC[g]=(ablC[g]||0)+1));
+  const ablData=Object.entries(ablC).sort((a,b)=>b[1]-a[1]);
+  const elAbl=document.getElementById("chartAblage");
+  if(elAbl){
+    bar(elAbl,ablData,true);
+    const fz=document.getElementById("ablFazit");
+    if(fz)fz.innerHTML=ablData.length
+      ?"<div class='vl-top'>Größter Blocker: <b>"+escapeHtml(ablData[0][0])+"</b> ("+ablData[0][1]+"×) — "+escapeHtml((ABL_GRUENDE[ablData[0][0]]||{}).hebel||"Prozess-Hebel definieren.")+"</div>"
+      :"";
+  }
   bar(document.getElementById("chartAchse"),zaehle(faelle,x=>x.achse));
   document.getElementById("autoSignals").textContent=k.neu+k.ueberf+k.blockers;
   document.getElementById("autoPremium").textContent=faelle.filter(x=>x.saluto).length;
@@ -8471,7 +8647,7 @@ function kfFelder(f){
    advanceFallStatus). Übersprungene Stufen feuern ihre simTrigger trotzdem, damit Leitfall-
    Storylines (z. B. status:Kontaktiert → Familie antwortet) nicht abreißen. */
 function kfSyncStatus(f){
- if(!f||f.status==="Aufgenommen"||f.status==="Verloren")return false;
+ if(!f||f.status==="Aufgenommen"||f.status==="Verloren"||f.status==="Archiviert")return false;
  const cur=STATUS.indexOf(f.status); if(cur<0||cur>=5)return false;
  const erste=kfFelder(f).find(k=>!k.ok);
  const ns=erste?erste.status:"Aufnahme geplant";
@@ -8597,7 +8773,33 @@ function lagebildHtml(f){
   +(auf.feld?"<span class='lb-todo-pfeil'>›</span>":"")+"</div>";
  if(auf.fertig)html+="<button type='button' class='btn-brass btn-sm' style='width:100%;margin-top:10px' onclick='advanceFall()'>✓ Aufnahme bestätigen</button>";
  if(f.status!=="Aufgenommen"&&f.status!=="Verloren")html+=lbPulsHtml(f);
+ if(!["Aufgenommen","Verloren","Archiviert"].includes(f.status))html+=ablBandHtml(f); /* Ablage-Doktrin 05.08. */
  return html;
+}
+/* Ablage-Band/-Formular in der Fallakte — Aktionen leben hier (Mein Tag & Fächer verlinken her). */
+function ablBandHtml(f){
+ if(!f.ablage){
+  if(!_ablFormOffen)return "<button type='button' class='abl-toggle' onclick='ablFormToggle()'>⏸ Extern blockiert? Fall ablegen…</button>";
+  return "<div class='abl-form'><span class='kicker'>Fall ablegen · externer Blocker</span>"
+   +"<select id='ablGrund' onchange='ablFormInfo()'>"+Object.keys(ABL_GRUENDE).map(g=>"<option>"+escapeHtml(g)+"</option>").join("")+"</select>"
+   +"<input id='ablNotiz' placeholder='Notiz — was genau steht aus?'>"
+   +"<p class='abl-info' id='ablAutoInfo'>Automatik: "+escapeHtml(ablAutoText("Unterlagen ausstehend"))+"</p>"
+   +"<div class='abl-form-act'><button type='button' class='btn-ghost btn-sm' onclick='ablFormToggle()'>Abbrechen</button>"
+   +"<button type='button' class='btn-brass btn-sm' onclick='ablAblegen("+f.id+")'>Ablegen</button></div></div>";
+ }
+ const a=f.ablage,w=ablWeckerInfo(f);
+ return "<div class='abl-band"+((w.faellig||w.zwang)?" faellig":"")+"'>"
+  +"<span class='kicker'>Abgelegt · "+escapeHtml(a.grund)+" · Zyklus "+a.zyklen+"</span>"
+  +(a.notiz?"<p class='abl-notiz'>„"+escapeHtml(a.notiz)+"“</p>":"")
+  +"<p class='abl-info'>"+(w.zwang?"Maximale Wartezeit erreicht — jetzt entscheiden."
+    :(w.faellig?"Wiedervorlage fällig — wieder aufnehmen, verschieben oder archivieren."
+    :escapeHtml(ablAutoText(a.grund))))+"</p>"
+  +"<div class='abl-band-act'>"
+  +"<button type='button' class='btn-brass btn-sm' onclick='ablReaktivieren("+f.id+")'>Wieder aufnehmen ›</button>"
+  +(a.art==="ereignis"?"<button type='button' class='btn-ghost btn-sm abl-demo' onclick='ablDemoAntwort("+f.id+")' title='Nur Vorführung: simuliert die eingehende Antwort'>Demo: Antwort trifft ein</button>":"")
+  +"<button type='button' class='btn-ghost btn-sm' onclick='ablSpaeter("+f.id+")'>+3 Tage</button>"
+  +"<button type='button' class='btn-ghost btn-sm"+(a.zyklen>=3?" abl-arch-empf":"")+"' onclick='ablArchivieren("+f.id+")'>"+(a.zyklen>=3?"Archivieren (empfohlen)…":"Archivieren…")+"</button>"
+  +"</div></div>";
 }
 /* Verwaltung (R8.2): ersetzt das alte Steuerung-Formular — Änderungen wirken sofort, kein Speichern-Knopf. */
 function fvwKtSet(v){
@@ -8765,6 +8967,11 @@ function wvNichtErreicht(fid){
  const slot=st>=5?"heute 16:00":tage===1?"morgen 09:00":paDate(dstr(tage))+" 09:00";
  f.frist=dstr(tage);
  f.aufgabe="Rückruf (Versuch "+(f.anrufe+1)+")";
+ /* Ablage-Doktrin 05.08.: „Nicht erreicht" ist ein externer Blocker — der Fall parkt im
+    Ablage-Fach, der Wecker übernimmt die Sterne-Wiedervorlage (beantwortet das alte
+    „Wo landet der Fall?"-Feedback). */
+ f.ablage={grund:"Nicht erreicht",notiz:"Versuch "+f.anrufe+" · WV "+slot,seit:dstr(0),art:"zeit",weckerTage:tage,maxTage:21,zyklen:(f.ablZyklen||0)+1};
+ f.ablZyklen=f.ablage.zyklen;f.ablHist=(f.ablHist||[]).concat("Nicht erreicht");
  let logTxt="✆ Nicht erreicht (Versuch "+f.anrufe+") — automatische Wiedervorlage: "+slot+" ("+st+"★-Priorität)";
  if(f.anrufe>=3)logTxt+=" — Kanalwechsel empfohlen";
  f.log.push([dstr(0),logTxt,logZeit()]);
@@ -9863,7 +10070,7 @@ document.getElementById("sigChips").addEventListener("click",e=>{
 let _mtDone=new Set();
 /* Task 6.3: Notiz zu internen Aufgaben (kein Fall-Log vorhanden) — Muster _mtDone. */
 let _mtNotizen=new Map();
-const MT_TYP_LABEL={rueckruf:"Rückruf",angebot:"Angebot",unterlagen:"Unterlagen",kosten:"Kostenklärung",eingang:"Eingang",allgemein:"Aufgabe",intern:"Intern",zwischenstand:"Zwischenstand"};
+const MT_TYP_LABEL={rueckruf:"Rückruf",angebot:"Angebot",unterlagen:"Unterlagen",kosten:"Kostenklärung",eingang:"Eingang",allgemein:"Aufgabe",intern:"Intern",zwischenstand:"Zwischenstand",wiedervorlage:"Wiedervorlage (Ablage)"};
 const MT_NOTIZ_LABEL={rueckruf:"Notiz zum Telefonat",angebot:"Notiz zum Angebot",unterlagen:"Notiz zu den Unterlagen",kosten:"Notiz zur Kostenklärung",eingang:"Notiz zur Antwort",allgemein:"Notiz",intern:"Notiz"};
 const MT_SCHRITTE={
  rueckruf:["Fall-Kontext kurz prüfen (Anfrage, letzter Eintrag)","Anrufen und Anliegen bestätigen","Nächsten Schritt gemeinsam festlegen","Ergebnis ins Protokoll schreiben"],
@@ -9976,7 +10183,10 @@ function mtTodos(){
  const jetzt=[],woche=[],gut=[];
  faelle.forEach(f=>{
   if(f.owner!=="S. Koordination")return;
-  if(["Aufgenommen","Verloren"].includes(f.status))return;
+  if(["Aufgenommen","Verloren","Archiviert"].includes(f.status))return;
+  /* Ablage-Doktrin 05.08.: abgelegte Fälle erzeugen keine Fach-Aufgaben — nur bei
+     fälligem Wecker eine Wiedervorlage-Karte. */
+  if(f.ablage){const w=ablWeckerInfo(f);if(w&&(w.faellig||w.zwang))jetzt.push(mtAblageItem(f,w));return;}
   const a=mtFallAufgabeItem(f);if(a)(a.block==="jetzt"?jetzt:woche).push(a);
   const k=mtKostenItem(f);if(k)(k.block==="jetzt"?jetzt:woche).push(k);
  });
@@ -9992,6 +10202,13 @@ function mtTodos(){
  inReha.forEach((p,idx)=>{ if(zwischenstandFaellig(p))jetzt.push(mtZwischenstandItem(p,idx)); });
  faelle.forEach(f=>{ if(f.status==="Aufnahme geplant")gut.push(f); });
  return {jetzt,woche,gut};
+}
+/* Ablage-Doktrin 05.08.: fällige Wiedervorlage als Mein-Tag-Karte — Klick öffnet die
+   Fallakte, dort liegen die Aktionen (wieder aufnehmen / verschieben / archivieren). */
+function mtAblageItem(f,w){
+ return {key:"abl:"+f.id,kind:"fall",typ:"wiedervorlage",ref:f,name:f.name,
+  kontext:f.ablage.grund+(f.ablage.notiz?" · "+f.ablage.notiz:"")+" · Zyklus "+f.ablage.zyklen+(f.ablage.zyklen>=3?" — Archivierung empfohlen":""),
+  block:"jetzt",overdue:!!w.zwang};
 }
 function mtFindItem(key){const a=mtTodos();return a.jetzt.concat(a.woche).find(it=>it.key===key)||null;}
 function mtNextOpenKey(excludeKey){
@@ -10705,6 +10922,7 @@ function simApply(key,ev,f){
  f.log.push([dstr(0),ev.text,logZeit()]);
  ev.after(f);
  if(typeof kfSyncStatus==="function")kfSyncStatus(f); /* Sim-Antworten (Zusage/Unterlagen) rücken den Status mit */
+ if(f.ablage&&typeof ablReaktivieren==="function")ablReaktivieren(f.id,"Antwort eingegangen"); /* Ablage-Doktrin: Ereignis holt den Fall zurück */
  if(!fallImBlick(f))f.ungelesen=(f.ungelesen||0)+1;
  inbToast("done","<b>Neue Nachricht · "+escapeHtml(ev.von)+"</b>","Fall "+escapeHtml(f.name),null);
  renderAll();
@@ -10817,7 +11035,7 @@ function ktaUebernehmen(){
 
 /* Beta-Persistenz: kompletter Demo-Zustand überlebt Reloads. DEMO_SCHEMA bei jedem
    strukturellen Daten-Release erhöhen → alte Test-Stände werden verworfen. */
-const DEMO_SCHEMA=10; /* 9→10: Bug-Fix Trennung intern/extern — 💬-Spiegelung aus f.log entfernt (auch im Seed) */
+const DEMO_SCHEMA=11; /* 10→11: Ablage-Doktrin — f.ablage/ablHist-Seeds (Peter Hofmann), Status „Archiviert" */
 const DEMO_KEY="kbDemoState";
 let _demoSaveT=null;
 function demoSave(){
