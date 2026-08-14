@@ -1,4 +1,4 @@
-# ONBOARDING — Design-Arbeit in diesem Repo (für vallon & sein Claude)
+# ONBOARDING — Design-Arbeit in diesem Repo (für Valon & sein Claude)
 
 Willkommen! Dieses Dokument erklärt, wie Design-Arbeit hier abläuft. Es ergänzt die
 `CLAUDE.md` (bitte zuerst lesen — die harten Regeln dort gelten vollständig, besonders:
@@ -22,7 +22,7 @@ Breiten 390/1440 prüfen, reduced-motion-Regel).
 Neue Design-Elemente NICHT direkt in `index.html` entwickeln. Stattdessen:
 
 1. Repo klonen, eine eigene HTML-Datei in **`design-lab/`** anlegen
-   (z. B. `design-lab/vallon-karten-studie.html`), self-contained wie `e5d-jade.html`.
+   (z. B. `design-lab/valon-karten-studie.html`), self-contained wie `e5d-jade.html`.
 2. Tokens, Fonts und Basis-CSS aus `index.html` oder `e5d-jade.html` herauskopieren,
    damit du im echten System arbeitest.
 3. Datei einfach im Browser öffnen — es gibt keinen Build, kein npm, nichts.
