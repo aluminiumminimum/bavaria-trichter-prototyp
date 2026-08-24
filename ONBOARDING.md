@@ -11,9 +11,12 @@ Breiten 390/1440 prüfen, reduced-motion-Regel).
   GitHub Pages: https://aluminiumminimum.github.io/bavaria-trichter-prototyp/
 - **Jeder Push auf `main` deployt automatisch** (~1 Minute). Mehrere Leute pushen
   parallel — deshalb IMMER `git pull` vor dem eigenen Push.
-- Design-Referenz: `design-lab/e5d-jade.html` (Jade-Apotheke-System) + der
-  Identitäts-Block in `CLAUDE.md` (Palette, Typo, Etiketten-Sprache, Token-Namen —
-  Achtung: Token-NAMEN sind historisch, `--brass` ist GOLD, `--sage-deep` ist LACK-JADE).
+- Design-Referenz: **C1 · Petrol & Sand** (`design-lab/valon-c1-petrol.html`) für die Farbwelt,
+  `design-lab/e5d-jade.html` für Struktur und Etiketten-Sprache, dazu der Identitäts-Block in
+  `CLAUDE.md` (Palette, Typo, Token-Namen — Achtung: Token-NAMEN sind historisch, `--brass` ist
+  GOLD, `--sage-deep` ist PETROL-JADE). Die App läuft seit 24.08.2026 auf C1; drei Werte
+  (`--muted`, `--brass-deep`, `--azzurro`) sind gegenüber dem Entwurf nachgeschärft, weil sie als
+  Fließtext unter 4.5:1 lagen. Farbton unverändert, nur Helligkeit — bitte nicht zurückdrehen.
 
 ## Dein Workflow als Designer (3 Stufen)
 

@@ -27,19 +27,26 @@ Interaktiver Produkt-Prototyp („Privatpatienten-Maschine") für einen Investor
 - **Animationen reduced-motion-safe:** Start-Zustand (opacity/transform 0) NUR im Keyframe-`from`,
   nie in der Basisregel — der globale `@media(prefers-reduced-motion)`-Block schaltet Animationen ab
   und der Endzustand muss dann sofort korrekt sein.
-- **Identität wahren (seit Jade-Apotheke-Overhaul 07/2026):** Cormorant Garamond (Display/Numerale) +
-  Inter (Body) + Fragment Mono (Micro); Jade-Apotheke-Palette — Elfenbein-Canvas `#F6F2E6`, Etiketten-Papier
-  `#FBF8EF`, Ink `#221E15`, Lack-Jade `#123B33` (DER strukturelle Dunkelton), Gold `#B99149` (NUR
-  Grafik/Gravur; Text: `--brass-deep` `#7E6230`), Zinnober `#A8341F` (Siegel + stockt/überfällig),
-  Daten-Hues Steel/Taupe nie als Fläche. Token-NAMEN historisch (`--cream` = Elfenbein-Canvas,
-  `--sage-deep` = LACK-JADE, `--brass` = GOLD!), Werte in `:root`. **Etiketten-System:** Karten =
-  Doppelrahmen (Jade-Hairline + Gold-Inset-Ring) + Gold-Eck-Winkel auf Majors, Radius-Familie 4px,
-  Kapitel-Siegel (Zinnober 01 gefüllt, Gold-Ring 02/03). **Funnel = Gold-Gravur auf Lack** (1 cv-Instanz-Paar
-  wide+narrow auf Heute; Contract seit IA-Umbau 07/2026: offset-path 12 · cv-travel 2 · data-sync 30).
+- **Identität wahren (seit C1-Umstellung 24.08.2026, davor Jade-Apotheke 07/2026):** Schibsted Grotesk
+  (Display/Numerale) + Inter (Body) + IBM Plex Mono (Micro); Palette **C1 · Petrol & Sand** (Entwurf Valon,
+  `design-lab/valon-c1-petrol.html`, GF-Entscheidung) — Ivory-Canvas `#F3EFE7`, Etiketten-Papier `#FAF7F1`,
+  Ink `#22302F`, Petrol-Jade `#223B3E` (DER strukturelle Dunkelton), Gold `#C2A87C` (Flächen/Gravur + Text
+  AUF Jade; Text auf hell: `--brass-deep` `#766445`), Zinnober `#8F3A22` (Siegel + stockt/überfällig),
+  Daten-Hues Steel/Taupe nie als Fläche. Token-NAMEN historisch (`--cream` = Ivory-Canvas,
+  `--sage-deep` = PETROL-JADE, `--brass` = GOLD!), Werte in `:root`.
+  **Kontrast ist Teil der Identität:** jede Textfarbe muss auf `--cream` UND `--paper` mindestens 4.5:1
+  erreichen (Bedeutungstragende Glyphen 3:1). `--muted`, `--brass-deep` und `--azzurro` weichen deshalb
+  bewusst von Valons Rohwerten ab — nur in der Helligkeit, der Farbton ist unverändert. Wer einen dieser
+  Werte anfasst, rechnet vorher nach. Gold auf hellem Grund ist NIE Text.
+  **Etiketten-System:** Karten = Doppelrahmen (Jade-Hairline + Gold-Inset-Ring) + Gold-Eck-Winkel auf
+  Majors, Radius-Familie 4px, Kapitel-Siegel (Zinnober 01 gefüllt, Gold-Ring 02/03).
+  **Funnel = Gold-Gravur auf Lack** (1 cv-Instanz-Paar wide+narrow auf Heute; Contract seit IA-Umbau
+  07/2026: offset-path 12 · cv-travel 2 · data-sync 30).
   **Motion-Welt-Set:** exakt 9 Keyframes (lift · cv-travel · lxSweep · lxPulse · auGrow ·
   rpDrawC/rpDrawP/rpRing/rpGrow); opacity:0 NUR in Keyframes, NIE `filter:blur` auf Animiertem,
-  Seite rendert ohne JS. **Papier-Inseln:** `.rpd-paper`/`.kp-mail` (Internals tabu), `@media print`.
-  Referenz-Prototyp: `design-lab/e5d-jade.html`.
+  Seite rendert ohne JS. **Papier-Inseln:** `.rpd-paper`/`.kp-mail` — Internals tabu, aber der
+  Token-Block darin führt eigene Werte und muss bei Palettenwechseln mitgezogen werden; `@media print`.
+  Referenz-Prototyp der Farbwelt: `design-lab/valon-c1-petrol.html` (Struktur weiterhin `e5d-jade.html`).
 
 ## Zusammenarbeit / Git
 - **Mehrere Leute pushen parallel auf `main`.** IMMER `git pull` vor eigenem Push.
