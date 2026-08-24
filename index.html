@@ -225,6 +225,9 @@
   .strom .fn-note{fill:#8F887A;font-size:13.5px}
   .strom .fn-tiny{fill:var(--muted);font-size:14px}
   .strom .fn-num{font-family:"Schibsted Grotesk",system-ui,sans-serif;font-weight:700;fill:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+  /* C1: Grotesk-Ziffern laufen breiter — das lange Ergebnis-Label bekommt seine
+     urspruengliche Groesse zurueck, sonst stoesst es an den Wert. */
+  .strom .fn-lab.fnl-lang,.strom-d .fn-lab.fnl-lang{font-size:16px}
   .strom .fn-chev{fill:var(--brass);font-size:19px;opacity:.8;transition:opacity .18s}
   .strom .fn-hair{stroke:var(--hair)}
   .strom .fn-link{stroke:var(--brass);stroke-width:1.35;fill:none;opacity:.6;stroke-linecap:round}
@@ -2032,6 +2035,32 @@ body{accent-color:var(--brass)}
   box-shadow:var(--shadow-soft)}
 .lx-live b{font-weight:600;color:var(--ink)}
 .lx-live b span{font-family:"Schibsted Grotesk",system-ui,sans-serif;color:var(--brass-deep)}
+/* C1-Nachbesserung 24.08.2026 — Live-Streifen auf schmalen Geraeten.
+   Der erklaerende Satz quetschte sich zwischen Zahl und ECHTZEIT-Marke in eine
+   funf Zeilen hohe Saeule. Er bekommt jetzt eine eigene Zeile. */
+@media(max-width:520px){
+  .lx-live{flex-wrap:wrap;row-gap:2px;padding:10px 14px}
+  .lx-live b{flex:0 0 auto}
+  .lx-live .lx-rt{margin-left:auto;flex:0 0 auto}
+  .lx-live .lx-desc{flex:1 0 100%;order:3;margin-left:22px}
+}
+/* C1-Nachbesserung 24.08.2026 — Rufnummern in der Rueckrufliste brachen mitten
+   durch ("0971 0000-" / "271"). Sie wandern jetzt als Ganzes in die naechste Zeile. */
+.tel-nr{white-space:nowrap}
+/* C1-Nachbesserung 24.08.2026 — Kapitel-Kicker auf schmalen Geraeten.
+   Grotesk laeuft breiter als Cormorant; mit .22em Sperrung, 34px Haarlinie und
+   64px Freiraum fuer das Kapitel-Siegel brachen die Koepfe dreizeilig um. */
+@media(max-width:520px){
+  #view-heute .kicker,.vhead .kicker{font-size:11px;letter-spacing:.12em;gap:8px}
+  #view-heute .kicker::before,.vhead .kicker::before{width:22px}
+  #view-heute>.hb-trichter .hd-row,#radarLine .kicker,#belegungChap .lxfc-top{padding-right:44px}
+}
+/* C1-Nachbesserung 24.08.2026 — In-Reha-Kennzahlenleiste.
+   Vier Werte nebeneinander wurden bei 390px um 20px beschnitten. Jetzt zwei mal zwei. */
+@media(max-width:430px){
+  .db-cockpit{display:grid;grid-template-columns:1fr 1fr;column-gap:10px;row-gap:12px}
+  .db-cockpit .dbc-div{display:none}
+}
 .lx-pulse{position:relative;width:8px;height:8px;flex:none;border-radius:50%;background:var(--sage)}
 .lx-pulse::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--sage);animation:lxPulse 2.2s ease-out infinite}
 @keyframes lxPulse{from{transform:scale(1);opacity:.55}to{transform:scale(3.4);opacity:0}}
@@ -2281,8 +2310,8 @@ body{accent-color:var(--brass)}
 .ns-v{font-size:30px}
 .im-row b{font-size:26px}
 .src-chip b{font-size:23px}
-.gauge .gnum{font-size:70px}
-.gauge .gpct{font-size:28px}
+.gauge .gnum{font-size:58px}
+.gauge .gpct{font-size:26px}
 .rp-stat b{font:700 37px/1.05 "Schibsted Grotesk",sans-serif;color:var(--brass-deep)}
 .rp-outcome .v{font:700 37px/1.1 "Schibsted Grotesk",sans-serif;color:var(--brass-deep)}
 .lxfc-big{font-size:clamp(41px,4.8vw,61px)}
@@ -2340,6 +2369,17 @@ body{accent-color:var(--brass)}
 #view-heute .ns-mtext #plusTagH{order:4}
 #view-heute .ns-ring{margin-top:10px}
 #view-heute .ns-betten{font-variant-caps:all-small-caps;letter-spacing:.08em;color:var(--muted)}
+  /* C1-Nachbesserung 24.08.2026 — Nordstern-Kacheln auf schmalen Geraeten.
+     Drei Spalten lassen bei 390px nur 76px nutzbare Breite; "Aufnahmequote" braucht 145px
+     und lief quer ueber die Nachbarkachel. Untereinander gestapelt, Ring rechts. */
+  @media(max-width:520px){
+    #view-heute .ns-row{grid-template-columns:1fr;gap:8px}
+    #view-heute .ns-m{flex-direction:row;align-items:center;justify-content:space-between;
+      text-align:left;padding:12px 14px;gap:12px}
+    #view-heute .ns-mtext{align-items:flex-start;text-align:left}
+    #view-heute .ns-mtext::before{margin:0 0 8px}
+    #view-heute .ns-ring{margin-top:0}
+  }
 .gauge .gziel{font-family:"Schibsted Grotesk",system-ui,sans-serif;font-weight:600;letter-spacing:.06em}
 
 /* Echtzeit-Strip → Elfenbein-Etikett mit ZINNOBER-Siegelpunkt (Zinnober-Moment Nr. 2;
@@ -4138,7 +4178,7 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
             <text class="fn-lab" x="948" y="100">Aufnahmen</text>
             <text class="fn-num" x="1156" y="104" text-anchor="end" font-size="31" id="r1"></text>
             <line class="fn-hair" x1="948" y1="118" x2="1156" y2="118"/>
-            <text class="fn-lab" x="948" y="194" font-size="16">Privatauslastung</text>
+            <text class="fn-lab fnl-lang" x="948" y="194" font-size="16">Privatauslastung</text>
             <text class="fn-num" x="1156" y="200" text-anchor="end" font-size="31">78 %</text>
             <line class="fn-hair" x1="948" y1="214" x2="1156" y2="214"/>
             <text class="fn-lab" x="948" y="286">Verloren</text>
@@ -4372,8 +4412,8 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
         <path class="val" d="M34.2,134 A76,76 0 1 1 165.8,134" stroke-dasharray="248.3 318.3"/>
         <line class="tick" x1="167.6" y1="103.1" x2="183.5" y2="104.8"/>
         <text class="gziel" x="186" y="96" text-anchor="middle">90</text>
-        <text class="gnum num" x="92" y="116" text-anchor="middle">78</text>
-        <text class="gpct" x="126" y="114">%</text>
+        <text class="gnum num" x="89" y="116" text-anchor="middle">78</text>
+        <text class="gpct" x="130" y="114">%</text>
       </svg>
       <div class="ns-betten">31 von 40 Privatbetten belegt · Ziel 90&nbsp;%+</div>
       <div class="ns-row">
@@ -4403,7 +4443,7 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
           <span class="ns-ring" id="nsRingConv"></span>
         </div>
       </div>
-      <div class="lx-live" aria-live="polite"><i class="lx-pulse"></i><b><span data-sync="cvTotal">–</span> Anfragen heute</b> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.<span class="lx-rt">ECHTZEIT</span></div>
+      <div class="lx-live" aria-live="polite"><i class="lx-pulse"></i><b><span data-sync="cvTotal">–</span> Anfragen heute</b><span class="lx-desc"> · Auto-Zuteilung aktiv — jede Quelle läuft live in den Eingang.</span><span class="lx-rt">ECHTZEIT</span></div>
     </div>
 
 
@@ -9116,7 +9156,7 @@ function renderTelefon(){
   const done=TEL_STATE.done[e.fallId+e.typ];
   return "<div class='tel-row'>"
    +"<span class='ava'>"+initialen(e.name)+"</span>"
-   +"<div style='flex:1;min-width:150px'><b>"+escapeHtml(e.name)+"</b> <span class='au-micro'>"+escapeHtml(e.nummer)+"</span>"
+   +"<div style='flex:1;min-width:150px'><b>"+escapeHtml(e.name)+"</b> <span class='au-micro tel-nr'>"+escapeHtml(e.nummer)+"</span>"
    +"<div class='au-micro'>"+escapeHtml(e.anlass)+(e.typ==="rueckruf"?" · ✓ Rückruf erbeten":"")+(e.versuche?" · Versuch "+(e.versuche+1):"")+"</div></div>"
    +"<span class='tel-st'>"+telSterne(e.sterne)+"</span>"
    +(done?"<span class='au-micro'>✓ "+escapeHtml(done)+"</span>"

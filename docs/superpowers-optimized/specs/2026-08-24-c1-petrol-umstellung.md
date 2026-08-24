@@ -113,3 +113,61 @@ Layout, Informationsarchitektur, Abstände, Radien, Motion. Kein Bauteil wurde v
 umbenannt oder entfernt. Valons Entwürfe zeigen noch die Navigation von vor dem IA-Umbau
 07/2026 (Team/Datenbank/System statt Call AI/In Reha/Auswertung/Konzept) — davon wurde
 nichts übernommen.
+
+---
+
+# Nachtrag — Passform nach dem Schriftwechsel (24.08.2026)
+
+Nach dem Livegang gemeldet: „das Prozentzeichen bei 78 % passt nicht in den Kreis".
+
+## Ursache, gemessen
+
+Schibsted Grotesk setzt Ziffern **rund 29 % breiter** als Cormorant Garamond
+(Nordstern-Ring: Ziffernbreite 68,7 → 88,9 bei gleicher Punktgröße). Alles, was für
+Cormorants schmale Ziffern eng bemessen war, lief über.
+
+## Von mir verursacht — behoben
+
+| Stelle | vorher | nachher |
+|---|---|---|
+| Nordstern-Ring: „78" überlagert „%" | −10,4 Einheiten | +4,2 Lücke, Gruppe bei 99,3 (Ringmitte 100) |
+| Trichter: „Privatauslastung" stößt an „78 %" | −6,7 Einheiten | +16,8 Lücke |
+
+Ring: Ziffern 70 → 58 px, Prozentzeichen 28 → 26 px und um 4 Einheiten freigestellt.
+Trichter: das lange Label bekommt seine ursprüngliche Größe zurück (CSS hatte die
+Autoren-Vorgabe `font-size="16"` mit 19 px überschrieben).
+
+## Vorbestehend — ebenfalls behoben
+
+Der Vergleich gegen den alten Build zeigte diese Fehler unverändert auch vor der
+Umstellung. Da die Bitte „systematisch alles" lautete, sind sie mit erledigt:
+
+| Stelle | Problem | Lösung |
+|---|---|---|
+| Nordstern-Kacheln, 390 px | drei Spalten lassen 76 px nutzbar, „Aufnahmequote" braucht 145 → Text lief über die Nachbarkachel | untereinander gestapelt, Ring rechts |
+| Live-Streifen, 390 px | erklärender Satz quetschte sich in eine fünf Zeilen hohe Säule | eigene Zeile, Höhe 104 → 84 px |
+| Rückrufliste | Rufnummern brachen mitten durch („0971 0000-" / „271") | Nummer wandert als Ganzes um |
+| Kapitel-Köpfe, 390 px | dreizeilig zerrissen | Sperrung .22em → .12em, Haarlinie 34 → 22 px, Siegel-Freiraum 64 → 44 px |
+| In-Reha-Kennzahlen, 390 px | vier Werte, 20 px abgeschnitten | zwei mal zwei |
+
+## Nachweis
+
+Zweiter Prüfautomat (Passform): abgeschnittener Inhalt, Text breiter als sein Kreis,
+SVG-Text außerhalb des Zeichenbereichs oder zu breit für seinen Ring, und
+Überlappungen **über Containergrenzen hinweg**. Mit Selbsttest bei jedem Lauf.
+
+| | alt (Jade) | C1 vorher | C1 jetzt |
+|---|---|---|---|
+| Passform-Befunde 390 px | 18 | 17 | **11** |
+| Passform-Befunde 1440 px | 5 | 6 | **4** |
+| Kontrastbefunde | 222 | 23 | **23** |
+
+Die verbliebenen Befunde wurden einzeln am Bildschirm geprüft und sind Fehlalarme:
+Textabschnitte, deren Zeilenkästen sich um 1–2 px berühren; umbrechende Fließtexte,
+deren Rechtecke sich überschneiden; ein eingeklappter Bereich in Fälle → Anfragen.
+
+## Weiterhin offen
+
+`.btn-brass` (2,41:1) unverändert — siehe §7. Die Foto-Bildunterschrift und die
+22 SVG-Treffer im Trichter bleiben Fehlalarme des Kontrast-Prüfers, der weder das
+Bild noch `<rect fill>` als Untergrund sieht.
