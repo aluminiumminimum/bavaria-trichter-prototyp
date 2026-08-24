@@ -78,11 +78,17 @@
   .empty{color:var(--muted);font-size:14px;margin:6px 0}
 
   /* ===== Schaltflächen — gravierte Messingplaketten ===== */
+  /* Hauptschaltflaeche 24.08.2026: Elfenbein auf Messing-Verlauf ergab 2.41:1 und war
+     schlecht lesbar. Fuer 4.5:1 haetten beide Enden des Verlaufs auf denselben dunklen
+     Bronzeton gemusst — der Verlauf waere ohnehin verschwunden. Stattdessen Lack-Jade wie
+     in Faelle, Mein Tag und dem Kampagnen-Blatt, wo der Knopf das schon war: 9.74:1.
+     Die Plakette bleibt — Gold-Innenring statt Messingflaeche. Gold ist damit wieder das,
+     was der Identitaets-Block vorsieht: Flaeche und Gravur, nicht Textgrund. */
   .btn-brass{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;
-    background:var(--brass-grad);color:#FDFBF7;border:1px solid #6e5d4e;border-radius:12px;
+    background:var(--sage-deep);color:var(--ivory-tx);border:1px solid #16292B;border-radius:12px;
     padding:11px 20px;font-size:14.5px;font-weight:600;letter-spacing:.05em;
-    box-shadow:inset 0 1px 0 rgba(250,248,244,.4),inset 0 -1px 0 rgba(48,40,33,.25),0 2px 8px rgba(50,42,35,.22);
-    text-shadow:0 1px 1px rgba(48,40,33,.3);transition:transform .15s,opacity .15s}
+    box-shadow:inset 0 0 0 1px var(--gold-soft),inset 0 0 0 3px var(--sage-deep),0 2px 8px rgba(34,59,62,.25);
+    text-shadow:none;transition:transform .15s,opacity .15s}
   .btn-brass:active{transform:translateY(1px)}
   .btn-brass:disabled{opacity:.45;cursor:not-allowed;transform:none}
   .btn-ghost{display:inline-flex;align-items:center;justify-content:center;min-height:44px;
@@ -2766,11 +2772,17 @@ body{accent-color:var(--brass)}
 
 /* — (J7.6) Belegung: Jade-Stufen (frei = tiefer, knapp = zarter) mit Tinten-Ziffern;
    Semantik frei/knapp/belegt bleibt — */
+/* Freie Plaetze 24.08.2026: "frei" und "knapp" lagen beide auf demselben Jade-Ton
+   (16 % gegen 7 % Deckkraft) und waren praktisch nicht zu unterscheiden — genau dort,
+   wo der Zuweiser entscheidet. Zurueck auf zwei Ampelfarben, in derselben Sprache wie
+   die Rest-Tage im Belegungs-Modul: Jade = Platz, Gold = knapp, blass = belegt. */
 .rp-bel{border-radius:3px}
-.rp-bel.free{background:rgba(53,86,90,.16);color:var(--ink);box-shadow:inset 0 0 0 1px var(--jade-hair)}
-.rp-bel.tight{background:rgba(53,86,90,.07);color:var(--ink);box-shadow:inset 0 0 0 1px var(--jade-hair)}
-.rp-legend .free{color:var(--sage-deep)}.rp-legend .free::before{background:rgba(53,86,90,.16);border-color:var(--jade-hair)}
-.rp-legend .tight{color:var(--sage)}.rp-legend .tight::before{background:rgba(53,86,90,.07);border-color:var(--jade-hair)}
+.rp-bel.free{background:var(--sage-soft);color:var(--sage-deep);box-shadow:inset 0 0 0 1px var(--jade-hair)}
+.rp-bel.tight{background:var(--brass-soft);color:var(--brass-deep);box-shadow:inset 0 0 0 1px var(--gold-faint)}
+.rp-bel.none{background:var(--paper2);color:var(--muted)}
+.rp-legend .free{color:var(--sage-deep)}.rp-legend .free::before{background:var(--sage-soft);border-color:var(--sage)}
+.rp-legend .tight{color:var(--brass-deep)}.rp-legend .tight::before{background:var(--brass-soft);border-color:var(--brass-deep)}
+.rp-legend .none{color:var(--muted)}.rp-legend .none::before{background:var(--paper2);border-color:var(--hair)}
 
 /* — (J7.7) Formular + CTAs: Jade-Lack mit Gold-Pinstripe, Ghost goldgerahmt — */
 .rp-field input,.rp-field select{border-radius:3px}
@@ -5897,7 +5909,10 @@ function belUebersicht(){
 
  /* Ring Erloes gegen Sollziel + Einstieg "Alle Stationen" (s0 im Original) */
  h+="<div class='card bel-card bel-top'>"
-  +"<div class='bel-ring'>"+kpiRing(g.erloesIst,g.erloesSoll||1,"Erlös Ist",belEur(g.erloesIst/1000)+"k €","brass")+"</div>"
+  /* kpiRing stellt den uebergebenen Wert als Zahl IM Ring dar — der volle Eurobetrag
+     lief dort ueber. Also Prozent in den Ring, die Betraege in die Beschriftung. */
+  +"<div class='bel-ring'>"+kpiRing(g.erloesSoll?Math.round(g.erloesIst/g.erloesSoll*100):0,100,"Erlös Ist",
+      belEur(g.erloesIst/1000)+"k von "+belEur(g.erloesSoll/1000)+"k €","brass")+"</div>"
   +"<div class='bel-top-t'>"
    +"<span class='bel-feld-l'>Sollziel</span><b class='bel-top-z num'>"+belEur(g.erloesSoll)+",00 €</b>"
    +"<span class='bel-feld-l'>Gesamt Tagesumsatz</span><b class='bel-top-z num "+(delta<0?"minus":"plus")+"'>"+belEur(g.erloesIst)+",00 €</b>"
@@ -8902,7 +8917,7 @@ function rpTab(screen,zName){
 }
 function openReferrer(screen,zName){
  const ov=document.getElementById("refOverlay");
- document.getElementById("refWho").textContent="Zuweiser-Portal · "+zName;
+ document.getElementById("refWho").textContent="Zuweiser-Portal"+(zName?" · "+zName:"");
  document.getElementById("refBody").innerHTML=renderSuite(screen||"portal",zName);
  rpAnimate();
  ov.classList.add("open");ov.setAttribute("aria-hidden","false");document.body.classList.add("locked");
