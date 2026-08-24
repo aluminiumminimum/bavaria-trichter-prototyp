@@ -1446,7 +1446,10 @@ label{font-size:12px;letter-spacing:.08em}
 @media(max-width:520px){.pa-k{flex-basis:88px}}
 /* ---------- Baustein B · Sterne (.st-*) ---------- */
 .st-row{display:inline-flex;gap:1px;font-size:13px;line-height:1;letter-spacing:.5px}
-.st-row .st{color:var(--brass-line)}
+/* Wie im Belegungs-Modul: der leere Stern war ueber die Farbe allein bei 1.5:1 kaum
+   sichtbar. Dunkler faerben allein hilft nicht — dann gliche er dem gefuellten. Die Form
+   traegt die Bedeutung, deshalb hier nur der Ton; das offene Zeichen setzt dbSterne(). */
+.st-row .st{color:var(--muted)}
 .st-row .st.on{color:var(--brass-deep)}
 .st-lbl{font:600 11px/1.4 Inter;letter-spacing:.04em;color:var(--muted)}
 .db-group-h.st-h .st-row{font-size:15px;margin-top:3px}
@@ -6078,17 +6081,17 @@ function belDetailAnsicht(){
 }
 function belSternSetzen(n){
  const l=belGefiltert(belSel||"*"), e=l[belDetailIdx]; if(!e)return;
- e.r.sterne=(e.r.sterne===n)?0:n; belRender();
+ e.r.sterne=(e.r.sterne===n)?0:n; belRender(); if(typeof demoSave==="function")demoSave();
 }
 function belNotizSetzen(v){
  const l=belGefiltert(belSel||"*"), e=l[belDetailIdx]; if(!e)return;
- e.r._notiz=v;   /* nur im Arbeitsspeicher — wie im Original */
+ e.r._notiz=v; if(typeof demoSave==="function")demoSave();
 }
 function belMarkieren(zi,ev){
  if(ev){ev.stopPropagation();}
  const q=(window.BEL_IMPORT&&window.BEL_IMPORT.length)?window.BEL_IMPORT:BEL_PAT;
  const r=q.find(x=>x.zi===zi); if(!r)return;
- r._mark=!r._mark; belRender();
+ r._mark=!r._mark; belRender(); if(typeof demoSave==="function")demoSave();
 }
 function belDetailAuf(i){belDetailIdx=i;belRender();window.scrollTo(0,0);}
 function belDetailZu(){belDetailIdx=null;belRender();window.scrollTo(0,0);}
@@ -6150,6 +6153,26 @@ function belSheetRender(){
   +"</div>"
   +"<button class='btn-brass bel-sheet-ok' onclick='belFilterAnwenden()'>Filter anwenden</button>"
   +"</div>";
+}
+/* Sterne, Notizen und Markierungen ueberdauern das Neuladen (Entscheidung 24.08.2026;
+   Valons Original speichert nichts). Gespeichert wird nur der veraenderte Zustand je
+   Zimmer, nicht die ganze Datenzeile — so bleibt der Seed austauschbar. Importierte
+   Zeilen bleiben absichtlich fluechtig. */
+function belZustandSichern(){
+ const z={};
+ BEL_PAT.forEach(r=>{
+  if(r.sterne||r._notiz||r._mark)z[r.zi]={s:r.sterne||0,n:r._notiz||"",m:!!r._mark};
+ });
+ return z;
+}
+function belZustandLaden(z){
+ if(!z||typeof z!=="object")return;
+ BEL_PAT.forEach(r=>{
+  const e=z[r.zi]; if(!e)return;
+  if(typeof e.s==="number")r.sterne=e.s;
+  if(typeof e.n==="string")r._notiz=e.n;
+  r._mark=!!e.m;
+ });
 }
 function belZuFall(pid){
  const i=inReha.findIndex(x=>x.personId===pid); if(i<0)return;
@@ -7620,7 +7643,7 @@ const STERNE_ORDER=["5","4","3","2","1"];
 let sterneFilter="alle";
 function sterneVon(p){const per=p.personId?person(p.personId):null;return per&&per.sterne?per.sterne:2;}
 function bucketOf(p){return p.consent!=="ja"?"gesperrt":String(sterneVon(p));}
-function sterneHtml(n){let s="";for(let i=1;i<=5;i++)s+="<span class='st"+(i<=n?" on":"")+"'>★</span>";return "<span class='st-row' role='img' aria-label='"+n+" von 5 Sternen'>"+s+"</span>";}
+function sterneHtml(n){let s="";for(let i=1;i<=5;i++)s+="<span class='st"+(i<=n?" on":"")+"'>"+(i<=n?"★":"☆")+"</span>";return "<span class='st-row' role='img' aria-label='"+n+" von 5 Sternen'>"+s+"</span>";}
 /* ---------- Baustein B · Anlass-Engine (.ar-*) — Spec 2026-07-14 §3 ---------- */
 let _arDone=new Set();
 function arGeste(p){
@@ -11457,7 +11480,10 @@ function go(dest,seg){
   };
   /* View-Transition nur nach vollständigem Load (kein Boot-Flash beim initialen applyHash) und nicht bei reduced-motion. */
   if(document.startViewTransition && document.readyState==="complete" && !(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)){
-    document.startViewTransition(_run);
+    /* .ready/.finished lehnen ab, wenn ein Uebergang abgebrochen wird (z.B. weil schon der
+       naechste laeuft). Ohne catch landet das als InvalidStateError in der Konsole. */
+    const _vt=document.startViewTransition(_run);
+    if(_vt){ if(_vt.ready)_vt.ready.catch(function(){}); if(_vt.finished)_vt.finished.catch(function(){}); }
   } else { _run(); }
 }
 /* Kompatibilitäts-Brücke zu den alten Bereichsnamen */
@@ -11969,7 +11995,8 @@ function demoSave(){
   try{
    localStorage.setItem(DEMO_KEY,JSON.stringify({v:DEMO_SCHEMA,saved:dstr(0),
     faelle:faelle,eingang:eingang,personen:personen,inReha:inReha,
-    zuweiser:zuweiser,zuweiserEvents:zuweiserEvents,bestand:bestand,radar:radar,belegung:belegung,inbN:_inbN,inbId:_inbId,pidN:_pidN}));
+    zuweiser:zuweiser,zuweiserEvents:zuweiserEvents,bestand:bestand,radar:radar,belegung:belegung,
+    belZustand:belZustandSichern(),inbN:_inbN,inbId:_inbId,pidN:_pidN}));
   }catch(e){/* Quota/Privacy-Mode: Persistenz still deaktiviert */}
  },400);
 }
@@ -12009,6 +12036,7 @@ function demoRestore(){
   });
   /* Sim-Zähler wiederherstellen — sonst beginnt der Anfragen-Pool nach jedem Reload wieder
      vorn und vergibt bereits benutzte Eingangs-IDs erneut. */
+  belZustandLaden(s.belZustand);
   if(typeof s.inbN==="number")_inbN=s.inbN;
   if(typeof s.inbId==="number")_inbId=s.inbId;
   eingang.forEach(function(m){if(typeof m.id==="number"&&m.id>=_inbId)_inbId=m.id+1;});

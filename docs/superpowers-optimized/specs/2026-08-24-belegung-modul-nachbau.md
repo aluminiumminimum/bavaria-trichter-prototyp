@@ -273,3 +273,58 @@ Sterne setzen (5 → 2) · Notiz schreiben und wiederfinden · Detail mit Zeitle
   Original: mit Speicherung entsteht sofort eine Löschpflicht.
 - Sein eigener Startbildschirm mit Markenkopf „Bavaria Data" — die App hat ihren
   eigenen Einstieg.
+
+---
+
+# Nachtrag 3 — Speichern und drei Altlasten (24.08.2026)
+
+## Sterne, Notizen und Markierungen überdauern das Neuladen
+
+Entscheidung des Nutzers, abweichend von Valons Original (das bewusst nichts speichert).
+
+Gespeichert wird **nur der veränderte Zustand je Zimmer** (`{s:Sterne, n:Notiz, m:Markierung}`),
+nicht die ganze Datenzeile — so bleibt der Seed austauschbar und ein alter Speicherstand
+kann keine Datenstruktur überschreiben. Der Zustand hängt im vorhandenen `kbDemoState`,
+also räumt der Zurücksetzen-Knopf ihn automatisch mit weg. Geprüft: gesetzt → neu geladen →
+noch da; zurückgesetzt → wieder Seed-Werte.
+
+Der Import bleibt absichtlich flüchtig.
+
+**Für den echten Betrieb gilt weiterhin:** sobald echte Patientendaten gespeichert werden,
+entsteht eine Löschpflicht. Im Prototyp mit erfundenen Daten im Browser-Speicher ist das
+kein Thema; beim Rollout schon.
+
+## Drei Altlasten erledigt
+
+| Was | Vorher | Jetzt |
+|---|---|---|
+| Konsolenfehler bei jedem Ansichtswechsel | 7 abgewiesene Versprechen auf 7 Wechsel | **0** auf 16 Wechsel |
+| Leere Bewertungssterne in der Datenbank-Ansicht | 10 Befunde bei 1,5–1,56:1 | **0** |
+| Kontrastbefunde gesamt | 25 | **15** |
+
+Der Konsolenfehler war eine nicht abgefangene View-Transition: `.ready`/`.finished` lehnen
+ab, wenn ein Übergang abgebrochen wird. Jetzt mit `catch` versehen — zwei Zeilen, keine
+Verhaltensänderung.
+
+Die leeren Sterne bekamen dieselbe Lösung wie im Belegungs-Modul: das offene Zeichen ☆
+statt eines hellen ★, plus `--muted` statt `--brass-line`. Die Form trägt die Bedeutung,
+nicht die Farbe.
+
+## Nicht angefasst
+
+**„Zuweiser-Portal · undefined"** in der Portal-Kopfzeile (`renderSuite`, Zeile ~8882):
+`zName` ist leer, wenn das Portal ohne Zuweisernamen geöffnet wird. Ein `||`-Fallback würde
+reichen, aber die Stelle liegt im geschützten Namensraum des Cofounders — gehört ihm.
+
+## Stand
+
+| | 1440 | 390 |
+|---|---|---|
+| Kontrastbefunde | 15 | 15 |
+| Passform-Befunde | 25 | 11 |
+| davon aus `.bel-*` | 0 | 0 |
+| Ansichten mit Überlauf | 0 | 0 |
+| Konsolenfehler / abgewiesene Versprechen | 0 / 0 | 0 / 0 |
+
+Die verbliebenen 15 Kontrastbefunde sind 14× `.btn-brass` (die offene Gestaltungsfrage)
+und eine Foto-Bildunterschrift, bei der der Prüfer das Bild dahinter nicht sieht.
