@@ -3873,6 +3873,88 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
 .tcw-due.leer{font:500 10.5px "IBM Plex Mono",monospace;color:var(--faint)}
 .tcw-row .chev{color:var(--brass-deep);font-size:17px}
 @media(max-width:600px){.tcw-achse{display:none}.tcw-auf{white-space:normal}.tcw-row{flex-wrap:wrap}.tcw-txt{flex:1 1 60%}}
+
+/* ===== BELEGUNG (.bel-*) — In-Reha-Modul nach Valons Uebergabe, in C1 uebersetzt.
+   Sein Original ist dunkelgruen; hier gilt die helle Petrol-Sand-Palette und die
+   Etiketten-Sprache der App. Rot bleibt wie bei ihm ausschliesslich Dringlichkeit. */
+.bel-cockpit{margin-bottom:14px}
+.bel-card{margin-bottom:14px}
+.bel-hint{font-size:12.5px;color:var(--muted);margin:2px 0 12px;max-width:62ch}
+.bel-tab{display:flex;flex-direction:column}
+.bel-th,.bel-tr{display:grid;grid-template-columns:minmax(0,1.5fr) 72px 82px 104px 92px 16px;
+  align-items:center;gap:8px;padding:9px 6px;text-align:left;width:100%;position:relative}
+.bel-th{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--hair)}
+.bel-tr{border-bottom:1px solid var(--hair2);background:none;border-left:0;border-right:0;border-top:0;
+  color:inherit;font:inherit;cursor:pointer;transition:background .15s}
+.bel-tr.hat{cursor:pointer}
+.bel-tr:hover{background:var(--paper2)}
+.bel-tr .r{text-align:right}
+.bel-st{font-weight:600;font-size:14.5px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.bel-verf{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--brass-deep);font-style:normal}
+.bel-tr .num{font-size:14.5px;font-weight:600}
+.bel-tr .num i{font-style:normal;color:var(--muted);font-weight:400}
+.bel-tr .num.ueber{color:var(--brass-deep)}
+.bel-tr .num.minus{color:var(--terra)}
+.bel-tr .num.plus{color:var(--sage)}
+.bel-chev{color:var(--brass-deep);font-size:16px;text-align:right}
+.bel-sum{border-bottom:0;border-top:1px solid var(--hair);font-weight:700;margin-top:2px}
+.bel-sum .bel-st{font-weight:700}
+.bel-bar{position:absolute;left:6px;right:6px;bottom:2px;height:2px;background:var(--hair2);border-radius:2px;overflow:hidden}
+.bel-bar-f{display:block;height:100%;border-radius:2px;background:var(--sage)}
+.bel-bar-f.gut{background:var(--brass)}
+.bel-bar-f.schwach{background:var(--brass-line)}
+.bel-bar-f.ueber{background:var(--terra)}
+.bel-kal{display:flex;align-items:center;gap:12px;padding:9px 2px;border-bottom:1px solid var(--hair2)}
+.bel-kal:last-child{border-bottom:0}
+.bel-kal-t{display:flex;flex-direction:column;gap:1px;min-width:0}
+.bel-kal-1{font-size:14.5px}
+.bel-kal-t b{font-weight:700}
+.bel-kal-t em{font-style:normal;font-size:12.5px;color:var(--muted)}
+.bel-rest{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-width:52px;padding:5px 8px;border-radius:4px;border:1px solid var(--hair);background:var(--paper2)}
+.bel-rest b{font-family:"Schibsted Grotesk",system-ui,sans-serif;font-size:19px;font-weight:700;line-height:1}
+.bel-rest em{font-style:normal;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.bel-rest.jetzt{border-color:var(--terra);background:var(--terra-soft)}
+.bel-rest.jetzt b{color:var(--terra)}
+.bel-rest.bald{border-color:var(--brass-line);background:var(--brass-soft)}
+.bel-rest.bald b{color:var(--brass-deep)}
+.bel-back{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 14px;margin-bottom:10px;
+  border:1px solid var(--brass-line);border-radius:4px;background:var(--paper);color:var(--brass-deep);
+  font-size:14px;font-weight:600;cursor:pointer}
+.bel-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+  padding:11px 4px;border-bottom:1px solid var(--hair2);background:none;border-left:0;border-right:0;border-top:0;
+  color:inherit;font:inherit;text-align:left}
+.bel-row:last-child{border-bottom:0}
+.bel-row.klick{cursor:pointer;transition:background .15s}
+.bel-row.klick:hover{background:var(--paper2)}
+.bel-row-l{display:flex;flex-direction:column;gap:3px;min-width:0}
+.bel-row-l b{font-size:15px}
+.bel-row-l em{font-style:normal;font-size:12.5px;color:var(--muted)}
+.bel-row-r{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.bel-badges{display:flex;gap:4px;flex-wrap:wrap}
+.bel-badge{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.08em;
+  padding:2px 6px;border-radius:3px;border:1px solid var(--hair);background:var(--cream2);color:var(--ink-soft)}
+.bel-tag{font-style:normal;font-size:12px;color:var(--muted);white-space:nowrap}
+.bel-tag.bel-link{color:var(--brass-deep);font-weight:600}
+.bel-imp{margin-bottom:14px}
+.bel-imp-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bel-imp-btn{cursor:pointer}
+.bel-imp-msg{margin-top:10px;padding:9px 12px;border-radius:4px;font-size:13px;
+  border:1px solid var(--hair);background:var(--paper2);color:var(--ink-soft)}
+.bel-imp-msg.ok{border-color:var(--sage);background:var(--sage-soft);color:var(--sage-deep)}
+.bel-imp-msg.fehl{border-color:var(--terra);background:var(--terra-soft);color:var(--terra)}
+@media(max-width:640px){
+  .bel-th{display:none}
+  .bel-tr{grid-template-columns:minmax(0,1fr) auto;grid-auto-rows:min-content;row-gap:2px;padding:11px 6px 13px}
+  .bel-tr .r{text-align:right}
+  .bel-tr .r:nth-of-type(2),.bel-tr .r:nth-of-type(3){grid-column:2}
+  .bel-chev{display:none}
+  .bel-row{flex-direction:column;align-items:flex-start;gap:8px}
+  .bel-row-r{align-self:stretch;justify-content:space-between}
+}
 </style>
 </head>
 <body>
@@ -4523,10 +4605,20 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
   <section id="view-inreha" class="view">
     <header class="vhead"><div class="kicker">Qualität &amp; Steuerung</div><h1>In Reha</h1>
       <p class="lblline">Patienten aktuell in Behandlung — Erfolg &amp; Wirtschaftlichkeit auf einen Blick.</p>
+      <div class="segments" role="tablist" aria-label="In-Reha-Bereiche">
+        <button class="seg active" data-seg="verlauf" role="tab">Verlauf <b class="segn num" id="segCntVerlauf"></b></button>
+        <button class="seg" data-seg="belegung" role="tab">Belegung <b class="segn num" id="segCntBelegung"></b></button>
+      </div>
     </header>
-    <figure class="au-photo au-photo--gold"><img src="assets/kb-komfort-band.jpg" alt="" loading="lazy"><figcaption>Komfort · Klinik Bavaria</figcaption></figure>
-    <div id="rsCockpit"></div>
-    <div id="inrehaGrid"></div>
+    <div class="sub active" id="sub-inreha-verlauf">
+      <figure class="au-photo au-photo--gold"><img src="assets/kb-komfort-band.jpg" alt="" loading="lazy"><figcaption>Komfort · Klinik Bavaria</figcaption></figure>
+      <div id="rsCockpit"></div>
+      <div id="inrehaGrid"></div>
+    </div>
+    <div class="sub" id="sub-inreha-belegung">
+      <p class="lblline">Stationsbelegung und Freiwerde-Kalender — welches Bett wird wann frei.</p>
+      <div id="belView"></div>
+    </div>
   </section>
 
   <!-- ============ NETZWERK ============ -->
@@ -5475,6 +5567,416 @@ let inReha=[
    auffaelligkeiten:"Keine",
    bill:{tagessatz:1160,kostenTag:720,kostenzusage:"liegt vor",zimmer:"Komfort-Suite",verlaengerung:false,zusatz:[{label:"Komfort-Suite-Zuschlag",eur:180}]}}
 ];
+
+/* ===== BELEGUNG · Nachbau des In-Reha-Moduls von Valon (Uebergabe handover/inreha-modul) =====
+   Zwei Ebenen, wie im Original: BEL_STATIONEN ist die aggregierte Belegungstabelle (sein BEL_DATA),
+   BEL_PAT die Patientenzeilen je Station (sein PATIENTS, ohne die medizinischen Felder — die
+   stehen bei uns in inReha[] und werden ueber personId dazugeholt).
+   Alle Werte synthetisch. Datumsangaben relativ zu heute ueber dstr(), damit die Rest-Tage nie
+   negativ werden — im Original standen feste 2026er Daten, wodurch die Liste "-88 Tage" zeigte.
+   Namensraum .bel-* · keine Beruehrung fremder Namensraeume. */
+const BEL_STATIONEN=[
+ {name:"AwareCare",  soll:9,   zielTag:17000, art:"intensiv"},
+ {name:"Classic",    soll:125, zielTag:25000, art:"regel"},
+ {name:"Pflege 3",   soll:26,  zielTag:37000, art:"pflege"},
+ {name:"Pflege 4",   soll:27,  zielTag:35000, art:"pflege"},
+ {name:"Pflege 5",   soll:24,  zielTag:27000, art:"pflege"},
+ {name:"Premium",    soll:70,  zielTag:53000, art:"privat"},
+ {name:"SalutoCare", soll:5,   zielTag:25000, art:"privat"}
+];
+/* Stationsbelegung aus dem letzten Stationsblatt — gilt fuer ALLE Stationen.
+   Die Zeilen in BEL_PAT sind NICHT die Stationsbelegung, sondern die im Concierge verfolgten
+   Faelle auf dieser Station (eine Teilmenge). Beides zu vermischen ergaebe "8 von 70 Betten". */
+const BEL_IST_AGGREGAT={"AwareCare":8,"Classic":136,"Pflege 3":21,"Pflege 4":25,"Pflege 5":24,"Premium":65,"SalutoCare":5};
+const BEL_ERLOES_AGGREGAT={"AwareCare":15950,"Classic":26285,"Pflege 3":28874,"Pflege 4":35729,"Pflege 5":25773,"Premium":48219,"SalutoCare":23600};
+
+/* Patientenzeilen — nur fuer die Stationen, auf denen das Concierge-Produkt spielt.
+   Initialen statt Klarnamen: bewusste Datenschutz-Entscheidung aus Valons Uebergabe,
+   die beim Nachbau ausdruecklich nicht aufgeweicht werden soll. */
+const BEL_PAT=[
+ {zi:"P-201",ini:"R.A.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"DAK",ks:"GKV",ps:320,th:560,auf:-88,plan:96,ez:true, ca:false,suite:false,sterne:4,nach:""},
+ {zi:"P-202",ini:"J.O.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"AOK",ks:"GKV",ps:310,th:480,auf:-62,plan:70,ez:true, ca:true, suite:false,sterne:2,nach:""},
+ {zi:"P-204",ini:"A.S.",st:"Premium",mass:"Neurologische Reha",art:"Phase C",kt:"Debeka",ks:"PKV",ps:520,th:900,auf:-51,plan:62,ez:true, ca:false,suite:false,sterne:3,nach:"Pflegeheim Demo-Kurpark"},
+ {zi:"P-207",ini:"D.K.",st:"Premium",mass:"Neurologische Reha",art:"Phase C",kt:"Allianz",ks:"PKV",ps:540,th:920,auf:-32,plan:36,ez:true, ca:true, suite:false,sterne:5,nach:""},
+ {zi:"P-210",ini:"H.V.",st:"Premium",mass:"Geriatrische Reha",art:"AHB",kt:"Barmer",ks:"GKV",ps:330,th:520,auf:-21,plan:28,ez:false,ca:false,suite:false,sterne:3,nach:""},
+ {zi:"P-212",ini:"C.M.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"Signal Iduna",ks:"PKV",ps:480,th:760,auf:-14,plan:24,ez:true, ca:false,suite:false,sterne:4,nach:""},
+ {zi:"P-215",ini:"B.W.",st:"Premium",mass:"Innere Reha",art:"AHB",kt:"TK",ks:"GKV",ps:300,th:450,auf:-9, plan:21,ez:false,ca:false,suite:false,sterne:2,nach:""},
+ {zi:"P-218",ini:"F.L.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"Selbstzahler",ks:"SZ",ps:610,th:980,auf:-5, plan:18,ez:true, ca:false,suite:false,sterne:5,nach:""},
+ {zi:"S-01", ini:"E.S.",st:"SalutoCare",mass:"SalutoCare-Programm",art:"Privat",kt:"Selbstzahler",ks:"SZ",ps:1250,th:760,auf:-4,plan:28,ez:true,ca:false,suite:true, sterne:5,nach:"",personId:"P10"},
+ {zi:"S-02", ini:"L.S.",st:"SalutoCare",mass:"Neurologische Reha",art:"Phase D",kt:"Debeka",ks:"PKV",ps:980,th:610,auf:-2,plan:25,ez:false,ca:false,suite:false,sterne:4,nach:"",personId:"P11"},
+ {zi:"S-03", ini:"D.F.",st:"SalutoCare",mass:"Orthopädische Reha",art:"AHB",kt:"Allianz",ks:"PKV",ps:890,th:520,auf:-6,plan:21,ez:true,ca:false,suite:false,sterne:4,nach:"",personId:"P09"},
+ {zi:"C-114",ini:"G.T.",st:"Classic",mass:"Orthopädische Reha",art:"AHB",kt:"AOK",ks:"GKV",ps:280,th:420,auf:-11,plan:21,ez:false,ca:false,suite:false,sterne:3,nach:""},
+ {zi:"C-121",ini:"M.R.",st:"Classic",mass:"Geriatrische Reha",art:"AHB",kt:"Barmer",ks:"GKV",ps:290,th:430,auf:-7, plan:24,ez:false,ca:true, suite:false,sterne:2,nach:"Kurzzeitpflege Demo-Anger"},
+ {zi:"C-133",ini:"S.B.",st:"Classic",mass:"Innere Reha",art:"AHB",kt:"TK",ks:"GKV",ps:275,th:400,auf:-3, plan:21,ez:false,ca:false,suite:false,sterne:3,nach:""}
+];
+
+/* ----- Rechenkern. Eine Quelle fuer Belegung, Freiwerde-Kalender und Tageserloes. ----- */
+function belPlus(iso,tage){const d=new Date(iso+"T00:00:00Z");d.setUTCDate(d.getUTCDate()+tage);return d.toISOString().slice(0,10);}
+function belDiff(a,b){return Math.round((new Date(b+"T00:00:00Z")-new Date(a+"T00:00:00Z"))/86400000);}
+function belAuf(r){return r._auf||dstr(r.auf);}
+function belEnt(r){return r.ent||belPlus(belAuf(r),r.plan);}
+function belRest(r){return belDiff(dstr(0),belEnt(r));}
+function belTagesErloes(r){return (r.ps||0)+(r.th||0);}
+/* Zeilen einer Station — importierte Zeilen ueberschreiben die Demo-Zeilen derselben Station. */
+function belZeilen(station){
+ const q=(window.BEL_IMPORT&&window.BEL_IMPORT.length)?window.BEL_IMPORT:BEL_PAT;
+ return q.filter(r=>r.st===station);
+}
+function belHatZeilen(station){return belZeilen(station).length>0;}
+/* Eine Stationszeile der Belegungstabelle. Stationen mit Zeilenliste rechnen aus den Zeilen,
+   die uebrigen aus dem zuletzt importierten Stationsblatt (Aggregat). */
+function belStation(st){
+ const zeilen=belZeilen(st.name), hat=zeilen.length>0;
+ const ist=BEL_IST_AGGREGAT[st.name]||0;
+ const erloesIst=BEL_ERLOES_AGGREGAT[st.name]||0;
+ const rest=zeilen.map(belRest).filter(t=>t>=0).sort((a,b)=>a-b);
+ return {name:st.name, art:st.art, soll:st.soll, ist:ist, detail:hat, verfolgt:zeilen.length,
+   auslastung: st.soll?Math.round(ist/st.soll*100):0,
+   frei: Math.max(0, st.soll-ist),
+   erloesIst: erloesIst, erloesSoll: st.zielTag,
+   delta: erloesIst-st.zielTag,
+   naechsteFrei: rest.length?rest[0]:null,
+   freiIn7: zeilen.filter(r=>{const t=belRest(r);return t>=0&&t<=7}).length,
+   freiIn14: zeilen.filter(r=>{const t=belRest(r);return t>=0&&t<=14}).length};
+}
+function belImportAktiv(){return !!(window.BEL_IMPORT&&window.BEL_IMPORT.length);}
+function belAlle(){
+ if(!belImportAktiv())return BEL_STATIONEN.map(belStation);
+ /* Nach einem Import sind die importierten Zeilen die Belegung — nicht mehr das Aggregat. */
+ const namen=[...new Set(window.BEL_IMPORT.map(r=>r.st))];
+ const bekannt={}; BEL_STATIONEN.forEach(st=>bekannt[st.name]=st);
+ return namen.map(n=>{
+  const zeilen=window.BEL_IMPORT.filter(r=>r.st===n);
+  const st=bekannt[n]||{name:n,soll:zeilen.length,zielTag:0,art:"regel"};
+  const erloesIst=zeilen.reduce((a,r)=>a+belTagesErloes(r),0);
+  const rest=zeilen.map(belRest).filter(t=>t>=0).sort((a,b)=>a-b);
+  return {name:n,art:st.art,soll:st.soll,ist:zeilen.length,detail:true,verfolgt:zeilen.length,
+   auslastung:st.soll?Math.round(zeilen.length/st.soll*100):100,
+   frei:Math.max(0,st.soll-zeilen.length),
+   erloesIst:erloesIst, erloesSoll:st.zielTag||0, delta:erloesIst-(st.zielTag||0),
+   naechsteFrei:rest.length?rest[0]:null,
+   freiIn7:zeilen.filter(r=>{const t=belRest(r);return t>=0&&t<=7}).length,
+   freiIn14:zeilen.filter(r=>{const t=belRest(r);return t>=0&&t<=14}).length};
+ }).sort((a,b)=>b.ist-a.ist);
+}
+function belGesamt(){
+ const a=belAlle();
+ return {ist:a.reduce((x,s)=>x+s.ist,0), soll:a.reduce((x,s)=>x+s.soll,0),
+   erloesIst:a.reduce((x,s)=>x+s.erloesIst,0), erloesSoll:a.reduce((x,s)=>x+s.erloesSoll,0),
+   frei:a.reduce((x,s)=>x+s.frei,0),
+   freiIn7:a.reduce((x,s)=>x+s.freiIn7,0), freiIn14:a.reduce((x,s)=>x+s.freiIn14,0)};
+}
+/* Freiwerde-Kalender: welches Bett wird wann frei, nach Dringlichkeit sortiert. */
+function belKalender(station){
+ const q=station?belZeilen(station):((window.BEL_IMPORT&&window.BEL_IMPORT.length)?window.BEL_IMPORT:BEL_PAT);
+ return q.map(r=>({r:r, rest:belRest(r), ent:belEnt(r)})).sort((a,b)=>a.rest-b.rest);
+}
+/* Bruecke zur Fallakte: eine Belegungszeile kann auf einen ausfuehrlichen inReha-Fall zeigen. */
+function belFall(r){return r.personId?inReha.find(p=>p.personId===r.personId)||null:null;}
+
+/* ----- Darstellung. Namensraum .bel-*, C1-Palette, Etiketten-Sprache. ----- */
+let belSel=null;
+function belEur(n){return Math.round(n).toLocaleString("de-DE");}
+function belBalken(ist,soll,ton){
+ /* Ueber 100% wird der ganze Balken zum Warnton statt einen Ueberhang zu zeichnen —
+    der Ueberhang lag ausserhalb der Box und wurde von overflow:hidden weggeschnitten. */
+ const pct=soll?Math.round(ist/soll*100):0;
+ const cls=pct>100?"ueber":ton;
+ return "<div class='bel-bar'><i class='bel-bar-f "+cls+"' style='width:"+Math.min(100,pct)+"%'></i></div>";
+}
+function belRestPill(t){
+ if(t===null||t===undefined)return "";
+ const cls=t<=3?"jetzt":(t<=10?"bald":"ruhig");
+ return "<span class='bel-rest "+cls+"'><b class='num'>"+t+"</b><em>Tage</em></span>";
+}
+function belUebersicht(){
+ const g=belGesamt(), a=belAlle();
+ const auslastung=g.soll?Math.round(g.ist/g.soll*100):0;
+ const delta=g.erloesIst-g.erloesSoll;
+ let h="<div class='db-cockpit bel-cockpit'>"
+  +"<div class='dbc-stat'><div class='dbc-num num'>"+g.ist+"/"+g.soll+"</div><div class='dbc-lbl'>Betten belegt</div></div>"
+  +"<div class='dbc-div'></div>"
+  +"<div class='dbc-stat'><div class='dbc-num num'>"+auslastung+" %</div><div class='dbc-lbl'>Auslastung</div></div>"
+  +"<div class='dbc-div'></div>"
+  +"<div class='dbc-stat'><div class='dbc-num num'>"+belEur(g.erloesIst/1000)+"k €</div><div class='dbc-lbl'>Tageserlös</div></div>"
+  +"<div class='dbc-div'></div>"
+  +"<div class='dbc-stat"+(delta<0?" hot":"")+"'><div class='dbc-num num'>"+(delta>=0?"+":"−")+belEur(Math.abs(delta)/1000)+"k €</div><div class='dbc-lbl'>zum Tagesziel</div></div>"
+ +"</div>";
+
+ h+=belImportLeiste();
+ h+="<div class='card bel-card'><div class='kicker'>Stationen</div>"
+   +"<div class='bel-tab' role='table'>"
+   +"<div class='bel-th' role='row'><span>Station</span><span class='r'>Betten</span><span class='r'>Auslastung</span><span class='r'>Tageserlös</span><span class='r'>zum Ziel</span><span></span></div>";
+ a.forEach(st=>{
+  const ueber=st.ist>st.soll;
+  const ton=st.auslastung>=95?"voll":(st.auslastung>=80?"gut":"schwach");
+  h+="<button class='bel-tr"+(st.verfolgt?" hat":"")+"' role='row' onclick=\"belOeffne('"+st.name.replace(/'/g,"\\'")+"')\">"
+    +"<span class='bel-st'>"+escapeHtml(st.name)+(st.verfolgt?"<em class='bel-verf'>"+st.verfolgt+" verfolgt</em>":"")+"</span>"
+    +"<span class='r num'>"+st.ist+"<i>/"+st.soll+"</i></span>"
+    +"<span class='r num "+(ueber?"ueber":"")+"'>"+st.auslastung+" %</span>"
+    +"<span class='r num'>"+belEur(st.erloesIst)+" €</span>"
+    +"<span class='r num "+(st.delta<0?"minus":"plus")+"'>"+(st.delta>=0?"+":"−")+belEur(Math.abs(st.delta))+"</span>"
+    +"<span class='bel-chev'>›</span>"
+    +belBalken(st.ist,st.soll,ton)
+  +"</button>";
+ });
+ h+="<div class='bel-tr bel-sum' role='row'><span class='bel-st'>Insgesamt</span>"
+   +"<span class='r num'>"+g.ist+"<i>/"+g.soll+"</i></span>"
+   +"<span class='r num'>"+auslastung+" %</span>"
+   +"<span class='r num'>"+belEur(g.erloesIst)+" €</span>"
+   +"<span class='r num "+(delta<0?"minus":"plus")+"'>"+(delta>=0?"+":"−")+belEur(Math.abs(delta))+"</span><span></span></div>"
+   +"</div></div>";
+
+ const kal=belKalender().filter(k=>k.rest>=0).slice(0,6);
+ h+="<div class='card bel-card'><div class='kicker'>Nächste freie Betten</div>"
+   +"<p class='bel-hint'>Aus den im Concierge verfolgten Fällen — Stationsblätter ohne Zeilendetail sind hier nicht enthalten.</p>";
+ kal.forEach(k=>{
+  h+="<div class='bel-kal'>"+belRestPill(k.rest)
+    +"<span class='bel-kal-t'><span class='bel-kal-1'><b>"+escapeHtml(k.r.ini)+"</b> · Zi. "+escapeHtml(k.r.zi)+" · "+escapeHtml(k.r.st)+"</span>"
+    +"<em>"+escapeHtml(k.r.mass)+" · Entlassung "+paDate(k.ent)+(k.r.nach?" · weiter: "+escapeHtml(k.r.nach):"")+"</em></span>"
+  +"</div>";
+ });
+ h+="</div>";
+ return h;
+}
+function belStationsListe(name){
+ const st=belAlle().find(x=>x.name===name);
+ if(!st)return belUebersicht();
+ const zeilen=belKalender(name);
+ let h="<button class='bel-back' onclick='belZurueck()'>‹ Belegung</button>"
+  +"<div class='db-cockpit bel-cockpit'>"
+  +"<div class='dbc-stat'><div class='dbc-num num'>"+st.ist+"</div><div class='dbc-lbl'>belegt</div></div>"
+  +"<div class='dbc-div'></div>"
+  +"<div class='dbc-stat'><div class='dbc-num num'>"+st.soll+"</div><div class='dbc-lbl'>Soll</div></div>"
+  +"<div class='dbc-div'></div>"
+  +"<div class='dbc-stat"+(st.auslastung<80?" hot":"")+"'><div class='dbc-num num'>"+st.auslastung+" %</div><div class='dbc-lbl'>Auslastung</div></div>"
+  +"</div>"
+  +"<div class='card bel-card'><div class='kicker'>"+escapeHtml(name)+" · verfolgte Fälle</div>";
+ if(!zeilen.length){
+  h+="<p class='empty'>Für diese Station liegt noch kein Zeilendetail vor. Die Belegungszahl stammt aus dem zuletzt importierten Stationsblatt — ein Stationsblatt mit Zeilen macht hier die einzelnen Fälle sichtbar.</p>";
+ } else {
+  zeilen.forEach(k=>{
+   const f=belFall(k.r);
+   const badges=[k.r.ez?"EZ":"",k.r.ca?"CA":"",k.r.suite?"Suite":"",k.r.ks].filter(Boolean)
+     .map(x=>"<span class='bel-badge'>"+escapeHtml(x)+"</span>").join("");
+   const sterne="<span class='st-row'>"+[1,2,3,4,5].map(i=>"<i class='st"+(i<=(k.r.sterne||0)?" on":"")+"'>★</i>").join("")+"</span>";
+   h+="<"+(f?"button":"div")+" class='bel-row"+(f?" klick":"")+"'"+(f?" onclick=\"belZuFall('"+k.r.personId+"')\"":"")+">"
+     +"<span class='bel-row-l'><b>"+escapeHtml(k.r.ini)+"</b>"
+     +"<em>Zi. "+escapeHtml(k.r.zi)+" · "+escapeHtml(k.r.art)+" · "+escapeHtml(k.r.kt)+"</em>"
+     +"<span class='bel-badges'>"+badges+"</span>"+sterne+"</span>"
+     +"<span class='bel-row-r'>"+belRestPill(k.rest)
+     +"<em class='bel-tag'>"+belEur(belTagesErloes(k.r))+" €/Tag</em>"
+     +(f?"<em class='bel-tag bel-link'>Fall öffnen ›</em>":"")+"</span>"
+   +"</"+(f?"button":"div")+">";
+  });
+ }
+ h+="</div>";
+ return h;
+}
+function belZuFall(pid){
+ const i=inReha.findIndex(x=>x.personId===pid); if(i<0)return;
+ belSel=null; go("inreha","verlauf");
+ if(typeof openRsDetail==="function")openRsDetail(i);
+}
+function belImportLeiste(){
+ const b=window.BEL_BERICHT;
+ return "<div class='card bel-imp'>"
+  +"<div class='kicker'>Stationsblatt einlesen</div>"
+  +"<p class='bel-hint'>Excel (.xlsx) oder CSV aus dem Klinik-System. Die Datei wird in diesem Browser-Tab gelesen — "
+  +"nichts wird hochgeladen, nichts gespeichert. Beim Neuladen ist alles wieder weg. "
+  +"Zeilen ohne Initialen werden verworfen.</p>"
+  +"<div class='bel-imp-row'>"
+  +"<label class='btn-brass bel-imp-btn'>Datei wählen<input type='file' accept='.xlsx,.csv,.txt' onchange='belImport(this)' hidden></label>"
+  +(belImportAktiv()?"<button class='btn-ghost btn-sm' onclick='belImportVerwerfen()'>Zurück zur Demo</button>":"")
+  +"</div>"
+  +(b?"<div class='bel-imp-msg "+(b.fehler?"fehl":"ok")+"'>"+escapeHtml(b.text)+"</div>":"")
+ +"</div>";
+}
+async function belImport(input){
+ const f=input.files&&input.files[0]; if(!f)return;
+ window.BEL_BERICHT={text:"Datei wird gelesen …",fehler:false}; belRender();
+ try{
+  let tab;
+  if(/\.xlsx$/i.test(f.name)) tab=await belXlsxTabelle(await f.arrayBuffer());
+  else tab=belCsvTabelle(await f.text());
+  const {zeilen,bericht}=belZeilenAusTabelle(tab);
+  window.BEL_IMPORT=zeilen; belSel=null;
+  const teile=[bericht.uebernommen+" Zeilen übernommen"];
+  if(bericht.summenzeilen)teile.push(bericht.summenzeilen+" Summenzeilen übersprungen");
+  if(bericht.ohneInitialen)teile.push(bericht.ohneInitialen+" ohne Initialen verworfen");
+  if(bericht.ohneDatum)teile.push(bericht.ohneDatum+" ohne Datum verworfen");
+  window.BEL_BERICHT={text:teile.join(" · "),fehler:false};
+ }catch(e){
+  window.BEL_BERICHT={text:"Import abgebrochen: "+e.message,fehler:true};
+ }
+ input.value=""; belRender();
+}
+function belImportVerwerfen(){window.BEL_IMPORT=null;window.BEL_BERICHT=null;belSel=null;belRender();}
+function belOeffne(name){belSel=name;belRender();window.scrollTo(0,0);}
+function belZurueck(){belSel=null;belRender();window.scrollTo(0,0);}
+/* ----- Import. Bewusst OHNE SheetJS: eine XLSX-Datei ist ein ZIP mit XML darin, und
+   Browser koennen deflate nativ. Damit kein fremdes Skript im selben Moment im Speicher
+   liegt, in dem Patientendaten gelesen werden — und der Import laeuft ohne Internet,
+   also auch im Kliniknetz. Nichts wird hochgeladen, nichts gespeichert. ----- */
+async function belUnzip(buf){
+ const dv=new DataView(buf), u8=new Uint8Array(buf);
+ let eo=-1;
+ for(let i=u8.length-22;i>=0&&i>u8.length-65558;i--){ if(dv.getUint32(i,true)===0x06054b50){eo=i;break;} }
+ if(eo<0)throw new Error("Keine ZIP-Struktur gefunden — ist das wirklich eine .xlsx-Datei?");
+ const anz=dv.getUint16(eo+10,true), cdOff=dv.getUint32(eo+16,true);
+ const dateien={}; let o=cdOff;
+ for(let i=0;i<anz;i++){
+  if(dv.getUint32(o,true)!==0x02014b50)break;
+  const meth=dv.getUint16(o+10,true), csize=dv.getUint32(o+20,true);
+  const nl=dv.getUint16(o+28,true), el=dv.getUint16(o+30,true), cl=dv.getUint16(o+32,true);
+  const lo=dv.getUint32(o+42,true);
+  const name=new TextDecoder().decode(u8.subarray(o+46,o+46+nl));
+  dateien[name]={meth,csize,lo};
+  o+=46+nl+el+cl;
+ }
+ const lies=async(name)=>{
+  const f=dateien[name]; if(!f)return null;
+  const lnl=dv.getUint16(f.lo+26,true), lel=dv.getUint16(f.lo+28,true);
+  const start=f.lo+30+lnl+lel, roh=u8.subarray(start,start+f.csize);
+  if(f.meth===0)return new TextDecoder().decode(roh);
+  const ds=new DecompressionStream("deflate-raw");
+  const w=ds.writable.getWriter(); w.write(roh); w.close();
+  return new TextDecoder().decode(await new Response(ds.readable).arrayBuffer());
+ };
+ return {namen:Object.keys(dateien), lies};
+}
+function belSpalte(ref){ let n=0; for(const c of ref.replace(/\d+/g,"")) n=n*26+(c.charCodeAt(0)-64); return n-1; }
+async function belXlsxTabelle(buf){
+ const zip=await belUnzip(buf);
+ const blatt=zip.namen.filter(n=>/^xl\/worksheets\/sheet\d+\.xml$/.test(n)).sort()[0];
+ if(!blatt)throw new Error("Kein Tabellenblatt in der Datei gefunden.");
+ const sstXml=await zip.lies("xl/sharedStrings.xml");
+ const sst=[];
+ if(sstXml){
+  const dom=new DOMParser().parseFromString(sstXml,"application/xml");
+  dom.querySelectorAll("si").forEach(si=>{
+   let t=""; si.querySelectorAll("t").forEach(x=>t+=x.textContent); sst.push(t);
+  });
+ }
+ const dom=new DOMParser().parseFromString(await zip.lies(blatt),"application/xml");
+ if(dom.querySelector("parsererror"))throw new Error("Das Tabellenblatt ist beschaedigt.");
+ const zeilen=[];
+ dom.querySelectorAll("row").forEach(r=>{
+  const z=[];
+  r.querySelectorAll("c").forEach(c=>{
+   const idx=belSpalte(c.getAttribute("r")||"A1"), typ=c.getAttribute("t");
+   let v=c.querySelector("v")?c.querySelector("v").textContent:"";
+   if(typ==="s")v=sst[+v]||"";
+   else if(typ==="inlineStr"){const is=c.querySelector("is");v=is?is.textContent:"";}
+   z[idx]=v;
+  });
+  for(let i=0;i<z.length;i++)if(z[i]===undefined)z[i]="";
+  zeilen.push(z);
+ });
+ return zeilen;
+}
+function belCsvTabelle(txt){
+ if(txt.charCodeAt(0)===0xFEFF)txt=txt.slice(1);
+ const kopf=txt.slice(0,2000);
+ const trenn=(kopf.split(";").length>kopf.split(",").length)?";":",";
+ const zeilen=[]; let feld="",zeile=[],inQ=false;
+ for(let i=0;i<txt.length;i++){
+  const c=txt[i];
+  if(inQ){ if(c==='"'){ if(txt[i+1]==='"'){feld+='"';i++;} else inQ=false; } else feld+=c; }
+  else if(c==='"')inQ=true;
+  else if(c===trenn){zeile.push(feld);feld="";}
+  else if(c==="\n"){zeile.push(feld);feld="";zeilen.push(zeile);zeile=[];}
+  else if(c!=="\r")feld+=c;
+ }
+ if(feld||zeile.length){zeile.push(feld);zeilen.push(zeile);}
+ return zeilen.filter(z=>z.some(x=>String(x).trim()));
+}
+/* Spaltenerkennung — bewusst tolerant, wie im Original. Reale Stationsblaetter
+   schreiben "Zimm ernr.", "Kostentraeger", "Therapie kosten" und aehnliches. */
+const BEL_SPALTEN={
+ zi:["zimmernr","zimmer","zimm ernr","zimm","zi","zi nr"],
+ ini:["initialen","patient","name","kuerzel"],
+ st:["station","fachabteilung","abteilung"],
+ mass:["massnahme","maßnahme","leistung"],
+ art:["massnahmeart","maßnahmeart","klassifikation","merkmalcon","art"],
+ kt:["kostentraeger","kostenträger","ktrname","kasse"],
+ ks:["ks","ktrgruppe","kostentraegergruppe","gruppe"],
+ ps:["pflegesatz","tagessatz"],
+ th:["therapiekosten","therapie kosten","therapie","gesamtpreis1c"],
+ auf:["aufnahme","aufnahmedatum","aufnahme datum","anreise"],
+ ent:["entlassung","entlassungsdatum","entlassung datum","abreise"],
+ nach:["nachbelegung","geht in","gehtin","weiter"],
+ sterne:["sterne","bewertung"],
+ ez:["ez","einzelzimmer"], ca:["ca"], suite:["suite"]
+};
+function belNorm(x){return String(x||"").toLowerCase().replace(/[.\-_/]/g," ").replace(/\s+/g," ").trim();}
+function belKopfIndex(kopf){
+ const idx={}, n=kopf.map(belNorm);
+ Object.keys(BEL_SPALTEN).forEach(k=>{
+  for(const alias of BEL_SPALTEN[k]){
+   const i=n.indexOf(alias); if(i>=0){idx[k]=i;return;}
+  }
+  for(const alias of BEL_SPALTEN[k]){
+   const i=n.findIndex(h=>h.replace(/ /g,"")===alias.replace(/ /g,"")); if(i>=0){idx[k]=i;return;}
+  }
+ });
+ return idx;
+}
+function belDatum(v){
+ const t=String(v||"").trim();
+ let m=/^(\d{4})-(\d{2})-(\d{2})/.exec(t); if(m)return m[1]+"-"+m[2]+"-"+m[3];
+ m=/^(\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(t);
+ if(m)return m[3]+"-"+String(m[2]).padStart(2,"0")+"-"+String(m[1]).padStart(2,"0");
+ if(/^\d{5}$/.test(t)){ /* Excel-Serienzahl ab 1899-12-30 */
+  const d=new Date(Date.UTC(1899,11,30)); d.setUTCDate(d.getUTCDate()+parseInt(t,10));
+  return d.toISOString().slice(0,10);
+ }
+ return "";
+}
+function belZahl(v){const t=String(v||"").replace(/[^\d,.-]/g,"").replace(/\.(?=\d{3}\b)/g,"").replace(",",".");const n=parseFloat(t);return isFinite(n)?n:0;}
+const BEL_SUMMENZEILE=/^(gesamt|insgesamt|begleitperson|begleit)/i;
+function belZeilenAusTabelle(tab){
+ const bericht={gelesen:0,uebernommen:0,ohneInitialen:0,summenzeilen:0,ohneDatum:0};
+ if(!tab.length)throw new Error("Die Datei enthaelt keine Zeilen.");
+ let kopfZ=0;
+ for(let i=0;i<Math.min(8,tab.length);i++){ if(belKopfIndex(tab[i]).ini!==undefined){kopfZ=i;break;} }
+ const idx=belKopfIndex(tab[kopfZ]);
+ if(idx.ini===undefined)throw new Error("Keine Spalte mit Initialen oder Patient gefunden — ohne sie wird nichts uebernommen.");
+ const raus=[];
+ for(let i=kopfZ+1;i<tab.length;i++){
+  const z=tab[i]; if(!z||!z.some(x=>String(x).trim()))continue;
+  bericht.gelesen++;
+  const erste=String(z[0]||"").trim();
+  if(BEL_SUMMENZEILE.test(erste)||BEL_SUMMENZEILE.test(String(z[idx.ini]||"").trim())){bericht.summenzeilen++;continue;}
+  const ini=String(z[idx.ini]||"").trim();
+  if(!ini){bericht.ohneInitialen++;continue;}      /* Datenschutz-Regel aus der Uebergabe */
+  const auf=belDatum(z[idx.auf]), ent=belDatum(z[idx.ent]);
+  if(!auf&&!ent){bericht.ohneDatum++;continue;}
+  const st=String(z[idx.st]||"").trim()||"Ohne Station";
+  raus.push({
+   zi:String(z[idx.zi]||"").trim()||"—", ini:ini, st:st,
+   mass:String(z[idx.mass]||"").trim()||"—", art:String(z[idx.art]||"").trim()||"—",
+   kt:String(z[idx.kt]||"").trim()||"—", ks:String(z[idx.ks]||"").trim()||"",
+   ps:belZahl(z[idx.ps]), th:belZahl(z[idx.th]),
+   auf:0, ent:ent||auf, _auf:auf,
+   plan:0,
+   ez:/^(ja|x|1|true)$/i.test(String(z[idx.ez]||"")), ca:/^(ja|x|1|true)$/i.test(String(z[idx.ca]||"")),
+   suite:/^(ja|x|1|true)$/i.test(String(z[idx.suite]||"")),
+   sterne:Math.max(0,Math.min(5,Math.round(belZahl(z[idx.sterne])))),
+   nach:String(z[idx.nach]||"").trim()
+  });
+  bericht.uebernommen++;
+ }
+ if(!raus.length)throw new Error("Keine uebernehmbare Zeile gefunden (" + bericht.gelesen + " gelesen).");
+ return {zeilen:raus,bericht:bericht};
+}
+function belRender(){
+ const host=document.getElementById("belView"); if(!host)return;
+ host.innerHTML = belSel?belStationsListe(belSel):belUebersicht();
+ const c1=document.getElementById("segCntVerlauf"); if(c1)c1.textContent=inReha.filter(p=>!p.entlassen).length;
+ const c2=document.getElementById("segCntBelegung"); if(c2)c2.textContent=belGesamt().ist;
+}
+
 
 /* ---------- GEDÄCHTNIS (Baustein A): personen[]-Registry — Spec docs/superpowers-optimized/specs/2026-07-13-baustein-a-gedaechtnis-design.md ---------- */
 function gebIn(tage,alter){
@@ -8482,7 +8984,7 @@ function renderInReha(){
    </button>`;
  }).join("").trim()||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
 }
-function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();if(typeof renderTelefon==="function")renderTelefon();if(typeof demoSave==="function")demoSave();}
+function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();if(typeof renderTelefon==="function")renderTelefon();if(typeof demoSave==="function")demoSave();belRender();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ----------
    R8.3: navigiert NICHT mehr (go("heute") riss den Mitarbeiter mitten aus der Akte, sobald der
@@ -10548,8 +11050,8 @@ function mtExit(){
 }
 
 /* ---------- Navigation ---------- */
-const SEGS={faelle:["anfragen","board","team"],netzwerk:["zuweiser","patienten"],konzept:["idee","matrix","sops"]};
-let navState={dest:"heute",segs:{faelle:"anfragen",netzwerk:"zuweiser",konzept:"idee"}};
+const SEGS={faelle:["anfragen","board","team"],inreha:["verlauf","belegung"],netzwerk:["zuweiser","patienten"],konzept:["idee","matrix","sops"]};
+let navState={dest:"heute",segs:{faelle:"anfragen",inreha:"verlauf",netzwerk:"zuweiser",konzept:"idee"}};
 function go(dest,seg){
   const _run=function(){
     if(!document.getElementById("view-"+dest))dest="heute";
