@@ -121,3 +121,82 @@ liegt bei 109 % und zeigte das nicht. Behoben.
   Namensraum (`.rp-*`) und darf nur nach Absprache angefasst werden.
 - Keine Speicherung des Imports.
 - Kein Service Worker, keine Offline-Fähigkeit.
+
+---
+
+# Nachtrag — Anschluss an die vorhandenen Stellen (24.08.2026)
+
+## Der eigentliche Anschlusspunkt
+
+Bei der Suche zeigte sich, dass die App längst eine gemeinsame Kapazitätsquelle hat:
+ein globales `belegung[]` je **Achse** mit freien Komfortbetten pro Woche. Es war ein
+fest verdrahteter Seed:
+
+```
+{achse:"Orthopädie", frei:[2,1,3,4]}   …
+```
+
+Gelesen wird es vom Kapazitäts-Abgleich am Fall (`kapFallHtml`, unser Namensraum) **und
+vom Zuweiserportal** („Freie Plätze", `.rp-*`). Damit war der Weg klar: wird `frei[]`
+gerechnet statt gesetzt, profitieren beide — und **im fremden Namensraum musste keine
+einzige Zeile angefasst werden**, weil das Portal die Liste nur liest.
+
+## Was jetzt gerechnet wird
+
+`belegungAktualisieren()` läuft zu Beginn von `renderAll()` und füllt `belegung[].frei`:
+
+```
+frei[i] = Kontingent(Achse) − noch belegt am Ende von Woche i − vorgemerkt in Woche i
+```
+
+- **Kontingent** aus `BEL_KONTINGENT` (Ortho 2 · Neuro 3 · Geri 1 · SalutoCare 1 = 7).
+  Die Summe ist `FC_BETTEN` — die Konstante ist jetzt abgeleitet statt fest.
+- **Belegt** nach derselben Regel, die der Forecast schon benutzt (`fcKtTyp`:
+  PKV oder Selbstzahler = privat). Bewusst keine zweite, abweichende Definition.
+- **Vorgemerkt** aus `f.bettKw` am Fall.
+- Wochenraster über denselben Mittwochs-Anker wie `fcWochen()`/`kapKwLabel()`.
+
+## Warum die Vormerkung aus dem Fall kommt
+
+`kapVormerken()` hat bisher `b.frei[i]--` gerechnet. Da `belegung[]` **und** `faelle[]`
+im Speicher persistiert werden, hätte eine Neuberechnung nach dem Wiederherstellen
+doppelt abgezogen. Der Handabzug ist deshalb entfernt; die Vormerkung steht nur noch am
+Fall und wird von der Basis abgezogen. Geprüft: zwei aufeinanderfolgende `renderAll()`
+ändern nichts mehr.
+
+## Ein Fehler beim Nachbauen
+
+Die erste Fassung von `belKomfortBelegung()` hat aufgenommene Fälle doppelt gezählt —
+`fcBelegte()` schließt Fälle aus, die schon in `inReha[]` stehen, meine Fassung nicht.
+Ergebnis waren 8 Belegungen auf 7 Betten und ein Totalstau. Behoben; jetzt 6 von 7.
+
+## Stand danach
+
+| Achse | frei in 4 Wochen | Kontingent |
+|---|---|---|
+| Orthopädie | 0 · 0 · 1 · 2 | 2 |
+| Neurologie | 0 · 0 · 0 · 3 | 3 |
+| Geriatrie | 1 · 1 · 1 · 1 | 1 |
+| SalutoCare | 0 · 0 · 0 · 0 | 1 |
+
+Ein Bereich sofort buchbar, zwei werden frei, SalutoCare ausgebucht. Keine Achse ist
+überbelegt. Der Kapazitäts-Abgleich sagt jetzt Sätze wie „Nächstes freies Komfortbett:
+KW 38 — in 3 Wochen", hergeleitet aus echten Entlassdaten statt aus einem Seed.
+
+## Nachweis
+
+| | 1440 | 390 |
+|---|---|---|
+| Kontrastbefunde | 24 | 24 |
+| Passform-Befunde | 22 | 11 |
+| davon aus `.bel-*` | 0 | 0 |
+| Ansichten mit Überlauf | 0 | 0 |
+| Konsolenfehler | keine | keine |
+
+Identisch zum Stand vor dem Anschluss — nichts regressiert. Zusätzlich einzeln geprüft:
+Vormerkung stabil über mehrere Renders, Portal zeigt dieselben Werte wie das Modell,
+Forecast rechnet weiter („Ohne Neuzugänge sinkt die Belegung von 6 auf 0 in acht Wochen").
+
+## Weiterhin offen
+
+`.btn-brass` (2,41:1) — unverändert die offene Gestaltungsfrage aus der C1-Umstellung.

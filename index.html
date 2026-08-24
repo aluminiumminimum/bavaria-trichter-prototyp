@@ -5674,6 +5674,64 @@ function belKalender(station){
 /* Bruecke zur Fallakte: eine Belegungszeile kann auf einen ausfuehrlichen inReha-Fall zeigen. */
 function belFall(r){return r.personId?inReha.find(p=>p.personId===r.personId)||null:null;}
 
+/* ----- Anschluss an die vorhandenen Stellen -----
+   belegung[] war ein fest verdrahteter Seed ([2,1,3,4] je Achse). Ab hier wird es
+   aus echten Entlassdaten gerechnet. Das Zuweiserportal liest dieselbe Liste — es
+   profitiert mit, ohne dass eine Zeile im fremden Namensraum .rp-* angefasst wird.
+   Vormerkungen stehen am Fall (f.bettKw) und werden von der Basis abgezogen, damit
+   ein Neuladen aus dem Speicher nichts doppelt. */
+/* Komfort-Kontingent je Achse. Summe 7 = FC_BETTEN, wie in der App-Sprache
+   ("7 Komfortbetten innerhalb der 40 Privatbetten"). Aufteilung so gewaehlt, dass sie
+   zur tatsaechlichen Belegung passt — keine Achse ist ueberbelegt. */
+const BEL_KONTINGENT={"Orthopädie":2,"Neurologie":3,"Geriatrie":1,"SalutoCare":1};
+function belKontingentGesamt(){return Object.values(BEL_KONTINGENT).reduce((a,b)=>a+b,0);}
+/* Mittwochs-Anker wie fcWochen()/kapKwLabel() — damit die Wochen deckungsgleich sind. */
+function belWocheEnde(i){
+ const d=new Date(heute.getFullYear(),heute.getMonth(),heute.getDate());
+ const dow=(d.getDay()+6)%7; d.setDate(d.getDate()-dow+2+i*7);
+ return d;
+}
+/* Wer belegt ein Komfortbett: dieselbe Regel, die der Forecast schon benutzt
+   (fcKtTyp: PKV oder Selbstzahler = privat). Keine zweite, abweichende Definition. */
+function belKomfortBelegung(){
+ const raus=[];
+ inReha.forEach(p=>{
+  if(p.entlassen)return;
+  const per=p.personId&&typeof person==="function"?person(p.personId):null;
+  if(fcKtTyp(per?per.kt:"")!=="privat")return;
+  const von=fcParseISO(p.aufnahme); if(!von)return;
+  const bis=new Date(von); bis.setDate(bis.getDate()+p.verweildauer.plan);
+  raus.push({achse:p.achse,bis:bis});
+ });
+ const schonInReha=new Set(inReha.filter(p=>!p.entlassen).map(p=>p.personId));
+ faelle.forEach(f=>{
+  if(fcKtTyp(f.kt)!=="privat")return;
+  if(f.status!=="Aufnahme geplant"&&f.status!=="Aufgenommen")return;
+  /* Wie fcBelegte(): ein aufgenommener Fall, der schon in inReha steht, zaehlt nur einmal. */
+  if(f.status==="Aufgenommen"&&schonInReha.has(f.personId))return;
+  const start=f.status==="Aufnahme geplant"?f.frist:((f.log&&f.log.length)?f.log[f.log.length-1][0]:dstr(0));
+  const von=fcParseISO(start); if(!von)return;
+  const bis=new Date(von); bis.setDate(bis.getDate()+21);
+  raus.push({achse:f.achse,bis:bis});
+ });
+ return raus;
+}
+function belegungAktualisieren(){
+ const belegt=belKomfortBelegung();
+ belegung.forEach(b=>{
+  const kont=BEL_KONTINGENT[b.achse]!==undefined?BEL_KONTINGENT[b.achse]:1;
+  const neu=[];
+  for(let i=0;i<4;i++){
+   const ende=belWocheEnde(i);
+   const nochBelegt=belegt.filter(x=>x.achse===b.achse&&x.bis>ende).length;
+   const kw=kapKwLabel(i);
+   const vorgemerkt=faelle.filter(f=>f.bettKw===kw&&f.achse===b.achse).length;
+   neu.push(Math.max(0,kont-nochBelegt-vorgemerkt));
+  }
+  b.frei.length=0; Array.prototype.push.apply(b.frei,neu);
+ });
+}
+
 /* ----- Darstellung. Namensraum .bel-*, C1-Palette, Etiketten-Sprache. ----- */
 let belSel=null;
 function belEur(n){return Math.round(n).toLocaleString("de-DE");}
@@ -7565,7 +7623,7 @@ function akSenden(key){
 function akNurErledigt(key){ arAktion(key); akClose(); }
 function akClose(){ dismissDetail(); }
 /* ---------- Baustein C · Belegungs-Forecast (.fc-*) ---------- */
-const FC_BETTEN=7; // Komfort-Kontingent (Privat-/Selbstzahler + Komfort-Aufzahler)
+const FC_BETTEN=belKontingentGesamt(); // Komfort-Kontingent, jetzt aus BEL_KONTINGENT abgeleitet statt fest
 const FC_ZIEL=FC_BETTEN-1; // Ziel-Belegung (Demo): eine Stufe unter Vollbelegung → gestrichelte Ziel-Linie im Forecast
 function fcParseISO(iso){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||"");return m?new Date(+m[1],+m[2]-1,+m[3]):null;}
 function fcKtTyp(kt){return(kt==="PKV"||kt==="Selbstzahler")?"privat":"gesetzlich";}
@@ -7815,7 +7873,7 @@ function kapVormerken(fid,i){
  const f=faelle.find(x=>x.id===fid);if(!f||f.bettKw)return;
  const b=belegung.find(x=>x.achse===f.achse);
  if(!b||b.frei[i]<=0)return;
- b.frei[i]--;
+ /* Kein Handabzug mehr — belegungAktualisieren() zieht Vormerkungen aus f.bettKw ab. */
  f.bettKw=kapKwLabel(i);
  f.log.push([dstr(0),"Komfortbett vorgemerkt: KW "+f.bettKw+" ("+f.achse+") — Kapazitäts-Abgleich am Fall",logZeit()]);
  rpToast("Bett vorgemerkt — KW "+f.bettKw+" · "+f.achse+". Portal-Belegung zählt mit (Demo).");
@@ -8984,7 +9042,7 @@ function renderInReha(){
    </button>`;
  }).join("").trim()||"<p class='empty'>Aktuell keine Patienten in Behandlung.</p>";
 }
-function renderAll(){renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();if(typeof renderTelefon==="function")renderTelefon();if(typeof demoSave==="function")demoSave();belRender();}
+function renderAll(){belegungAktualisieren();renderHeute();renderEingang();renderBoard();renderBestand();renderRadar();renderZuweiser();renderCharts();renderMatrix();renderInReha();renderTeam();renderAnlaesse();renderBelegung();if(typeof renderTelefon==="function")renderTelefon();if(typeof demoSave==="function")demoSave();belRender();}
 
 /* ---------- Geplante Aufnahme: +1 Tag Vorlauf ----------
    R8.3: navigiert NICHT mehr (go("heute") riss den Mitarbeiter mitten aus der Akte, sobald der
