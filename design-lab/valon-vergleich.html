@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1F1E1C">
+<title>CI-Runde 7 · Vier Entwürfe im Vergleich — Valon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --canvas:#F6F1ED; --paper:#FFFFFF; --ink:#1F1E1C; --muted:#827E76;
+  --hair:rgba(31,30,28,.14); --accent:#C3AD89;
+  --body:'Inter',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --gutter:clamp(20px,5vw,72px);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--body);
+  font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased}
+header{padding:clamp(36px,6vw,72px) var(--gutter) 0}
+.kicker{font-family:var(--mono);font-size:14px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 14px}
+h1{font-size:clamp(31px,4.2vw,47px);font-weight:500;letter-spacing:-.01em;line-height:1.08;margin:0 0 14px}
+.lede{max-width:62ch;font-size:17.5px;color:#494544;margin:0 0 8px}
+.rule{height:1px;background:var(--hair);margin:clamp(31px,4.2vw,47px) var(--gutter)}
+
+.grid{display:grid;gap:22px;padding:0 var(--gutter) clamp(48px,7vw,88px);
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.card{background:var(--paper);border:1px solid var(--hair);border-radius:4px;overflow:hidden;
+  display:flex;flex-direction:column}
+.card h2{font-size:20.5px;font-weight:500;margin:0 0 3px;letter-spacing:-.005em}
+.card .role{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 12px}
+.card .body{padding:20px 22px 22px}
+.swatches{display:flex;border-radius:3px;overflow:hidden;margin:0 0 8px;border:1px solid var(--hair)}
+.swatches i{display:block;flex:1;height:38px}
+.hexes{font-family:var(--mono);font-size:13px;color:var(--muted);margin:0 0 16px;letter-spacing:.02em}
+.fonts{border-top:1px solid var(--hair);padding-top:13px;margin-top:2px}
+.fonts p{margin:0 0 3px;font-size:16px}
+.fonts p span{color:var(--muted);font-size:14.5px}
+.note{font-size:15.5px;color:#494544;margin:13px 0 0;line-height:1.5}
+
+/* Vorschau: die Seite wird in Originalbreite (1440) geladen und herunterskaliert,
+   damit die Desktop-Wirkung sichtbar bleibt. Der Faktor wird unten passend zur
+   Spaltenbreite gesetzt; die Werte hier sind der Stand ohne JavaScript. */
+/* Die Hoehe folgt der Breite ueber das Seitenverhaeltnis 1440:900. Wichtig:
+   das Skript unten darf die Hoehe NICHT selbst setzen, sonst loest es die
+   eigene Beobachtung wieder aus und der Browser bricht ab. */
+.frame{position:relative;aspect-ratio:1440/900;border-bottom:1px solid var(--hair);
+  background:var(--canvas);overflow:hidden}
+.frame iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;
+  transform:scale(.29);transform-origin:0 0}
+.frame .fallback{position:absolute;inset:0;display:grid;place-items:center;padding:24px;
+  text-align:center;font-size:15.5px;color:var(--muted);z-index:-1}
+.actions{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+.btn{display:inline-block;padding:9px 15px;border-radius:3px;font-size:15px;font-weight:400;
+  text-decoration:none;border:1px solid var(--ink);color:var(--ink);transition:.15s}
+.btn.p{background:var(--ink);color:#F6F1ED}
+.btn:hover{opacity:.78}
+footer{padding:0 var(--gutter) clamp(40px,6vw,72px);max-width:70ch}
+footer p{font-size:16px;color:#494544}
+code{font-family:var(--mono);font-size:14.5px;background:rgba(31,30,28,.05);padding:1px 5px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">Design-Lab · Runde 7 · CI-Entwürfe · August 2026</p>
+  <h1>Vier Entwürfe für Farben und Schriften</h1>
+  <p class="lede">Dieselbe Seite, viermal. Nur Farbpalette und Typografie unterscheiden sich —
+  so lässt sich die Wirkung vergleichen, ohne dass Layout oder Inhalt das Urteil verfälschen.</p>
+  <p class="lede"><strong style="font-weight:500">A und B teilen sich absichtlich exakt dieselbe Palette.</strong>
+  Nur die Schriften sind anders. Wer die beiden nebeneinander hält, beurteilt reine Typografie.</p>
+  <p class="lede">A und B folgen dem Brand Guide. <strong style="font-weight:500">C1 und C2 sind Gegenentwürfe</strong>
+  und stellen die Frage, ob das Produkt eine Serife braucht — sie verzichten komplett darauf.
+  Ihre Akzenttöne liegen bewusst nah am Marken-Beige; der Unterschied steckt im dunklen Strukturton.</p>
+</header>
+
+<div class="rule"></div>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="frame">
+      <div class="fallback">Vorschau lädt nur, wenn die Seite über einen Server geöffnet wird.<br>Nutze „Groß öffnen“.</div>
+      <iframe src="valon-a-privat.html" loading="lazy" title="Vorschau Entwurf A — Privat"></iframe>
+    </div>
+    <div class="body">
+      <h2>A — Privat</h2>
+      <p class="role">Marken-CI, wörtlich</p>
+      <div class="swatches">
+        <i style="background:#FFFFFF"></i><i style="background:#C3AD89"></i>
+        <i style="background:#5C5A50"></i><i style="background:#1F1E1C"></i>
+      </div>
+      <p class="hexes">FFFFFF · C3AD89 · 5C5A50 · 1F1E1C</p>
+      <div class="fonts">
+        <p>Roboto Bold <span>— Überschriften</span></p>
+        <p>Open Sans Light <span>— Fließtext</span></p>
+        <p>Caveat <span>— handschriftlicher Akzent</span></p>
+      </div>
+      <p class="note">Exakt die Palette „PRIVATE REHA“ und die Schriften aus dem Brand Guide.
+      Die Version, die keiner Begründung bedarf.</p>
+      <div class="actions">
+        <a class="btn p" href="valon-a-privat.html">Groß öffnen</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="frame">
+      <div class="fallback">Vorschau lädt nur, wenn die Seite über einen Server geöffnet wird.<br>Nutze „Groß öffnen“.</div>
+      <iframe src="valon-b-privat-gehoben.html" loading="lazy" title="Vorschau Entwurf B — Privat gehoben"></iframe>
+    </div>
+    <div class="body">
+      <h2>B — Privat gehoben</h2>
+      <p class="role">Marke, typografisch veredelt</p>
+      <div class="swatches">
+        <i style="background:#FFFFFF"></i><i style="background:#C3AD89"></i>
+        <i style="background:#5C5A50"></i><i style="background:#1F1E1C"></i>
+      </div>
+      <p class="hexes">identisch zu A</p>
+      <div class="fonts">
+        <p>Newsreader <span>— Überschriften, mit echter Kursive</span></p>
+        <p>Inter <span>— Fließtext</span></p>
+        <p>IBM Plex Mono <span>— Kleinlabels, Zahlen</span></p>
+      </div>
+      <p class="note">Markenfarben unverändert, aber editoriale Typografie.
+      Zeigt, wie weit die Marke trägt, wenn die Schrift auf Pitch-Niveau gehoben wird.</p>
+      <div class="actions">
+        <a class="btn p" href="valon-b-privat-gehoben.html">Groß öffnen</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="frame">
+      <div class="fallback">Vorschau lädt nur, wenn die Seite über einen Server geöffnet wird.<br>Nutze „Groß öffnen“.</div>
+      <iframe src="valon-c1-petrol.html" loading="lazy" title="Vorschau Entwurf C1 — Petrol und Sand"></iframe>
+    </div>
+    <div class="body">
+      <h2>C1 — Petrol &amp; Sand</h2>
+      <p class="role">Gegenentwurf, ohne Serife</p>
+      <div class="swatches">
+        <i style="background:#F3EFE7"></i><i style="background:#C2A87C"></i>
+        <i style="background:#223B3E"></i><i style="background:#16292B"></i>
+      </div>
+      <p class="hexes">F3EFE7 · C2A87C · 223B3E · 16292B</p>
+      <div class="fonts">
+        <p>Schibsted Grotesk <span>— Überschriften</span></p>
+        <p>Inter <span>— Fließtext</span></p>
+        <p>IBM Plex Mono <span>— Kleinlabels, Zahlen</span></p>
+      </div>
+      <p class="note">Kühl und medizinisch, aber geerdet. Der Sandton liegt dicht
+      am Marken-Beige, der Unterschied zu A und B steckt allein im Strukturton.</p>
+      <div class="actions">
+        <a class="btn p" href="valon-c1-petrol.html">Groß öffnen</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="frame">
+      <div class="fallback">Vorschau lädt nur, wenn die Seite über einen Server geöffnet wird.<br>Nutze „Groß öffnen“.</div>
+      <iframe src="valon-c2-schiefer.html" loading="lazy" title="Vorschau Entwurf C2 — Schiefer und Kupfer"></iframe>
+    </div>
+    <div class="body">
+      <h2>C2 — Schiefer &amp; Kupfer</h2>
+      <p class="role">Gegenentwurf, ohne Serife</p>
+      <div class="swatches">
+        <i style="background:#F1EFEA"></i><i style="background:#AE8A6E"></i>
+        <i style="background:#3A4550"></i><i style="background:#262E36"></i>
+      </div>
+      <p class="hexes">F1EFEA · AE8A6E · 3A4550 · 262E36</p>
+      <div class="fonts">
+        <p>Schibsted Grotesk <span>— Überschriften</span></p>
+        <p>Inter <span>— Fließtext</span></p>
+        <p>IBM Plex Mono <span>— Kleinlabels, Zahlen</span></p>
+      </div>
+      <p class="note">Die leiseste Variante. Blaugrau ohne Farbaussage, dazu
+      gedecktes Kupfer als einziger warmer Ton.</p>
+      <div class="actions">
+        <a class="btn p" href="valon-c2-schiefer.html">Groß öffnen</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="rule" style="margin-top:0"></div>
+
+<footer>
+  <p class="kicker">Hinweise</p>
+  <p>Alle Schriften stammen von Google Fonts und sind kostenlos kommerziell nutzbar —
+  es entstehen keine Lizenzkosten.</p>
+  <p>Die Signalfarbe für „überfällig“ und Eskalation ist in A und B <code>#8F3A22</code>,
+  in C <code>#C2503A</code>. Der Brand Guide sieht keine Signalfarbe vor; diese Werte sind
+  eine Ergänzung und brauchen die Zustimmung des Teams.</p>
+  <p>Zum Vergleich: <a href="e5d-jade.html" style="color:#8A7550">e5d-jade.html</a> ist der
+  aktuelle Stand der App (Runde 6), <a href="index.html" style="color:#8A7550">index.html</a>
+  listet alle bisherigen Runden.</p>
+</footer>
+
+<script>
+/* Skalierung exakt an die Spaltenbreite anpassen. Ohne JavaScript greifen die
+   festen Werte aus dem Stylesheet — die Seite bleibt in jedem Fall benutzbar. */
+(function(){
+  function passen(){
+    document.querySelectorAll('.frame').forEach(function(f){
+      var i = f.querySelector('iframe');
+      if(i){ i.style.transform = 'scale(' + (f.clientWidth / 1440) + ')'; }
+    });
+  }
+  passen();
+  addEventListener('load', passen);
+  if(window.ResizeObserver){
+    var ro = new ResizeObserver(passen);
+    document.querySelectorAll('.frame').forEach(function(f){ ro.observe(f); });
+  } else {
+    addEventListener('resize', passen);
+  }
+})();
+</script>
+
+</body>
+</html>
