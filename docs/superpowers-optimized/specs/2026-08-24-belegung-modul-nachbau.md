@@ -200,3 +200,76 @@ Forecast rechnet weiter („Ohne Neuzugänge sinkt die Belegung von 6 auf 0 in a
 ## Weiterhin offen
 
 `.btn-brass` (2,41:1) — unverändert die offene Gestaltungsfrage aus der C1-Umstellung.
+
+---
+
+# Nachtrag 2 — die fehlenden Bausteine (24.08.2026)
+
+## Warum sie gefehlt haben
+
+Der Umfang wurde festgelegt, bevor Abschnitt (c) der Übergabe gelesen war — die
+vollständige Klickstrecke mit allen vier Bildschirmen, Filter, Sortierung, Sternen
+und Notizen. Die Auswahlmöglichkeit war zudem mit „dafür ist sein Modul dann wirklich
+abgebildet" beschrieben, was nicht zutraf. Beides Fehler in der Vorbereitung, nicht
+in der Umsetzung.
+
+## Jetzt ergänzt
+
+| Baustein bei Valon | Umsetzung |
+|---|---|
+| **s0** Ring Erlös Ist gegen Sollziel, Einstieg „Patienten · Alle Stationen" | in den Kopf der Belegungsübersicht gefaltet — eine eigene Landeseite wäre neben unserer Segmentleiste doppelt |
+| **Extras-Streifen** Komfortzimmer · CA · EZ | unter der Stationstabelle |
+| **s2 über alle Stationen** | `belOeffne("*")` |
+| **s3 Patientendetail** | alle acht Abschnitte: Kopf mit Avatar und Merkmalen, Aufenthalt mit Zeitleiste, Zimmer & Klassifikation, Kosten & Kostenträger, VL/Anmerkung, Aufenthaltsdauer, Zuweiser & Begleitpersonen, Barthel, Notizen |
+| **Filterfenster** | fährt von unten ein; fünf Gruppen, 16 Chips — Status ≤7/≤21/stabil, Bewertung, Zimmerkategorie, Markierte/VL, vier Sortierungen |
+| **Sterne setzen · Notizen · Markieren** | alle drei, nur im Arbeitsspeicher wie im Original |
+| „Stand: …"-Zeile | auf Übersicht und Detail |
+
+Dazu 14 Datenzeilen um die Felder erweitert, die das Detail zeigt: VL/Anmerkung,
+Zuweiser, Begleitpersonen, Barthel bei Aufnahme und aktuell.
+
+## Eine Abweichung mit Grund: die Sterne
+
+Erster Nachbau übernahm sein Muster — leerer Stern in hellem Gold. Das ergab
+**48 zusätzliche Kontrastbefunde bei 1,56:1**, die Kontrastzahl sprang von 24 auf 67.
+
+Nachrechnen zeigte eine Sackgasse: Ein leerer Stern, der über die Farbe allein auf 3:1
+käme, läge nur noch 1,65:1 vom gefüllten entfernt — beide sähen gleich aus. Deshalb
+trägt jetzt die **Form** die Bedeutung: gefüllt ★ gegen offen ☆, dazu `--muted` statt
+hellem Gold. Zurück auf 25.
+
+Dieselbe Schwäche hat die ältere `.st-row` in der Datenbank-Ansicht (10 Befunde,
+vorbestehend). Der gleiche Griff würde dort helfen — nicht angefasst, weil außerhalb
+dieser Aufgabe.
+
+## Nachweis
+
+13 Ansichten plus die drei neuen Zustände (Liste über alle Stationen, Detail,
+Filterfenster), beide Breiten, Selbsttest je Lauf.
+
+| | 1440 | 390 |
+|---|---|---|
+| Kontrastbefunde | 25 | 25 |
+| Passform-Befunde | 25 | 11 |
+| davon aus `.bel-*` | 0 | 0 |
+| Ansichten mit Überlauf | 0 | 0 |
+| Konsolenfehler | keine | keine |
+
+Der eine Kontrastbefund mehr als vorher ist der „Filter anwenden"-Knopf — dieselbe
+`.btn-brass`-Frage.
+
+Durchgespielt: alle Stationen (14 Zeilen) · Filter „Kritisch" + Sortierung nach Name
+(2 Treffer, aktive Filterzeile stimmt) · Markieren und Filter „Markierte" (1 Treffer) ·
+Sterne setzen (5 → 2) · Notiz schreiben und wiederfinden · Detail mit Zeitleiste
+„32 vergangen · 4 verbleibend · 89 %".
+
+**Ein eigener Fehler unterwegs:** eine Regel aus dem ersten Bauabschnitt
+(`.bel-row{flex-direction:column}` unter 640 px) stapelte das Markierungs-Kästchen
+über die Zeile statt daneben. Entfernt.
+
+## Weiterhin nicht übernommen
+
+- Speicherung von Sternen und Notizen über das Neuladen hinaus — bewusst, wie im
+  Original: mit Speicherung entsteht sofort eine Löschpflicht.
+- Sein eigener Startbildschirm mit Markenkopf „Bavaria Data" — die App hat ihren
+  eigenen Einstieg.

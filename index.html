@@ -3946,14 +3946,114 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
   border:1px solid var(--hair);background:var(--paper2);color:var(--ink-soft)}
 .bel-imp-msg.ok{border-color:var(--sage);background:var(--sage-soft);color:var(--sage-deep)}
 .bel-imp-msg.fehl{border-color:var(--terra);background:var(--terra-soft);color:var(--terra)}
+/* — Uebersichtskopf: Ring, Sollziel, Einstieg (s0 im Original) — */
+.bel-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.bel-ring{flex:0 0 auto}
+.bel-top-t{display:grid;grid-template-columns:auto auto;gap:2px 12px;align-items:baseline;flex:1;min-width:180px}
+.bel-top-z{font-family:"Schibsted Grotesk",system-ui,sans-serif;font-size:19px;font-weight:700}
+.bel-top-z.minus{color:var(--terra)} .bel-top-z.plus{color:var(--sage)}
+.bel-einstieg{display:flex;align-items:center;gap:10px;flex:0 0 auto;min-height:44px;padding:10px 14px;
+  border:1px solid var(--brass-line);border-radius:4px;background:var(--paper2);cursor:pointer;
+  color:inherit;font:inherit;text-align:left}
+.bel-einstieg b{font-size:14.5px} .bel-einstieg em{font-style:normal;font-size:12px;color:var(--muted);margin-left:2px}
+.bel-extras{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--hair)}
+.bel-ex{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 4px;border:1px solid var(--hair);border-radius:4px;background:var(--paper2)}
+.bel-ex b{font-family:"Schibsted Grotesk",system-ui,sans-serif;font-size:19px;font-weight:700;line-height:1}
+.bel-ex span{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.bel-stand{margin-top:12px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center}
+/* — Listenkopf mit Filter — */
+.bel-liste-kopf{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bel-liste-kopf .kicker{margin:0}
+.bel-filter-btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 12px;
+  border:1px solid var(--brass-line);border-radius:4px;background:var(--paper2);color:var(--brass-deep);
+  font-size:13px;font-weight:600;cursor:pointer}
+.bel-filter-btn.an{background:var(--brass-soft);border-color:var(--brass-deep)}
+.bel-filter-btn b{background:var(--brass-deep);color:var(--paper);border-radius:99px;padding:0 5px;font-size:11px}
+.bel-filterzeile{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 4px;
+  font-size:12.5px;color:var(--muted)}
+.bel-filterzeile em{font-style:normal;color:var(--faint)}
+.bel-zaehler{margin-left:auto;font-weight:700;color:var(--ink-soft)}
+.bel-inline{background:none;border:0;padding:0;color:var(--brass-deep);font:inherit;font-weight:600;text-decoration:underline;cursor:pointer}
+/* — Zeile mit Haken und Detail-Knopf — */
+.bel-row{display:flex;align-items:stretch;gap:10px;padding:0;border-bottom:1px solid var(--hair2)}
+.bel-row:last-child{border-bottom:0}
+.bel-row.mark{background:var(--brass-soft);border-radius:4px}
+.bel-haken{flex:0 0 auto;align-self:center;width:22px;height:22px;border-radius:3px;border:1px solid var(--brass-line);
+  background:var(--paper);color:var(--brass-deep);font-size:13px;line-height:1;cursor:pointer;padding:0}
+.bel-haken.an{background:var(--brass-deep);border-color:var(--brass-deep);color:var(--paper)}
+.bel-row-b{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:1;min-width:0;
+  padding:11px 4px;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.bel-row-b:hover{background:var(--paper2)}
+.bel-sterne{display:inline-flex;align-items:center;gap:1px}
+.bel-sterne .st{font-size:12px;color:var(--muted);background:none;border:0;padding:0;line-height:1}
+.bel-sterne button.st{cursor:pointer;font-size:17px;padding:0 1px;min-height:24px}
+.bel-sterne .st.on{color:var(--brass-deep)}
+.bel-sterne em{font-style:normal;font-size:11px;color:var(--muted);margin-left:5px}
+/* — Detailansicht — */
+.bel-det-kopf{display:flex;align-items:flex-start;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--hair)}
+.bel-ava{flex:0 0 auto;width:52px;height:52px;border-radius:4px;border:1px solid var(--jade-line);
+  background:var(--paper2);display:flex;align-items:center;justify-content:center;
+  font-family:"Schibsted Grotesk",system-ui,sans-serif;font-size:19px;font-weight:700;color:var(--sage-deep)}
+.bel-det-kt{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.bel-det-kt b{font-size:18px}
+.bel-det-kt em{font-style:normal;font-size:13px;color:var(--sage)}
+.bel-badge.lage.kritisch{border-color:var(--terra);background:var(--terra-soft);color:var(--terra)}
+.bel-badge.lage.dringend{border-color:var(--brass-line);background:var(--brass-soft);color:var(--brass-deep)}
+.bel-badge.lage.stabil{border-color:var(--sage);background:var(--sage-soft);color:var(--sage-deep)}
+.bel-abs{margin:16px 0 7px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--hair2);padding-bottom:4px}
+.bel-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.bel-feld{padding:8px 10px;border:1px solid var(--hair);border-radius:4px;background:var(--paper2);min-width:0}
+.bel-feld.gold{border-color:var(--gold-faint);background:var(--brass-soft)}
+.bel-feld.gut{border-color:var(--sage);background:var(--sage-soft)}
+.bel-feld.warn{border-color:var(--terra);background:var(--terra-soft)}
+.bel-feld-l{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.bel-feld-w{display:block;font-size:14.5px;font-weight:600;margin-top:2px;overflow-wrap:anywhere}
+.bel-tl{height:5px;border-radius:3px;background:var(--hair2);overflow:hidden;margin:10px 0 5px}
+.bel-tl i{display:block;height:100%;background:var(--brass);border-radius:3px}
+.bel-tl-l{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.06em;color:var(--muted)}
+.bel-tl-m{color:var(--ink-soft)}
+.bel-begl{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.bel-leer{font-size:12.5px;color:var(--faint)}
+.bel-notiz{width:100%;padding:10px 12px;border:1px solid var(--hair);border-radius:4px;background:var(--paper2);
+  font:inherit;font-size:14px;color:var(--ink);resize:vertical}
+.bel-zufall{margin-top:14px;width:100%}
+/* — Filterfenster, faehrt von unten ein — */
+.bel-sheet{position:fixed;inset:0;z-index:86;display:none}
+.bel-sheet.open{display:block}
+.bel-sheet-bg{position:absolute;inset:0;background:rgba(34,48,47,.42)}
+.bel-sheet-b{position:absolute;left:0;right:0;bottom:0;max-height:86vh;display:flex;flex-direction:column;
+  background:var(--paper);border-top:1px solid var(--jade-line);border-radius:14px 14px 0 0;
+  padding:8px 18px calc(16px + env(safe-area-inset-bottom));box-shadow:var(--shadow)}
+@media(min-width:760px){.bel-sheet-b{left:50%;transform:translateX(-50%);width:min(640px,92vw);border-radius:14px;bottom:5vh;border:1px solid var(--jade-line)}}
+.bel-sheet-griff{width:36px;height:3px;border-radius:2px;background:var(--brass-line);margin:2px auto 10px}
+.bel-sheet-kopf{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--hair)}
+.bel-sheet-kopf b{font-size:16px}
+.bel-sheet-scroll{overflow-y:auto;flex:1;min-height:0;padding-bottom:8px}
+.bel-chips{display:flex;flex-wrap:wrap;gap:7px}
+.bel-chip{min-height:38px;padding:7px 13px;border-radius:99px;border:1px solid var(--brass-line);
+  background:var(--paper2);color:var(--ink-soft);font-size:13px;font-weight:600;cursor:pointer}
+.bel-chip.an{background:var(--sage-deep);border-color:var(--sage-deep);color:var(--ivory-tx)}
+.bel-sheet-ok{margin-top:12px;width:100%}
+@media(max-width:640px){
+  .bel-grid3{grid-template-columns:1fr 1fr}
+  .bel-top-t{grid-template-columns:1fr}
+  .bel-einstieg{width:100%}
+  .bel-row-b{flex-direction:column;align-items:flex-start;gap:8px}
+  .bel-row-r{align-self:stretch;justify-content:space-between}
+}
 @media(max-width:640px){
   .bel-th{display:none}
   .bel-tr{grid-template-columns:minmax(0,1fr) auto;grid-auto-rows:min-content;row-gap:2px;padding:11px 6px 13px}
   .bel-tr .r{text-align:right}
   .bel-tr .r:nth-of-type(2),.bel-tr .r:nth-of-type(3){grid-column:2}
   .bel-chev{display:none}
-  .bel-row{flex-direction:column;align-items:flex-start;gap:8px}
-  .bel-row-r{align-self:stretch;justify-content:space-between}
+  /* .bel-row bleibt eine Zeile — das Markierungs-Kaestchen gehoert links daneben,
+     nicht darueber. Der Inhalt darin stapelt ueber .bel-row-b (weiter unten). */
+  .bel-haken{align-self:flex-start;margin-top:12px}
 }
 </style>
 </head>
@@ -5594,20 +5694,20 @@ const BEL_ERLOES_AGGREGAT={"AwareCare":15950,"Classic":26285,"Pflege 3":28874,"P
    Initialen statt Klarnamen: bewusste Datenschutz-Entscheidung aus Valons Uebergabe,
    die beim Nachbau ausdruecklich nicht aufgeweicht werden soll. */
 const BEL_PAT=[
- {zi:"P-201",ini:"R.A.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"DAK",ks:"GKV",ps:320,th:560,auf:-88,plan:96,ez:true, ca:false,suite:false,sterne:4,nach:""},
- {zi:"P-202",ini:"J.O.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"AOK",ks:"GKV",ps:310,th:480,auf:-62,plan:70,ez:true, ca:true, suite:false,sterne:2,nach:""},
- {zi:"P-204",ini:"A.S.",st:"Premium",mass:"Neurologische Reha",art:"Phase C",kt:"Debeka",ks:"PKV",ps:520,th:900,auf:-51,plan:62,ez:true, ca:false,suite:false,sterne:3,nach:"Pflegeheim Demo-Kurpark"},
- {zi:"P-207",ini:"D.K.",st:"Premium",mass:"Neurologische Reha",art:"Phase C",kt:"Allianz",ks:"PKV",ps:540,th:920,auf:-32,plan:36,ez:true, ca:true, suite:false,sterne:5,nach:""},
- {zi:"P-210",ini:"H.V.",st:"Premium",mass:"Geriatrische Reha",art:"AHB",kt:"Barmer",ks:"GKV",ps:330,th:520,auf:-21,plan:28,ez:false,ca:false,suite:false,sterne:3,nach:""},
- {zi:"P-212",ini:"C.M.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"Signal Iduna",ks:"PKV",ps:480,th:760,auf:-14,plan:24,ez:true, ca:false,suite:false,sterne:4,nach:""},
- {zi:"P-215",ini:"B.W.",st:"Premium",mass:"Innere Reha",art:"AHB",kt:"TK",ks:"GKV",ps:300,th:450,auf:-9, plan:21,ez:false,ca:false,suite:false,sterne:2,nach:""},
- {zi:"P-218",ini:"F.L.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"Selbstzahler",ks:"SZ",ps:610,th:980,auf:-5, plan:18,ez:true, ca:false,suite:false,sterne:5,nach:""},
- {zi:"S-01", ini:"E.S.",st:"SalutoCare",mass:"SalutoCare-Programm",art:"Privat",kt:"Selbstzahler",ks:"SZ",ps:1250,th:760,auf:-4,plan:28,ez:true,ca:false,suite:true, sterne:5,nach:"",personId:"P10"},
- {zi:"S-02", ini:"L.S.",st:"SalutoCare",mass:"Neurologische Reha",art:"Phase D",kt:"Debeka",ks:"PKV",ps:980,th:610,auf:-2,plan:25,ez:false,ca:false,suite:false,sterne:4,nach:"",personId:"P11"},
- {zi:"S-03", ini:"D.F.",st:"SalutoCare",mass:"Orthopädische Reha",art:"AHB",kt:"Allianz",ks:"PKV",ps:890,th:520,auf:-6,plan:21,ez:true,ca:false,suite:false,sterne:4,nach:"",personId:"P09"},
- {zi:"C-114",ini:"G.T.",st:"Classic",mass:"Orthopädische Reha",art:"AHB",kt:"AOK",ks:"GKV",ps:280,th:420,auf:-11,plan:21,ez:false,ca:false,suite:false,sterne:3,nach:""},
- {zi:"C-121",ini:"M.R.",st:"Classic",mass:"Geriatrische Reha",art:"AHB",kt:"Barmer",ks:"GKV",ps:290,th:430,auf:-7, plan:24,ez:false,ca:true, suite:false,sterne:2,nach:"Kurzzeitpflege Demo-Anger"},
- {zi:"C-133",ini:"S.B.",st:"Classic",mass:"Innere Reha",art:"AHB",kt:"TK",ks:"GKV",ps:275,th:400,auf:-3, plan:21,ez:false,ca:false,suite:false,sterne:3,nach:""}
+ {zi:"P-201",ini:"R.A.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"DAK",ks:"GKV",ps:320,th:560,auf:-88,plan:96,ez:true, ca:false,suite:false,sterne:4,nach:"",vl:"beantragt",zuweiser:"Dr. Ravensberg, München",begl:["Erika A."],bauf:45,bakt:70},
+ {zi:"P-202",ini:"J.O.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"AOK",ks:"GKV",ps:310,th:480,auf:-62,plan:70,ez:true, ca:true, suite:false,sterne:2,nach:"",vl:"",zuweiser:"Klinikum Demo-Süd, Entlassmanagement",begl:[],bauf:38,bakt:59},
+ {zi:"P-204",ini:"A.S.",st:"Premium",mass:"Neurologische Reha",art:"Phase C",kt:"Debeka",ks:"PKV",ps:520,th:900,auf:-51,plan:62,ez:true, ca:false,suite:false,sterne:3,nach:"Pflegeheim Demo-Kurpark",vl:"keine",zuweiser:"Dr. Steinbach, Würzburg",begl:["Marta S."],bauf:30,bakt:64},
+ {zi:"P-207",ini:"D.K.",st:"Premium",mass:"Neurologische Reha",art:"Phase C",kt:"Allianz",ks:"PKV",ps:540,th:920,auf:-32,plan:36,ez:true, ca:true, suite:false,sterne:5,nach:"",vl:"beantragt",zuweiser:"Neurozentrum Demo-Nord",begl:[],bauf:25,bakt:71},
+ {zi:"P-210",ini:"H.V.",st:"Premium",mass:"Geriatrische Reha",art:"AHB",kt:"Barmer",ks:"GKV",ps:330,th:520,auf:-21,plan:28,ez:false,ca:false,suite:false,sterne:3,nach:"",vl:"",zuweiser:"Hausarztpraxis Demo-Anger",begl:["Ilse V."],bauf:52,bakt:68},
+ {zi:"P-212",ini:"C.M.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"Signal Iduna",ks:"PKV",ps:480,th:760,auf:-14,plan:24,ez:true, ca:false,suite:false,sterne:4,nach:"",vl:"",zuweiser:"Dr. Ravensberg, München",begl:[],bauf:48,bakt:79},
+ {zi:"P-215",ini:"B.W.",st:"Premium",mass:"Innere Reha",art:"AHB",kt:"TK",ks:"GKV",ps:300,th:450,auf:-9, plan:21,ez:false,ca:false,suite:false,sterne:2,nach:"",vl:"",zuweiser:"Klinikum Demo-Fulda",begl:[],bauf:55,bakt:72},
+ {zi:"P-218",ini:"F.L.",st:"Premium",mass:"Orthopädische Reha",art:"AHB",kt:"Selbstzahler",ks:"SZ",ps:610,th:980,auf:-5, plan:18,ez:true, ca:false,suite:false,sterne:5,nach:"",vl:"Verlängerung geprüft",zuweiser:"Selbstmelder · Website",begl:["Rosa L."],bauf:60,bakt:86},
+ {zi:"S-01", ini:"E.S.",st:"SalutoCare",mass:"SalutoCare-Programm",art:"Privat",kt:"Selbstzahler",ks:"SZ",ps:1250,th:760,auf:-4,plan:28,ez:true,ca:false,suite:true, sterne:5,nach:"",personId:"P10",vl:"",zuweiser:"Selbstmelder · Empfehlung",begl:["Jonas S."],bauf:58,bakt:81},
+ {zi:"S-02", ini:"L.S.",st:"SalutoCare",mass:"Neurologische Reha",art:"Phase D",kt:"Debeka",ks:"PKV",ps:980,th:610,auf:-2,plan:25,ez:false,ca:false,suite:false,sterne:4,nach:"",personId:"P11",vl:"beantragt",zuweiser:"Dr. Steinbach, Würzburg",begl:[],bauf:33,bakt:57},
+ {zi:"S-03", ini:"D.F.",st:"SalutoCare",mass:"Orthopädische Reha",art:"AHB",kt:"Allianz",ks:"PKV",ps:890,th:520,auf:-6,plan:21,ez:true,ca:false,suite:false,sterne:4,nach:"",personId:"P09",vl:"",zuweiser:"Orthopädie Demo-Kissingen",begl:[],bauf:45,bakt:75},
+ {zi:"C-114",ini:"G.T.",st:"Classic",mass:"Orthopädische Reha",art:"AHB",kt:"AOK",ks:"GKV",ps:280,th:420,auf:-11,plan:21,ez:false,ca:false,suite:false,sterne:3,nach:"",vl:"",zuweiser:"Hausarztpraxis Demo-Saale",begl:[],bauf:50,bakt:69},
+ {zi:"C-121",ini:"M.R.",st:"Classic",mass:"Geriatrische Reha",art:"AHB",kt:"Barmer",ks:"GKV",ps:290,th:430,auf:-7, plan:24,ez:false,ca:true, suite:false,sterne:2,nach:"Kurzzeitpflege Demo-Anger",vl:"keine",zuweiser:"Pflegedienst Demo-Anger",begl:["Karl R."],bauf:35,bakt:52},
+ {zi:"C-133",ini:"S.B.",st:"Classic",mass:"Innere Reha",art:"AHB",kt:"TK",ks:"GKV",ps:275,th:400,auf:-3, plan:21,ez:false,ca:false,suite:false,sterne:3,nach:"",vl:"",zuweiser:"Klinikum Demo-Fulda",begl:[],bauf:47,bakt:63}
 ];
 
 /* ----- Rechenkern. Eine Quelle fuer Belegung, Freiwerde-Kalender und Tageserloes. ----- */
@@ -5733,8 +5833,39 @@ function belegungAktualisieren(){
 }
 
 /* ----- Darstellung. Namensraum .bel-*, C1-Palette, Etiketten-Sprache. ----- */
-let belSel=null;
+let belSel=null;          /* null = Uebersicht · "*" = alle Stationen · sonst Stationsname */
+let belDetailIdx=null;    /* Index in der aktuellen Liste, wenn die Detailansicht offen ist */
+/* Filter und Sortierung wie im Original (Abschnitt c der Uebergabe). Nur im Arbeitsspeicher. */
+let belFilter={status:"alle",sterne:0,kat:[],extras:[],sort:"tage"};
 function belEur(n){return Math.round(n).toLocaleString("de-DE");}
+function belInitial(r){return (r.ini||"?").replace(/[^A-Za-zÄÖÜäöüß]/g,"").slice(0,2).toUpperCase()||"?";}
+function belStatus(t){return t<=7?"kritisch":(t<=21?"dringend":"stabil");}
+function belStatusWort(t){return {kritisch:"Kritisch",dringend:"Dringend",stabil:"Stabil"}[belStatus(t)];}
+/* --- Filter anwenden --- */
+function belGefiltert(station){
+ let l=belKalender(station==="*"?null:station);
+ const f=belFilter;
+ if(f.status!=="alle")l=l.filter(x=>belStatus(x.rest)===f.status);
+ if(f.sterne)l=l.filter(x=>(x.r.sterne||0)>=f.sterne);
+ if(f.kat.length)l=l.filter(x=>f.kat.every(k=>k==="ca"?x.r.ca:(k==="ez"?x.r.ez:x.r.suite)));
+ if(f.extras.includes("mark"))l=l.filter(x=>!!x.r._mark);
+ if(f.extras.includes("vl"))l=l.filter(x=>!!(x.r.vl&&x.r.vl!=="keine"));
+ const s=f.sort;
+ if(s==="name")l.sort((a,b)=>a.r.ini.localeCompare(b.r.ini,"de"));
+ else if(s==="sterne")l.sort((a,b)=>(b.r.sterne||0)-(a.r.sterne||0));
+ else if(s==="zimmer")l.sort((a,b)=>String(a.r.zi).localeCompare(String(b.r.zi),"de",{numeric:true}));
+ else l.sort((a,b)=>a.rest-b.rest);
+ return l;
+}
+function belFilterAktiv(){
+ const f=belFilter,t=[];
+ if(f.status!=="alle")t.push(belStatusWort(f.status==="kritisch"?0:(f.status==="dringend"?14:99)));
+ if(f.sterne)t.push(f.sterne===5?"5 Sterne":"mind. "+f.sterne+" Sterne");
+ f.kat.forEach(k=>t.push({ca:"CA-Behandlung",ez:"Einzelzimmer",suite:"Suite"}[k]));
+ f.extras.forEach(k=>t.push({mark:"Markierte",vl:"VL / Verlängerung"}[k]));
+ return t;
+}
+function belSortWort(){return {tage:"Tage verbleibend",name:"Name A–Z",sterne:"Bewertung",zimmer:"Zimmernummer"}[belFilter.sort];}
 function belBalken(ist,soll,ton){
  /* Ueber 100% wird der ganze Balken zum Warnton statt einen Ueberhang zu zeichnen —
     der Ueberhang lag ausserhalb der Box und wurde von overflow:hidden weggeschnitten. */
@@ -5761,6 +5892,15 @@ function belUebersicht(){
   +"<div class='dbc-stat"+(delta<0?" hot":"")+"'><div class='dbc-num num'>"+(delta>=0?"+":"−")+belEur(Math.abs(delta)/1000)+"k €</div><div class='dbc-lbl'>zum Tagesziel</div></div>"
  +"</div>";
 
+ /* Ring Erloes gegen Sollziel + Einstieg "Alle Stationen" (s0 im Original) */
+ h+="<div class='card bel-card bel-top'>"
+  +"<div class='bel-ring'>"+kpiRing(g.erloesIst,g.erloesSoll||1,"Erlös Ist",belEur(g.erloesIst/1000)+"k €","brass")+"</div>"
+  +"<div class='bel-top-t'>"
+   +"<span class='bel-feld-l'>Sollziel</span><b class='bel-top-z num'>"+belEur(g.erloesSoll)+",00 €</b>"
+   +"<span class='bel-feld-l'>Gesamt Tagesumsatz</span><b class='bel-top-z num "+(delta<0?"minus":"plus")+"'>"+belEur(g.erloesIst)+",00 €</b>"
+  +"</div>"
+  +"<button class='bel-einstieg' onclick=\"belOeffne('*')\"><b>Patienten</b><em>Alle Stationen · "+belKalender().length+" verfolgt</em><span class='bel-chev'>›</span></button>"
+ +"</div>";
  h+=belImportLeiste();
  h+="<div class='card bel-card'><div class='kicker'>Stationen</div>"
    +"<div class='bel-tab' role='table'>"
@@ -5783,7 +5923,14 @@ function belUebersicht(){
    +"<span class='r num'>"+auslastung+" %</span>"
    +"<span class='r num'>"+belEur(g.erloesIst)+" €</span>"
    +"<span class='r num "+(delta<0?"minus":"plus")+"'>"+(delta>=0?"+":"−")+belEur(Math.abs(delta))+"</span><span></span></div>"
-   +"</div></div>";
+   +"</div>";
+ /* Extras-Streifen wie im Original: Komfortzimmer, CA-Behandlung, EZ */
+ const alleZ=belKalender();
+ h+="<div class='bel-extras'>"
+   +"<div class='bel-ex'><b class='num'>"+alleZ.filter(x=>x.r.suite||x.r.ez).length+"</b><span>Komfortzimmer</span></div>"
+   +"<div class='bel-ex'><b class='num'>"+alleZ.filter(x=>x.r.ca).length+"</b><span>CA-Behandlung</span></div>"
+   +"<div class='bel-ex'><b class='num'>"+alleZ.filter(x=>x.r.ez).length+"</b><span>EZ</span></div>"
+  +"</div></div>";
 
  const kal=belKalender().filter(k=>k.rest>=0).slice(0,6);
  h+="<div class='card bel-card'><div class='kicker'>Nächste freie Betten</div>"
@@ -5794,42 +5941,215 @@ function belUebersicht(){
     +"<em>"+escapeHtml(k.r.mass)+" · Entlassung "+paDate(k.ent)+(k.r.nach?" · weiter: "+escapeHtml(k.r.nach):"")+"</em></span>"
   +"</div>";
  });
- h+="</div>";
+ h+="<div class='bel-stand'>Stand: "+paDate(dstr(0))+" · "+(belImportAktiv()?"importiertes Stationsblatt":"Demo-Daten, frei erfunden")+"</div></div>";
  return h;
 }
 function belStationsListe(name){
- const st=belAlle().find(x=>x.name===name);
- if(!st)return belUebersicht();
- const zeilen=belKalender(name);
- let h="<button class='bel-back' onclick='belZurueck()'>‹ Belegung</button>"
-  +"<div class='db-cockpit bel-cockpit'>"
-  +"<div class='dbc-stat'><div class='dbc-num num'>"+st.ist+"</div><div class='dbc-lbl'>belegt</div></div>"
-  +"<div class='dbc-div'></div>"
-  +"<div class='dbc-stat'><div class='dbc-num num'>"+st.soll+"</div><div class='dbc-lbl'>Soll</div></div>"
-  +"<div class='dbc-div'></div>"
-  +"<div class='dbc-stat"+(st.auslastung<80?" hot":"")+"'><div class='dbc-num num'>"+st.auslastung+" %</div><div class='dbc-lbl'>Auslastung</div></div>"
+ const alle=name==="*";
+ const st=alle?null:belAlle().find(x=>x.name===name);
+ const zeilen=belGefiltert(name);
+ const aktiv=belFilterAktiv();
+ let h="<button class='bel-back' onclick='belZurueck()'>‹ Belegung</button>";
+ if(st){
+  h+="<div class='db-cockpit bel-cockpit'>"
+   +"<div class='dbc-stat'><div class='dbc-num num'>"+st.ist+"</div><div class='dbc-lbl'>belegt</div></div>"
+   +"<div class='dbc-div'></div>"
+   +"<div class='dbc-stat'><div class='dbc-num num'>"+st.soll+"</div><div class='dbc-lbl'>Soll</div></div>"
+   +"<div class='dbc-div'></div>"
+   +"<div class='dbc-stat"+(st.auslastung<80?" hot":"")+"'><div class='dbc-num num'>"+st.auslastung+" %</div><div class='dbc-lbl'>Auslastung</div></div>"
+   +"</div>";
+ }
+ h+="<div class='card bel-card'>"
+  +"<div class='bel-liste-kopf'>"
+   +"<div class='kicker'>"+escapeHtml(alle?"Alle Stationen":name)+" · verfolgte Fälle</div>"
+   +"<button class='bel-filter-btn"+(aktiv.length?" an":"")+"' onclick='belFilterAuf()' aria-label='Filter und Sortierung'>"
+    +"<svg width='15' height='15' viewBox='0 0 16 16' aria-hidden='true'><path d='M1 3h14M4 8h8M6.5 13h3' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' fill='none'/></svg>"
+    +"<span>Filter</span>"+(aktiv.length?"<b class='num'>"+aktiv.length+"</b>":"")+"</button>"
   +"</div>"
-  +"<div class='card bel-card'><div class='kicker'>"+escapeHtml(name)+" · verfolgte Fälle</div>";
+  +"<div class='bel-filterzeile'>"+(aktiv.length
+    ?escapeHtml(aktiv.join(" · "))+" <em>· sortiert nach "+escapeHtml(belSortWort())+"</em>"
+    :"Kein Filter aktiv <em>· sortiert nach "+escapeHtml(belSortWort())+"</em>")
+   +" <span class='bel-zaehler num'>"+zeilen.length+"</span></div>";
  if(!zeilen.length){
-  h+="<p class='empty'>Für diese Station liegt noch kein Zeilendetail vor. Die Belegungszahl stammt aus dem zuletzt importierten Stationsblatt — ein Stationsblatt mit Zeilen macht hier die einzelnen Fälle sichtbar.</p>";
+  h+="<p class='empty'>"+(aktiv.length
+    ?"Kein Fall passt zu diesem Filter. <button class='bel-inline' onclick=\"belFilterZuruecksetzen();belRender()\">Filter zurücksetzen</button>"
+    :"Für diese Station liegt noch kein Zeilendetail vor. Die Belegungszahl stammt aus dem zuletzt importierten Stationsblatt — ein Stationsblatt mit Zeilen macht hier die einzelnen Fälle sichtbar.")+"</p>";
  } else {
-  zeilen.forEach(k=>{
-   const f=belFall(k.r);
-   const badges=[k.r.ez?"EZ":"",k.r.ca?"CA":"",k.r.suite?"Suite":"",k.r.ks].filter(Boolean)
+  zeilen.forEach((k,i)=>{
+   const r=k.r, lage=belStatus(k.rest);
+   const badges=[r.ca?"CA":"",r.ez?"EZ":"",r.suite?"Suite":"",(r.vl&&r.vl!=="keine")?"VL":"",r.ks].filter(Boolean)
      .map(x=>"<span class='bel-badge'>"+escapeHtml(x)+"</span>").join("");
-   const sterne="<span class='st-row'>"+[1,2,3,4,5].map(i=>"<i class='st"+(i<=(k.r.sterne||0)?" on":"")+"'>★</i>").join("")+"</span>";
-   h+="<"+(f?"button":"div")+" class='bel-row"+(f?" klick":"")+"'"+(f?" onclick=\"belZuFall('"+k.r.personId+"')\"":"")+">"
-     +"<span class='bel-row-l'><b>"+escapeHtml(k.r.ini)+"</b>"
-     +"<em>Zi. "+escapeHtml(k.r.zi)+" · "+escapeHtml(k.r.art)+" · "+escapeHtml(k.r.kt)+"</em>"
-     +"<span class='bel-badges'>"+badges+"</span>"+sterne+"</span>"
-     +"<span class='bel-row-r'>"+belRestPill(k.rest)
-     +"<em class='bel-tag'>"+belEur(belTagesErloes(k.r))+" €/Tag</em>"
-     +(f?"<em class='bel-tag bel-link'>Fall öffnen ›</em>":"")+"</span>"
-   +"</"+(f?"button":"div")+">";
+   h+="<div class='bel-row klick"+(r._mark?" mark":"")+"'>"
+     +"<button class='bel-haken"+(r._mark?" an":"")+"' onclick=\"belMarkieren('"+String(r.zi).replace(/'/g,"\\'")+"',event)\" "
+      +"aria-label='Markieren' aria-pressed='"+(r._mark?"true":"false")+"'>"+(r._mark?"✓":"")+"</button>"
+     +"<button class='bel-row-b' onclick='belDetailAuf("+i+")'>"
+      +"<span class='bel-row-l'><b>"+escapeHtml(r.ini)+"</b>"
+      +"<em>Zi. "+escapeHtml(r.zi)+" · "+escapeHtml(alle?r.st:r.art)+" · "+escapeHtml(r.kt)+"</em>"
+      +"<span class='bel-badges'>"+badges+"</span>"+belSterneRow(r,false)+"</span>"
+      +"<span class='bel-row-r'>"+belRestPill(k.rest)
+      +"<em class='bel-tag'>"+belEur(belTagesErloes(r))+" €/Tag</em>"
+      +"<em class='bel-tag bel-link'>Details ›</em></span>"
+     +"</button></div>";
   });
  }
  h+="</div>";
  return h;
+}
+/* ----- Patientendetail (s3 im Original): Kopf, Aufenthalt mit Zeitleiste, Zimmer,
+   Kosten, VL, Aufenthaltsdauer, Zuweiser/Begleitung, Barthel, Notizen. ----- */
+function belFeld(label,wert,ton){
+ return "<div class='bel-feld"+(ton?" "+ton:"")+"'><span class='bel-feld-l'>"+escapeHtml(label)+"</span>"
+   +"<b class='bel-feld-w'>"+(wert===""||wert===null||wert===undefined?"—":escapeHtml(String(wert)))+"</b></div>";
+}
+function belSterneRow(r,klickbar){
+ /* Form traegt die Bedeutung, nicht die Farbe: gefuellt ★ gegen offen ☆.
+    Ein leerer Stern, der allein ueber einen hellen Goldton kenntlich waere, muesste
+    fuer 3:1 so dunkel werden, dass er vom gefuellten kaum noch zu unterscheiden ist. */
+ const n=r.sterne||0;
+ return "<span class='bel-sterne' role='img' aria-label='Bewertung "+n+" von 5'>"+[1,2,3,4,5].map(i=>
+   klickbar?"<button class='st"+(i<=n?" on":"")+"' title='"+i+" von 5' onclick=\"belSternSetzen("+i+")\">"+(i<=n?"★":"☆")+"</button>"
+           :"<i class='st"+(i<=n?" on":"")+"' aria-hidden='true'>"+(i<=n?"★":"☆")+"</i>").join("")
+   +"<em>"+n+"/5</em></span>";
+}
+function belDetailAnsicht(){
+ const liste=belGefiltert(belSel||"*");
+ const eintrag=liste[belDetailIdx];
+ if(!eintrag)return belStationsListe(belSel||"*");
+ const r=eintrag.r, rest=eintrag.rest, ent=eintrag.ent, auf=belAuf(r);
+ const gesamt=belDiff(auf,ent), vergangen=Math.max(0,belDiff(auf,dstr(0)));
+ const pct=gesamt>0?Math.max(0,Math.min(100,Math.round(vergangen/gesamt*100))):0;
+ const fall=belFall(r);
+ const st=belStatus(rest);
+ const dB=(r.bakt||0)-(r.bauf||0);
+ let h="<button class='bel-back' onclick='belDetailZu()'>‹ "+escapeHtml(belSel==="*"?"Alle Stationen":(belSel||"Belegung"))+"</button>"
+  +"<div class='card bel-card bel-det'>"
+  +"<div class='bel-det-kopf'>"
+   +"<span class='bel-ava'>"+escapeHtml(belInitial(r))+"</span>"
+   +"<div class='bel-det-kt'><b>"+escapeHtml(r.ini)+"</b><em>"+escapeHtml(r.mass)+"</em>"
+   +"<span class='bel-badges'>"
+     +"<span class='bel-badge'>"+escapeHtml(r.kt+(r.ks?" ("+r.ks+")":""))+"</span>"
+     +(r.ca?"<span class='bel-badge'>CA</span>":"")+(r.ez?"<span class='bel-badge'>EZ</span>":"")
+     +(r.suite?"<span class='bel-badge'>Suite</span>":"")
+     +"<span class='bel-badge lage "+st+"'>"+belStatusWort(rest)+"</span></span>"
+   +belSterneRow(r,true)+"</div>"
+   +belRestPill(rest)
+  +"</div>"
+
+  +"<div class='bel-abs'>Aufenthalt</div><div class='bel-grid3'>"
+   +belFeld("Aufnahme",paDate(auf))+belFeld("Entlassung",paDate(ent))+belFeld("Tage gesamt",gesamt)+"</div>"
+  +"<div class='bel-tl'><i style='width:"+pct+"%'></i></div>"
+  +"<div class='bel-tl-l'><span>"+paDate(auf)+"</span>"
+   +"<span class='bel-tl-m'>"+vergangen+" vergangen · <b>"+rest+" verbleibend</b> · "+pct+" %</span>"
+   +"<span>"+paDate(ent)+"</span></div>"
+
+  +"<div class='bel-abs'>Zimmer &amp; Klassifikation</div><div class='bel-grid3'>"
+   +belFeld("Zimmer",r.zi)+belFeld("Station",r.st)+belFeld("Maßnahmeart",r.art)+"</div>"
+  +"<div class='bel-grid3'>"
+   +belFeld("CA",r.ca?"✓ Ja":"—")+belFeld("EZ",r.ez?"✓ Ja":"—")+belFeld("Suite",r.suite?"✓ Ja":"—")+"</div>"
+
+  +"<div class='bel-abs'>Kosten &amp; Kostenträger</div><div class='bel-grid3'>"
+   +belFeld("Kostenträger",r.kt+(r.ks?" ("+r.ks+")":""),"gold")
+   +belFeld("Pflegesatz",belEur(r.ps)+",00 €","gold")
+   +belFeld("Therapiekosten",belEur(r.th)+",00 €","gold")+"</div>"
+  +"<div class='bel-grid3'>"
+   +belFeld("Tageserlös",belEur(belTagesErloes(r))+" €","gold")
+   +belFeld("Erlös bis Entlassung",belEur(belTagesErloes(r)*Math.max(0,rest))+" €")
+   +belFeld("Nachbelegung",r.nach||"—")+"</div>"
+
+  +"<div class='bel-abs'>VL / Anmerkung</div>"+belFeld("VL / Anmerkung",r.vl||"—")
+  +"<div class='bel-abs'>Aufenthaltsdauer</div>"+belFeld("Da seit (Tage)",vergangen)
+
+  +"<div class='bel-abs'>Zuweiser &amp; Begleitpersonen</div>"+belFeld("Zuweiser",r.zuweiser||"—")
+  +"<div class='bel-begl'>"+((r.begl&&r.begl.length)
+     ?r.begl.map(x=>"<span class='bel-badge'>"+escapeHtml(x)+"</span>").join("")
+     :"<span class='bel-leer'>keine Begleitperson erfasst</span>")+"</div>"
+
+  +"<div class='bel-abs'>Barthel</div><div class='bel-grid3'>"
+   +belFeld("Aufnahme",r.bauf)+belFeld("aktuell",r.bakt)
+   +belFeld("Δ Differenz",(dB>=0?"+":"")+dB,dB>=0?"gut":"warn")+"</div>"
+
+  +"<div class='bel-abs'>Notizen</div>"
+  +"<textarea class='bel-notiz' rows='3' placeholder='Notiz hinzufügen …' oninput='belNotizSetzen(this.value)'>"
+   +escapeHtml(r._notiz||"")+"</textarea>"
+  +(fall?"<button class='btn-brass bel-zufall' onclick=\"belZuFall('"+r.personId+"')\">Medizinische Fallakte öffnen ›</button>":"")
+  +"<div class='bel-stand'>Stand: "+paDate(dstr(0))+" · Demo-Daten, frei erfunden</div>"
+ +"</div>";
+ return h;
+}
+function belSternSetzen(n){
+ const l=belGefiltert(belSel||"*"), e=l[belDetailIdx]; if(!e)return;
+ e.r.sterne=(e.r.sterne===n)?0:n; belRender();
+}
+function belNotizSetzen(v){
+ const l=belGefiltert(belSel||"*"), e=l[belDetailIdx]; if(!e)return;
+ e.r._notiz=v;   /* nur im Arbeitsspeicher — wie im Original */
+}
+function belMarkieren(zi,ev){
+ if(ev){ev.stopPropagation();}
+ const q=(window.BEL_IMPORT&&window.BEL_IMPORT.length)?window.BEL_IMPORT:BEL_PAT;
+ const r=q.find(x=>x.zi===zi); if(!r)return;
+ r._mark=!r._mark; belRender();
+}
+function belDetailAuf(i){belDetailIdx=i;belRender();window.scrollTo(0,0);}
+function belDetailZu(){belDetailIdx=null;belRender();window.scrollTo(0,0);}
+
+/* ----- Filterfenster (faehrt von unten ein, wie im Original) ----- */
+function belFilterAuf(){
+ let el=document.getElementById("belSheet");
+ if(!el){el=document.createElement("div");el.id="belSheet";document.body.appendChild(el);}
+ el.className="bel-sheet open"; document.body.classList.add("locked");
+ belSheetRender();
+}
+function belFilterZu(){
+ const el=document.getElementById("belSheet"); if(el)el.classList.remove("open");
+ document.body.classList.remove("locked");
+}
+function belChip(gruppe,wert,text,aktiv){
+ return "<button class='bel-chip"+(aktiv?" an":"")+"' onclick=\"belChipKlick('"+gruppe+"','"+wert+"')\">"+text+"</button>";
+}
+function belChipKlick(gruppe,wert){
+ const f=belFilter;
+ if(gruppe==="status")f.status=wert;
+ else if(gruppe==="sterne")f.sterne=(f.sterne===+wert)?0:+wert;
+ else if(gruppe==="kat")f.kat=f.kat.includes(wert)?f.kat.filter(x=>x!==wert):f.kat.concat(wert);
+ else if(gruppe==="extras")f.extras=f.extras.includes(wert)?f.extras.filter(x=>x!==wert):f.extras.concat(wert);
+ else if(gruppe==="sort")f.sort=wert;
+ belSheetRender();
+}
+function belFilterZuruecksetzen(){belFilter={status:"alle",sterne:0,kat:[],extras:[],sort:"tage"};belSheetRender();}
+function belFilterAnwenden(){belDetailIdx=null;belFilterZu();belRender();}
+function belSheetRender(){
+ const el=document.getElementById("belSheet"); if(!el)return;
+ const f=belFilter;
+ el.innerHTML="<div class='bel-sheet-bg' onclick='belFilterZu()'></div><div class='bel-sheet-b' role='dialog' aria-label='Filter und Sortierung'>"
+  +"<div class='bel-sheet-griff'></div>"
+  +"<div class='bel-sheet-kopf'><b>Filter &amp; Sortierung</b>"
+   +"<button class='btn-ghost btn-sm' onclick='belFilterZuruecksetzen()'>Zurücksetzen</button></div>"
+  +"<div class='bel-sheet-scroll'>"
+  +"<div class='bel-abs'>Status · verbleibende Tage</div><div class='bel-chips'>"
+   +belChip("status","alle","Alle",f.status==="alle")
+   +belChip("status","kritisch","Kritisch ≤ 7 Tage",f.status==="kritisch")
+   +belChip("status","dringend","Dringend ≤ 21 Tage",f.status==="dringend")
+   +belChip("status","stabil","Stabil",f.status==="stabil")+"</div>"
+  +"<div class='bel-abs'>Bewertung</div><div class='bel-chips'>"
+   +belChip("sterne","5","★★★★★ 5 Sterne",f.sterne===5)
+   +belChip("sterne","4","★★★★ mind. 4",f.sterne===4)
+   +belChip("sterne","3","★★★ mind. 3",f.sterne===3)+"</div>"
+  +"<div class='bel-abs'>Zimmerkategorie</div><div class='bel-chips'>"
+   +belChip("kat","ca","CA-Behandlung",f.kat.includes("ca"))
+   +belChip("kat","ez","Einzelzimmer EZ",f.kat.includes("ez"))
+   +belChip("kat","suite","Suite",f.kat.includes("suite"))+"</div>"
+  +"<div class='bel-abs'>Auswahl &amp; Extras</div><div class='bel-chips'>"
+   +belChip("extras","mark","✓ Markierte Patienten",f.extras.includes("mark"))
+   +belChip("extras","vl","VL / Verlängerung",f.extras.includes("vl"))+"</div>"
+  +"<div class='bel-abs'>Sortieren nach</div><div class='bel-chips'>"
+   +belChip("sort","tage","Tage verbleibend ↑",f.sort==="tage")
+   +belChip("sort","name","Name A–Z",f.sort==="name")
+   +belChip("sort","sterne","Bewertung ↓",f.sort==="sterne")
+   +belChip("sort","zimmer","Zimmernummer",f.sort==="zimmer")+"</div>"
+  +"</div>"
+  +"<button class='btn-brass bel-sheet-ok' onclick='belFilterAnwenden()'>Filter anwenden</button>"
+  +"</div>";
 }
 function belZuFall(pid){
  const i=inReha.findIndex(x=>x.personId===pid); if(i<0)return;
@@ -5870,8 +6190,8 @@ async function belImport(input){
  input.value=""; belRender();
 }
 function belImportVerwerfen(){window.BEL_IMPORT=null;window.BEL_BERICHT=null;belSel=null;belRender();}
-function belOeffne(name){belSel=name;belRender();window.scrollTo(0,0);}
-function belZurueck(){belSel=null;belRender();window.scrollTo(0,0);}
+function belOeffne(name){belSel=name;belDetailIdx=null;belRender();window.scrollTo(0,0);}
+function belZurueck(){belSel=null;belDetailIdx=null;belRender();window.scrollTo(0,0);}
 /* ----- Import. Bewusst OHNE SheetJS: eine XLSX-Datei ist ein ZIP mit XML darin, und
    Browser koennen deflate nativ. Damit kein fremdes Skript im selben Moment im Speicher
    liegt, in dem Patientendaten gelesen werden — und der Import laeuft ohne Internet,
@@ -6030,7 +6350,8 @@ function belZeilenAusTabelle(tab){
 }
 function belRender(){
  const host=document.getElementById("belView"); if(!host)return;
- host.innerHTML = belSel?belStationsListe(belSel):belUebersicht();
+ host.innerHTML = (belSel&&belDetailIdx!==null) ? belDetailAnsicht()
+                : (belSel ? belStationsListe(belSel) : belUebersicht());
  const c1=document.getElementById("segCntVerlauf"); if(c1)c1.textContent=inReha.filter(p=>!p.entlassen).length;
  const c2=document.getElementById("segCntBelegung"); if(c2)c2.textContent=belGesamt().ist;
 }
