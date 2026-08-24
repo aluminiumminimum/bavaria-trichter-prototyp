@@ -171,3 +171,64 @@ deren Rechtecke sich überschneiden; ein eingeklappter Bereich in Fälle → Anf
 `.btn-brass` (2,41:1) unverändert — siehe §7. Die Foto-Bildunterschrift und die
 22 SVG-Treffer im Trichter bleiben Fehlalarme des Kontrast-Prüfers, der weder das
 Bild noch `<rect fill>` als Untergrund sieht.
+
+---
+
+# Nachtrag 2 — Hauptschaltfläche und Zuweiserportal (24.08.2026)
+
+## Die goldenen Knöpfe
+
+Auftrag: lesbarer machen. Nachrechnen zeigte, dass 4,5:1 über den ganzen Verlauf nur
+erreichbar wäre, wenn **beide Enden auf denselben dunklen Bronzeton** rücken — der
+Verlauf verschwindet dabei ohnehin.
+
+Zugleich fiel auf: **drei Stellen der App setzten den Knopf längst auf Lack-Jade**
+(`#view-faelle`, `.mt-sfoot`, `.kp-foot`) mit Elfenbein-Schrift bei 9,74:1. Das Haus hatte
+die Antwort also schon, nur nicht überall.
+
+Deshalb ist die Grundregel jetzt Lack-Jade statt Messing-Verlauf. Die Plakette bleibt —
+Gold-Innenring statt Goldfläche. Damit ist Gold wieder das, was der Identitäts-Block
+vorsieht: Fläche und Gravur, nie Textgrund.
+
+Vorher geprüft: alle 41 Knöpfe sitzen auf hellem Grund, keiner auf dunklem — der Wechsel
+konnte also keinen Knopf unsichtbar machen.
+
+| | vorher | nachher |
+|---|---|---|
+| Hauptschaltfläche | 2,41:1 | **9,74:1** |
+
+## Zuweiserportal
+
+**Korrektur einer früheren Meldung:** „Zuweiser-Portal · undefined" wurde zweimal als
+vorbestehender Produktfehler gemeldet. Falsch — alle vier Knöpfe, die das Portal öffnen,
+übergeben einen Namen. Der Text erschien nur, weil `openReferrer()` beim Testen ohne
+Argument aufgerufen wurde. Trotzdem abgesichert: ohne Namen steht jetzt schlicht
+„Zuweiser-Portal" statt eines hängenden Trennzeichens.
+
+**Der echte Fund** liegt in „Freie Plätze" — der Tabelle, an der ein Zuweiser entscheidet,
+wann er einen Patienten schicken kann. Eine spätere Überarbeitung hatte „frei" und „knapp"
+auf denselben Jade-Ton gesetzt, nur mit 16 % gegen 7 % Deckkraft. Praktisch nicht
+unterscheidbar. Zurück auf zwei Ampelfarben, in derselben Sprache wie die Rest-Tage im
+Belegungs-Modul: **Jade = Platz · Gold = knapp · blass = belegt.**
+
+Zwei Zeilen im Namensraum `.rp-*` des Cofounders, ausdrücklich freigegeben. Nur Farbwerte
+und ein `||`-Fallback, keine Struktur, keine Logik.
+
+## Ein eigener Fehler dabei
+
+Der neue Ring in der Belegungsübersicht zeigte „20443C" — `kpiRing()` stellt den
+übergebenen Wert als Zahl im Ring dar, und ich hatte den vollen Eurobetrag übergeben.
+Jetzt Prozent im Ring (93), die Beträge in der Beschriftung.
+
+## Stand der ganzen App
+
+| | 1440 | 390 |
+|---|---|---|
+| Kontrastbefunde | **1** | **1** |
+| Passform-Befunde | 26 | 11 |
+| davon aus `.bel-*` | 0 | 0 |
+| Ansichten mit Überlauf | 0 | 0 |
+| Konsolenfehler / abgewiesene Versprechen | 0 / 0 | 0 / 0 |
+
+Der eine verbliebene Befund ist die Foto-Bildunterschrift, bei der der Prüfer das Bild
+dahinter nicht sieht. **Von 222 auf 1** — Portal eingeschlossen.
