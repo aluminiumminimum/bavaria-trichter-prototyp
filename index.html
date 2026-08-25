@@ -4079,15 +4079,18 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
    (3) Fehlt eine Bettenzahl oder ein Tagesziel, steht dort ein Strich und
        darunter ein Formular zum Nachtragen — statt einer erfundenen Zahl.
    ====================================================================== */
-.bel-cockpit{gap:26px;padding:20px 24px}
-.bel-cockpit .dbc-stat{min-width:78px}
-.bel-cockpit .dbc-num{font-size:46px;letter-spacing:-.022em}
+.bel-cockpit{gap:20px 26px;padding:20px 24px;flex-wrap:wrap}
+/* Nicht schrumpfen lassen: sonst quetscht ein enger Zwischenbereich die grosse
+   Zahl in eine zu schmale Spalte und die Bettenzahl haengt aus der Kachel.
+   Lieber umbrechen als stauchen. */
+.bel-cockpit .dbc-stat{min-width:78px;flex:0 0 auto}
+.bel-cockpit .dbc-num{font-size:46px;letter-spacing:-.022em;white-space:nowrap}
 .bel-cockpit .dbc-num i{font-style:normal;font-weight:400;font-size:.58em;color:var(--muted)}
 .bel-cockpit .dbc-lbl{font-size:11.5px;margin-top:4px}
-@media(max-width:760px){
-  .bel-cockpit{gap:16px 24px;padding:16px 18px}
-  .bel-cockpit .dbc-num{font-size:36px}
-}
+/* Zwischen 1024 und 1279 steht die Seitenleiste noch, die Inhaltsspalte ist aber
+   schon eng — dort waere die 46er Zahl nur noch abgeschnitten zu sehen. */
+@media(max-width:1279px){ .bel-cockpit .dbc-num{font-size:36px} }
+@media(max-width:1023px){ .bel-cockpit{gap:16px 24px;padding:16px 18px} }
 @media(max-width:430px){
   .bel-cockpit{padding:15px 16px}
   .bel-cockpit .dbc-num{font-size:30px}
@@ -4124,6 +4127,33 @@ h2 .tmi-neu-badge{vertical-align:4px;margin-left:8px}
 @media(max-width:520px){
   .bel-soll-row{grid-template-columns:1fr 1fr;gap:8px 10px}
   .bel-soll-n{grid-column:1/-1}
+}
+
+/* ----------------------------------------------------------------------
+   25.08. Randlauf: die BWL-Kacheln der In-Reha-Karte standen in vier festen
+   Spalten. Bei 359 px Kartenbreite bleiben je Kachel rund 75 px — zu wenig
+   fuer "ZUSATZERLOESE/TAG", also lief das Raster rund 30 px aus der Karte.
+   auto-fit legt jetzt so viele Spalten an, wie hineinpassen: zwei auf der
+   Karte, vier sobald wirklich Platz ist. minmax mit 0 als Untergrenze
+   verhindert, dass ein langes Wort die Spur wieder aufblaeht.
+   ---------------------------------------------------------------------- */
+.irb-bwl{grid-template-columns:repeat(auto-fit,minmax(118px,1fr))}
+.irb-b{min-width:0}
+.irb-bl,.irb-bv{overflow-wrap:anywhere}
+
+/* Der erklaerende Satz im Live-Streifen bekam am 24.08. eine eigene Zeile mit
+   22 px Einzug — die Breitenangabe blieb aber bei vollen 100 Prozent, also lief
+   er genau um diesen Einzug aus der Kapsel. Jetzt zieht die Breite den Einzug ab. */
+@media(max-width:520px){
+  .lx-live .lx-desc{flex:1 0 calc(100% - 22px)}
+}
+
+/* Die drei Team-Panels standen ab 900 px fest in drei Spalten. Deren Inhalt braucht
+   aber rund 300 px; bei 1024 px Fensterbreite bleiben je Spalte nur 224 px, also
+   schob sich das dritte Panel 121 px aus der Seite. auto-fit legt nur so viele
+   Spalten an, wie wirklich hineinpassen, und bricht sonst um. */
+@media(min-width:900px){
+  .tc-panels{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
 }
 </style>
 </head>

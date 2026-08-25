@@ -232,3 +232,44 @@ Jetzt Prozent im Ring (93), die Beträge in der Beschriftung.
 
 Der eine verbliebene Befund ist die Foto-Bildunterschrift, bei der der Prüfer das Bild
 dahinter nicht sieht. **Von 222 auf 1** — Portal eingeschlossen.
+
+---
+
+## Nachtrag 3 — 25.08.2026: Passform-Durchgang über alle Breiten
+
+Vorgabe: nichts darf über den Rand laufen oder gequetscht aussehen. Geprüft wurde
+mit einem Melder, der für jedes sichtbare Element im Inhaltsbereich zwei Dinge
+misst: ragt ein Kind über die Innenkante seines Elternteils hinaus, und wird
+irgendwo Text weggeschnitten, ohne dass drei Punkte das anzeigen.
+
+Zwei Klassen von Fehlalarmen wurden vorher ausgeschlossen, weil sie systematisch
+falsche Treffer erzeugen: `scrollWidth` an SVG-Elementen hat keine Aussage
+(28 vermeintliche Befunde, real null), und absolut positionierte Kinder wie
+`.fk-dot` liegen bewusst außerhalb ihrer Zeile. Ebenso ausgenommen sind Elemente
+mit negativem Rand — das Board etwa bricht absichtlich 20 px in die Polsterung
+der Inhaltsspalte aus, um randlos scrollen zu können; es bleibt dabei innerhalb
+der 40 px Polsterung, die Seite scrollt nicht quer.
+
+### Vier echte Befunde, alle behoben
+
+1. **`.irb-bwl`** — vier feste Spalten auf einer 359 px breiten Karte, rund 75 px
+   je Kachel. „ZUSATZERLÖSE/TAG" passte nicht, das Raster lief 28 bis 32 px aus
+   der Karte. Jetzt `repeat(auto-fit,minmax(118px,1fr))`: zwei Kacheln je Reihe,
+   Beschriftung einzeilig, vier Spalten erst wenn wirklich Platz ist.
+2. **`.lx-desc`** — der erklärende Satz im Live-Streifen bekam am 24.08. eine
+   eigene Zeile mit 22 px Einzug, behielt aber `flex-basis:100%` und lief genau
+   um diesen Einzug aus der Kapsel. Breite zieht den Einzug jetzt ab.
+3. **`.bel-cockpit`** — die neue 46-px-Zahl wurde zwischen 1024 und 1279 px in
+   eine zu schmale Spalte gestaucht und von `overflow:hidden` beschnitten
+   (35 px). Dort jetzt 36 px, dazu `flex:0 0 auto` gegen Stauchung und
+   `flex-wrap:wrap` als Auffangnetz.
+4. **`.tc-panels`** — ab 900 px drei feste Spalten, deren Inhalt aber je rund
+   300 px braucht. Bei 1024 px Fensterbreite schob sich das dritte Panel 121 px
+   aus der Seite. `auto-fit` legt jetzt nur so viele Spalten an, wie hineinpassen.
+
+### Ergebnis
+
+Alle dreizehn Ansichten, dazu Fall-Schublade, Stationsliste und Filterblatt,
+geprüft bei **360, 390, 430, 600, 768, 900, 1024, 1280 und 1440 px**:
+kein Überlauf, kein abgeschnittener Text, kein Querscrollen der Seite,
+keine Konsolenfehler.
