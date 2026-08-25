@@ -328,3 +328,68 @@ reichen, aber die Stelle liegt im geschützten Namensraum des Cofounders — geh
 
 Die verbliebenen 15 Kontrastbefunde sind 14× `.btn-brass` (die offene Gestaltungsfrage)
 und eine Foto-Bildunterschrift, bei der der Prüfer das Bild dahinter nicht sieht.
+
+---
+
+## Nachtrag 4 — 25.08.2026: Befunde aus Valons Loom-Video
+
+Quelle: Loom „Klinik Bavaria · Concierge – 25 August 2026" (1:44), Untertitel liegen vor.
+Valon hat ein echtes Stationsblatt mit 301 Zeilen geladen. Ergebnis auf dem Schirm:
+301/301 Betten, 100 % auf **jeder** Station, Sollziel 0,00 €, „166k von 0k €".
+
+### Befund 1 — jede Zeile zählte als heute belegtes Bett
+
+Der Import filterte nicht nach Datum. Ein Stationsblatt enthält aber regelmäßig
+abgeschlossene und noch nicht begonnene Aufenthalte; Valons Stichproben waren
+„alle schon draußen". Neu: `belLaeuft(r)` prüft Aufnahme ≤ heute ≤ Entlassung.
+Nur laufende Aufenthalte zählen als Bett und in den Tageserlös.
+Der Importbericht nennt die Zahl der nicht laufenden Aufenthalte, die Standzeile
+wiederholt sie, die Stationszeile zeigt „N nicht aktuell".
+
+`belRestPill()` zeigt negative Rest-Tage nicht länger als rote Dringlichkeit,
+sondern ruhig als „N Tage her". `belStatus()` kennt dafür die Lage `weg`.
+
+### Befund 2 — Soll wurde auf die Zeilenzahl gesetzt
+
+`const st = bekannt[n] || {name:n, soll:zeilen.length, zielTag:0, art:"regel"}`
+setzte für jede unbekannte Station Soll = Ist. Damit war die Auslastung
+rechnerisch immer 100 %, das Erlösziel null und die Zielabweichung sinnlos —
+auch mit einer tagesaktuellen Liste.
+
+Neu: unbekannte Station heißt `soll:null` / `zielTag:null`. Die Oberfläche zeigt
+dann einen Strich statt einer Zahl. Eine Gesamtquote erscheint nur, wenn für
+**jede** Station ein Wert bekannt ist (`g.ohneSoll`, `g.ohneZiel`) — sonst wäre
+die Summe eine Mischung aus gemessen und geraten. Der Ring weicht einer
+Platzhalter-Kachel `.bel-ohne-ziel`.
+
+Nachtragen über `belSollFormular()` / `belSollUebernehmen()` / `belSollLeeren()`,
+Ablage in `BEL_SOLL` — nur im Speicher, wie der Import selbst. Zurückgesetzt bei
+neuem Import und bei „Zurück zur Demo".
+
+### Befund 3 — Barthel-Index: kein Fehler
+
+„Aufnahme / aktuell / Differenz" steht in `BEL_SPALTEN` nicht drin. Ein
+Stationsblatt ist eine Belegungs- und Abrechnungsliste; Barthel und FIM kommen
+aus der medizinischen Dokumentation. Bei uns liegen sie als Demo-Daten in
+`inReha[]`. Nicht geändert — dafür bräuchte es eine zweite Quelle.
+
+### Zusätzlich: Kennzahlen groß (Wunsch Michael)
+
+Nur `.bel-cockpit` wird vergrößert: 46 px, ab 760 px 36 px, ab 430 px 30 px.
+Das Cockpit auf „Heute" bleibt bei 27 px. Die Bettenzahl-Angabe steht als
+`<i>` gesetzt kleiner und gedämpft hinter dem Ist-Wert.
+
+### Prüfung
+
+| | 1440 | 390 |
+|---|---|---|
+| Überlauf im Belegungs-Modul | 0 | 0 |
+| Konsolenfehler / Rejections | 0 | 0 |
+
+Die 13 Überlaufbefunde in `inreha/verlauf` (`.ir-card`, `.irb-bwl`) sind
+zeichengleich mit dem Stand vor diesem Umbau — vorbestehend, nicht angefasst.
+
+Testfall (15 Zeilen, zwei unbekannte Stationen, 13 abgeschlossene Aufenthalte):
+vorher hätte er 15/15 und 100 % gezeigt, jetzt 2/— und einen Strich; nach dem
+Nachtragen von 40 bzw. 30 Betten 2/70 und 3 %. „Zurück zur Demo" stellt den
+Ausgangszustand exakt wieder her.
